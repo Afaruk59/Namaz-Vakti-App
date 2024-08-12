@@ -12,23 +12,28 @@ class homePage extends StatelessWidget {
         title: Text('Namaz Vakti App'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(15.0),
         child: Column(
           children: [
             homeCard(
               title: 'Vakitler',
+              route: '/times',
             ),
             homeCard(
-              title: 'Title',
+              title: 'Kıble Pusulası',
+              route: '/qibla',
             ),
             homeCard(
-              title: 'Title',
+              title: 'Mübarek Gün ve Geceler',
+              route: '/dates',
             ),
             homeCard(
-              title: 'Title',
+              title: 'Faydalı Kitaplar',
+              route: '/books',
             ),
             homeCard(
-              title: 'Title',
+              title: 'Ayarlar',
+              route: '/settings',
             ),
           ],
         ),
@@ -39,10 +44,12 @@ class homePage extends StatelessWidget {
 
 class homeCard extends StatelessWidget {
   final String title;
+  final String route;
 
   const homeCard({
     super.key,
     required this.title,
+    required this.route,
   });
 
   @override
@@ -59,7 +66,9 @@ class homeCard extends StatelessWidget {
                     // ignore: deprecated_member_use
                     overlayColor: MaterialStateProperty.all(Colors.transparent),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, route);
+                  },
                   child: Stack(
                     children: [
                       Positioned(
