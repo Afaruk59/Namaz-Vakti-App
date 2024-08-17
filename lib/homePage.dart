@@ -1,9 +1,73 @@
+import 'dart:async';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 
-class homePage extends StatelessWidget {
+class homePage extends StatefulWidget {
   const homePage({
     super.key,
   });
+
+  @override
+  State<homePage> createState() => _homePageState();
+}
+
+class _homePageState extends State<homePage> {
+  Timer? timer;
+  static bool alertOpen = false;
+  @override
+  void initState() {
+    super.initState();
+    timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
+      if (mounted) {
+        _checkWifi();
+      }
+    });
+  }
+
+  void _checkWifi() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult.contains(ConnectivityResult.none)) {
+      if (alertOpen == false) {
+        _showWifiAlert();
+        alertOpen = true;
+      }
+    }
+  }
+
+  void _showWifiAlert() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("İnternet Bağlantısı Gerekli"),
+        content: Row(
+          children: [
+            Expanded(
+              child: Text("Devam etmek için lütfen Wi-Fi'yi yada Mobil Veri'yi etkinleştirin."),
+              flex: 3,
+            ),
+            Expanded(
+              child: Icon(
+                Icons.wifi_off,
+                size: 45,
+              ),
+              flex: 1,
+            ),
+          ],
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text("Tekrar Dene"),
+            onPressed: () {
+              Navigator.of(context).pop();
+              alertOpen = false;
+              _checkWifi();
+            },
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,9 +83,22 @@ class homePage extends StatelessWidget {
               title: 'Vakitler',
               route: '/times',
             ),
-            homeCard(
-              title: 'Kıble Pusulası',
-              route: '/qibla',
+            Expanded(
+              child: Row(
+                children: [
+                  homeCard(
+                    title: 'Kıble Pusulası',
+                    route: '/qibla',
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  homeCard(
+                    title: 'Seferi Hesabı',
+                    route: '/seferi',
+                  ),
+                ],
+              ),
             ),
             homeCard(
               title: 'Mübarek Gün ve Geceler',
@@ -73,7 +150,7 @@ class homeCard extends StatelessWidget {
                     children: [
                       Positioned(
                         bottom: 15,
-                        left: 20,
+                        left: 15,
                         child: Text(
                           title,
                           style: TextStyle(

@@ -40,7 +40,7 @@ class QiblaCard extends StatelessWidget {
                       flex: 1,
                       child: Card(
                         color: Theme.of(context).cardColor,
-                        child: SizedBox.expand(child: Center(child: Text('Konum'))),
+                        child: SizedBox.expand(child: Center(child: Text('Mevcut Konum'))),
                       ),
                     ),
                   ],

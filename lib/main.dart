@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:namaz_vakti_app/api/sheets/cities_sheets_api.dart';
 import 'package:namaz_vakti_app/books.dart';
 import 'package:namaz_vakti_app/dates.dart';
+import 'package:namaz_vakti_app/detailedTimes.dart';
 import 'package:namaz_vakti_app/homePage.dart';
+import 'package:namaz_vakti_app/location.dart';
 import 'package:namaz_vakti_app/qibla.dart';
+import 'package:namaz_vakti_app/seferi.dart';
 import 'package:namaz_vakti_app/settings.dart';
 import 'package:namaz_vakti_app/times.dart';
 import 'package:provider/provider.dart';
@@ -10,14 +15,23 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await CitiesSheetsApi.init();
   await changeTheme().createSharedPrefObject();
-  runApp(ChangeNotifierProvider<changeTheme>(
-      create: (context) => changeTheme(), child: const MainApp()));
+
+  initializeDateFormatting().then((_) {
+    runApp(ChangeNotifierProvider<changeTheme>(
+        create: (context) => changeTheme(), child: const MainApp()));
+  });
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends StatefulWidget {
   const MainApp({super.key});
 
+  @override
+  State<MainApp> createState() => _MainAppState();
+}
+
+class _MainAppState extends State<MainApp> {
   @override
   Widget build(BuildContext context) {
     Provider.of<changeTheme>(context, listen: false).loadThemeFromSharedPref();
@@ -29,9 +43,12 @@ class MainApp extends StatelessWidget {
         '/': (context) => homePage(),
         '/times': (context) => Times(),
         '/qibla': (context) => Qibla(),
+        '/seferi': (context) => Seferi(),
         '/dates': (context) => Dates(),
         '/books': (context) => Books(),
         '/settings': (context) => Settings(),
+        '/detailedTimes': (context) => DetailedTimes(),
+        '/location': (context) => Location(),
       },
     );
   }
@@ -83,3 +100,5 @@ class changeTheme with ChangeNotifier {
     print('saved: $isDark');
   }
 }
+
+TextStyle timeStyle = TextStyle(fontSize: 20);
