@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:namaz_vakti_app/api/sheets/cities_sheets_api.dart';
-
-double lat = 0;
-double long = 0;
 
 class Location extends StatefulWidget {
   @override
@@ -11,6 +7,8 @@ class Location extends StatefulWidget {
 }
 
 class _LocationState extends State<Location> {
+  double lat = 0;
+  double long = 0;
   bool isLoading = true;
   @override
   void initState() {
@@ -75,8 +73,6 @@ class _LocationState extends State<Location> {
       lat = position.latitude;
       long = position.longitude;
     });
-    CitiesSheetsApi.searchLat(lat);
-    CitiesSheetsApi.searchLong(long);
     isLoading = false;
   }
 

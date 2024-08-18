@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:namaz_vakti_app/api/sheets/cities_sheets_api.dart';
 import 'package:namaz_vakti_app/books.dart';
 import 'package:namaz_vakti_app/dates.dart';
 import 'package:namaz_vakti_app/detailedTimes.dart';
@@ -15,7 +14,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await CitiesSheetsApi.init();
   await changeTheme().createSharedPrefObject();
 
   initializeDateFormatting().then((_) {
@@ -100,5 +98,3 @@ class changeTheme with ChangeNotifier {
     print('saved: $isDark');
   }
 }
-
-TextStyle timeStyle = TextStyle(fontSize: 20);
