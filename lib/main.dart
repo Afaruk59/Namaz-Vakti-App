@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:namaz_vakti_app/api/sheets_api.dart';
 import 'package:namaz_vakti_app/books.dart';
 import 'package:namaz_vakti_app/dates.dart';
 import 'package:namaz_vakti_app/detailedTimes.dart';
@@ -14,7 +15,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await SheetsApi.init();
   await changeTheme().createSharedPrefObject();
+  await ChangeLocation().createSharedPrefObject();
+  ChangeLocation().loadLocalFromSharedPref();
 
   initializeDateFormatting().then((_) {
     runApp(ChangeNotifierProvider<changeTheme>(

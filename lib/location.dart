@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:namaz_vakti_app/api/sheets_api.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Location extends StatefulWidget {
   @override
@@ -9,12 +11,6 @@ class Location extends StatefulWidget {
 class _LocationState extends State<Location> {
   double lat = 0;
   double long = 0;
-  bool isLoading = true;
-  @override
-  void initState() {
-    super.initState();
-    _getCurrentLocation();
-  }
 
   Future<void> _getCurrentLocation() async {
     bool serviceEnabled;
@@ -69,38 +65,53 @@ class _LocationState extends State<Location> {
 
     // ignore: deprecated_member_use
     Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
-    setState(() {
-      lat = position.latitude;
-      long = position.longitude;
-    });
-    isLoading = false;
+    lat = position.latitude;
+    long = position.longitude;
+    SheetsApi.searchLat(lat, long);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Konum'),
-      ),
-      body: Center(
-        child: isLoading
-            ? Center(
-                child: Column(
-                  children: [
-                    Text('Konum Aranıyor'),
-                    CircularProgressIndicator(),
-                  ],
-                ),
-              )
-            : Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('$lat'),
-                  Text('$long'),
-                  SizedBox(height: 20),
-                ],
-              ),
+    return FilledButton.tonal(
+      onPressed: () {
+        _getCurrentLocation();
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.location_on),
+          Text('Güncelle'),
+        ],
       ),
     );
+  }
+}
+
+class ChangeLocation {
+  static String? id;
+  static String? cityName;
+  static String? cityState;
+
+  static late SharedPreferences _local;
+
+  Future<void> createSharedPrefObject() async {
+    _local = await SharedPreferences.getInstance();
+  }
+
+  void loadLocalFromSharedPref() {
+    id = _local.getString('location') ?? '16741';
+    cityName = _local.getString('name') ?? 'Istanbul/Merkez';
+    cityState = _local.getString('state') ?? 'Istanbul';
+    print('Loaded: $id');
+  }
+
+  void saveLocaltoSharedPref(String value, String name, String state) {
+    _local.setString('location', value);
+    _local.setString('name', name);
+    _local.setString('state', state);
+    id = value;
+    cityName = name;
+    cityState = state;
+    print('Saved: $id');
   }
 }

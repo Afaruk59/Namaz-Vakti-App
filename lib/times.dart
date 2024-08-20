@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:namaz_vakti_app/location.dart';
 import 'package:xml/xml.dart' as xml;
 import 'package:http/http.dart' as http;
 import 'package:hijri/hijri_calendar.dart';
@@ -62,25 +63,14 @@ class TimesBody extends StatelessWidget {
                         TimesCard(
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                            child: FilledButton.tonal(
-                              onPressed: () {
-                                Navigator.pushNamed(context, '/location');
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.location_on),
-                                  Text('Güncelle'),
-                                ],
-                              ),
-                            ),
+                            child: Location(),
                           ),
                         ),
                       ],
                     ),
                   ),
                   TimesCard(
-                    child: Text('Konum'),
+                    child: CityNameCard(),
                   ),
                 ],
               ),
@@ -138,6 +128,48 @@ class TimesCard extends StatelessWidget {
   }
 }
 
+class CityNameCard extends StatefulWidget {
+  const CityNameCard({super.key});
+
+  @override
+  State<CityNameCard> createState() => _CityNameCardState();
+}
+
+class _CityNameCardState extends State<CityNameCard> {
+  static String? cityName;
+  static String? cityState;
+
+  @override
+  void initState() {
+    super.initState();
+    cityName = ChangeLocation.cityName;
+    cityState = ChangeLocation.cityState;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          '$cityState',
+          style: TextStyle(fontSize: 18),
+        ),
+        SizedBox(
+          width: 100,
+          child: Divider(
+            height: 20,
+          ),
+        ),
+        Text(
+          '$cityName',
+          style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
+        ),
+      ],
+    );
+  }
+}
+
 class PrayerTimesPage extends StatefulWidget {
   @override
   _PrayerTimesPageState createState() => _PrayerTimesPageState();
@@ -149,7 +181,7 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
   DateTime? selectedDate;
   static bool isLoading = true;
   String? errorMessage;
-  String cityID = '16741';
+  static String? cityID;
 
   static DateTime? imsak;
   static DateTime? sabah;
@@ -170,6 +202,7 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
   @override
   void initState() {
     super.initState();
+    cityID = ChangeLocation.id;
     loadPrayerTimes();
   }
 
@@ -190,7 +223,7 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
 
   Future<void> loadPrayerTimes() async {
     String url =
-        'https://www.namazvakti.com/XML.php?cityID=$cityID'; // Çevrimiçi XML dosyasının URL'si
+        'https://www.namazvakti.com/XML.php?cityID=${cityID}'; // Çevrimiçi XML dosyasının URL'si
     try {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -253,7 +286,11 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
     isfirar = DateFormat('HH:mm').parse((selectedDayTimes?['isfirar']).toString());
     istibak = DateFormat('HH:mm').parse((selectedDayTimes?['iştibak']).toString());
     isaisani = DateFormat('HH:mm').parse((selectedDayTimes?['işaisani']).toString());
-    kible = DateFormat('HH:mm').parse((selectedDayTimes?['kıble']).toString());
+    try {
+      kible = DateFormat('HH:mm').parse((selectedDayTimes?['kıble']).toString());
+    } on Exception catch (e) {
+      kible = null;
+    }
     isTimeLoading = false;
   }
 
@@ -419,7 +456,7 @@ class detailedTimes extends StatelessWidget {
                     style: style,
                   ),
                   Text(
-                    '${DateFormat('HH:mm').format(_PrayerTimesPageState.kible!)}',
+                    '${_PrayerTimesPageState.kible != null ? DateFormat('HH:mm').format(_PrayerTimesPageState.kible!) : '-'}',
                     style: style,
                   ),
                 ],
