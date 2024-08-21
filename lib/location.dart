@@ -74,6 +74,8 @@ class _LocationState extends State<Location> {
   Widget build(BuildContext context) {
     return FilledButton.tonal(
       onPressed: () {
+        Navigator.pop(context);
+        Navigator.pushNamed(context, '/loading');
         _getCurrentLocation();
       },
       child: Row(
@@ -91,6 +93,7 @@ class ChangeLocation {
   static String? id;
   static String? cityName;
   static String? cityState;
+  static bool isLocalized = false;
 
   static late SharedPreferences _local;
 
@@ -113,5 +116,6 @@ class ChangeLocation {
     cityName = name;
     cityState = state;
     print('Saved: $id');
+    isLocalized = true;
   }
 }

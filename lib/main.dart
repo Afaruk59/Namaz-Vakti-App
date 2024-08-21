@@ -5,6 +5,7 @@ import 'package:namaz_vakti_app/books.dart';
 import 'package:namaz_vakti_app/dates.dart';
 import 'package:namaz_vakti_app/detailedTimes.dart';
 import 'package:namaz_vakti_app/homePage.dart';
+import 'package:namaz_vakti_app/loading.dart';
 import 'package:namaz_vakti_app/location.dart';
 import 'package:namaz_vakti_app/qibla.dart';
 import 'package:namaz_vakti_app/seferi.dart';
@@ -51,6 +52,7 @@ class _MainAppState extends State<MainApp> {
         '/settings': (context) => Settings(),
         '/detailedTimes': (context) => DetailedTimes(),
         '/location': (context) => Location(),
+        '/loading': (context) => Loading(),
       },
     );
   }
@@ -71,7 +73,8 @@ ThemeData lightTheme = ThemeData(
     colorSchemeSeed: Colors.blue,
     appBarTheme: AppBarTheme(color: Colors.blue[400]),
     cardTheme: CardTheme(color: Colors.blue[200]),
-    cardColor: Color.fromARGB(255, 230, 230, 230));
+    cardColor: Color.fromARGB(255, 230, 230, 230),
+    dividerTheme: DividerThemeData(color: const Color.fromARGB(255, 52, 52, 52)));
 
 class changeTheme with ChangeNotifier {
   static late SharedPreferences _sharedPrefObject;

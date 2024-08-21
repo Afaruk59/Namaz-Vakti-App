@@ -32,7 +32,8 @@ class SheetsApi {
   }
 
   static Future<void> searchLat(double lat, double long) async {
-    int targetInt = lat.toInt();
+    double targetInt = double.parse(lat.toStringAsFixed(1));
+    print(targetInt);
     final columnValues = await _sheet!.values.column(5);
 
     List<int> matchingIndices = [];
@@ -40,7 +41,7 @@ class SheetsApi {
     for (int i = 0; i < columnValues.length; i++) {
       try {
         final value = double.parse(columnValues[i]);
-        final integerPart = value.toInt();
+        final integerPart = double.parse(value.toStringAsFixed(1));
 
         if (integerPart == targetInt) {
           matchingIndices.add(i);

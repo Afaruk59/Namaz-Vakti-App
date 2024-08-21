@@ -41,39 +41,45 @@ class TimesBody extends StatelessWidget {
       child: Column(
         children: [
           SizedBox(
-            height: 220,
-            child: Expanded(
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      children: [
-                        TimesCard(
+            height: 210,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: TimesCard(
                           child: Text(
                             '${DateFormat('dd MMMM yyyy', 'tr_TR').format(DateTime.now())}',
                             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                           ),
                         ),
-                        TimesCard(
+                      ),
+                      Expanded(
+                        child: TimesCard(
                           child: Text(
                             '${HijriCalendar.now().hDay} ${HijriCalendar.now().longMonthName} ${HijriCalendar.now().hYear}',
                             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                           ),
                         ),
-                        TimesCard(
+                      ),
+                      Expanded(
+                        child: TimesCard(
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 25.0),
                             child: Location(),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  TimesCard(
+                ),
+                Expanded(
+                  child: TimesCard(
                     child: CityNameCard(),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
           SizedBox(
@@ -82,24 +88,26 @@ class TimesBody extends StatelessWidget {
               child: Clock(),
             ),
           ),
-          TimesCard(
-            child: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Stack(
-                children: [
-                  PrayerTimesPage(),
-                  Positioned(
-                    bottom: 5,
-                    left: 5,
-                    child: FloatingActionButton(
-                      child: Icon(Icons.menu),
-                      shape: CircleBorder(),
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/detailedTimes');
-                      },
+          Expanded(
+            child: TimesCard(
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Stack(
+                  children: [
+                    PrayerTimesPage(),
+                    Positioned(
+                      bottom: 5,
+                      left: 5,
+                      child: FloatingActionButton(
+                        child: Icon(Icons.menu),
+                        shape: CircleBorder(),
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/detailedTimes');
+                        },
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -116,14 +124,8 @@ class TimesCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Card(
-        child: SizedBox.expand(
-          child: Center(
-            child: child,
-          ),
-        ),
-      ),
+    return Card(
+      child: Center(child: child),
     );
   }
 }
@@ -288,7 +290,7 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
     isaisani = DateFormat('HH:mm').parse((selectedDayTimes?['işaisani']).toString());
     try {
       kible = DateFormat('HH:mm').parse((selectedDayTimes?['kıble']).toString());
-    } on Exception catch (e) {
+    } on Exception catch (_) {
       kible = null;
     }
     isTimeLoading = false;

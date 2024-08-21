@@ -23,25 +23,22 @@ class SettingsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Card(
-          child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Column(
-              children: [
-                Card(
-                  color: Theme.of(context).cardColor,
-                  child: SwitchListTile(
-                    title: Text('Koyu Tema'),
-                    value: Provider.of<changeTheme>(context).isDark,
-                    onChanged: (_) =>
-                        Provider.of<changeTheme>(context, listen: false).toggleTheme(),
-                  ),
+    return Padding(
+      padding: const EdgeInsets.all(15.0),
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Column(
+            children: [
+              Card(
+                color: Theme.of(context).cardColor,
+                child: SwitchListTile(
+                  title: Text('Koyu Tema'),
+                  value: Provider.of<changeTheme>(context).isDark,
+                  onChanged: (_) => Provider.of<changeTheme>(context, listen: false).toggleTheme(),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
