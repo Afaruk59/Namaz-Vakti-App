@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:namaz_vakti_app/main.dart';
 
 class Seferi extends StatelessWidget {
   const Seferi({super.key});
@@ -20,11 +21,11 @@ class SeferiCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(15),
+      padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
       child: Card(
         child: SizedBox.expand(
           child: Padding(
-            padding: const EdgeInsets.all(15.0),
+            padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
             child: Column(
               children: [
                 Expanded(

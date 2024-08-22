@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:namaz_vakti_app/api/sheets_api.dart';
+import 'package:namaz_vakti_app/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Location extends StatefulWidget {
@@ -41,8 +42,8 @@ class _LocationState extends State<Location> {
             TextButton(
               child: Text("Tekrar Dene"),
               onPressed: () {
-                Navigator.of(context).pop();
-                _getCurrentLocation();
+                Navigator.pop(context);
+                Navigator.popAndPushNamed(context, '/times');
               },
             ),
           ],
@@ -67,22 +68,26 @@ class _LocationState extends State<Location> {
     Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
     lat = position.latitude;
     long = position.longitude;
-    SheetsApi.searchLat(lat, long);
+    await SheetsApi().searchLoc(41.104078, 28.963957);
   }
 
   @override
   Widget build(BuildContext context) {
     return FilledButton.tonal(
-      onPressed: () {
+      onPressed: () async {
         Navigator.pop(context);
         Navigator.pushNamed(context, '/loading');
-        _getCurrentLocation();
+        await _getCurrentLocation();
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.location_on),
-          Text('Güncelle'),
+          Icon(Icons.location_on, size: MainApp.currentHeight! < 700.0 ? 20.0 : 22.0),
+          Text(
+            'Güncelle',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: MainApp.currentHeight! < 700.0 ? 12.0 : 15.0),
+          ),
         ],
       ),
     );
@@ -103,8 +108,8 @@ class ChangeLocation {
 
   void loadLocalFromSharedPref() {
     id = _local.getString('location') ?? '16741';
-    cityName = _local.getString('name') ?? 'Istanbul/Merkez';
-    cityState = _local.getString('state') ?? 'Istanbul';
+    cityName = _local.getString('name') ?? 'İstanbul Merkez';
+    cityState = _local.getString('state') ?? 'İstanbul';
     print('Loaded: $id');
   }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:namaz_vakti_app/main.dart';
 
 class Qibla extends StatelessWidget {
   const Qibla({super.key});
@@ -20,10 +21,10 @@ class QiblaCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(15.0),
+      padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
       child: Card(
         child: Padding(
-          padding: const EdgeInsets.all(15.0),
+          padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
           child: Row(
             children: [
               Expanded(

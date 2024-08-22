@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:namaz_vakti_app/main.dart';
 import 'package:namaz_vakti_app/times.dart';
 
 class DetailedTimes extends StatefulWidget {
@@ -16,11 +17,11 @@ class _DetailedTimesState extends State<DetailedTimes> {
         title: Text('Tüm Zamanlar'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(15.0),
+        padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
         child: Card(
           child: SizedBox.expand(
             child: Padding(
-              padding: const EdgeInsets.all(15.0),
+              padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 15.0),
               child: Card(
                 color: Theme.of(context).cardColor,
                 child: detailedTimes(),

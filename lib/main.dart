@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:namaz_vakti_app/api/sheets_api.dart';
 import 'package:namaz_vakti_app/books.dart';
 import 'package:namaz_vakti_app/dates.dart';
 import 'package:namaz_vakti_app/detailedTimes.dart';
@@ -16,7 +16,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await SheetsApi.init();
   await changeTheme().createSharedPrefObject();
   await ChangeLocation().createSharedPrefObject();
   ChangeLocation().loadLocalFromSharedPref();
@@ -29,6 +28,7 @@ void main() async {
 
 class MainApp extends StatefulWidget {
   const MainApp({super.key});
+  static double? currentHeight;
 
   @override
   State<MainApp> createState() => _MainAppState();
@@ -37,6 +37,7 @@ class MainApp extends StatefulWidget {
 class _MainAppState extends State<MainApp> {
   @override
   Widget build(BuildContext context) {
+    MainApp.currentHeight = MediaQuery.of(context).size.height;
     Provider.of<changeTheme>(context, listen: false).loadThemeFromSharedPref();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -61,19 +62,29 @@ class _MainAppState extends State<MainApp> {
 ThemeData darkTheme = ThemeData(
   useMaterial3: true,
   brightness: Brightness.dark,
-  colorSchemeSeed: Colors.blue,
-  appBarTheme: AppBarTheme(color: Color.fromARGB(255, 29, 80, 138)),
-  cardTheme: CardTheme(color: Color.fromARGB(255, 83, 126, 175)),
-  cardColor: Color.fromARGB(255, 46, 46, 46),
+  colorSchemeSeed: Colors.brown,
+  appBarTheme: AppBarTheme(
+    color: const Color.fromARGB(255, 91, 64, 54),
+    toolbarHeight: MainApp.currentHeight! < 700.0 ? 50.0 : 60,
+    titleTextStyle: GoogleFonts.dmSerifText(fontSize: MainApp.currentHeight! < 700.0 ? 20.0 : 25.0),
+  ),
+  cardTheme: CardTheme(color: Color.fromARGB(255, 124, 92, 81)),
+  cardColor: const Color.fromARGB(255, 46, 46, 46),
 );
 
 ThemeData lightTheme = ThemeData(
+    scaffoldBackgroundColor: const Color.fromARGB(255, 230, 230, 230),
     useMaterial3: true,
     brightness: Brightness.light,
-    colorSchemeSeed: Colors.blue,
-    appBarTheme: AppBarTheme(color: Colors.blue[400]),
-    cardTheme: CardTheme(color: Colors.blue[200]),
-    cardColor: Color.fromARGB(255, 230, 230, 230),
+    colorSchemeSeed: Colors.brown,
+    appBarTheme: AppBarTheme(
+      color: Color.fromARGB(255, 164, 135, 124),
+      toolbarHeight: MainApp.currentHeight! < 700.0 ? 50.0 : 60,
+      titleTextStyle:
+          GoogleFonts.dmSerifText(fontSize: MainApp.currentHeight! < 700.0 ? 20.0 : 25.0),
+    ),
+    cardTheme: CardTheme(color: Color.fromARGB(255, 195, 158, 146)),
+    cardColor: const Color.fromARGB(255, 230, 230, 230),
     dividerTheme: DividerThemeData(color: const Color.fromARGB(255, 52, 52, 52)));
 
 class changeTheme with ChangeNotifier {

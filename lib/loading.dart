@@ -18,7 +18,7 @@ class _LoadingState extends State<Loading> {
     Timer.periodic(Duration(seconds: 1), (Timer t) {
       if (ChangeLocation.isLocalized) {
         if (mounted) {
-          Navigator.pop(context);
+          Navigator.popAndPushNamed(context, '/times');
         }
       }
     });

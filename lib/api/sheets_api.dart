@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:gsheets/gsheets.dart';
 import 'package:namaz_vakti_app/location.dart';
 
@@ -31,57 +33,24 @@ class SheetsApi {
     return await spreadsheet.worksheetByTitle(title)!;
   }
 
-  static Future<void> searchLat(double lat, double long) async {
-    double targetInt = double.parse(lat.toStringAsFixed(1));
-    print(targetInt);
-    final columnValues = await _sheet!.values.column(5);
+  Future<void> searchLoc(double lat, double long) async {
+    print('lat: $lat');
+    print('long: $long');
 
-    List<int> matchingIndices = [];
+    final latValues = await _sheet!.values.column(5);
+    final longValues = await _sheet!.values.column(6);
 
-    for (int i = 0; i < columnValues.length; i++) {
-      try {
-        final value = double.parse(columnValues[i]);
-        final integerPart = double.parse(value.toStringAsFixed(1));
+    int index = 0;
+    double minDistance = double.infinity;
 
-        if (integerPart == targetInt) {
-          matchingIndices.add(i);
-        }
-      } catch (e) {
-        continue;
+    for (int i = 0; i < latValues.length; i++) {
+      double distance =
+          calculateDistance(lat, long, double.parse(latValues[i]), double.parse(longValues[i]));
+      if (distance < minDistance) {
+        minDistance = distance;
+        index = i;
       }
     }
-
-    searchLong(long, matchingIndices);
-  }
-
-  static Future<void> searchLong(double long, List<int> list) async {
-    List<int> lats = list;
-    List<double> longs = [];
-    // Belirli bir sütundaki verileri alın
-    final columnValues = await _sheet!.values.column(6); // 1. sütun
-
-    for (int i = 0; i < lats.length; i++) {
-      final value = double.parse(columnValues[lats[i]]);
-      longs.add(value);
-    }
-
-    // Hedef değeri belirleyin
-    double targetValue = long;
-
-    // En yakın değeri bulmak için değişkenler
-    double closestValue = double.infinity;
-    double smallestDifference = double.infinity;
-
-    for (int i = 0; i < longs.length; i++) {
-      double value = longs[i];
-      double difference = (value - targetValue).abs();
-      if (difference < smallestDifference) {
-        smallestDifference = difference;
-        closestValue = value;
-      }
-    }
-
-    int index = columnValues.indexOf(closestValue.toString());
 
     final cityIds = await _sheet!.values.column(1);
     String cityId = cityIds[index];
@@ -93,5 +62,24 @@ class SheetsApi {
     String stateName = stateNames[index];
 
     ChangeLocation().saveLocaltoSharedPref(cityId, cityName, stateName);
+  }
+
+  double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+    const R = 6371; // Dünya'nın yarıçapı (kilometre)
+
+    double dLat = _toRadians(lat2 - lat1);
+    double dLon = _toRadians(lon2 - lon1);
+
+    double a = sin(dLat / 2) * sin(dLat / 2) +
+        cos(_toRadians(lat1)) * cos(_toRadians(lat2)) * sin(dLon / 2) * sin(dLon / 2);
+
+    double c = 2 * atan2(sqrt(a), sqrt(1 - a));
+
+    return R * c;
+  }
+
+// Dereceyi radyana çeviren yardımcı fonksiyon
+  double _toRadians(double degree) {
+    return degree * pi / 180;
   }
 }

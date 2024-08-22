@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:namaz_vakti_app/location.dart';
+import 'package:namaz_vakti_app/main.dart';
 import 'package:xml/xml.dart' as xml;
 import 'package:http/http.dart' as http;
 import 'package:hijri/hijri_calendar.dart';
@@ -15,7 +16,8 @@ class Times extends StatelessWidget {
       appBar: AppBar(
         title: Text('Vakitler'),
         actions: [
-          IconButton.filledTonal(
+          IconButton.outlined(
+              iconSize: MainApp.currentHeight! < 700.0 ? 20.0 : 25.0,
               onPressed: () {},
               icon: Icon(
                 Icons.alarm,
@@ -37,11 +39,11 @@ class TimesBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(15.0),
+      padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 3.0 : 10.0),
       child: Column(
         children: [
-          SizedBox(
-            height: 210,
+          Expanded(
+            flex: 6,
             child: Row(
               children: [
                 Expanded(
@@ -66,7 +68,7 @@ class TimesBody extends StatelessWidget {
                       Expanded(
                         child: TimesCard(
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                            padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
                             child: Location(),
                           ),
                         ),
@@ -82,16 +84,17 @@ class TimesBody extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(
-            height: 100,
+          Expanded(
+            flex: 3,
             child: TimesCard(
               child: Clock(),
             ),
           ),
           Expanded(
+            flex: 11,
             child: TimesCard(
               child: Padding(
-                padding: const EdgeInsets.all(15.0),
+                padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
                 child: Stack(
                   children: [
                     PrayerTimesPage(),
@@ -99,6 +102,7 @@ class TimesBody extends StatelessWidget {
                       bottom: 5,
                       left: 5,
                       child: FloatingActionButton(
+                        mini: MainApp.currentHeight! < 700.0 ? true : false,
                         child: Icon(Icons.menu),
                         shape: CircleBorder(),
                         onPressed: () {
@@ -155,17 +159,20 @@ class _CityNameCardState extends State<CityNameCard> {
       children: [
         Text(
           '$cityState',
-          style: TextStyle(fontSize: 18),
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: MainApp.currentHeight! < 700.0 ? 15.0 : 18.0),
         ),
         SizedBox(
-          width: 100,
+          width: MainApp.currentHeight! < 700.0 ? 70.0 : 100.0,
           child: Divider(
-            height: 20,
+            height: MainApp.currentHeight! < 700.0 ? 10.0 : 20.0,
           ),
         ),
         Text(
           '$cityName',
-          style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              fontSize: MainApp.currentHeight! < 700.0 ? 16.0 : 18.0, fontWeight: FontWeight.bold),
         ),
       ],
     );
@@ -274,20 +281,72 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
     }
 
     selectDate();
-    imsak = DateFormat('HH:mm').parse((selectedDayTimes?['imsak']).toString());
-    sabah = DateFormat('HH:mm').parse((selectedDayTimes?['sabah']).toString());
-    gunes = DateFormat('HH:mm').parse((selectedDayTimes?['güneş']).toString());
-    ogle = DateFormat('HH:mm').parse((selectedDayTimes?['öğle']).toString());
-    ikindi = DateFormat('HH:mm').parse((selectedDayTimes?['ikindi']).toString());
-    aksam = DateFormat('HH:mm').parse((selectedDayTimes?['akşam']).toString());
-    yatsi = DateFormat('HH:mm').parse((selectedDayTimes?['yatsı']).toString());
+    try {
+      imsak = DateFormat('HH:mm').parse((selectedDayTimes?['imsak']).toString());
+    } on Exception catch (_) {
+      imsak = null;
+    }
+    try {
+      sabah = DateFormat('HH:mm').parse((selectedDayTimes?['sabah']).toString());
+    } on Exception catch (_) {
+      sabah = null;
+    }
+    try {
+      gunes = DateFormat('HH:mm').parse((selectedDayTimes?['güneş']).toString());
+    } on Exception catch (_) {
+      gunes = null;
+    }
+    try {
+      ogle = DateFormat('HH:mm').parse((selectedDayTimes?['öğle']).toString());
+    } on Exception catch (_) {
+      ogle = null;
+    }
+    try {
+      ikindi = DateFormat('HH:mm').parse((selectedDayTimes?['ikindi']).toString());
+    } on Exception catch (_) {
+      ikindi = null;
+    }
+    try {
+      aksam = DateFormat('HH:mm').parse((selectedDayTimes?['akşam']).toString());
+    } on Exception catch (_) {
+      aksam = null;
+    }
+    try {
+      yatsi = DateFormat('HH:mm').parse((selectedDayTimes?['yatsı']).toString());
+    } on Exception catch (_) {
+      yatsi = null;
+    }
 
-    israk = DateFormat('HH:mm').parse((selectedDayTimes?['işrak']).toString());
-    kerahat = DateFormat('HH:mm').parse((selectedDayTimes?['kerahat']).toString());
-    asrisani = DateFormat('HH:mm').parse((selectedDayTimes?['asrisani']).toString());
-    isfirar = DateFormat('HH:mm').parse((selectedDayTimes?['isfirar']).toString());
-    istibak = DateFormat('HH:mm').parse((selectedDayTimes?['iştibak']).toString());
-    isaisani = DateFormat('HH:mm').parse((selectedDayTimes?['işaisani']).toString());
+    try {
+      israk = DateFormat('HH:mm').parse((selectedDayTimes?['işrak']).toString());
+    } on Exception catch (_) {
+      israk = null;
+    }
+    try {
+      kerahat = DateFormat('HH:mm').parse((selectedDayTimes?['kerahat']).toString());
+    } on Exception catch (_) {
+      kerahat = null;
+    }
+    try {
+      asrisani = DateFormat('HH:mm').parse((selectedDayTimes?['asrisani']).toString());
+    } on Exception catch (_) {
+      asrisani = null;
+    }
+    try {
+      isfirar = DateFormat('HH:mm').parse((selectedDayTimes?['isfirar']).toString());
+    } on Exception catch (_) {
+      isfirar = null;
+    }
+    try {
+      istibak = DateFormat('HH:mm').parse((selectedDayTimes?['iştibak']).toString());
+    } on Exception catch (_) {
+      istibak = null;
+    }
+    try {
+      isaisani = DateFormat('HH:mm').parse((selectedDayTimes?['işaisani']).toString());
+    } on Exception catch (_) {
+      isaisani = null;
+    }
     try {
       kible = DateFormat('HH:mm').parse((selectedDayTimes?['kıble']).toString());
     } on Exception catch (_) {
@@ -311,12 +370,12 @@ class detailedTimes extends StatelessWidget {
     super.key,
   });
 
-  TextStyle style = TextStyle(fontSize: 19);
+  TextStyle style = TextStyle(fontSize: MainApp.currentHeight! < 700.0 ? 17.0 : 18.0);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(15.0),
+      padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
       child: Row(
         children: [
           Expanded(
@@ -477,12 +536,12 @@ class mainTimes extends StatelessWidget {
     super.key,
   });
 
-  TextStyle timeStyle = TextStyle(fontSize: 20);
+  TextStyle timeStyle = TextStyle(fontSize: MainApp.currentHeight! < 700.0 ? 18.0 : 20.0);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(15.0),
+      padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
       child: Row(
         children: [
           Expanded(
@@ -666,26 +725,44 @@ class _ClockState extends State<Clock> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(15.0),
+      padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
       child: Card(
         color: Theme.of(context).cardColor,
         child: _PrayerTimesPageState.isTimeLoading
             ? Center(child: CircularProgressIndicator())
             : SizedBox.expand(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '$pray Kalan: ',
-                        style: TextStyle(fontSize: 18),
+                  padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
+                  child: Card(
+                    color: Theme.of(context).cardColor,
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(
+                        color: Colors.grey, // Kenar rengini belirleyin
+                        width: 1.0, // Kenar kalınlığını belirleyin
                       ),
-                      Text(
-                        '${(difference!.inHours).toString().padLeft(2, '0')} : ${(difference!.inMinutes % 60).toString().padLeft(2, '0')} : ${(difference!.inSeconds % 60).toString().padLeft(2, '0')}',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      borderRadius:
+                          BorderRadius.circular(10.0), // Kenarların yuvarlaklığını belirleyin
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: MainApp.currentHeight! < 700.0 ? 30.0 : 20.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            '$pray Kalan: ',
+                            style:
+                                TextStyle(fontSize: MainApp.currentHeight! < 700.0 ? 16.0 : 18.0),
+                          ),
+                          Text(
+                            '${(difference!.inHours).toString().padLeft(2, '0')} : ${(difference!.inMinutes % 60).toString().padLeft(2, '0')} : ${(difference!.inSeconds % 60).toString().padLeft(2, '0')}',
+                            style: TextStyle(
+                                fontSize: MainApp.currentHeight! < 700.0 ? 16.0 : 18.0,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
               ),
