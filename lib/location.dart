@@ -68,7 +68,7 @@ class _LocationState extends State<Location> {
     Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
     lat = position.latitude;
     long = position.longitude;
-    await SheetsApi().searchLoc(41.104078, 28.963957);
+    await SheetsApi().searchLoc(lat, long);
   }
 
   @override
