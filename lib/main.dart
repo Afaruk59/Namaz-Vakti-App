@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:namaz_vakti_app/alarms.dart';
 import 'package:namaz_vakti_app/books.dart';
 import 'package:namaz_vakti_app/dates.dart';
 import 'package:namaz_vakti_app/detailedTimes.dart';
@@ -26,15 +27,10 @@ void main() async {
   });
 }
 
-class MainApp extends StatefulWidget {
+class MainApp extends StatelessWidget {
   const MainApp({super.key});
   static double? currentHeight;
 
-  @override
-  State<MainApp> createState() => _MainAppState();
-}
-
-class _MainAppState extends State<MainApp> {
   @override
   Widget build(BuildContext context) {
     MainApp.currentHeight = MediaQuery.of(context).size.height;
@@ -54,6 +50,7 @@ class _MainAppState extends State<MainApp> {
         '/detailedTimes': (context) => DetailedTimes(),
         '/location': (context) => Location(),
         '/loading': (context) => Loading(),
+        '/alarms': (context) => Alarms(),
       },
     );
   }
@@ -65,10 +62,10 @@ ThemeData darkTheme = ThemeData(
   colorSchemeSeed: Colors.brown,
   appBarTheme: AppBarTheme(
     color: const Color.fromARGB(255, 91, 64, 54),
-    toolbarHeight: MainApp.currentHeight! < 700.0 ? 50.0 : 60,
+    toolbarHeight: MainApp.currentHeight! < 700.0 ? 50.0 : kToolbarHeight,
     titleTextStyle: GoogleFonts.dmSerifText(fontSize: MainApp.currentHeight! < 700.0 ? 20.0 : 25.0),
   ),
-  cardTheme: CardTheme(color: Color.fromARGB(255, 124, 92, 81)),
+  cardTheme: CardTheme(color: Color.fromARGB(255, 124, 92, 81), elevation: 10),
   cardColor: const Color.fromARGB(255, 46, 46, 46),
 );
 
@@ -79,11 +76,11 @@ ThemeData lightTheme = ThemeData(
     colorSchemeSeed: Colors.brown,
     appBarTheme: AppBarTheme(
       color: Color.fromARGB(255, 164, 135, 124),
-      toolbarHeight: MainApp.currentHeight! < 700.0 ? 50.0 : 60,
+      toolbarHeight: MainApp.currentHeight! < 700.0 ? 50.0 : kToolbarHeight,
       titleTextStyle:
           GoogleFonts.dmSerifText(fontSize: MainApp.currentHeight! < 700.0 ? 20.0 : 25.0),
     ),
-    cardTheme: CardTheme(color: Color.fromARGB(255, 195, 158, 146)),
+    cardTheme: CardTheme(color: Color.fromARGB(255, 195, 158, 146), elevation: 10),
     cardColor: const Color.fromARGB(255, 230, 230, 230),
     dividerTheme: DividerThemeData(color: const Color.fromARGB(255, 52, 52, 52)));
 

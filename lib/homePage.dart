@@ -90,7 +90,7 @@ class _homePageState extends State<homePage> {
                   homeCard(
                     title: 'Kıble Pusulası',
                     route: '/qibla',
-                    img: 'compass.png',
+                    img: 'compass.jpg',
                   ),
                   homeCard(
                     title: 'Seferi Hesabı',
@@ -156,6 +156,14 @@ class homeCard extends StatelessWidget {
                     image: AssetImage('assets/img/$img'),
                     fit: BoxFit.cover,
                   ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.3), // Gölge rengi ve opaklığı
+                      spreadRadius: 5, // Gölgenin yayılma alanı
+                      blurRadius: 10, // Gölgenin bulanıklığı
+                      offset: Offset(0, 5), // Gölgenin yatay ve dikey kayması
+                    ),
+                  ],
                 ),
               ),
               Positioned(

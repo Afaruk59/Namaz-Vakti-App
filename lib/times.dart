@@ -18,7 +18,9 @@ class Times extends StatelessWidget {
         actions: [
           IconButton.outlined(
               iconSize: MainApp.currentHeight! < 700.0 ? 20.0 : 25.0,
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, '/alarms');
+              },
               icon: Icon(
                 Icons.alarm,
               )),
