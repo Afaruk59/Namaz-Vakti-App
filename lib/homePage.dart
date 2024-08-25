@@ -4,6 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:namaz_vakti_app/api/sheets_api.dart';
 import 'package:namaz_vakti_app/main.dart';
+import 'package:provider/provider.dart';
 
 class homePage extends StatefulWidget {
   const homePage({
@@ -17,10 +18,19 @@ class homePage extends StatefulWidget {
 class _homePageState extends State<homePage> {
   Timer? timer;
   static bool alertOpen = false;
+  String light = '';
   @override
   void initState() {
     super.initState();
     _checkWifi();
+  }
+
+  void _checkLight() {
+    if (Provider.of<changeTheme>(context).isDark == false) {
+      light = 'light';
+    } else {
+      light = '';
+    }
   }
 
   void _checkWifi() async {
@@ -71,6 +81,7 @@ class _homePageState extends State<homePage> {
 
   @override
   Widget build(BuildContext context) {
+    _checkLight();
     return Scaffold(
       appBar: AppBar(
         title: Text('Namaz Vakti App'),
@@ -82,7 +93,7 @@ class _homePageState extends State<homePage> {
             homeCard(
               title: 'Vakitler',
               route: '/times',
-              img: 'clock.jpg',
+              img: 'clock$light',
             ),
             Expanded(
               child: Row(
@@ -90,12 +101,12 @@ class _homePageState extends State<homePage> {
                   homeCard(
                     title: 'Kıble Pusulası',
                     route: '/qibla',
-                    img: 'compass.jpg',
+                    img: 'compass$light',
                   ),
                   homeCard(
                     title: 'Seferi Hesabı',
                     route: '/seferi',
-                    img: 'world.jpg',
+                    img: 'world$light',
                   ),
                 ],
               ),
@@ -103,17 +114,17 @@ class _homePageState extends State<homePage> {
             homeCard(
               title: 'Mübarek Gün ve Geceler',
               route: '/dates',
-              img: 'mescidi-nebevi.jpg',
+              img: 'mescidi-nebevi$light',
             ),
             homeCard(
               title: 'Faydalı Kitaplar',
               route: '/books',
-              img: 'books.jpg',
+              img: 'books$light',
             ),
             homeCard(
               title: 'Ayarlar',
               route: '/settings',
-              img: 'settings.jpg',
+              img: 'settings$light',
             ),
           ],
         ),
@@ -153,7 +164,7 @@ class homeCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   image: DecorationImage(
-                    image: AssetImage('assets/img/$img'),
+                    image: AssetImage('assets/img/$img.jpg'),
                     fit: BoxFit.cover,
                   ),
                   boxShadow: [

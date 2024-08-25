@@ -62,7 +62,6 @@ ThemeData darkTheme = ThemeData(
   colorSchemeSeed: Colors.brown,
   appBarTheme: AppBarTheme(
     color: const Color.fromARGB(255, 91, 64, 54),
-    toolbarHeight: MainApp.currentHeight! < 700.0 ? 50.0 : kToolbarHeight,
     titleTextStyle: GoogleFonts.dmSerifText(fontSize: MainApp.currentHeight! < 700.0 ? 20.0 : 25.0),
   ),
   cardTheme: CardTheme(color: Color.fromARGB(255, 124, 92, 81), elevation: 10),
@@ -76,7 +75,6 @@ ThemeData lightTheme = ThemeData(
     colorSchemeSeed: Colors.brown,
     appBarTheme: AppBarTheme(
       color: Color.fromARGB(255, 164, 135, 124),
-      toolbarHeight: MainApp.currentHeight! < 700.0 ? 50.0 : kToolbarHeight,
       titleTextStyle:
           GoogleFonts.dmSerifText(fontSize: MainApp.currentHeight! < 700.0 ? 20.0 : 25.0),
     ),
