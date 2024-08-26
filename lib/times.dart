@@ -3,9 +3,27 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:namaz_vakti_app/location.dart';
 import 'package:namaz_vakti_app/main.dart';
+import 'package:namaz_vakti_app/notification.dart';
+import 'package:provider/provider.dart';
 import 'package:xml/xml.dart' as xml;
 import 'package:http/http.dart' as http;
 import 'package:hijri/hijri_calendar.dart';
+
+DateTime? imsak;
+DateTime? sabah;
+DateTime? gunes;
+DateTime? ogle;
+DateTime? ikindi;
+DateTime? aksam;
+DateTime? yatsi;
+DateTime? israk;
+DateTime? kerahat;
+DateTime? asrisani;
+DateTime? isfirar;
+DateTime? istibak;
+DateTime? isaisani;
+DateTime? kible;
+String? city;
 
 class Times extends StatelessWidget {
   const Times({super.key});
@@ -99,7 +117,8 @@ class TimesBody extends StatelessWidget {
                 padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
                 child: Stack(
                   children: [
-                    PrayerTimesPage(),
+                    ChangeNotifierProvider<ChangeNotification>(
+                        create: (context) => ChangeNotification(), child: PrayerTimesPage()),
                     Positioned(
                       bottom: 5,
                       left: 5,
@@ -152,6 +171,7 @@ class _CityNameCardState extends State<CityNameCard> {
     super.initState();
     cityName = ChangeLocation.cityName;
     cityState = ChangeLocation.cityState;
+    city = ChangeLocation.cityName;
   }
 
   @override
@@ -194,20 +214,6 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
   String? errorMessage;
   static String? cityID;
 
-  static DateTime? imsak;
-  static DateTime? sabah;
-  static DateTime? gunes;
-  static DateTime? ogle;
-  static DateTime? ikindi;
-  static DateTime? aksam;
-  static DateTime? yatsi;
-  static DateTime? israk;
-  static DateTime? kerahat;
-  static DateTime? asrisani;
-  static DateTime? isfirar;
-  static DateTime? istibak;
-  static DateTime? isaisani;
-  static DateTime? kible;
   static bool isTimeLoading = true;
 
   @override
@@ -354,6 +360,8 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
     } on Exception catch (_) {
       kible = null;
     }
+    Provider.of<ChangeNotification>(context, listen: false).loadNotFromSharedPref();
+    Provider.of<ChangeNotification>(context, listen: false).openNot();
     isTimeLoading = false;
   }
 
@@ -467,59 +475,59 @@ class detailedTimes extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Text(
-                    '${DateFormat('HH:mm').format(_PrayerTimesPageState.imsak!)}',
+                    '${DateFormat('HH:mm').format(imsak!)}',
                     style: style,
                   ),
                   Text(
-                    '${DateFormat('HH:mm').format(_PrayerTimesPageState.sabah!)}',
+                    '${DateFormat('HH:mm').format(sabah!)}',
                     style: style,
                   ),
                   Text(
-                    '${DateFormat('HH:mm').format(_PrayerTimesPageState.gunes!)}',
+                    '${DateFormat('HH:mm').format(gunes!)}',
                     style: style,
                   ),
                   Text(
-                    '${DateFormat('HH:mm').format(_PrayerTimesPageState.israk!)}',
+                    '${DateFormat('HH:mm').format(israk!)}',
                     style: style,
                   ),
                   Text(
-                    '${DateFormat('HH:mm').format(_PrayerTimesPageState.kerahat!)}',
+                    '${DateFormat('HH:mm').format(kerahat!)}',
                     style: style,
                   ),
                   Text(
-                    '${DateFormat('HH:mm').format(_PrayerTimesPageState.ogle!)}',
+                    '${DateFormat('HH:mm').format(ogle!)}',
                     style: style,
                   ),
                   Text(
-                    '${DateFormat('HH:mm').format(_PrayerTimesPageState.ikindi!)}',
+                    '${DateFormat('HH:mm').format(ikindi!)}',
                     style: style,
                   ),
                   Text(
-                    '${DateFormat('HH:mm').format(_PrayerTimesPageState.asrisani!)}',
+                    '${DateFormat('HH:mm').format(asrisani!)}',
                     style: style,
                   ),
                   Text(
-                    '${DateFormat('HH:mm').format(_PrayerTimesPageState.isfirar!)}',
+                    '${DateFormat('HH:mm').format(isfirar!)}',
                     style: style,
                   ),
                   Text(
-                    '${DateFormat('HH:mm').format(_PrayerTimesPageState.aksam!)}',
+                    '${DateFormat('HH:mm').format(aksam!)}',
                     style: style,
                   ),
                   Text(
-                    '${DateFormat('HH:mm').format(_PrayerTimesPageState.istibak!)}',
+                    '${DateFormat('HH:mm').format(istibak!)}',
                     style: style,
                   ),
                   Text(
-                    '${DateFormat('HH:mm').format(_PrayerTimesPageState.yatsi!)}',
+                    '${DateFormat('HH:mm').format(yatsi!)}',
                     style: style,
                   ),
                   Text(
-                    '${DateFormat('HH:mm').format(_PrayerTimesPageState.isaisani!)}',
+                    '${DateFormat('HH:mm').format(isaisani!)}',
                     style: style,
                   ),
                   Text(
-                    '${_PrayerTimesPageState.kible != null ? DateFormat('HH:mm').format(_PrayerTimesPageState.kible!) : '-'}',
+                    '${kible != null ? DateFormat('HH:mm').format(kible!) : '-'}',
                     style: style,
                   ),
                 ],
@@ -605,31 +613,31 @@ class mainTimes extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Text(
-                    '${DateFormat('HH:mm').format(_PrayerTimesPageState.imsak!)}',
+                    '${DateFormat('HH:mm').format(imsak!)}',
                     style: timeStyle,
                   ),
                   Text(
-                    '${DateFormat('HH:mm').format(_PrayerTimesPageState.sabah!)}',
+                    '${DateFormat('HH:mm').format(sabah!)}',
                     style: timeStyle,
                   ),
                   Text(
-                    '${DateFormat('HH:mm').format(_PrayerTimesPageState.gunes!)}',
+                    '${DateFormat('HH:mm').format(gunes!)}',
                     style: timeStyle,
                   ),
                   Text(
-                    '${DateFormat('HH:mm').format(_PrayerTimesPageState.ogle!)}',
+                    '${DateFormat('HH:mm').format(ogle!)}',
                     style: timeStyle,
                   ),
                   Text(
-                    '${DateFormat('HH:mm').format(_PrayerTimesPageState.ikindi!)}',
+                    '${DateFormat('HH:mm').format(ikindi!)}',
                     style: timeStyle,
                   ),
                   Text(
-                    '${DateFormat('HH:mm').format(_PrayerTimesPageState.aksam!)}',
+                    '${DateFormat('HH:mm').format(aksam!)}',
                     style: timeStyle,
                   ),
                   Text(
-                    '${DateFormat('HH:mm').format(_PrayerTimesPageState.yatsi!)}',
+                    '${DateFormat('HH:mm').format(yatsi!)}',
                     style: timeStyle,
                   ),
                 ],
@@ -674,44 +682,41 @@ class _ClockState extends State<Clock> {
         }
 
         if (_PrayerTimesPageState.isTimeLoading == false) {
-          if (DateTime(now.year, now.month, now.day, _PrayerTimesPageState.imsak!.hour, _PrayerTimesPageState.imsak!.minute, 0).difference(now) >
+          if (DateTime(now.year, now.month, now.day, imsak!.hour, imsak!.minute, 0)
+                  .difference(now) >
               DateTime.now().difference(now)) {
             pray = 'İmsaka';
-            soontime = _PrayerTimesPageState.imsak!;
-          } else if (DateTime(now.year, now.month, now.day, _PrayerTimesPageState.sabah!.hour, _PrayerTimesPageState.sabah!.minute, 0)
+            soontime = imsak!;
+          } else if (DateTime(now.year, now.month, now.day, sabah!.hour, sabah!.minute, 0)
                   .difference(now) >
               DateTime.now().difference(now)) {
             pray = 'Sabaha';
-            soontime = _PrayerTimesPageState.sabah!;
-          } else if (DateTime(now.year, now.month, now.day, _PrayerTimesPageState.gunes!.hour,
-                      _PrayerTimesPageState.gunes!.minute, 0)
+            soontime = sabah!;
+          } else if (DateTime(now.year, now.month, now.day, gunes!.hour, gunes!.minute, 0)
                   .difference(now) >
               DateTime.now().difference(now)) {
             pray = 'Güneşe';
-            soontime = _PrayerTimesPageState.gunes!;
-          } else if (DateTime(now.year, now.month, now.day, _PrayerTimesPageState.ogle!.hour, _PrayerTimesPageState.ogle!.minute, 0)
+            soontime = gunes!;
+          } else if (DateTime(now.year, now.month, now.day, ogle!.hour, ogle!.minute, 0)
                   .difference(now) >
               DateTime.now().difference(now)) {
             pray = 'Öğleye';
-            soontime = _PrayerTimesPageState.ogle!;
-          } else if (DateTime(now.year, now.month, now.day, _PrayerTimesPageState.ikindi!.hour,
-                      _PrayerTimesPageState.ikindi!.minute, 0)
+            soontime = ogle!;
+          } else if (DateTime(now.year, now.month, now.day, ikindi!.hour, ikindi!.minute, 0)
                   .difference(now) >
               DateTime.now().difference(now)) {
             pray = 'İkindiye';
-            soontime = _PrayerTimesPageState.ikindi!;
-          } else if (DateTime(now.year, now.month, now.day, _PrayerTimesPageState.aksam!.hour,
-                      _PrayerTimesPageState.aksam!.minute, 0)
+            soontime = ikindi!;
+          } else if (DateTime(now.year, now.month, now.day, aksam!.hour, aksam!.minute, 0)
                   .difference(now) >
               DateTime.now().difference(now)) {
             pray = 'Akşama';
-            soontime = _PrayerTimesPageState.aksam!;
-          } else if (DateTime(now.year, now.month, now.day, _PrayerTimesPageState.yatsi!.hour,
-                      _PrayerTimesPageState.yatsi!.minute, 0)
+            soontime = aksam!;
+          } else if (DateTime(now.year, now.month, now.day, yatsi!.hour, yatsi!.minute, 0)
                   .difference(now) >
               DateTime.now().difference(now)) {
             pray = 'Yatsıya';
-            soontime = _PrayerTimesPageState.yatsi!;
+            soontime = yatsi!;
           } else {
             pray = 'Ertesi Güne';
             soontime = DateTime(now.year, now.month, now.day, 23, 59, 59);

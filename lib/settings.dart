@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:namaz_vakti_app/main.dart';
+import 'package:namaz_vakti_app/notification.dart';
 import 'package:provider/provider.dart';
 
 class Settings extends StatelessWidget {
@@ -11,7 +12,8 @@ class Settings extends StatelessWidget {
       appBar: AppBar(
         title: Text('Ayarlar'),
       ),
-      body: SettingsCard(),
+      body: ChangeNotifierProvider<ChangeNotification>(
+          create: (context) => ChangeNotification(), child: SettingsCard()),
     );
   }
 }
@@ -23,6 +25,7 @@ class SettingsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<ChangeNotification>(context, listen: false).loadNotFromSharedPref();
     return Padding(
       padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
       child: Card(
@@ -36,6 +39,17 @@ class SettingsCard extends StatelessWidget {
                   title: Text('Koyu Tema'),
                   value: Provider.of<changeTheme>(context).isDark,
                   onChanged: (_) => Provider.of<changeTheme>(context, listen: false).toggleTheme(),
+                ),
+              ),
+              Card(
+                color: Theme.of(context).cardColor,
+                child: SwitchListTile(
+                  title: Text('Kalıcı Bildirim'),
+                  value: Provider.of<ChangeNotification>(context).isOpen,
+                  onChanged: (_) {
+                    Provider.of<ChangeNotification>(context, listen: false).toggleNot();
+                    Provider.of<ChangeNotification>(context, listen: false).openNot();
+                  },
                 ),
               ),
             ],

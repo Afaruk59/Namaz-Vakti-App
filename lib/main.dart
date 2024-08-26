@@ -8,19 +8,26 @@ import 'package:namaz_vakti_app/detailedTimes.dart';
 import 'package:namaz_vakti_app/homePage.dart';
 import 'package:namaz_vakti_app/loading.dart';
 import 'package:namaz_vakti_app/location.dart';
+import 'package:namaz_vakti_app/notification.dart';
 import 'package:namaz_vakti_app/qibla.dart';
 import 'package:namaz_vakti_app/seferi.dart';
 import 'package:namaz_vakti_app/settings.dart';
+import 'package:namaz_vakti_app/startup.dart';
 import 'package:namaz_vakti_app/times.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await NotificationService.init();
+  tz.initializeTimeZones();
   await changeTheme().createSharedPrefObject();
   await ChangeLocation().createSharedPrefObject();
+  await ChangeNotification().createSharedPrefObject();
+  await isFirst.createSharedPrefObject();
   ChangeLocation().loadLocalFromSharedPref();
-
+  isFirst.loadFirstFromSharedPref();
   initializeDateFormatting().then((_) {
     runApp(ChangeNotifierProvider<changeTheme>(
         create: (context) => changeTheme(), child: const MainApp()));
@@ -38,7 +45,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: Provider.of<changeTheme>(context).themeData,
-      initialRoute: '/',
+      initialRoute: isFirst.isfirst == true ? '/startup' : '/',
       routes: {
         '/': (context) => homePage(),
         '/times': (context) => Times(),
@@ -51,6 +58,7 @@ class MainApp extends StatelessWidget {
         '/location': (context) => Location(),
         '/loading': (context) => Loading(),
         '/alarms': (context) => Alarms(),
+        '/startup': (context) => Startup(),
       },
     );
   }

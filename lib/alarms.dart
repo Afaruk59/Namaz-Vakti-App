@@ -13,12 +13,6 @@ class Alarms extends StatelessWidget {
       appBar: AppBar(
         title: Text('Alarmlar'),
       ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {},
-          child: Text('Alarm Kur'),
-        ),
-      ),
     );
   }
 }

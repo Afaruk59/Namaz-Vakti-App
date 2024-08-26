@@ -4,6 +4,10 @@ import 'package:namaz_vakti_app/api/sheets_api.dart';
 import 'package:namaz_vakti_app/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+Future<void> firstLoc() async {
+  await _LocationState().getCurrentLocation();
+}
+
 class Location extends StatefulWidget {
   @override
   _LocationState createState() => _LocationState();
@@ -13,7 +17,7 @@ class _LocationState extends State<Location> {
   double lat = 0;
   double long = 0;
 
-  Future<void> _getCurrentLocation() async {
+  Future<void> getCurrentLocation() async {
     bool serviceEnabled;
     LocationPermission permission;
 
@@ -82,7 +86,7 @@ class _LocationState extends State<Location> {
                 onPressed: () async {
                   if (mounted) {
                     Navigator.pop(context);
-                    await _getCurrentLocation(); // İzin tekrar isteniyor
+                    await getCurrentLocation(); // İzin tekrar isteniyor
                   }
                 },
               ),
@@ -136,7 +140,7 @@ class _LocationState extends State<Location> {
       onPressed: () async {
         Navigator.pop(context);
         Navigator.pushNamed(context, '/loading');
-        await _getCurrentLocation();
+        await getCurrentLocation();
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
