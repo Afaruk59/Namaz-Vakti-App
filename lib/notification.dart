@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
@@ -33,25 +34,6 @@ class NotificationService {
         ?.requestNotificationsPermission();
   }
 
-  static Future<void> showInstantNotification(String title, String body) async {
-    const NotificationDetails platformChannelSpecifics = NotificationDetails(
-        android: AndroidNotificationDetails(
-          'instant_notification_channel_id',
-          'Instant Notifications',
-          importance: Importance.max,
-          priority: Priority.high,
-        ),
-        iOS: DarwinNotificationDetails());
-
-    await flutterLocalNotificationsPlugin.show(
-      0,
-      title,
-      body,
-      platformChannelSpecifics,
-      payload: 'instant_notification',
-    );
-  }
-
   static Future<void> scheduleNotification(
       int id, String title, String body, DateTime scheduledTime) async {
     await flutterLocalNotificationsPlugin.zonedSchedule(
@@ -77,20 +59,37 @@ class NotificationService {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
       'your channel id', // Kanal ID'si
       'your channel name', // Kanal Adı
-      importance: Importance.low,
-      priority: Priority.low,
-      ongoing: true, // Kalıcı yapmak için
+      importance: Importance.min,
+      priority: Priority.min,
+      ongoing: true, // Kalıcı yapma    k için
       autoCancel: false, // Kullanıcı tarafından kapatılamaz
       icon: null,
       largeIcon: null,
       showWhen: false,
       playSound: false,
-
+      setAsGroupSummary: true,
+      category: AndroidNotificationCategory.service,
       styleInformation: BigTextStyleInformation(
-        htmlFormatContent: true,
-        htmlFormatContentTitle: true,
-        'İmsak  Sabah  Güneş  Öğle   İkindi  Akşam  Yatsı\n'
-        '${DateFormat('HH:mm').format(imsak!)}   ${DateFormat('HH:mm').format(sabah!)}   ${DateFormat('HH:mm').format(gunes!)}   ${DateFormat('HH:mm').format(ogle!)}  ${DateFormat('HH:mm').format(ikindi!)}  ${DateFormat('HH:mm').format(aksam!)}   ${DateFormat('HH:mm').format(yatsi!)}',
+        htmlFormatBigText: true,
+        '''
+        <body>
+          <span>İmsak</span>
+          <span>Sabah</span>
+          <span>Güneş</span>
+          <span>Öğle</span>
+          <span>İkindi</span>
+          <span>Akşam</span>
+          <span>Yatsı</span>
+          <br>
+          <span>${DateFormat('HH:mm').format(imsak!)}</span>
+          <span>${DateFormat('HH:mm').format(sabah!)}</span>
+          <span>${DateFormat('HH:mm').format(gunes!)}</span>
+          <span>${DateFormat('HH:mm').format(ogle!)}</span>
+          <span>${DateFormat('HH:mm').format(ikindi!)}</span>
+          <span>${DateFormat('HH:mm').format(aksam!)}</span>
+          <span>${DateFormat('HH:mm').format(yatsi!)}</span>
+        </body>
+        ''',
       ),
     );
 
@@ -101,7 +100,7 @@ class NotificationService {
     await flutterLocalNotificationsPlugin.show(
       id, // Bildirim ID'si
       '$city', // Başlık
-      'Namaz Vakitleri', // İçerik
+      'Namaz Vakitleri',
       platformChannelSpecifics,
       payload: 'persistent_notification', // Bildirim verisi
     );
