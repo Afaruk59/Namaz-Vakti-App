@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:namaz_vakti_app/location.dart';
 import 'package:namaz_vakti_app/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -50,6 +51,50 @@ class StartupCard extends StatelessWidget {
                         onPressed: () async {
                           Navigator.pop(context);
                           Navigator.pushNamed(context, '/loading');
+                          bool serviceEnabled;
+                          serviceEnabled = await Geolocator.isLocationServiceEnabled();
+                          if (!serviceEnabled) {
+                            return showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: Text("Konum Erişimi Gerekli"),
+                                content: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text("Devam etmek için lütfen konumu etkinleştirin."),
+                                      flex: 3,
+                                    ),
+                                    Expanded(
+                                      child: Icon(
+                                        Icons.location_disabled,
+                                        size: 45,
+                                      ),
+                                      flex: 1,
+                                    ),
+                                  ],
+                                ),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: Text("Vazgeç"),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      Navigator.popAndPushNamed(context, '/times');
+                                      isFirst.saveFirsttoSharedPref(false);
+                                    },
+                                  ),
+                                  TextButton(
+                                    child: Text("Konumu Aç"),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      Navigator.popAndPushNamed(context, '/startup');
+                                      Geolocator.openLocationSettings();
+                                      isFirst.saveFirsttoSharedPref(false);
+                                    },
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
                           await firstLoc();
                           isFirst.saveFirsttoSharedPref(false);
                         },

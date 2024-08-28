@@ -23,7 +23,7 @@ class _LocationState extends State<Location> {
 
     // Konum servisi etkin mi kontrol et
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
+    if (!serviceEnabled && mounted) {
       return showDialog(
         context: context,
         builder: (context) => AlertDialog(
