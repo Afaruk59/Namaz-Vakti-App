@@ -69,8 +69,13 @@ class NotificationService {
       playSound: false,
       category: AndroidNotificationCategory.service,
       styleInformation: BigTextStyleInformation(
-        ' ᴵᵐˢᵃᵏ  ˢᵃᵇᵃʰ   ᴳᵘⁿᵉˢ    ᴼᵍˡᵉ    ᴵᵏⁱⁿᵈⁱ   ᴬᵏˢᵃᵐ   ʸᵃᵗˢⁱ\n'
-        '${DateFormat('HH:mm').format(imsak!)}|${DateFormat('HH:mm').format(sabah!)}|${DateFormat('HH:mm').format(gunes!)}|${DateFormat('HH:mm').format(ogle!)}|${DateFormat('HH:mm').format(ikindi!)}|${DateFormat('HH:mm').format(aksam!)}|${DateFormat('HH:mm').format(yatsi!)}',
+        'İmsak - ${DateFormat('HH:mm').format(imsak!)}\n'
+        'Sabah - ${DateFormat('HH:mm').format(sabah!)}\n'
+        'Güneş - ${DateFormat('HH:mm').format(gunes!)}\n'
+        'Öğle - ${DateFormat('HH:mm').format(ogle!)}\n'
+        'İkindi - ${DateFormat('HH:mm').format(ikindi!)}\n'
+        'Akşam - ${DateFormat('HH:mm').format(aksam!)}\n'
+        'Yatsı - ${DateFormat('HH:mm').format(yatsi!)}',
       ),
     );
 
