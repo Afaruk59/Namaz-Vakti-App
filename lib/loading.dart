@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:namaz_vakti_app/location.dart';
+import 'package:namaz_vakti_app/settings.dart';
 
 class Loading extends StatefulWidget {
   const Loading({super.key});
@@ -14,9 +14,9 @@ class _LoadingState extends State<Loading> {
   @override
   void initState() {
     super.initState();
-    ChangeLocation.isLocalized = false;
+    ChangeSettings.isLocalized = false;
     Timer.periodic(Duration(seconds: 1), (Timer t) {
-      if (ChangeLocation.isLocalized) {
+      if (ChangeSettings.isLocalized) {
         if (mounted) {
           Navigator.popAndPushNamed(context, '/times');
         }

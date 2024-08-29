@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:namaz_vakti_app/main.dart';
-import 'package:namaz_vakti_app/times.dart';
+import 'package:namaz_vakti_app/timesPage/times.dart';
 
 class DetailedTimes extends StatefulWidget {
   DetailedTimes({super.key});

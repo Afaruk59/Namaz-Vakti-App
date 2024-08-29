@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:namaz_vakti_app/location.dart';
+import 'package:namaz_vakti_app/timesPage/calendar.dart';
+import 'package:namaz_vakti_app/timesPage/location.dart';
 import 'package:namaz_vakti_app/main.dart';
-import 'package:namaz_vakti_app/notification.dart';
+import 'package:namaz_vakti_app/settings.dart';
 import 'package:provider/provider.dart';
 import 'package:xml/xml.dart' as xml;
 import 'package:http/http.dart' as http;
@@ -52,7 +53,6 @@ class Times extends StatelessWidget {
   }
 }
 
-// ignore: must_be_immutable
 class TimesBody extends StatelessWidget {
   TimesBody({super.key});
 
@@ -117,20 +117,24 @@ class TimesBody extends StatelessWidget {
                 padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
                 child: Stack(
                   children: [
-                    ChangeNotifierProvider<ChangeNotification>(
-                        create: (context) => ChangeNotification(), child: PrayerTimesPage()),
+                    PrayerTimesPage(),
                     Positioned(
-                      bottom: 5,
-                      left: 5,
-                      child: FloatingActionButton(
-                        mini: MainApp.currentHeight! < 700.0 ? true : false,
-                        child: Icon(Icons.menu),
-                        shape: CircleBorder(),
+                      bottom: 4,
+                      left: 4,
+                      child: IconButton.filledTonal(
+                        style: ElevatedButton.styleFrom(
+                            elevation: 10,
+                            fixedSize: Size.fromRadius(30),
+                            shape: RoundedRectangleBorder(
+                                side: BorderSide(color: Colors.grey, width: 1),
+                                borderRadius: BorderRadius.all(Radius.circular(10)))),
+                        icon: Icon(Icons.menu),
                         onPressed: () {
                           Navigator.pushNamed(context, '/detailedTimes');
                         },
                       ),
                     ),
+                    CalendarBtn(),
                   ],
                 ),
               ),
@@ -169,9 +173,9 @@ class _CityNameCardState extends State<CityNameCard> {
   @override
   void initState() {
     super.initState();
-    cityName = ChangeLocation.cityName;
-    cityState = ChangeLocation.cityState;
-    city = ChangeLocation.cityName;
+    cityName = ChangeSettings.cityName;
+    cityState = ChangeSettings.cityState;
+    city = ChangeSettings.cityName;
   }
 
   @override
@@ -219,7 +223,7 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
   @override
   void initState() {
     super.initState();
-    cityID = ChangeLocation.id;
+    cityID = ChangeSettings.id;
     loadPrayerTimes();
   }
 
@@ -360,8 +364,8 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
     } on Exception catch (_) {
       kible = null;
     }
-    Provider.of<ChangeNotification>(context, listen: false).loadNotFromSharedPref();
-    Provider.of<ChangeNotification>(context, listen: false).openNot();
+    Provider.of<ChangeSettings>(context, listen: false).loadNotFromSharedPref();
+    Provider.of<ChangeSettings>(context, listen: false).openNot();
     isTimeLoading = false;
   }
 

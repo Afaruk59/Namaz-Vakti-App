@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:namaz_vakti_app/location.dart';
+import 'package:namaz_vakti_app/timesPage/location.dart';
 import 'package:namaz_vakti_app/main.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:namaz_vakti_app/settings.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Startup extends StatelessWidget {
   const Startup({super.key});
@@ -46,59 +47,76 @@ class StartupCard extends StatelessWidget {
                         height: 50,
                         child: Divider(),
                       ),
-                      FilledButton.tonal(
-                        style: ElevatedButton.styleFrom(elevation: 10),
-                        onPressed: () async {
-                          Navigator.pop(context);
-                          Navigator.pushNamed(context, '/loading');
-                          bool serviceEnabled;
-                          serviceEnabled = await Geolocator.isLocationServiceEnabled();
-                          if (!serviceEnabled) {
-                            return showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                title: Text("Konum Erişimi Gerekli"),
-                                content: Row(
-                                  children: [
-                                    Expanded(
-                                      child: Text("Devam etmek için lütfen konumu etkinleştirin."),
-                                      flex: 3,
+                      Column(
+                        children: [
+                          FilledButton.tonal(
+                            style: ElevatedButton.styleFrom(elevation: 10),
+                            onPressed: () async {
+                              Navigator.pop(context);
+                              Navigator.pushNamed(context, '/loading');
+                              bool serviceEnabled;
+                              serviceEnabled = await Geolocator.isLocationServiceEnabled();
+                              if (!serviceEnabled) {
+                                return showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: Text("Konum Erişimi Gerekli"),
+                                    content: Row(
+                                      children: [
+                                        Expanded(
+                                          child:
+                                              Text("Devam etmek için lütfen konumu etkinleştirin."),
+                                          flex: 3,
+                                        ),
+                                        Expanded(
+                                          child: Icon(
+                                            Icons.location_disabled,
+                                            size: 45,
+                                          ),
+                                          flex: 1,
+                                        ),
+                                      ],
                                     ),
-                                    Expanded(
-                                      child: Icon(
-                                        Icons.location_disabled,
-                                        size: 45,
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: Text("Vazgeç"),
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                          Navigator.popAndPushNamed(context, '/times');
+                                          ChangeSettings.saveFirsttoSharedPref(false);
+                                        },
                                       ),
-                                      flex: 1,
-                                    ),
-                                  ],
-                                ),
-                                actions: <Widget>[
-                                  TextButton(
-                                    child: Text("Vazgeç"),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                      Navigator.popAndPushNamed(context, '/times');
-                                      isFirst.saveFirsttoSharedPref(false);
-                                    },
+                                      TextButton(
+                                        child: Text("Konumu Aç"),
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                          Navigator.popAndPushNamed(context, '/startup');
+                                          Geolocator.openLocationSettings();
+                                          ChangeSettings.saveFirsttoSharedPref(false);
+                                        },
+                                      ),
+                                    ],
                                   ),
-                                  TextButton(
-                                    child: Text("Konumu Aç"),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                      Navigator.popAndPushNamed(context, '/startup');
-                                      Geolocator.openLocationSettings();
-                                      isFirst.saveFirsttoSharedPref(false);
-                                    },
-                                  ),
-                                ],
-                              ),
-                            );
-                          }
-                          await firstLoc();
-                          isFirst.saveFirsttoSharedPref(false);
-                        },
-                        child: Text('Tamam'),
+                                );
+                              }
+                              await firstLoc();
+                              ChangeSettings.saveFirsttoSharedPref(false);
+                            },
+                            child: Text('Devam Et'),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          FilledButton.tonal(
+                            style: ElevatedButton.styleFrom(elevation: 10),
+                            onPressed: () async {
+                              final Uri url = Uri.parse(
+                                  'https://www.turktakvim.com/index.php?link=html/muhim_tenbih.html');
+                              await launchUrl(url);
+                            },
+                            child: Text('Namaz Vakitleri Hakkında Mühim Tenbih'),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -109,25 +127,5 @@ class StartupCard extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class isFirst {
-  static bool isfirst = true;
-
-  static late SharedPreferences _startup;
-
-  static Future<void> createSharedPrefObject() async {
-    _startup = await SharedPreferences.getInstance();
-  }
-
-  static void loadFirstFromSharedPref() {
-    isfirst = _startup.getBool('startup') ?? true;
-    print('First: $isfirst');
-  }
-
-  static saveFirsttoSharedPref(bool value) {
-    _startup.setBool('startup', value);
-    print('First: $isfirst');
   }
 }

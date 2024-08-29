@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:gsheets/gsheets.dart';
-import 'package:namaz_vakti_app/location.dart';
+import 'package:namaz_vakti_app/settings.dart';
 
 class SheetsApi {
   static const _credentials = r'''
@@ -61,7 +61,7 @@ class SheetsApi {
     final stateNames = await _sheet!.values.column(3);
     String stateName = stateNames[index];
 
-    ChangeLocation().saveLocaltoSharedPref(cityId, cityName, stateName);
+    ChangeSettings().saveLocaltoSharedPref(cityId, cityName, stateName);
   }
 
   double calculateDistance(double lat1, double lon1, double lat2, double lon2) {

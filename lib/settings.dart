@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:namaz_vakti_app/main.dart';
 import 'package:namaz_vakti_app/notification.dart';
+import 'package:namaz_vakti_app/themes.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Settings extends StatelessWidget {
   const Settings({super.key});
@@ -12,8 +14,7 @@ class Settings extends StatelessWidget {
       appBar: AppBar(
         title: Text('Ayarlar'),
       ),
-      body: ChangeNotifierProvider<ChangeNotification>(
-          create: (context) => ChangeNotification(), child: SettingsCard()),
+      body: SettingsCard(),
     );
   }
 }
@@ -25,7 +26,7 @@ class SettingsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<ChangeNotification>(context, listen: false).loadNotFromSharedPref();
+    Provider.of<ChangeSettings>(context, listen: false).loadNotFromSharedPref();
     return Padding(
       padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
       child: Card(
@@ -37,18 +38,19 @@ class SettingsCard extends StatelessWidget {
                 color: Theme.of(context).cardColor,
                 child: SwitchListTile(
                   title: Text('Koyu Tema'),
-                  value: Provider.of<changeTheme>(context).isDark,
-                  onChanged: (_) => Provider.of<changeTheme>(context, listen: false).toggleTheme(),
+                  value: Provider.of<ChangeSettings>(context).isDark,
+                  onChanged: (_) =>
+                      Provider.of<ChangeSettings>(context, listen: false).toggleTheme(),
                 ),
               ),
               Card(
                 color: Theme.of(context).cardColor,
                 child: SwitchListTile(
                   title: Text('Kalıcı Bildirim'),
-                  value: Provider.of<ChangeNotification>(context).isOpen,
+                  value: Provider.of<ChangeSettings>(context).isOpen,
                   onChanged: (_) {
-                    Provider.of<ChangeNotification>(context, listen: false).toggleNot();
-                    Provider.of<ChangeNotification>(context, listen: false).openNot();
+                    Provider.of<ChangeSettings>(context, listen: false).toggleNot();
+                    Provider.of<ChangeSettings>(context, listen: false).openNot();
                   },
                 ),
               ),
@@ -57,5 +59,100 @@ class SettingsCard extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class ChangeSettings with ChangeNotifier {
+  static late SharedPreferences _settings;
+
+  bool isDark = false;
+
+  bool isOpen = false;
+
+  static String? id;
+  static String? cityName;
+  static String? cityState;
+  static bool isLocalized = false;
+
+  static bool isfirst = true;
+
+  //THEME SETTINGS
+  ThemeData get themeData {
+    return isDark ? Themes.darkTheme : Themes.lightTheme;
+  }
+
+  void toggleTheme() {
+    isDark = !isDark;
+    saveThemetoSharedPref(isDark);
+    notifyListeners();
+  }
+
+  Future<void> createSharedPrefObject() async {
+    _settings = await SharedPreferences.getInstance();
+  }
+
+  void loadThemeFromSharedPref() {
+    isDark = _settings.getBool('darkTheme') ?? false;
+    print('loaded: $isDark');
+  }
+
+  void saveThemetoSharedPref(bool value) {
+    _settings.setBool('darkTheme', value);
+    print('saved: $isDark');
+  }
+
+  //NOTIFICATION SETTINGS
+  void openNot() async {
+    if (isOpen == true) {
+      NotificationService.showPersistentNotification(0);
+    } else {
+      await NotificationService.flutterLocalNotificationsPlugin.cancel(0);
+    }
+  }
+
+  void toggleNot() {
+    isOpen = !isOpen;
+    saveNottoSharedPref(isOpen);
+    notifyListeners();
+  }
+
+  void loadNotFromSharedPref() {
+    isOpen = _settings.getBool('notification') ?? false;
+    print('loaded persistent: $isOpen');
+  }
+
+  void saveNottoSharedPref(bool value) {
+    _settings.setBool('notification', value);
+    print('saved persistent: $isOpen');
+  }
+
+  //LOCATION SETTINGS
+  void loadLocalFromSharedPref() {
+    id = _settings.getString('location') ?? '16741';
+    cityName = _settings.getString('name') ?? 'İstanbul Merkez';
+    cityState = _settings.getString('state') ?? 'İstanbul';
+    print('Loaded: $id');
+  }
+
+  void saveLocaltoSharedPref(String value, String name, String state) {
+    _settings.setString('location', value);
+    _settings.setString('name', name);
+    _settings.setString('state', state);
+    id = value;
+    cityName = name;
+    cityState = state;
+    print('Saved: $id');
+    isLocalized = true;
+  }
+
+  //STARTUP SETTINGS
+  static void loadFirstFromSharedPref() {
+    isfirst = _settings.getBool('startup') ?? true;
+    print('First: $isfirst');
+  }
+
+  static saveFirsttoSharedPref(bool value) {
+    _settings.setBool('startup', value);
+    print('First: $isfirst');
   }
 }

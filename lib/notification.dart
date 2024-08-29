@@ -1,9 +1,6 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
-import 'package:namaz_vakti_app/times.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:namaz_vakti_app/timesPage/times.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 class NotificationService {
@@ -67,15 +64,14 @@ class NotificationService {
       largeIcon: null,
       showWhen: false,
       playSound: false,
-      category: AndroidNotificationCategory.service,
       styleInformation: BigTextStyleInformation(
         'İmsak - ${DateFormat('HH:mm').format(imsak!)}\n'
         'Sabah - ${DateFormat('HH:mm').format(sabah!)}\n'
         'Güneş - ${DateFormat('HH:mm').format(gunes!)}\n'
-        'Öğle - ${DateFormat('HH:mm').format(ogle!)}\n'
-        'İkindi - ${DateFormat('HH:mm').format(ikindi!)}\n'
-        'Akşam - ${DateFormat('HH:mm').format(aksam!)}\n'
-        'Yatsı - ${DateFormat('HH:mm').format(yatsi!)}',
+        'Öğle   - ${DateFormat('HH:mm').format(ogle!)}\n'
+        'İkindi -  ${DateFormat('HH:mm').format(ikindi!)}\n'
+        'Akşam -${DateFormat('HH:mm').format(aksam!)}\n'
+        'Yatsı   -  ${DateFormat('HH:mm').format(yatsi!)}',
       ),
     );
 
@@ -86,43 +82,9 @@ class NotificationService {
     await flutterLocalNotificationsPlugin.show(
       id, // Bildirim ID'si
       '$city', // Başlık
-      'Namaz Vakitleri',
+      '${DateFormat('dd MMMM yyyy', 'tr_TR').format(DateTime.now())} Namaz Vakitleri',
       platformChannelSpecifics,
       payload: 'persistent_notification', // Bildirim verisi
     );
-  }
-}
-
-class ChangeNotification with ChangeNotifier {
-  bool isOpen = false;
-
-  void openNot() async {
-    if (isOpen == true) {
-      NotificationService.showPersistentNotification(0);
-    } else {
-      await NotificationService.flutterLocalNotificationsPlugin.cancel(0);
-    }
-  }
-
-  void toggleNot() {
-    isOpen = !isOpen;
-    saveNottoSharedPref(isOpen);
-    notifyListeners();
-  }
-
-  static late SharedPreferences _notification;
-
-  Future<void> createSharedPrefObject() async {
-    _notification = await SharedPreferences.getInstance();
-  }
-
-  void loadNotFromSharedPref() {
-    isOpen = _notification.getBool('notification') ?? false;
-    print('loaded persistent: $isOpen');
-  }
-
-  void saveNottoSharedPref(bool value) {
-    _notification.setBool('notification', value);
-    print('saved persistent: $isOpen');
   }
 }

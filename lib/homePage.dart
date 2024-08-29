@@ -4,6 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:namaz_vakti_app/api/sheets_api.dart';
 import 'package:namaz_vakti_app/main.dart';
+import 'package:namaz_vakti_app/settings.dart';
 import 'package:provider/provider.dart';
 
 class homePage extends StatefulWidget {
@@ -26,7 +27,7 @@ class _homePageState extends State<homePage> {
   }
 
   void _checkLight() {
-    if (Provider.of<changeTheme>(context).isDark == false) {
+    if (Provider.of<ChangeSettings>(context).isDark == false) {
       light = 'light';
     } else {
       light = '';

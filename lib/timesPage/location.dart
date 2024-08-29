@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:namaz_vakti_app/api/sheets_api.dart';
 import 'package:namaz_vakti_app/main.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:namaz_vakti_app/settings.dart';
 
 Future<void> firstLoc() async {
   await _LocationState().getCurrentLocation();
@@ -72,7 +72,7 @@ class _LocationState extends State<Location> {
       // İzin tekrar reddedildiyse bir uyarı göster
       if (permission == LocationPermission.denied) {
         if (!mounted) {
-          ChangeLocation.isLocalized = true;
+          ChangeSettings.isLocalized = true;
           return; // Eğer widget unmounted olduysa fonksiyonu terk et
         }
         return showDialog(
@@ -99,7 +99,7 @@ class _LocationState extends State<Location> {
     if (permission == LocationPermission.deniedForever) {
       // İzin kalıcı olarak reddedilmişse, kullanıcıya ayarlara gitmeyi önerin
       if (!mounted) {
-        ChangeLocation.isLocalized = true;
+        ChangeSettings.isLocalized = true;
         return; // Eğer widget unmounted olduysa fonksiyonu terk et
       }
       return showDialog(
@@ -157,33 +157,4 @@ class _LocationState extends State<Location> {
   }
 }
 
-class ChangeLocation {
-  static String? id;
-  static String? cityName;
-  static String? cityState;
-  static bool isLocalized = false;
-
-  static late SharedPreferences _local;
-
-  Future<void> createSharedPrefObject() async {
-    _local = await SharedPreferences.getInstance();
-  }
-
-  void loadLocalFromSharedPref() {
-    id = _local.getString('location') ?? '16741';
-    cityName = _local.getString('name') ?? 'İstanbul Merkez';
-    cityState = _local.getString('state') ?? 'İstanbul';
-    print('Loaded: $id');
-  }
-
-  void saveLocaltoSharedPref(String value, String name, String state) {
-    _local.setString('location', value);
-    _local.setString('name', name);
-    _local.setString('state', state);
-    id = value;
-    cityName = name;
-    cityState = state;
-    print('Saved: $id');
-    isLocalized = true;
-  }
-}
+class ChangeLocation {}
