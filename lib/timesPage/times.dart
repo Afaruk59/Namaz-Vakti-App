@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:namaz_vakti_app/timesPage/calendar.dart';
+import 'package:namaz_vakti_app/timesPage/detailedTimes.dart';
 import 'package:namaz_vakti_app/timesPage/location.dart';
 import 'package:namaz_vakti_app/main.dart';
 import 'package:namaz_vakti_app/settings.dart';
@@ -25,6 +26,8 @@ DateTime? istibak;
 DateTime? isaisani;
 DateTime? kible;
 String? city;
+String? cityState;
+String? cityID;
 
 class Times extends StatelessWidget {
   const Times({super.key});
@@ -118,22 +121,7 @@ class TimesBody extends StatelessWidget {
                 child: Stack(
                   children: [
                     PrayerTimesPage(),
-                    Positioned(
-                      bottom: 4,
-                      left: 4,
-                      child: IconButton.filledTonal(
-                        style: ElevatedButton.styleFrom(
-                            elevation: 10,
-                            fixedSize: Size.fromRadius(30),
-                            shape: RoundedRectangleBorder(
-                                side: BorderSide(color: Colors.grey, width: 1),
-                                borderRadius: BorderRadius.all(Radius.circular(10)))),
-                        icon: Icon(Icons.menu),
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/detailedTimes');
-                        },
-                      ),
-                    ),
+                    DetailedTimesBtn(),
                     CalendarBtn(),
                   ],
                 ),
@@ -168,8 +156,6 @@ class CityNameCard extends StatefulWidget {
 
 class _CityNameCardState extends State<CityNameCard> {
   static String? cityName;
-  static String? cityState;
-
   @override
   void initState() {
     super.initState();
@@ -216,7 +202,6 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
   DateTime? selectedDate;
   static bool isLoading = true;
   String? errorMessage;
-  static String? cityID;
 
   static bool isTimeLoading = true;
 
@@ -617,31 +602,31 @@ class mainTimes extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Text(
-                    '${DateFormat('HH:mm').format(imsak!)}',
+                    '${DateFormat('HH:mm').format(imsak ?? DateTime.now())}',
                     style: timeStyle,
                   ),
                   Text(
-                    '${DateFormat('HH:mm').format(sabah!)}',
+                    '${DateFormat('HH:mm').format(sabah ?? DateTime.now())}',
                     style: timeStyle,
                   ),
                   Text(
-                    '${DateFormat('HH:mm').format(gunes!)}',
+                    '${DateFormat('HH:mm').format(gunes ?? DateTime.now())}',
                     style: timeStyle,
                   ),
                   Text(
-                    '${DateFormat('HH:mm').format(ogle!)}',
+                    '${DateFormat('HH:mm').format(ogle ?? DateTime.now())}',
                     style: timeStyle,
                   ),
                   Text(
-                    '${DateFormat('HH:mm').format(ikindi!)}',
+                    '${DateFormat('HH:mm').format(ikindi ?? DateTime.now())}',
                     style: timeStyle,
                   ),
                   Text(
-                    '${DateFormat('HH:mm').format(aksam!)}',
+                    '${DateFormat('HH:mm').format(aksam ?? DateTime.now())}',
                     style: timeStyle,
                   ),
                   Text(
-                    '${DateFormat('HH:mm').format(yatsi!)}',
+                    '${DateFormat('HH:mm').format(yatsi ?? DateTime.now())}',
                     style: timeStyle,
                   ),
                 ],
@@ -685,7 +670,7 @@ class _ClockState extends State<Clock> {
           timesPage.loadPrayerTimes();
         }
 
-        if (_PrayerTimesPageState.isTimeLoading == false) {
+        if (_PrayerTimesPageState.isTimeLoading == false && imsak != null) {
           if (DateTime(now.year, now.month, now.day, imsak!.hour, imsak!.minute, 0)
                   .difference(now) >
               DateTime.now().difference(now)) {
@@ -765,12 +750,14 @@ class _ClockState extends State<Clock> {
                             style:
                                 TextStyle(fontSize: MainApp.currentHeight! < 700.0 ? 16.0 : 18.0),
                           ),
-                          Text(
-                            '${(difference!.inHours).toString().padLeft(2, '0')} : ${(difference!.inMinutes % 60).toString().padLeft(2, '0')} : ${(difference!.inSeconds % 60).toString().padLeft(2, '0')}',
-                            style: TextStyle(
-                                fontSize: MainApp.currentHeight! < 700.0 ? 16.0 : 18.0,
-                                fontWeight: FontWeight.bold),
-                          ),
+                          imsak != null
+                              ? Text(
+                                  '${(difference!.inHours).toString().padLeft(2, '0')} : ${(difference!.inMinutes % 60).toString().padLeft(2, '0')} : ${(difference!.inSeconds % 60).toString().padLeft(2, '0')}',
+                                  style: TextStyle(
+                                      fontSize: MainApp.currentHeight! < 700.0 ? 16.0 : 18.0,
+                                      fontWeight: FontWeight.bold),
+                                )
+                              : Text('0'),
                         ],
                       ),
                     ),

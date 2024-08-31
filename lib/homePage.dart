@@ -70,9 +70,11 @@ class _homePageState extends State<homePage> {
           TextButton(
             child: Text("Tekrar Dene"),
             onPressed: () {
-              Navigator.of(context).pop();
+              Navigator.pop(context);
               alertOpen = false;
               _checkWifi();
+              Navigator.pop(context);
+              Navigator.of(context).pushNamed('/times');
             },
           ),
         ],
@@ -118,7 +120,7 @@ class _homePageState extends State<homePage> {
               img: 'mescidi-nebevi$light',
             ),
             homeCard(
-              title: 'Faydalı Kitaplar',
+              title: 'Faydalı Kaynaklar',
               route: '/books',
               img: 'books$light',
             ),

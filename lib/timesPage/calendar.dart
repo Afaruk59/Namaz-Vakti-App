@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:namaz_vakti_app/main.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as html_parser;
@@ -74,8 +73,8 @@ class _CalendarBtnState extends State<CalendarBtn> {
       // MENKIBE başlığı altındaki içeriği çekme
       final menkibeTitle = document.querySelector('h3');
       final menkibe = document.querySelector('div p + p');
-      final menkibeTitle2 = document.querySelector('div p + p + p + p');
-      final menkibe2 = document.querySelector('div p + p + p + p + p');
+      final menkibeTitle2 = document.querySelector('div p + p + p');
+      final menkibe2 = document.querySelector('div p + p + p + p');
 
       setState(() {
         calendarTitle = menkibeTitle != null ? menkibeTitle.text : 'Menkibe içeriği bulunamadı';
@@ -100,14 +99,11 @@ class _CalendarBtnState extends State<CalendarBtn> {
     return Positioned(
       bottom: 4,
       right: 4,
-      child: IconButton.filledTonal(
+      child: FilledButton.tonal(
         style: ElevatedButton.styleFrom(
-            elevation: 10,
-            fixedSize: Size.fromRadius(30),
-            shape: RoundedRectangleBorder(
-                side: BorderSide(color: Colors.grey, width: 1),
-                borderRadius: BorderRadius.all(Radius.circular(10)))),
-        icon: Icon(Icons.date_range_rounded),
+          elevation: 15,
+        ),
+        child: Icon(Icons.date_range_rounded),
         onPressed: () async {
           if (ilk) {
             await fetchDay();
@@ -119,73 +115,69 @@ class _CalendarBtnState extends State<CalendarBtn> {
             backgroundColor: Theme.of(context).cardTheme.color,
             context: context,
             showDragHandle: true,
-            scrollControlDisabledMaxHeightRatio: 0.6,
+            scrollControlDisabledMaxHeightRatio: 0.7,
             elevation: 10,
             builder: (BuildContext context) {
-              return Padding(
-                padding:
-                    EdgeInsets.symmetric(horizontal: MainApp.currentHeight! < 700.0 ? 5.0 : 15.0),
-                child: Card(
-                  elevation: 20,
-                  shape: RoundedRectangleBorder(
-                    side: BorderSide(
-                      color: Colors.grey, // Kenar rengini belirleyin
-                      width: 2.0, // Kenar kalınlığını belirleyin
-                    ),
-                    borderRadius: BorderRadius.circular(10.0),
+              return Card(
+                elevation: 20,
+                shape: RoundedRectangleBorder(
+                  side: BorderSide(
+                    color: Colors.grey, // Kenar rengini belirleyin
+                    width: 2.0, // Kenar kalınlığını belirleyin
                   ),
-                  color: Theme.of(context).cardColor,
-                  child: Scrollbar(
-                    child: Padding(
-                      padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 15.0),
-                      child: ListView(
-                        children: [
-                          Text(
-                            day!,
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Text(
-                            'Günün Sözü:',
-                            style: titleStyle,
-                          ),
-                          Text(
-                            word!,
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Text(
-                            'Arka Yaprak:',
-                            style: titleStyle,
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Text(
-                            calendarTitle!,
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Text(
-                            calendar!,
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Text(
-                            calendarTitle2!,
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Text(
-                            calendar2!,
-                          ),
-                        ],
-                      ),
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                color: Theme.of(context).cardColor,
+                child: Scrollbar(
+                  child: Padding(
+                    padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 15.0),
+                    child: ListView(
+                      children: [
+                        Text(
+                          day!,
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          'Günün Sözü:',
+                          style: titleStyle,
+                        ),
+                        Text(
+                          word!,
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          'Arka Yaprak:',
+                          style: titleStyle,
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          calendarTitle!,
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          calendar!,
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          calendarTitle2!,
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          calendar2!,
+                        ),
+                      ],
                     ),
                   ),
                 ),

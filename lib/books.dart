@@ -151,34 +151,29 @@ class BookCard extends StatelessWidget {
                   enableDrag: true,
                   context: context,
                   showDragHandle: true,
-                  scrollControlDisabledMaxHeightRatio: 0.6,
                   backgroundColor: col,
                   elevation: 10,
                   builder: (BuildContext context) {
-                    return Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: MainApp.currentHeight! < 700.0 ? 5.0 : 15.0),
-                      child: Card(
-                        elevation: 20,
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(
-                            color: Colors.grey, // Kenar rengini belirleyin
-                            width: 2.0, // Kenar kalınlığını belirleyin
-                          ),
-                          borderRadius: BorderRadius.circular(10.0),
+                    return Card(
+                      elevation: 20,
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                          color: Colors.grey, // Kenar rengini belirleyin
+                          width: 2.0, // Kenar kalınlığını belirleyin
                         ),
-                        color: Theme.of(context).cardColor,
-                        child: Scrollbar(
-                          child: Padding(
-                            padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 15.0),
-                            child: ListView(
-                              children: [
-                                Text(
-                                  description,
-                                  style: TextStyle(fontSize: 16),
-                                ),
-                              ],
-                            ),
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      color: Theme.of(context).cardColor,
+                      child: Scrollbar(
+                        child: Padding(
+                          padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 15.0),
+                          child: ListView(
+                            children: [
+                              Text(
+                                description,
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ],
                           ),
                         ),
                       ),

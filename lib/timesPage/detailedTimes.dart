@@ -1,34 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:namaz_vakti_app/main.dart';
 import 'package:namaz_vakti_app/timesPage/times.dart';
 
-class DetailedTimes extends StatefulWidget {
-  DetailedTimes({super.key});
+class DetailedTimesBtn extends StatelessWidget {
+  const DetailedTimesBtn({super.key});
 
-  @override
-  State<DetailedTimes> createState() => _DetailedTimesState();
-}
-
-class _DetailedTimesState extends State<DetailedTimes> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Tüm Zamanlar'),
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
-        child: Card(
-          child: SizedBox.expand(
-            child: Padding(
-              padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 15.0),
-              child: Card(
+    return Positioned(
+      bottom: 4,
+      left: 4,
+      child: FilledButton.tonal(
+        style: ElevatedButton.styleFrom(
+          elevation: 15,
+        ),
+        child: Icon(Icons.menu),
+        onPressed: () {
+          showModalBottomSheet(
+            backgroundColor: Theme.of(context).cardTheme.color,
+            context: context,
+            showDragHandle: true,
+            scrollControlDisabledMaxHeightRatio: 0.7,
+            elevation: 10,
+            builder: (BuildContext context) {
+              return Card(
                 color: Theme.of(context).cardColor,
                 child: detailedTimes(),
-              ),
-            ),
-          ),
-        ),
+              );
+            },
+          );
+        },
       ),
     );
   }

@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_compass/flutter_compass.dart';
 import 'package:namaz_vakti_app/main.dart';
+import 'package:namaz_vakti_app/timesPage/times.dart';
+import 'package:xml/xml.dart' as xml;
+import 'package:http/http.dart' as http;
 
 class Qibla extends StatelessWidget {
   const Qibla({super.key});
@@ -15,8 +19,97 @@ class Qibla extends StatelessWidget {
   }
 }
 
-class QiblaCard extends StatelessWidget {
+class QiblaCard extends StatefulWidget {
   const QiblaCard({super.key});
+
+  @override
+  State<QiblaCard> createState() => _QiblaCardState();
+}
+
+class _QiblaCardState extends State<QiblaCard> {
+  static double? _direction = 0;
+  static double? _target = 0;
+  static double? _targetDir = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    loadTarget();
+    FlutterCompass.events!.listen((event) {
+      if (mounted) {
+        setState(() {
+          _direction = event.heading;
+          _targetDir = event.heading! - _target!;
+        });
+      }
+    });
+  }
+
+  Future<void> loadTarget() async {
+    String url =
+        'https://www.namazvakti.com/XML.php?cityID=${cityID}'; // Çevrimiçi XML dosyasının URL'si
+
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      final data = response.body;
+      final document = xml.XmlDocument.parse(data);
+
+      final cityinfo = document.findAllElements('cityinfo').first;
+
+      _target = double.parse(cityinfo.getAttribute('qiblaangle')!);
+      if (_target! > 180) {
+        _target = (_target! + 180) * -1;
+      }
+    }
+  }
+
+  Widget _buildCompass() {
+    if (_direction == null) {
+      return Text('Yön verisi bekleniyor...');
+    }
+
+    return Stack(
+      children: [
+        Center(
+          child: Transform.rotate(
+            angle: ((_direction ?? 0) * (3.14159265358979323846 / 180) * -1),
+            child: Image.asset('assets/img/compass.png'),
+          ),
+        ),
+        Center(
+          child: Transform.rotate(
+            angle: ((_targetDir ?? 0) * (3.14159265358979323846 / 180) * -1),
+            child: Image.asset('assets/img/target.png'),
+          ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 30.0),
+                  child: _buildDirectionText(),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDirectionText() {
+    if (_direction! < _target! + 3 && _direction! > _target! - 3) {
+      return Container(
+        child: Image.asset('assets/img/qibla.png'),
+        height: 100,
+      );
+    } else {
+      return Container();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,14 +127,83 @@ class QiblaCard extends StatelessWidget {
                       flex: 4,
                       child: Card(
                         color: Theme.of(context).cardColor,
-                        child: SizedBox.expand(child: Center(child: Text('Pusula'))),
+                        child: Center(
+                          child: _buildCompass(),
+                        ),
                       ),
                     ),
                     Expanded(
                       flex: 1,
                       child: Card(
                         color: Theme.of(context).cardColor,
-                        child: SizedBox.expand(child: Center(child: Text('Mevcut Konum'))),
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Card(
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      color: Colors.grey, // Kenar rengini belirleyin
+                                      width: 1.0, // Kenar kalınlığını belirleyin
+                                    ),
+                                    borderRadius: BorderRadius.circular(
+                                        10.0), // Kenarların yuvarlaklığını belirleyin
+                                  ),
+                                  color: Theme.of(context).cardColor,
+                                  child: Center(
+                                      child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        city!,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(fontWeight: FontWeight.bold),
+                                      ),
+                                      SizedBox(
+                                        width: 60,
+                                        child: Divider(
+                                          height: MainApp.currentHeight! < 700.0 ? 5.0 : 15.0,
+                                        ),
+                                      ),
+                                      Text(
+                                        cityState!,
+                                      ),
+                                    ],
+                                  )),
+                                ),
+                              ),
+                              Expanded(
+                                child: Card(
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      color: Colors.grey, // Kenar rengini belirleyin
+                                      width: 1.0, // Kenar kalınlığını belirleyin
+                                    ),
+                                    borderRadius: BorderRadius.circular(
+                                        10.0), // Kenarların yuvarlaklığını belirleyin
+                                  ),
+                                  color: Theme.of(context).cardColor,
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'Hedef: ${_target! < 0 ? (360 + _target!).toStringAsFixed(2) : _target!.toStringAsFixed(2)}°',
+                                          style: TextStyle(fontSize: 18),
+                                        ),
+                                        Text(
+                                          '${_direction! < 0 ? (360 + _direction!).toStringAsFixed(2) : _direction!.toStringAsFixed(2)}°',
+                                          style: TextStyle(fontSize: 18),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   ],

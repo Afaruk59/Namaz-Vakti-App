@@ -3,9 +3,8 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:namaz_vakti_app/timesPage/alarms.dart';
 import 'package:namaz_vakti_app/books.dart';
 import 'package:namaz_vakti_app/dates.dart';
-import 'package:namaz_vakti_app/timesPage/detailedTimes.dart';
 import 'package:namaz_vakti_app/homePage.dart';
-import 'package:namaz_vakti_app/loading.dart';
+import 'package:namaz_vakti_app/timesPage/loading.dart';
 import 'package:namaz_vakti_app/timesPage/location.dart';
 import 'package:namaz_vakti_app/notification.dart';
 import 'package:namaz_vakti_app/qibla.dart';
@@ -53,7 +52,6 @@ class MainApp extends StatelessWidget {
         '/dates': (context) => Dates(),
         '/books': (context) => Books(),
         '/settings': (context) => Settings(),
-        '/detailedTimes': (context) => DetailedTimes(),
         '/location': (context) => Location(),
         '/loading': (context) => Loading(),
         '/alarms': (context) => Alarms(),
