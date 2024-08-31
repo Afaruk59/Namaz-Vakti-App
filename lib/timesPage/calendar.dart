@@ -3,6 +3,7 @@ import 'package:namaz_vakti_app/main.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as html_parser;
 import 'package:html/dom.dart' as dom;
+import 'package:url_launcher/url_launcher.dart';
 
 class CalendarBtn extends StatefulWidget {
   const CalendarBtn({super.key});
@@ -18,6 +19,7 @@ class _CalendarBtnState extends State<CalendarBtn> {
   static String? calendar;
   static String? calendarTitle2;
   static String? calendar2;
+  static String? calendar3;
   static bool ilk = true;
 
   Future<void> fetchDay() async {
@@ -75,12 +77,14 @@ class _CalendarBtnState extends State<CalendarBtn> {
       final menkibe = document.querySelector('div p + p');
       final menkibeTitle2 = document.querySelector('div p + p + p');
       final menkibe2 = document.querySelector('div p + p + p + p');
+      final menkibe3 = document.querySelector('div p + p + p + p + p');
 
       setState(() {
         calendarTitle = menkibeTitle != null ? menkibeTitle.text : 'Menkibe içeriği bulunamadı';
         calendar = menkibe != null ? menkibe.text : 'Menkibe içeriği bulunamadı';
         calendarTitle2 = menkibeTitle2 != null ? menkibeTitle2.text : 'Menkibe içeriği bulunamadı';
         calendar2 = menkibe2 != null ? menkibe2.text : 'Menkibe içeriği bulunamadı';
+        calendar3 = menkibe3 != null ? menkibe3.text : 'Menkibe içeriği bulunamadı';
       });
     } else {
       setState(() {
@@ -88,6 +92,7 @@ class _CalendarBtnState extends State<CalendarBtn> {
         calendarTitle2 = 'İçerik alınamadı';
         calendar = 'İçerik alınamadı';
         calendar2 = 'İçerik alınamadı';
+        calendar3 = 'İçerik alınamadı';
       });
     }
   }
@@ -176,6 +181,26 @@ class _CalendarBtnState extends State<CalendarBtn> {
                         ),
                         Text(
                           calendar2!,
+                        ),
+                        Text(
+                          calendar3!,
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: FilledButton.tonal(
+                            onPressed: () async {
+                              final Uri url = Uri.parse('https://www.turktakvim.com/');
+                              await launchUrl(url);
+                            },
+                            child: Text('Turktakvim.com'),
+                            style: ElevatedButton.styleFrom(elevation: 10),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20,
                         ),
                       ],
                     ),

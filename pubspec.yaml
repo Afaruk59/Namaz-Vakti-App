@@ -8,6 +8,7 @@ environment:
 
 dependencies:
   connectivity_plus: ^6.0.5
+  device_info_plus: ^10.1.2
   excel: ^4.0.3
   flutter:
     sdk: flutter
@@ -23,6 +24,7 @@ dependencies:
   provider: ^6.1.2
   shared_preferences: ^2.3.1
   url_launcher: ^6.3.0
+  vibration: ^2.0.0
   xml: ^6.5.0
 
 dev_dependencies:

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:namaz_vakti_app/kaza.dart';
 import 'package:namaz_vakti_app/timesPage/alarms.dart';
 import 'package:namaz_vakti_app/books.dart';
 import 'package:namaz_vakti_app/dates.dart';
@@ -8,10 +9,10 @@ import 'package:namaz_vakti_app/timesPage/loading.dart';
 import 'package:namaz_vakti_app/timesPage/location.dart';
 import 'package:namaz_vakti_app/notification.dart';
 import 'package:namaz_vakti_app/qibla.dart';
-import 'package:namaz_vakti_app/seferi.dart';
 import 'package:namaz_vakti_app/settings.dart';
 import 'package:namaz_vakti_app/startup.dart';
 import 'package:namaz_vakti_app/timesPage/times.dart';
+import 'package:namaz_vakti_app/zikir.dart';
 import 'package:provider/provider.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
@@ -48,10 +49,11 @@ class MainApp extends StatelessWidget {
         '/': (context) => homePage(),
         '/times': (context) => Times(),
         '/qibla': (context) => Qibla(),
-        '/seferi': (context) => Seferi(),
+        '/zikir': (context) => Zikir(),
         '/dates': (context) => Dates(),
         '/books': (context) => Books(),
         '/settings': (context) => Settings(),
+        '/kaza': (context) => Kaza(),
         '/location': (context) => Location(),
         '/loading': (context) => Loading(),
         '/alarms': (context) => Alarms(),

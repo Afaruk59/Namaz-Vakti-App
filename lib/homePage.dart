@@ -90,7 +90,7 @@ class _homePageState extends State<homePage> {
         title: Text('Namaz Vakti App'),
       ),
       body: Padding(
-        padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 3.0 : 8.0),
+        padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 0.0 : 5.0),
         child: Column(
           children: [
             homeCard(
@@ -107,15 +107,31 @@ class _homePageState extends State<homePage> {
                     img: 'compass$light',
                   ),
                   homeCard(
-                    title: 'Seferi Hesabı',
-                    route: '/seferi',
-                    img: 'world$light',
+                    title: 'Zikir',
+                    route: '/zikir',
+                    img: 'zikir$light',
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Row(
+                children: [
+                  homeCard(
+                    title: 'Kaza Takibi',
+                    route: '/kaza',
+                    img: 'kaza$light',
+                  ),
+                  homeCard(
+                    title: 'Ayarlar',
+                    route: '/settings',
+                    img: 'settings$light',
                   ),
                 ],
               ),
             ),
             homeCard(
-              title: 'Mübarek Gün ve Geceler',
+              title: 'Mübarek Günler ve Geceler',
               route: '/dates',
               img: 'mescidi-nebevi$light',
             ),
@@ -123,11 +139,6 @@ class _homePageState extends State<homePage> {
               title: 'Faydalı Kaynaklar',
               route: '/books',
               img: 'books$light',
-            ),
-            homeCard(
-              title: 'Ayarlar',
-              route: '/settings',
-              img: 'settings$light',
             ),
           ],
         ),
@@ -183,27 +194,29 @@ class homeCard extends StatelessWidget {
               Positioned(
                 bottom: MainApp.currentHeight! < 700.0 ? 5.0 : 15.0,
                 left: MainApp.currentHeight! < 700.0 ? 5.0 : 15.0,
-                child: Stack(
-                  children: [
-                    Text(
-                      title,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: MainApp.currentHeight! < 700.0 ? 17 : 20,
-                        foreground: Paint()
-                          ..style = PaintingStyle.stroke
-                          ..strokeWidth = 3
-                          ..color = Colors.black,
-                      ),
-                    ),
-                    Text(
-                      title,
-                      style: TextStyle(
+                child: Container(
+                  child: Stack(
+                    children: [
+                      Text(
+                        title,
+                        style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: MainApp.currentHeight! < 700.0 ? 17 : 20,
-                          color: Colors.white),
-                    ),
-                  ],
+                          foreground: Paint()
+                            ..style = PaintingStyle.stroke
+                            ..strokeWidth = 3
+                            ..color = Colors.black,
+                        ),
+                      ),
+                      Text(
+                        title,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: MainApp.currentHeight! < 700.0 ? 17 : 20,
+                            color: Colors.white),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
