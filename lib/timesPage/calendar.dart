@@ -13,16 +13,12 @@ class CalendarBtn extends StatefulWidget {
 }
 
 class _CalendarBtnState extends State<CalendarBtn> {
-  static String? day;
-  static String? word;
-  static String? calendarTitle;
-  static String? calendar;
-  static String? calendarTitle2;
-  static String? calendar2;
-  static String? calendar3;
-  static bool ilk = true;
+  static String? _day;
+  static String? _word;
+  static String? _calendar;
+  static bool _ilk = true;
 
-  Future<void> fetchDay() async {
+  Future<void> _fetchDay() async {
     final response = await http
         .get(Uri.parse('https://www.turktakvim.com/vakitler.asp?fr=5&bg=FFFFFF&fn=000000&sz=12'));
 
@@ -35,16 +31,16 @@ class _CalendarBtnState extends State<CalendarBtn> {
 
       setState(() {
         // Elementin içeriğini al
-        word = element != null ? element.text : 'İçerik bulunamadı';
+        _word = element != null ? element.text : 'İçerik bulunamadı';
       });
     } else {
       setState(() {
-        word = 'İçerik alınamadı';
+        _word = 'İçerik alınamadı';
       });
     }
   }
 
-  Future<void> fetchWord() async {
+  Future<void> _fetchWord() async {
     final response = await http
         .get(Uri.parse('https://www.turktakvim.com/vakitler.asp?fr=4&bg=FFFFFF&fn=000000&sz=12'));
 
@@ -57,43 +53,36 @@ class _CalendarBtnState extends State<CalendarBtn> {
 
       setState(() {
         // Elementin içeriğini al
-        day = element != null ? element.text : 'İçerik bulunamadı';
+        _day = element != null ? element.text : 'İçerik bulunamadı';
       });
     } else {
       setState(() {
-        day = 'İçerik alınamadı';
+        _day = 'İçerik alınamadı';
       });
     }
   }
 
   Future<void> fetchCalendar() async {
-    final response = await http.get(Uri.parse('https://www.turktakvim.com/10/Tr/'));
+    final url =
+        'https://www.turktakvim.com/10/Tr/'; // İçeriğini almak istediğiniz web sayfası URL'si
 
+    // Web sayfasının HTML içeriğini almak için HTTP isteği yap
+    final response = await http.get(Uri.parse(url));
+
+    // HTTP isteği başarılı ise devam et
     if (response.statusCode == 200) {
-      dom.Document document = html_parser.parse(response.body);
+      // HTML içeriğini parse et
+      var document = html_parser.parse(response.body);
 
-      // MENKIBE başlığı altındaki içeriği çekme
-      final menkibeTitle = document.querySelector('h3');
-      final menkibe = document.querySelector('div p + p');
-      final menkibeTitle2 = document.querySelector('div p + p + p');
-      final menkibe2 = document.querySelector('div p + p + p + p');
-      final menkibe3 = document.querySelector('div p + p + p + p + p');
+      // Tüm text içeriğini al
+      var textContent = document.body!.text;
 
+      // Text içeriğini göster (örneğin konsola yazdır)
       setState(() {
-        calendarTitle = menkibeTitle != null ? menkibeTitle.text : 'Menkibe içeriği bulunamadı';
-        calendar = menkibe != null ? menkibe.text : 'Menkibe içeriği bulunamadı';
-        calendarTitle2 = menkibeTitle2 != null ? menkibeTitle2.text : 'Menkibe içeriği bulunamadı';
-        calendar2 = menkibe2 != null ? menkibe2.text : 'Menkibe içeriği bulunamadı';
-        calendar3 = menkibe3 != null ? menkibe3.text : 'Menkibe içeriği bulunamadı';
+        _calendar = textContent;
       });
     } else {
-      setState(() {
-        calendarTitle = 'İçerik alınamadı';
-        calendarTitle2 = 'İçerik alınamadı';
-        calendar = 'İçerik alınamadı';
-        calendar2 = 'İçerik alınamadı';
-        calendar3 = 'İçerik alınamadı';
-      });
+      print('Sayfa alınamadı: ${response.statusCode}');
     }
   }
 
@@ -110,11 +99,11 @@ class _CalendarBtnState extends State<CalendarBtn> {
         ),
         child: Icon(Icons.date_range_rounded),
         onPressed: () async {
-          if (ilk) {
-            await fetchDay();
-            await fetchWord();
+          if (_ilk) {
+            await _fetchDay();
+            await _fetchWord();
             await fetchCalendar();
-            ilk = false;
+            _ilk = false;
           }
           showModalBottomSheet(
             backgroundColor: Theme.of(context).cardTheme.color,
@@ -139,7 +128,7 @@ class _CalendarBtnState extends State<CalendarBtn> {
                     child: ListView(
                       children: [
                         Text(
-                          day!,
+                          _day!,
                         ),
                         SizedBox(
                           height: 20,
@@ -149,7 +138,7 @@ class _CalendarBtnState extends State<CalendarBtn> {
                           style: titleStyle,
                         ),
                         Text(
-                          word!,
+                          _word!,
                         ),
                         SizedBox(
                           height: 20,
@@ -161,32 +150,20 @@ class _CalendarBtnState extends State<CalendarBtn> {
                         SizedBox(
                           height: 20,
                         ),
-                        Text(
-                          calendarTitle!,
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Text(
-                          calendar!,
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Text(
-                          calendarTitle2!,
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Text(
-                          calendar2!,
-                        ),
-                        Text(
-                          calendar3!,
-                        ),
-                        SizedBox(
-                          height: 20,
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            border: Border.all(
+                              color: Colors.grey,
+                              width: 2,
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Text(
+                              _calendar!,
+                            ),
+                          ),
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20.0),

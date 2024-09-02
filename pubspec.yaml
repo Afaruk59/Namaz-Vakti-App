@@ -7,6 +7,7 @@ environment:
   sdk: '>=3.4.4 <4.0.0'
 
 dependencies:
+  carousel_slider: ^5.0.0
   connectivity_plus: ^6.0.5
   device_info_plus: ^10.1.2
   excel: ^4.0.3

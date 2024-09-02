@@ -155,4 +155,13 @@ class ChangeSettings with ChangeNotifier {
     _settings.setBool('startup', value);
     print('First: $isfirst');
   }
+
+  //KAZA SETTINGS
+  int loadKaza(String name) {
+    return _settings.getInt(name) ?? 0;
+  }
+
+  void saveKaza(String name, int value) {
+    _settings.setInt(name, value);
+  }
 }

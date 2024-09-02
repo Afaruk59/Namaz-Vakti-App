@@ -26,16 +26,16 @@ class ZikirCard extends StatefulWidget {
 }
 
 class _ZikirCardState extends State<ZikirCard> {
-  static int target = 33;
-  static int count = 0;
-  static int stack = 0;
-  static bool vibration = false;
+  static int _target = 33;
+  static int _count = 0;
+  static int _stack = 0;
+  static bool _vibration = false;
   TextEditingController _textFieldController = TextEditingController();
 
   void _vibratePhone() async {
     var isVib = await Vibration.hasVibrator();
-    if (isVib ?? false == true && vibration == true) {
-      Vibration.vibrate();
+    if (isVib ?? false == true) {
+      Vibration.vibrate(duration: 50);
     } else {
       print('Device cannot vibrate.');
     }
@@ -43,8 +43,8 @@ class _ZikirCardState extends State<ZikirCard> {
 
   void _vibrateCustom() async {
     var isVib = await Vibration.hasCustomVibrationsSupport();
-    if (isVib ?? false == true && vibration == true) {
-      Vibration.vibrate(pattern: [500, 500]);
+    if (isVib ?? false == true) {
+      Vibration.vibrate(pattern: [0, 200, 200, 200]);
     } else {
       print('Device cannot vibrate.');
     }
@@ -63,11 +63,11 @@ class _ZikirCardState extends State<ZikirCard> {
                 child: Column(
                   children: [
                     Expanded(
-                      flex: 1,
+                      flex: 2,
                       child: Card(
                         color: Theme.of(context).cardColor,
                         child: Padding(
-                          padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
+                          padding: EdgeInsets.all(5),
                           child: Row(
                             children: [
                               Expanded(
@@ -83,22 +83,47 @@ class _ZikirCardState extends State<ZikirCard> {
                                   ),
                                   color: Theme.of(context).cardColor,
                                   child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     children: [
                                       FilledButton.tonal(
                                         onPressed: () {
-                                          setState(() {
-                                            stack = 0;
-                                          });
+                                          showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  title: Text('Zikiri Sıfırla'),
+                                                  content:
+                                                      Text('Gerçekten sıfırlamak istiyor musunuz?'),
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          _stack = 0;
+                                                          _target = 33;
+                                                          _count = 0;
+                                                        });
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: Text('Evet'),
+                                                    ),
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: Text('Vazgeç'),
+                                                    ),
+                                                  ],
+                                                );
+                                              });
                                         },
                                         child: Icon(Icons.restart_alt),
                                         style: ElevatedButton.styleFrom(elevation: 10),
                                       ),
-                                      vibration == true
+                                      _vibration == true
                                           ? FilledButton.tonal(
                                               onPressed: () {
                                                 setState(() {
-                                                  vibration = false;
+                                                  _vibration = false;
                                                 });
                                               },
                                               child: Icon(Icons.vibration),
@@ -107,13 +132,13 @@ class _ZikirCardState extends State<ZikirCard> {
                                           : OutlinedButton(
                                               onPressed: () {
                                                 setState(() {
-                                                  vibration = true;
+                                                  _vibration = true;
                                                 });
                                               },
                                               child: Icon(Icons.vibration),
                                             ),
                                       Text(
-                                        '$stack',
+                                        '$_stack',
                                         style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                                       ),
                                     ],
@@ -159,7 +184,7 @@ class _ZikirCardState extends State<ZikirCard> {
                                                       Expanded(
                                                         child: Column(
                                                           mainAxisAlignment:
-                                                              MainAxisAlignment.center,
+                                                              MainAxisAlignment.spaceEvenly,
                                                           children: [
                                                             Text(
                                                               textAlign: TextAlign.center,
@@ -171,7 +196,7 @@ class _ZikirCardState extends State<ZikirCard> {
                                                             ),
                                                             Text(
                                                               textAlign: TextAlign.center,
-                                                              '$target',
+                                                              '$_target',
                                                               style: TextStyle(
                                                                   fontSize: 25,
                                                                   fontWeight: FontWeight.bold),
@@ -189,7 +214,7 @@ class _ZikirCardState extends State<ZikirCard> {
                                       ),
                                       Expanded(
                                         child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                           children: [
                                             FilledButton.tonal(
                                               onPressed: () {
@@ -206,7 +231,7 @@ class _ZikirCardState extends State<ZikirCard> {
                                                           ],
                                                           controller: _textFieldController,
                                                           decoration:
-                                                              InputDecoration(hintText: '$target'),
+                                                              InputDecoration(hintText: '$_target'),
                                                         ),
                                                         actions: [
                                                           TextButton(
@@ -216,7 +241,7 @@ class _ZikirCardState extends State<ZikirCard> {
                                                                   _textFieldController.text.length <
                                                                       5) {
                                                                 setState(() {
-                                                                  target = int.parse(
+                                                                  _target = int.parse(
                                                                       _textFieldController.text);
                                                                 });
                                                               }
@@ -235,12 +260,12 @@ class _ZikirCardState extends State<ZikirCard> {
                                             FilledButton.tonal(
                                               onLongPress: () {
                                                 setState(() {
-                                                  target += 10;
+                                                  _target += 10;
                                                 });
                                               },
                                               onPressed: () {
                                                 setState(() {
-                                                  target++;
+                                                  _target++;
                                                 });
                                               },
                                               child: Icon(Icons.add),
@@ -251,15 +276,15 @@ class _ZikirCardState extends State<ZikirCard> {
                                             FilledButton.tonal(
                                               onLongPress: () {
                                                 setState(() {
-                                                  if (target != 0) {
-                                                    target -= 10;
+                                                  if (_target != 0) {
+                                                    _target -= 10;
                                                   }
                                                 });
                                               },
                                               onPressed: () {
                                                 setState(() {
-                                                  if (target != 0) {
-                                                    target--;
+                                                  if (_target != 0) {
+                                                    _target--;
                                                   }
                                                 });
                                               },
@@ -281,7 +306,7 @@ class _ZikirCardState extends State<ZikirCard> {
                       ),
                     ),
                     Expanded(
-                      flex: 3,
+                      flex: 4,
                       child: Padding(
                         padding: const EdgeInsets.all(5.0),
                         child: TextButton(
@@ -291,16 +316,18 @@ class _ZikirCardState extends State<ZikirCard> {
                           ),
                           onPressed: () async {
                             setState(() {
-                              count++;
-                              if (count >= target) {
-                                count = 0;
-                                stack++;
+                              _count++;
+                              if (_count >= _target) {
+                                _count = 0;
+                                _stack++;
                               }
                             });
-                            if (count == 0) {
-                              _vibrateCustom();
-                            } else {
-                              _vibratePhone();
+                            if (_vibration == true) {
+                              if (_count == 0) {
+                                _vibrateCustom();
+                              } else {
+                                _vibratePhone();
+                              }
                             }
                           },
                           child: Stack(
@@ -323,7 +350,7 @@ class _ZikirCardState extends State<ZikirCard> {
                                   ),
                                   child: LinearProgressIndicator(
                                     borderRadius: BorderRadius.all(Radius.circular(10)),
-                                    value: count / target, // İlerleme yüzdesi
+                                    value: _count / _target, // İlerleme yüzdesi
                                     minHeight: 4.0, // Göstergenin yüksekliği
                                     backgroundColor: Theme.of(context).cardColor, // Arka plan rengi
                                     valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context)
@@ -334,7 +361,7 @@ class _ZikirCardState extends State<ZikirCard> {
                               ),
                               Center(
                                   child: Text(
-                                '$count',
+                                '$_count',
                                 style: TextStyle(fontSize: 40),
                               )),
                             ],
