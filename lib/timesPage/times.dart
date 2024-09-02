@@ -166,27 +166,31 @@ class _CityNameCardState extends State<CityNameCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          '$cityState',
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: MainApp.currentHeight! < 700.0 ? 15.0 : 18.0),
-        ),
-        SizedBox(
-          width: MainApp.currentHeight! < 700.0 ? 70.0 : 100.0,
-          child: Divider(
-            height: MainApp.currentHeight! < 700.0 ? 10.0 : 20.0,
+    return Padding(
+      padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            '$cityState',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: MainApp.currentHeight! < 700.0 ? 15.0 : 18.0),
           ),
-        ),
-        Text(
-          '$cityName',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-              fontSize: MainApp.currentHeight! < 700.0 ? 16.0 : 18.0, fontWeight: FontWeight.bold),
-        ),
-      ],
+          SizedBox(
+            width: MainApp.currentHeight! < 700.0 ? 70.0 : 100.0,
+            child: Divider(
+              height: MainApp.currentHeight! < 700.0 ? 10.0 : 20.0,
+            ),
+          ),
+          Text(
+            '$cityName',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontSize: MainApp.currentHeight! < 700.0 ? 16.0 : 18.0,
+                fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
     );
   }
 }

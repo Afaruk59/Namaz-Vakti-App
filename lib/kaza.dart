@@ -27,38 +27,42 @@ class KazaCard extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
       child: Card(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            PrayCard(
-              title: 'Sabah',
-              value: Provider.of<ChangeSettings>(context, listen: false).loadKaza('Sabah'),
-            ),
-            PrayCard(
-              title: 'Öğle',
-              value: Provider.of<ChangeSettings>(context, listen: false).loadKaza('Öğle'),
-            ),
-            PrayCard(
-              title: 'İkindi',
-              value: Provider.of<ChangeSettings>(context, listen: false).loadKaza('İkindi'),
-            ),
-            PrayCard(
-              title: 'Akşam',
-              value: Provider.of<ChangeSettings>(context, listen: false).loadKaza('Akşam'),
-            ),
-            PrayCard(
-              title: 'Yatsı',
-              value: Provider.of<ChangeSettings>(context, listen: false).loadKaza('Yatsı'),
-            ),
-            PrayCard(
-              title: 'Vitir',
-              value: Provider.of<ChangeSettings>(context, listen: false).loadKaza('Vitir'),
-            ),
-            PrayCard(
-              title: 'Oruç',
-              value: Provider.of<ChangeSettings>(context, listen: false).loadKaza('Oruç'),
-            ),
-          ],
+        child: Scrollbar(
+          child: ListView(
+            children: [
+              SizedBox(
+                height: 10,
+              ),
+              PrayCard(
+                title: 'Sabah',
+                value: Provider.of<ChangeSettings>(context, listen: false).loadKaza('Sabah'),
+              ),
+              PrayCard(
+                title: 'Öğle',
+                value: Provider.of<ChangeSettings>(context, listen: false).loadKaza('Öğle'),
+              ),
+              PrayCard(
+                title: 'İkindi',
+                value: Provider.of<ChangeSettings>(context, listen: false).loadKaza('İkindi'),
+              ),
+              PrayCard(
+                title: 'Akşam',
+                value: Provider.of<ChangeSettings>(context, listen: false).loadKaza('Akşam'),
+              ),
+              PrayCard(
+                title: 'Yatsı',
+                value: Provider.of<ChangeSettings>(context, listen: false).loadKaza('Yatsı'),
+              ),
+              PrayCard(
+                title: 'Vitir',
+                value: Provider.of<ChangeSettings>(context, listen: false).loadKaza('Vitir'),
+              ),
+              PrayCard(
+                title: 'Oruç',
+                value: Provider.of<ChangeSettings>(context, listen: false).loadKaza('Oruç'),
+              ),
+            ],
+          ),
         ),
       ),
     );

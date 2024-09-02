@@ -164,4 +164,47 @@ class ChangeSettings with ChangeNotifier {
   void saveKaza(String name, int value) {
     _settings.setInt(name, value);
   }
+
+  //ZIKIR SETTINGS
+  void saveVib(bool value) {
+    _settings.setBool('vibration', value);
+  }
+
+  bool loadVib() {
+    return _settings.getBool('vibration') ?? false;
+  }
+
+  void saveZikirProfile(String name, int count, int set, int stack) {
+    _settings.setInt('${name}count', count);
+    _settings.setInt('${name}set', set);
+    _settings.setInt('${name}stack', stack);
+  }
+
+  int loadZikirCount(String name) {
+    return _settings.getInt('${name}count') ?? 0;
+  }
+
+  int loadZikirSet(String name) {
+    return _settings.getInt('${name}set') ?? 33;
+  }
+
+  int loadZikirStack(String name) {
+    return _settings.getInt('${name}stack') ?? 0;
+  }
+
+  void saveProfiles(List<String> list) {
+    _settings.setStringList('profiles', list);
+  }
+
+  List<String> loadProfiles() {
+    return _settings.getStringList('profiles') ?? ['Varsayılan'];
+  }
+
+  void saveSelectedProfile(String value) {
+    _settings.setString('selectedProfile', value);
+  }
+
+  String loadSelectedProfile() {
+    return _settings.getString('selectedProfile') ?? 'Varsayılan';
+  }
 }

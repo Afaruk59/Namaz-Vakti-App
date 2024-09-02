@@ -97,12 +97,8 @@ class _LocationState extends State<Location> {
     }
 
     if (permission == LocationPermission.deniedForever) {
-      // İzin kalıcı olarak reddedilmişse, kullanıcıya ayarlara gitmeyi önerin
-      if (!mounted) {
-        ChangeSettings.isLocalized = true;
-        return; // Eğer widget unmounted olduysa fonksiyonu terk et
-      }
       return showDialog(
+        useRootNavigator: serviceEnabled,
         context: context,
         builder: (context) => AlertDialog(
           title: Text("Konum İzni Gerekli"),
@@ -112,10 +108,9 @@ class _LocationState extends State<Location> {
             TextButton(
               child: Text("Ayarları Aç"),
               onPressed: () {
-                if (mounted) {
-                  Navigator.pop(context);
-                  Geolocator.openAppSettings(); // Kullanıcıyı ayarlara yönlendir
-                }
+                ChangeSettings.isLocalized = true;
+                Navigator.pop(context);
+                Geolocator.openAppSettings();
               },
             ),
           ],

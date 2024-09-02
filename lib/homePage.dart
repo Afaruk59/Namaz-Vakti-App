@@ -117,7 +117,7 @@ class _homePageState extends State<homePage> {
                 child: Card(
                   child: SizedBox.expand(
                     child: Center(
-                      child: Text('apk ver: 16'),
+                      child: Text('apk ver: 17'),
                     ),
                   ),
                 ),

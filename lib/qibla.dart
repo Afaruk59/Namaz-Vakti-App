@@ -137,7 +137,7 @@ class _QiblaCardState extends State<QiblaCard> {
                       child: Card(
                         color: Theme.of(context).cardColor,
                         child: Padding(
-                          padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
+                          padding: const EdgeInsets.all(5),
                           child: Row(
                             children: [
                               Expanded(

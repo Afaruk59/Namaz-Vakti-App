@@ -119,38 +119,48 @@ class _DatesCardState extends State<DatesCard> {
   @override
   Widget build(BuildContext context) {
     return isCompleted == true
-        ? ListView(
-            children: [
-              SizedBox(
-                height: 15,
+        ? Padding(
+            padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
+            child: Card(
+              child: Scrollbar(
+                child: ListView(
+                  children: [
+                    SizedBox(
+                      height: 10,
+                    ),
+                    DateCard(text: _date1),
+                    DateCard(text: _date2),
+                    DateCard(text: _date3),
+                    DateCard(text: _date4),
+                    DateCard(text: _date5),
+                    DateCard(text: _date6),
+                    DateCard(text: _date7),
+                    DateCard(text: _date8),
+                    DateCard(text: _date9),
+                    DateCard(text: _date10),
+                    DateCard(text: _date11),
+                    DateCard(text: _date12),
+                    DateCard(text: _date13),
+                    DateCard(text: _date14),
+                    DateCard(text: _date15),
+                    DateCard(text: _date16),
+                    DateCard(text: _date17),
+                    DateCard(text: _date18),
+                    DateCard(text: _date19),
+                    DateCard(text: _date20),
+                    DateCard(text: _date21),
+                    DateCard(text: _date22),
+                    DateCard(text: _date23),
+                    DateCard(text: _date24),
+                    DateCard(text: _date25),
+                    DateCard(text: _date26),
+                    SizedBox(
+                      height: 10,
+                    ),
+                  ],
+                ),
               ),
-              DateCard(text: _date1),
-              DateCard(text: _date2),
-              DateCard(text: _date3),
-              DateCard(text: _date4),
-              DateCard(text: _date5),
-              DateCard(text: _date6),
-              DateCard(text: _date7),
-              DateCard(text: _date8),
-              DateCard(text: _date9),
-              DateCard(text: _date10),
-              DateCard(text: _date11),
-              DateCard(text: _date12),
-              DateCard(text: _date13),
-              DateCard(text: _date14),
-              DateCard(text: _date15),
-              DateCard(text: _date16),
-              DateCard(text: _date17),
-              DateCard(text: _date18),
-              DateCard(text: _date19),
-              DateCard(text: _date20),
-              DateCard(text: _date21),
-              DateCard(text: _date22),
-              DateCard(text: _date23),
-              DateCard(text: _date24),
-              DateCard(text: _date25),
-              DateCard(text: _date26),
-            ],
+            ),
           )
         : Center(child: CircularProgressIndicator());
   }
@@ -165,6 +175,7 @@ class DateCard extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
       child: Card(
+        color: Theme.of(context).cardColor,
         child: ListTile(
           title: Text(
             style: TextStyle(fontSize: 16),
