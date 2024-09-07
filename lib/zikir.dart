@@ -465,7 +465,7 @@ class _ZikirCardState extends State<ZikirCard> {
                                         children: [
                                           Text(item),
                                           Text(
-                                            '${Provider.of<ChangeSettings>(context, listen: false).loadZikirStack(item)} | ${Provider.of<ChangeSettings>(context, listen: false).loadZikirSet(item)} / ${Provider.of<ChangeSettings>(context, listen: false).loadZikirCount(item)}',
+                                            '${Provider.of<ChangeSettings>(context, listen: false).loadZikirStack(item)} - ${Provider.of<ChangeSettings>(context, listen: false).loadZikirSet(item)} / ${Provider.of<ChangeSettings>(context, listen: false).loadZikirCount(item)}',
                                           ),
                                           SizedBox(
                                             height: 5,

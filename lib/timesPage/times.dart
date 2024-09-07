@@ -216,9 +216,7 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
     loadPrayerTimes();
   }
 
-  void selectDate() {
-    DateTime today = DateTime.now();
-
+  void selectDate(DateTime today) {
     final DateTime picked = today;
 
     setState(() {
@@ -281,7 +279,7 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
       });
     }
 
-    selectDate();
+    selectDate(DateTime.now());
     try {
       imsak = DateFormat('HH:mm').parse((selectedDayTimes?['imsak']).toString());
     } on Exception catch (_) {
@@ -588,6 +586,9 @@ class mainTimes extends StatelessWidget {
                     'Yatsı',
                     style: timeStyle,
                   ),
+                  SizedBox(
+                    height: 0,
+                  ),
                 ],
               ),
             ),
@@ -632,6 +633,9 @@ class mainTimes extends StatelessWidget {
                   Text(
                     '${DateFormat('HH:mm').format(yatsi ?? DateTime.now())}',
                     style: timeStyle,
+                  ),
+                  SizedBox(
+                    height: 0,
                   ),
                 ],
               ),

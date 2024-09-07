@@ -41,13 +41,25 @@ class _homePageState extends State<homePage> {
 
   void _showWifiAlert() {
     showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (context) => AlertDialog(
         title: Text("İnternet Bağlantısı Gerekli"),
         content: Row(
           children: [
             Expanded(
-              child: Text("Devam etmek için lütfen Wi-Fi'yi yada Mobil Veri'yi etkinleştirin."),
+              child: Container(
+                height: 100,
+                child: Column(
+                  children: [
+                    Text("Devam etmek için lütfen Wi-Fi'yi yada Mobil Veri'yi etkinleştirin."),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Text('(Servisler internet olmadan düzgün çalışmayacaktır.)'),
+                  ],
+                ),
+              ),
               flex: 3,
             ),
             Expanded(
@@ -117,7 +129,7 @@ class _homePageState extends State<homePage> {
                 child: Card(
                   child: SizedBox.expand(
                     child: Center(
-                      child: Text('apk ver: 17'),
+                      child: Text('apk ver: 18'),
                     ),
                   ),
                 ),

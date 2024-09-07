@@ -76,6 +76,7 @@ class _LocationState extends State<Location> {
           return; // Eğer widget unmounted olduysa fonksiyonu terk et
         }
         return showDialog(
+          barrierDismissible: false,
           context: context,
           builder: (context) => AlertDialog(
             title: Text("Konum İzni Gerekli"),
@@ -98,6 +99,7 @@ class _LocationState extends State<Location> {
 
     if (permission == LocationPermission.deniedForever) {
       return showDialog(
+        barrierDismissible: false,
         useRootNavigator: serviceEnabled,
         context: context,
         builder: (context) => AlertDialog(
