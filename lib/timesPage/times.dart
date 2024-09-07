@@ -83,6 +83,7 @@ class TimesBody extends StatelessWidget {
                       Expanded(
                         child: TimesCard(
                           child: Text(
+                            textAlign: TextAlign.center,
                             '${HijriCalendar.now().hDay} ${HijriCalendar.now().longMonthName} ${HijriCalendar.now().hYear}',
                             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                           ),

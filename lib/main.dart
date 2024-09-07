@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:namaz_vakti_app/kaza.dart';
 import 'package:namaz_vakti_app/timesPage/alarms.dart';
@@ -44,10 +45,33 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     MainApp.currentHeight = MediaQuery.of(context).size.height;
+    Provider.of<ChangeSettings>(context, listen: false).loadCol();
     Provider.of<ChangeSettings>(context, listen: false).loadThemeFromSharedPref();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: Provider.of<ChangeSettings>(context).themeData,
+      theme: ThemeData(
+        useMaterial3: true,
+        brightness: Provider.of<ChangeSettings>(context).isDark == false
+            ? Brightness.light
+            : Brightness.dark,
+        colorSchemeSeed: Provider.of<ChangeSettings>(context).color,
+        applyElevationOverlayColor: true,
+        appBarTheme: AppBarTheme(
+          elevation: 10,
+          color: Provider.of<ChangeSettings>(context).isDark == false
+              ? Provider.of<ChangeSettings>(context).color.shade400
+              : Provider.of<ChangeSettings>(context).color.shade900,
+          titleTextStyle: GoogleFonts.dmSerifText(fontSize: 25.0),
+        ),
+        cardTheme: CardTheme(
+            color: Provider.of<ChangeSettings>(context).isDark == false
+                ? Provider.of<ChangeSettings>(context).color.shade300
+                : Provider.of<ChangeSettings>(context).color.shade800,
+            elevation: 10),
+        cardColor: Provider.of<ChangeSettings>(context).isDark == false
+            ? const Color.fromARGB(255, 230, 230, 230)
+            : const Color.fromARGB(255, 46, 46, 46),
+      ),
       initialRoute: ChangeSettings.isfirst == true ? '/startup' : '/times',
       routes: {
         '/': (context) => homePage(),
