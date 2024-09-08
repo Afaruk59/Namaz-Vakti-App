@@ -57,9 +57,12 @@ class MainApp extends StatelessWidget {
         colorSchemeSeed: Provider.of<ChangeSettings>(context).color,
         applyElevationOverlayColor: true,
         appBarTheme: AppBarTheme(
-          systemOverlayStyle: Provider.of<ChangeSettings>(context).isDark == false
-              ? SystemUiOverlayStyle.dark
-              : SystemUiOverlayStyle.light,
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent, // Durum çubuğu arka planı şeffaf
+            statusBarIconBrightness: Provider.of<ChangeSettings>(context).isDark == false
+                ? Brightness.dark
+                : Brightness.light, // Durum çubuğu simgeleri koyu renk yap
+          ),
           toolbarHeight: 45,
           titleSpacing: 30,
           color: Colors.transparent,
