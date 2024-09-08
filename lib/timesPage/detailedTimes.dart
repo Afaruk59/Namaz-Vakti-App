@@ -7,13 +7,11 @@ class DetailedTimesBtn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      bottom: 4,
-      left: 4,
-      child: FilledButton.tonal(
-        style: ElevatedButton.styleFrom(
-          elevation: 15,
-        ),
-        child: Icon(Icons.menu),
+      bottom: 15,
+      left: 15,
+      child: IconButton(
+        iconSize: 25,
+        icon: Icon(Icons.menu),
         onPressed: () {
           showModalBottomSheet(
             backgroundColor: Theme.of(context).cardTheme.color,

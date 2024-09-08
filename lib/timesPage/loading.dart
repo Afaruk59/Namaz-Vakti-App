@@ -18,7 +18,7 @@ class _LoadingState extends State<Loading> {
     Timer.periodic(Duration(seconds: 1), (Timer t) {
       if (ChangeSettings.isLocalized) {
         if (mounted) {
-          Navigator.popAndPushNamed(context, '/times');
+          Navigator.popAndPushNamed(context, '/');
         }
       }
     });

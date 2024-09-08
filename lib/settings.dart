@@ -35,93 +35,102 @@ class SettingsCard extends StatelessWidget {
             children: [
               Card(
                 color: Theme.of(context).cardColor,
-                child: SwitchListTile(
-                  title: Text('Koyu Tema'),
-                  value: Provider.of<ChangeSettings>(context).isDark,
-                  onChanged: (_) =>
-                      Provider.of<ChangeSettings>(context, listen: false).toggleTheme(),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                  child: SwitchListTile(
+                    title: Text('Koyu Tema'),
+                    value: Provider.of<ChangeSettings>(context).isDark,
+                    onChanged: (_) =>
+                        Provider.of<ChangeSettings>(context, listen: false).toggleTheme(),
+                  ),
                 ),
               ),
               Card(
                 color: Theme.of(context).cardColor,
-                child: SwitchListTile(
-                  title: Text('Kalıcı Bildirim'),
-                  value: Provider.of<ChangeSettings>(context).isOpen,
-                  onChanged: (_) {
-                    Provider.of<ChangeSettings>(context, listen: false).toggleNot();
-                    Provider.of<ChangeSettings>(context, listen: false).openNot();
-                  },
-                ),
-              ),
-              Card(
-                color: Theme.of(context).cardColor,
-                child: ListTile(
-                  title: Text('Renk'),
-                  trailing: FilledButton.tonal(
-                    style: ElevatedButton.styleFrom(
-                      elevation: 10,
-                    ),
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: Text("Renk Seçimi"),
-                          content: Container(
-                            height: 200,
-                            child: Column(
-                              children: [
-                                Expanded(
-                                  child: Row(
-                                    children: [
-                                      ColorCircle(col: Colors.blueGrey),
-                                      ColorCircle(col: Colors.red),
-                                      ColorCircle(col: Colors.blue),
-                                      ColorCircle(col: Colors.green),
-                                      ColorCircle(col: Colors.yellow),
-                                    ],
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Row(
-                                    children: [
-                                      ColorCircle(col: Colors.amber),
-                                      ColorCircle(col: Colors.grey),
-                                      ColorCircle(col: Colors.indigo),
-                                      ColorCircle(col: Colors.lightBlue),
-                                      ColorCircle(col: Colors.lightGreen),
-                                      ColorCircle(col: Colors.lime),
-                                      ColorCircle(col: Colors.orange),
-                                    ],
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Row(
-                                    children: [
-                                      ColorCircle(col: Colors.pink),
-                                      ColorCircle(col: Colors.purple),
-                                      ColorCircle(col: Colors.teal),
-                                      ColorCircle(col: Colors.brown),
-                                      ColorCircle(col: Colors.cyan),
-                                      ColorCircle(col: Colors.deepOrange),
-                                      ColorCircle(col: Colors.deepPurple),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: Text('Tamam'),
-                            ),
-                          ],
-                        ),
-                      );
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                  child: SwitchListTile(
+                    title: Text('Kalıcı Bildirim'),
+                    value: Provider.of<ChangeSettings>(context).isOpen,
+                    onChanged: (_) {
+                      Provider.of<ChangeSettings>(context, listen: false).toggleNot();
+                      Provider.of<ChangeSettings>(context, listen: false).openNot();
                     },
-                    child: Icon(Icons.color_lens),
+                  ),
+                ),
+              ),
+              Card(
+                color: Theme.of(context).cardColor,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                  child: ListTile(
+                    title: Text('Tema Rengi'),
+                    trailing: FilledButton.tonal(
+                      style: ElevatedButton.styleFrom(
+                        elevation: 10,
+                      ),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text("Renk Seçimi"),
+                            content: Container(
+                              height: 200,
+                              child: Column(
+                                children: [
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        ColorCircle(col: Colors.blueGrey),
+                                        ColorCircle(col: Colors.red),
+                                        ColorCircle(col: Colors.blue),
+                                        ColorCircle(col: Colors.green),
+                                        ColorCircle(col: Colors.yellow),
+                                      ],
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        ColorCircle(col: Colors.amber),
+                                        ColorCircle(col: Colors.grey),
+                                        ColorCircle(col: Colors.indigo),
+                                        ColorCircle(col: Colors.lightBlue),
+                                        ColorCircle(col: Colors.lightGreen),
+                                        ColorCircle(col: Colors.lime),
+                                        ColorCircle(col: Colors.orange),
+                                      ],
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        ColorCircle(col: Colors.pink),
+                                        ColorCircle(col: Colors.purple),
+                                        ColorCircle(col: Colors.teal),
+                                        ColorCircle(col: Colors.brown),
+                                        ColorCircle(col: Colors.cyan),
+                                        ColorCircle(col: Colors.deepOrange),
+                                        ColorCircle(col: Colors.deepPurple),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Text('Tamam'),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                      child: Icon(Icons.color_lens),
+                    ),
                   ),
                 ),
               ),

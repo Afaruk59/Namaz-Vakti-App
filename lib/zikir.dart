@@ -11,7 +11,6 @@ class Zikir extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text('Zikir'),
       ),
@@ -111,6 +110,12 @@ class _ZikirCardState extends State<ZikirCard> {
                                                   actions: [
                                                     TextButton(
                                                       onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: Text('Vazgeç'),
+                                                    ),
+                                                    TextButton(
+                                                      onPressed: () {
                                                         setState(() {
                                                           _stack = 0;
                                                           _target = 33;
@@ -123,12 +128,6 @@ class _ZikirCardState extends State<ZikirCard> {
                                                         Navigator.pop(context);
                                                       },
                                                       child: Text('Evet'),
-                                                    ),
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: Text('Vazgeç'),
                                                     ),
                                                   ],
                                                 );
@@ -259,6 +258,12 @@ class _ZikirCardState extends State<ZikirCard> {
                                                         ),
                                                         actions: [
                                                           TextButton(
+                                                            onPressed: () {
+                                                              Navigator.of(context).pop();
+                                                            },
+                                                            child: Text('Vazgeç'),
+                                                          ),
+                                                          TextButton(
                                                             child: Text('OK'),
                                                             onPressed: () {
                                                               if (_textFieldController.text != '' &&
@@ -271,12 +276,6 @@ class _ZikirCardState extends State<ZikirCard> {
                                                               }
                                                               Navigator.of(context).pop();
                                                             },
-                                                          ),
-                                                          TextButton(
-                                                            onPressed: () {
-                                                              Navigator.of(context).pop();
-                                                            },
-                                                            child: Text('Vazgeç'),
                                                           ),
                                                         ],
                                                       );
@@ -511,6 +510,12 @@ class _ZikirCardState extends State<ZikirCard> {
                                           ),
                                           actions: [
                                             TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: Text('Vazgeç'),
+                                            ),
+                                            TextButton(
                                               child: Text('OK'),
                                               onPressed: () {
                                                 setState(() {
@@ -540,12 +545,6 @@ class _ZikirCardState extends State<ZikirCard> {
                                                 Navigator.of(context).pop();
                                               },
                                             ),
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                              child: Text('Vazgeç'),
-                                            ),
                                           ],
                                         );
                                       });
@@ -567,6 +566,12 @@ class _ZikirCardState extends State<ZikirCard> {
                                                 content: Text(
                                                     'Gerçekten profili silmek istiyor musunuz?'),
                                                 actions: [
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context).pop();
+                                                    },
+                                                    child: Text('Vazgeç'),
+                                                  ),
                                                   TextButton(
                                                     child: Text('Sil'),
                                                     onPressed: () {
@@ -592,12 +597,6 @@ class _ZikirCardState extends State<ZikirCard> {
                                                           .loadZikirStack(_selectedProfile);
                                                       Navigator.of(context).pop();
                                                     },
-                                                  ),
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      Navigator.of(context).pop();
-                                                    },
-                                                    child: Text('Vazgeç'),
                                                   ),
                                                 ],
                                               );

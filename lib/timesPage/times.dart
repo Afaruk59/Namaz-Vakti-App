@@ -38,7 +38,7 @@ class Times extends StatelessWidget {
       appBar: AppBar(
         title: Text('Vakitler'),
         actions: [
-          IconButton.outlined(
+          IconButton(
               iconSize: MainApp.currentHeight! < 700.0 ? 20.0 : 25.0,
               onPressed: () {
                 Navigator.pushNamed(context, '/alarms');
@@ -214,7 +214,9 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
   void initState() {
     super.initState();
     cityID = ChangeSettings.id;
-    loadPrayerTimes();
+    if (imsak == null) {
+      loadPrayerTimes();
+    }
   }
 
   void selectDate(DateTime today) {
@@ -543,7 +545,7 @@ class mainTimes extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
+      padding: const EdgeInsets.all(5),
       child: Row(
         children: [
           Expanded(
@@ -587,9 +589,7 @@ class mainTimes extends StatelessWidget {
                     'Yatsı',
                     style: timeStyle,
                   ),
-                  SizedBox(
-                    height: 0,
-                  ),
+                  Container(),
                 ],
               ),
             ),
@@ -635,9 +635,7 @@ class mainTimes extends StatelessWidget {
                     '${DateFormat('HH:mm').format(yatsi ?? DateTime.now())}',
                     style: timeStyle,
                   ),
-                  SizedBox(
-                    height: 0,
-                  ),
+                  Container(),
                 ],
               ),
             ),
@@ -737,7 +735,7 @@ class _ClockState extends State<Clock> {
             ? Center(child: CircularProgressIndicator())
             : SizedBox.expand(
                 child: Padding(
-                  padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
+                  padding: const EdgeInsets.all(5),
                   child: Card(
                     color: Theme.of(context).cardColor,
                     shape: RoundedRectangleBorder(

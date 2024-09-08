@@ -1,12 +1,12 @@
 import 'dart:async';
-
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:namaz_vakti_app/api/sheets_api.dart';
-import 'package:namaz_vakti_app/main.dart';
+import 'package:namaz_vakti_app/more.dart';
+import 'package:namaz_vakti_app/qibla.dart';
 import 'package:namaz_vakti_app/settings.dart';
-import 'package:provider/provider.dart';
+import 'package:namaz_vakti_app/timesPage/times.dart';
+import 'package:namaz_vakti_app/zikir.dart';
 
 class homePage extends StatefulWidget {
   const homePage({
@@ -20,6 +20,8 @@ class homePage extends StatefulWidget {
 class _homePageState extends State<homePage> {
   Timer? timer;
   static bool alertOpen = false;
+  int _currentIndex = 0;
+  final PageController _pageController = PageController();
 
   @override
   void initState() {
@@ -79,7 +81,7 @@ class _homePageState extends State<homePage> {
               alertOpen = false;
               _checkWifi();
               Navigator.pop(context);
-              Navigator.of(context).pushNamed('/times');
+              Navigator.of(context).pushNamed('/');
             },
           ),
         ],
@@ -90,199 +92,62 @@ class _homePageState extends State<homePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Namaz Vakti App'),
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 0.0 : 5.0),
-        child: Column(
-          children: [
-            Expanded(
-              flex: 4,
-              child: homeCard(
-                title: 'Vakitler',
-                route: '/times',
-                img: 'clock',
-              ),
-            ),
-            Carousel(),
-            Expanded(
-              flex: 3,
-              child: homeCard(
-                title: 'Faydalı Kaynaklar',
-                route: '/books',
-                img: 'books',
-              ),
-            ),
-            Expanded(
-              flex: 3,
-              child: homeCard(
-                title: 'Ayarlar',
-                route: '/settings',
-                img: 'settings',
-              ),
-            ),
-            Expanded(
-              flex: 1,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: Card(
-                  child: SizedBox.expand(
-                    child: Center(
-                      child: Text('apk ver: 19'),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class homeCard extends StatefulWidget {
-  final String title;
-  final String route;
-  final String img;
-
-  const homeCard({
-    super.key,
-    required this.title,
-    required this.route,
-    required this.img,
-  });
-
-  @override
-  State<homeCard> createState() => _homeCardState();
-}
-
-class _homeCardState extends State<homeCard> {
-  static String light = '';
-  void _checkLight() {
-    if (Provider.of<ChangeSettings>(context).isDark == false) {
-      light = 'light';
-    } else {
-      light = '';
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    _checkLight();
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: MainApp.currentHeight! < 700.0 ? 1 : 3),
-      child: TextButton(
-        style: ButtonStyle(
-          // ignore: deprecated_member_use
-          overlayColor: MaterialStateProperty.all(Colors.transparent),
-        ),
-        onPressed: () {
-          Navigator.pushNamed(context, widget.route);
+      resizeToAvoidBottomInset: false,
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
         },
-        child: Stack(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                image: DecorationImage(
-                  image: AssetImage('assets/img/${widget.img}${light}.jpg'),
-                  fit: BoxFit.cover,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.3), // Gölge rengi ve opaklığı
-                    spreadRadius: 5, // Gölgenin yayılma alanı
-                    blurRadius: 10, // Gölgenin bulanıklığı
-                    offset: Offset(0, 5), // Gölgenin yatay ve dikey kayması
-                  ),
-                ],
-              ),
-            ),
-            Positioned(
-              bottom: MainApp.currentHeight! < 700.0 ? 5.0 : 15.0,
-              left: MainApp.currentHeight! < 700.0 ? 5.0 : 15.0,
-              child: Container(
-                width: 160,
-                child: Stack(
-                  children: [
-                    Text(
-                      widget.title,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: MainApp.currentHeight! < 700.0 ? 17 : 20,
-                        foreground: Paint()
-                          ..style = PaintingStyle.stroke
-                          ..strokeWidth = 3
-                          ..color = Colors.black,
-                      ),
-                    ),
-                    Text(
-                      widget.title,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: MainApp.currentHeight! < 700.0 ? 17 : 20,
-                          color: Colors.white),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
+        children: [
+          Times(),
+          Qibla(),
+          Zikir(),
+          Settings(),
+          More(),
+        ],
       ),
-    );
-  }
-}
-
-class Carousel extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    return _CarouselState();
-  }
-}
-
-class _CarouselState extends State<Carousel> {
-  final CarouselSliderController _controller = CarouselSliderController();
-
-  List<Widget> list = [
-    homeCard(
-      title: 'Kıble Pusulası',
-      route: '/qibla',
-      img: 'compass',
-    ),
-    homeCard(
-      title: 'Zikir',
-      route: '/zikir',
-      img: 'zikir',
-    ),
-    homeCard(
-      title: 'Kaza Takibi',
-      route: '/kaza',
-      img: 'kaza',
-    ),
-    homeCard(
-      title: 'Mübarek Günler ve Geceler',
-      route: '/dates',
-      img: 'mescidi-nebevi',
-    ),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      flex: 5,
-      child: CarouselSlider(
-        items: list,
-        options: CarouselOptions(
-          autoPlayInterval: Duration(seconds: 8),
-          autoPlayAnimationDuration: Duration(seconds: 2),
-          enlargeCenterPage: true,
-          aspectRatio: 16 / 9,
-          autoPlay: true,
-        ),
-        carouselController: _controller,
+      bottomNavigationBar: NavigationBar(
+        backgroundColor: Colors.transparent,
+        height: 70,
+        labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+        selectedIndex: _currentIndex,
+        onDestinationSelected: (int index) {
+          setState(() {
+            _currentIndex = index;
+          });
+          // Sayfalar arası geçişi PageView ile kontrol et
+          _pageController.animateToPage(index,
+              duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
+        },
+        destinations: const <Widget>[
+          NavigationDestination(
+            selectedIcon: Icon(Icons.schedule),
+            icon: Icon(Icons.schedule),
+            label: 'Vakitler',
+          ),
+          NavigationDestination(
+            selectedIcon: Icon(Icons.navigation),
+            icon: Icon(Icons.navigation_outlined),
+            label: 'Kıble',
+          ),
+          NavigationDestination(
+            selectedIcon: Icon(Icons.timer),
+            icon: Icon(Icons.timer_outlined),
+            label: 'Zikir',
+          ),
+          NavigationDestination(
+            selectedIcon: Icon(Icons.settings),
+            icon: Icon(Icons.settings_outlined),
+            label: 'Ayarlar',
+          ),
+          NavigationDestination(
+            selectedIcon: Icon(Icons.more_horiz),
+            icon: Icon(Icons.more_horiz),
+            label: 'Daha Fazla',
+          ),
+        ],
       ),
     );
   }

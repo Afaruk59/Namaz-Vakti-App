@@ -57,22 +57,28 @@ class MainApp extends StatelessWidget {
         colorSchemeSeed: Provider.of<ChangeSettings>(context).color,
         applyElevationOverlayColor: true,
         appBarTheme: AppBarTheme(
-          elevation: 10,
-          color: Provider.of<ChangeSettings>(context).isDark == false
-              ? Provider.of<ChangeSettings>(context).color.shade400
-              : Provider.of<ChangeSettings>(context).color.shade900,
-          titleTextStyle: GoogleFonts.dmSerifText(fontSize: 25.0),
+          systemOverlayStyle: Provider.of<ChangeSettings>(context).isDark == false
+              ? SystemUiOverlayStyle.dark
+              : SystemUiOverlayStyle.light,
+          toolbarHeight: 45,
+          titleSpacing: 30,
+          color: Colors.transparent,
+          titleTextStyle: GoogleFonts.ubuntu(
+              fontSize: 25.0,
+              color: Provider.of<ChangeSettings>(context).isDark == false
+                  ? Colors.black87
+                  : Colors.white),
         ),
         cardTheme: CardTheme(
             color: Provider.of<ChangeSettings>(context).isDark == false
-                ? Provider.of<ChangeSettings>(context).color.shade300
+                ? Provider.of<ChangeSettings>(context).color.shade200
                 : Provider.of<ChangeSettings>(context).color.shade800,
             elevation: 10),
         cardColor: Provider.of<ChangeSettings>(context).isDark == false
             ? const Color.fromARGB(255, 230, 230, 230)
             : const Color.fromARGB(255, 46, 46, 46),
       ),
-      initialRoute: ChangeSettings.isfirst == true ? '/startup' : '/times',
+      initialRoute: ChangeSettings.isfirst == true ? '/startup' : '/',
       routes: {
         '/': (context) => homePage(),
         '/times': (context) => Times(),

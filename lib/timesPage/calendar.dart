@@ -91,13 +91,11 @@ class _CalendarBtnState extends State<CalendarBtn> {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      bottom: 4,
-      right: 4,
-      child: FilledButton.tonal(
-        style: ElevatedButton.styleFrom(
-          elevation: 15,
-        ),
-        child: Icon(Icons.date_range_rounded),
+      bottom: 15,
+      right: 15,
+      child: IconButton(
+        iconSize: 25,
+        icon: Icon(Icons.date_range_rounded),
         onPressed: () async {
           if (_ilk) {
             await _fetchDay();

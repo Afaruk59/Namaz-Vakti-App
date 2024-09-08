@@ -48,14 +48,14 @@ class _LocationState extends State<Location> {
               child: Text("Vazgeç"),
               onPressed: () {
                 Navigator.pop(context);
-                Navigator.popAndPushNamed(context, '/times');
+                Navigator.popAndPushNamed(context, '/');
               },
             ),
             TextButton(
               child: Text("Konumu Aç"),
               onPressed: () {
                 Navigator.pop(context);
-                Navigator.popAndPushNamed(context, '/times');
+                Navigator.popAndPushNamed(context, '/');
                 Geolocator.openLocationSettings();
               },
             ),
@@ -153,5 +153,3 @@ class _LocationState extends State<Location> {
     );
   }
 }
-
-class ChangeLocation {}
