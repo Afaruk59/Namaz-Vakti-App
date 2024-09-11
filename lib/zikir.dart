@@ -11,6 +11,7 @@ class Zikir extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text('Zikir'),
       ),
@@ -273,6 +274,13 @@ class _ZikirCardState extends State<ZikirCard> {
                                                                   _target = int.parse(
                                                                       _textFieldController.text);
                                                                 });
+                                                                Provider.of<ChangeSettings>(context,
+                                                                        listen: false)
+                                                                    .saveZikirProfile(
+                                                                        _selectedProfile,
+                                                                        _count,
+                                                                        _target,
+                                                                        _stack);
                                                               }
                                                               Navigator.of(context).pop();
                                                             },

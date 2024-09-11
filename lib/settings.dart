@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:namaz_vakti_app/main.dart';
-import 'package:namaz_vakti_app/notification.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -25,7 +24,6 @@ class SettingsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<ChangeSettings>(context, listen: false).loadNotFromSharedPref();
     return Padding(
       padding: const EdgeInsets.all(5),
       child: Card(
@@ -42,20 +40,6 @@ class SettingsCard extends StatelessWidget {
                     value: Provider.of<ChangeSettings>(context).isDark,
                     onChanged: (_) =>
                         Provider.of<ChangeSettings>(context, listen: false).toggleTheme(),
-                  ),
-                ),
-              ),
-              Card(
-                color: Theme.of(context).cardColor,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                  child: SwitchListTile(
-                    title: Text('Kalıcı Bildirim'),
-                    value: Provider.of<ChangeSettings>(context).isOpen,
-                    onChanged: (_) {
-                      Provider.of<ChangeSettings>(context, listen: false).toggleNot();
-                      Provider.of<ChangeSettings>(context, listen: false).openNot();
-                    },
                   ),
                 ),
               ),
@@ -171,7 +155,7 @@ class ChangeSettings with ChangeNotifier {
   bool isOpen = false;
   MaterialColor color = Colors.blueGrey;
 
-  static String? id;
+  static String? cityID;
   static String? cityName;
   static String? cityState;
   static bool isLocalized = false;
@@ -291,47 +275,22 @@ class ChangeSettings with ChangeNotifier {
     }
   }
 
-  //NOTIFICATION SETTINGS
-  void openNot() async {
-    if (isOpen == true) {
-      NotificationService.showPersistentNotification(0);
-    } else {
-      await NotificationService.flutterLocalNotificationsPlugin.cancel(0);
-    }
-  }
-
-  void toggleNot() {
-    isOpen = !isOpen;
-    saveNottoSharedPref(isOpen);
-    notifyListeners();
-  }
-
-  void loadNotFromSharedPref() {
-    isOpen = _settings.getBool('notification') ?? false;
-    print('loaded persistent: $isOpen');
-  }
-
-  void saveNottoSharedPref(bool value) {
-    _settings.setBool('notification', value);
-    print('saved persistent: $isOpen');
-  }
-
   //LOCATION SETTINGS
   void loadLocalFromSharedPref() {
-    id = _settings.getString('location') ?? null;
+    cityID = _settings.getString('location') ?? '16741';
     cityName = _settings.getString('name') ?? null;
     cityState = _settings.getString('state') ?? null;
-    print('Loaded: $id');
+    print('Loaded: $cityID');
   }
 
   void saveLocaltoSharedPref(String value, String name, String state) {
     _settings.setString('location', value);
     _settings.setString('name', name);
     _settings.setString('state', state);
-    id = value;
+    cityID = value;
     cityName = name;
     cityState = state;
-    print('Saved: $id');
+    print('Saved: $cityID');
     isLocalized = true;
   }
 

@@ -9,7 +9,6 @@ import 'package:namaz_vakti_app/dates.dart';
 import 'package:namaz_vakti_app/homePage.dart';
 import 'package:namaz_vakti_app/timesPage/loading.dart';
 import 'package:namaz_vakti_app/timesPage/location.dart';
-import 'package:namaz_vakti_app/notification.dart';
 import 'package:namaz_vakti_app/qibla.dart';
 import 'package:namaz_vakti_app/settings.dart';
 import 'package:namaz_vakti_app/startup.dart';
@@ -23,7 +22,6 @@ void main() async {
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
-  await NotificationService.init();
   tz.initializeTimeZones();
   await ChangeSettings().createSharedPrefObject();
   ChangeSettings().loadLocalFromSharedPref();
@@ -84,7 +82,10 @@ class MainApp extends StatelessWidget {
       ),
       initialRoute: ChangeSettings.isfirst == true ? '/startup' : '/',
       routes: {
-        '/': (context) => homePage(),
+        '/': (context) => ChangeNotifierProvider<TimeData>(
+              create: (context) => TimeData(),
+              child: homePage(),
+            ),
         '/times': (context) => Times(),
         '/qibla': (context) => Qibla(),
         '/zikir': (context) => Zikir(),
@@ -93,7 +94,10 @@ class MainApp extends StatelessWidget {
         '/settings': (context) => Settings(),
         '/kaza': (context) => Kaza(),
         '/location': (context) => Location(),
-        '/loading': (context) => Loading(),
+        '/loading': (context) => ChangeNotifierProvider<TimeData>(
+              create: (context) => TimeData(),
+              child: Loading(),
+            ),
         '/alarms': (context) => Alarms(),
         '/startup': (context) => Startup(),
       },

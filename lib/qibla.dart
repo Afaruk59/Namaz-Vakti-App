@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_compass/flutter_compass.dart';
 import 'package:namaz_vakti_app/main.dart';
+import 'package:namaz_vakti_app/settings.dart';
 import 'package:namaz_vakti_app/timesPage/times.dart';
+import 'package:provider/provider.dart';
 import 'package:xml/xml.dart' as xml;
 import 'package:http/http.dart' as http;
 
@@ -47,7 +49,7 @@ class _QiblaCardState extends State<QiblaCard> {
 
   Future<void> loadTarget() async {
     String url =
-        'https://www.namazvakti.com/XML.php?cityID=${cityID}'; // Çevrimiçi XML dosyasının URL'si
+        'https://www.namazvakti.com/XML.php?cityID=${ChangeSettings.cityID}'; // Çevrimiçi XML dosyasının URL'si
 
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
@@ -156,7 +158,7 @@ class _QiblaCardState extends State<QiblaCard> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
-                                        city!,
+                                        Provider.of<TimeData>(context).city!,
                                         textAlign: TextAlign.center,
                                         style: TextStyle(fontWeight: FontWeight.bold),
                                       ),
@@ -167,7 +169,7 @@ class _QiblaCardState extends State<QiblaCard> {
                                         ),
                                       ),
                                       Text(
-                                        cityState!,
+                                        Provider.of<TimeData>(context).cityState!,
                                       ),
                                     ],
                                   )),
