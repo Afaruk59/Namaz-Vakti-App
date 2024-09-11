@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:namaz_vakti_app/api/sheets_api.dart';
+import 'package:namaz_vakti_app/main.dart';
 import 'package:namaz_vakti_app/more.dart';
 import 'package:namaz_vakti_app/qibla.dart';
 import 'package:namaz_vakti_app/settings.dart';
@@ -110,7 +111,7 @@ class _homePageState extends State<homePage> {
       ),
       bottomNavigationBar: NavigationBar(
         backgroundColor: Colors.transparent,
-        height: 70,
+        height: MainApp.currentHeight! < 700.0 ? 55 : 70,
         labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
         selectedIndex: _currentIndex,
         onDestinationSelected: (int index) {

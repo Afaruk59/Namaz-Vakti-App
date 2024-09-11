@@ -27,7 +27,7 @@ void main() async {
   tz.initializeTimeZones();
   await ChangeSettings().createSharedPrefObject();
   ChangeSettings().loadLocalFromSharedPref();
-  ChangeSettings.loadFirstFromSharedPref();
+
   initializeDateFormatting().then((_) {
     runApp(
       ChangeNotifierProvider<ChangeSettings>(
@@ -47,6 +47,7 @@ class MainApp extends StatelessWidget {
     MainApp.currentHeight = MediaQuery.of(context).size.height;
     Provider.of<ChangeSettings>(context, listen: false).loadCol();
     Provider.of<ChangeSettings>(context, listen: false).loadThemeFromSharedPref();
+    Provider.of<ChangeSettings>(context, listen: false).loadFirstFromSharedPref();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -63,19 +64,19 @@ class MainApp extends StatelessWidget {
                 ? Brightness.dark
                 : Brightness.light, // Durum çubuğu simgeleri koyu renk yap
           ),
-          toolbarHeight: 45,
+          toolbarHeight: currentHeight! < 700 ? 40 : 45,
           titleSpacing: 30,
           color: Colors.transparent,
           titleTextStyle: GoogleFonts.ubuntu(
-              fontSize: 25.0,
+              fontSize: currentHeight! < 700 ? 22 : 25.0,
               color: Provider.of<ChangeSettings>(context).isDark == false
                   ? Colors.black87
                   : Colors.white),
         ),
         cardTheme: CardTheme(
             color: Provider.of<ChangeSettings>(context).isDark == false
-                ? Provider.of<ChangeSettings>(context).color.shade200
-                : Provider.of<ChangeSettings>(context).color.shade800,
+                ? Provider.of<ChangeSettings>(context).color.shade300
+                : Provider.of<ChangeSettings>(context).color.shade900,
             elevation: 10),
         cardColor: Provider.of<ChangeSettings>(context).isDark == false
             ? const Color.fromARGB(255, 230, 230, 230)

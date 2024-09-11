@@ -66,7 +66,7 @@ class _ZikirCardState extends State<ZikirCard> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
+      padding: const EdgeInsets.all(5),
       child: Card(
         child: Row(
           children: [
@@ -76,7 +76,7 @@ class _ZikirCardState extends State<ZikirCard> {
                 child: Column(
                   children: [
                     Expanded(
-                      flex: 2,
+                      flex: MainApp.currentHeight! < 700.0 ? 3 : 2,
                       child: Card(
                         color: Theme.of(context).cardColor,
                         child: Padding(

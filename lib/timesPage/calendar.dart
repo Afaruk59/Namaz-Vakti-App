@@ -92,7 +92,7 @@ class _CalendarBtnState extends State<CalendarBtn> {
   Widget build(BuildContext context) {
     return Positioned(
       bottom: 15,
-      right: 15,
+      right: 13,
       child: IconButton(
         iconSize: 25,
         icon: Icon(Icons.date_range_rounded),
@@ -108,6 +108,7 @@ class _CalendarBtnState extends State<CalendarBtn> {
             context: context,
             showDragHandle: true,
             scrollControlDisabledMaxHeightRatio: 0.7,
+            isScrollControlled: MainApp.currentHeight! < 700.0 ? true : false,
             elevation: 10,
             builder: (BuildContext context) {
               return Card(

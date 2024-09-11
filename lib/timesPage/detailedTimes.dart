@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:namaz_vakti_app/main.dart';
 import 'package:namaz_vakti_app/timesPage/times.dart';
 
 class DetailedTimesBtn extends StatelessWidget {
@@ -8,7 +9,7 @@ class DetailedTimesBtn extends StatelessWidget {
   Widget build(BuildContext context) {
     return Positioned(
       bottom: 15,
-      left: 15,
+      left: 13,
       child: IconButton(
         iconSize: 25,
         icon: Icon(Icons.menu),
@@ -19,6 +20,7 @@ class DetailedTimesBtn extends StatelessWidget {
             showDragHandle: true,
             scrollControlDisabledMaxHeightRatio: 0.7,
             elevation: 10,
+            isScrollControlled: MainApp.currentHeight! < 700.0 ? true : false,
             builder: (BuildContext context) {
               return Card(
                 color: Theme.of(context).cardColor,

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:namaz_vakti_app/timesPage/location.dart';
 import 'package:namaz_vakti_app/main.dart';
-import 'package:namaz_vakti_app/settings.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Startup extends StatelessWidget {
@@ -10,11 +9,15 @@ class Startup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Hoşgeldiniz.'),
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: Text('Hoşgeldiniz.'),
+        ),
+        body: StartupCard(),
       ),
-      body: StartupCard(),
     );
   }
 }
@@ -26,7 +29,7 @@ class StartupCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
+        padding: const EdgeInsets.all(5),
         child: Card(
           child: Padding(
             padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
@@ -112,7 +115,6 @@ class StartupCard extends StatelessWidget {
                                 onPressed: () {
                                   Navigator.pop(context);
                                   Navigator.popAndPushNamed(context, '/startup');
-                                  ChangeSettings.saveFirsttoSharedPref(false);
                                 },
                               ),
                               TextButton(
@@ -121,7 +123,6 @@ class StartupCard extends StatelessWidget {
                                   Navigator.pop(context);
                                   Navigator.popAndPushNamed(context, '/startup');
                                   Geolocator.openLocationSettings();
-                                  ChangeSettings.saveFirsttoSharedPref(false);
                                 },
                               ),
                             ],
@@ -129,9 +130,8 @@ class StartupCard extends StatelessWidget {
                         );
                       }
                       await firstLoc();
-                      ChangeSettings.saveFirsttoSharedPref(false);
                     },
-                    child: Text('Devam Et'),
+                    child: Text('Konumu Bul'),
                   ),
                 ],
               ),

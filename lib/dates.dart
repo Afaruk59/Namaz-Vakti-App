@@ -11,7 +11,7 @@ class Dates extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Mübarek Gün ve Geceler'),
+        title: Text(MainApp.currentHeight! < 700.0 ? 'Mübarek Günler' : 'Mübarek Gün ve Geceler'),
       ),
       body: DatesCard(),
     );
@@ -50,19 +50,21 @@ class _DatesCardState extends State<DatesCard> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
+      padding: const EdgeInsets.all(5),
       child: Card(
         child: Scrollbar(
           child: _list.length == 0
               ? Center(child: CircularProgressIndicator())
               : Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                  padding:
+                      EdgeInsets.symmetric(vertical: MainApp.currentHeight! < 700.0 ? 5 : 10.0),
                   child: ListView.builder(
                     itemCount: _list.length ~/ 3,
                     itemBuilder: (context, index) {
                       index *= 3;
                       return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: MainApp.currentHeight! < 700.0 ? 5 : 10.0),
                         child: Card(
                           color: Theme.of(context).cardColor,
                           child: ListTile(

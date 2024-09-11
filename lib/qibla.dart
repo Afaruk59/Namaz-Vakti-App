@@ -114,7 +114,7 @@ class _QiblaCardState extends State<QiblaCard> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
+      padding: const EdgeInsets.all(5),
       child: Card(
         child: Padding(
           padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),

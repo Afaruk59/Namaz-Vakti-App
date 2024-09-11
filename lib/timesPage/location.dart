@@ -3,6 +3,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:namaz_vakti_app/api/sheets_api.dart';
 import 'package:namaz_vakti_app/main.dart';
 import 'package:namaz_vakti_app/settings.dart';
+import 'package:namaz_vakti_app/timesPage/loading.dart';
 
 Future<void> firstLoc() async {
   await _LocationState().getCurrentLocation();
@@ -135,8 +136,10 @@ class _LocationState extends State<Location> {
     return FilledButton.tonal(
       style: ElevatedButton.styleFrom(elevation: 10),
       onPressed: () async {
-        Navigator.pop(context);
-        Navigator.pushNamed(context, '/loading');
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => Loading()),
+        );
         await getCurrentLocation();
       },
       child: Row(

@@ -170,7 +170,7 @@ class BookCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      padding: const EdgeInsets.symmetric(horizontal: 5.0),
       child: Card(
         color: col,
         child: Padding(
@@ -185,6 +185,7 @@ class BookCard extends StatelessWidget {
                   showDragHandle: true,
                   backgroundColor: col,
                   elevation: 10,
+                  isScrollControlled: MainApp.currentHeight! < 700.0 ? true : false,
                   builder: (BuildContext context) {
                     return Card(
                       elevation: 20,

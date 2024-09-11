@@ -11,13 +11,11 @@ class More extends StatelessWidget {
         title: Text('Daha Fazla'),
       ),
       body: Padding(
-        padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
+        padding: const EdgeInsets.all(5),
         child: Card(
-          child: ListView(
+          child: Column(
             children: [
-              SizedBox(
-                height: 15,
-              ),
+              SizedBox(height: MainApp.currentHeight! < 700.0 ? 5 : 15.0),
               MoreCard(
                 title: 'Mübarek Günler ve Geceler',
                 icon: Icon(Icons.calendar_month),
@@ -56,11 +54,11 @@ class MoreCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+      padding: EdgeInsets.symmetric(horizontal: MainApp.currentHeight! < 700.0 ? 5 : 15.0),
       child: Card(
         color: Theme.of(context).cardColor,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0),
+          padding: EdgeInsets.symmetric(horizontal: MainApp.currentHeight! < 700.0 ? 5 : 15.0),
           child: ListTile(
             splashColor: Colors.transparent,
             onTap: () {

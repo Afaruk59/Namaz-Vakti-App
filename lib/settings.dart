@@ -27,7 +27,7 @@ class SettingsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     Provider.of<ChangeSettings>(context, listen: false).loadNotFromSharedPref();
     return Padding(
-      padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
+      padding: const EdgeInsets.all(5),
       child: Card(
         child: Padding(
           padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 15.0),
@@ -318,9 +318,9 @@ class ChangeSettings with ChangeNotifier {
 
   //LOCATION SETTINGS
   void loadLocalFromSharedPref() {
-    id = _settings.getString('location') ?? '16741';
-    cityName = _settings.getString('name') ?? 'İstanbul Merkez';
-    cityState = _settings.getString('state') ?? 'İstanbul';
+    id = _settings.getString('location') ?? null;
+    cityName = _settings.getString('name') ?? null;
+    cityState = _settings.getString('state') ?? null;
     print('Loaded: $id');
   }
 
@@ -336,12 +336,12 @@ class ChangeSettings with ChangeNotifier {
   }
 
   //STARTUP SETTINGS
-  static void loadFirstFromSharedPref() {
+  void loadFirstFromSharedPref() {
     isfirst = _settings.getBool('startup') ?? true;
     print('First: $isfirst');
   }
 
-  static saveFirsttoSharedPref(bool value) {
+  saveFirsttoSharedPref(bool value) {
     _settings.setBool('startup', value);
     print('First: $isfirst');
   }
