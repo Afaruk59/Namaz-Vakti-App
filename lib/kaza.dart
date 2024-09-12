@@ -8,12 +8,27 @@ class Kaza extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: Text('Kaza Takibi'),
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Provider.of<ChangeSettings>(context).isDark == false
+                ? Provider.of<ChangeSettings>(context).color.shade300
+                : Provider.of<ChangeSettings>(context).color.shade800,
+            Theme.of(context).colorScheme.surfaceContainer,
+          ],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          stops: [0.01, 0.4],
+        ),
       ),
-      body: KazaCard(),
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          title: Text('Kaza Takibi'),
+        ),
+        body: KazaCard(),
+      ),
     );
   }
 }

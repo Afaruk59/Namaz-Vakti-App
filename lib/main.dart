@@ -49,6 +49,65 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        scaffoldBackgroundColor: Colors.transparent,
+        useMaterial3: true,
+        brightness: Provider.of<ChangeSettings>(context).isDark == false
+            ? Brightness.light
+            : Brightness.dark,
+        colorSchemeSeed: Provider.of<ChangeSettings>(context).color,
+        applyElevationOverlayColor: true,
+        appBarTheme: AppBarTheme(
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent, // Durum çubuğu arka planı şeffaf
+            statusBarIconBrightness: Provider.of<ChangeSettings>(context).isDark == false
+                ? Brightness.dark
+                : Brightness.light, // Durum çubuğu simgeleri koyu renk yap
+          ),
+          toolbarHeight: currentHeight! < 700 ? 40 : 45,
+          titleSpacing: 30,
+          color: Colors.transparent,
+          titleTextStyle: GoogleFonts.ubuntu(
+              fontSize: currentHeight! < 700 ? 22 : 25.0,
+              color: Provider.of<ChangeSettings>(context).isDark == false
+                  ? Colors.black87
+                  : Colors.white),
+        ),
+        cardTheme: CardTheme(
+            color: Provider.of<ChangeSettings>(context).isDark == false
+                ? Provider.of<ChangeSettings>(context).color.shade400
+                : Provider.of<ChangeSettings>(context).color.shade900,
+            elevation: 10),
+        cardColor: Provider.of<ChangeSettings>(context).isDark == false
+            ? const Color.fromARGB(255, 230, 230, 230)
+            : const Color.fromARGB(255, 40, 40, 40),
+      ),
+      initialRoute: ChangeSettings.isfirst == true ? '/startup' : '/',
+      routes: {
+        '/': (context) => ChangeNotifierProvider<TimeData>(
+              create: (context) => TimeData(),
+              child: homePage(),
+            ),
+        '/times': (context) => Times(),
+        '/qibla': (context) => Qibla(),
+        '/zikir': (context) => Zikir(),
+        '/dates': (context) => Dates(),
+        '/books': (context) => Books(),
+        '/settings': (context) => Settings(),
+        '/kaza': (context) => Kaza(),
+        '/location': (context) => Location(),
+        '/loading': (context) => ChangeNotifierProvider<TimeData>(
+              create: (context) => TimeData(),
+              child: Loading(),
+            ),
+        '/alarms': (context) => Alarms(),
+        '/startup': (context) => Startup(),
+      },
+    );
+  }
+}
+
+/*
+ThemeData(
         useMaterial3: true,
         brightness: Provider.of<ChangeSettings>(context).isDark == false
             ? Brightness.light
@@ -80,27 +139,4 @@ class MainApp extends StatelessWidget {
             ? const Color.fromARGB(255, 230, 230, 230)
             : const Color.fromARGB(255, 46, 46, 46),
       ),
-      initialRoute: ChangeSettings.isfirst == true ? '/startup' : '/',
-      routes: {
-        '/': (context) => ChangeNotifierProvider<TimeData>(
-              create: (context) => TimeData(),
-              child: homePage(),
-            ),
-        '/times': (context) => Times(),
-        '/qibla': (context) => Qibla(),
-        '/zikir': (context) => Zikir(),
-        '/dates': (context) => Dates(),
-        '/books': (context) => Books(),
-        '/settings': (context) => Settings(),
-        '/kaza': (context) => Kaza(),
-        '/location': (context) => Location(),
-        '/loading': (context) => ChangeNotifierProvider<TimeData>(
-              create: (context) => TimeData(),
-              child: Loading(),
-            ),
-        '/alarms': (context) => Alarms(),
-        '/startup': (context) => Startup(),
-      },
-    );
-  }
-}
+*/

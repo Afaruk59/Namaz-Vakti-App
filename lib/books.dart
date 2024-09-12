@@ -11,144 +11,161 @@ class Books extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _isDark = Provider.of<ChangeSettings>(context).isDark;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Kaynak Kitaplar'),
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Provider.of<ChangeSettings>(context).isDark == false
+                ? Provider.of<ChangeSettings>(context).color.shade300
+                : Provider.of<ChangeSettings>(context).color.shade900,
+            Theme.of(context).colorScheme.surfaceContainer,
+          ],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          stops: [0.01, 0.4],
+        ),
       ),
-      body: Scrollbar(
-        child: ListView(
-          children: [
-            SizedBox(
-              height: 10,
-            ),
-            BookCard(
-              bookName: 'Tam İlmihâl Se`âdet-i Ebediyye',
-              col: _isDark == false
-                  ? Color.fromARGB(255, 177, 65, 57)
-                  : Color.fromARGB(255, 136, 50, 44),
-              description: Descriptions.ilmihal,
-              link: 'https://www.hakikatkitabevi.net/bookread.php?bookCode=001',
-            ),
-            BookCard(
-              bookName: 'Mektûbat Tercemesi',
-              col: _isDark == false
-                  ? Color.fromARGB(255, 47, 104, 150)
-                  : Color.fromARGB(255, 34, 75, 108),
-              description: Descriptions.mektubat,
-              link: 'https://www.hakikatkitabevi.net/bookread.php?bookCode=002',
-            ),
-            BookCard(
-              bookName: 'İslâm Ahlâkı',
-              col: _isDark == false
-                  ? Color.fromARGB(255, 203, 193, 103)
-                  : Color.fromARGB(255, 152, 145, 78),
-              description: Descriptions.islam,
-              link: 'https://www.hakikatkitabevi.net/bookread.php?bookCode=003',
-            ),
-            BookCard(
-              bookName: 'Kıyâmet ve Âhıret',
-              col: _isDark == false
-                  ? Color.fromARGB(255, 213, 106, 99)
-                  : Color.fromARGB(255, 165, 83, 77),
-              description: Descriptions.kiyamet,
-              link: 'https://www.hakikatkitabevi.net/bookread.php?bookCode=004',
-            ),
-            BookCard(
-              bookName: 'Namâz Kitâbı',
-              col: _isDark == false
-                  ? Color.fromARGB(255, 121, 179, 123)
-                  : Color.fromARGB(255, 89, 132, 91),
-              description: Descriptions.namaz,
-              link: 'https://www.hakikatkitabevi.net/bookread.php?bookCode=005',
-            ),
-            BookCard(
-              bookName: 'Cevâb Veremedi',
-              col: _isDark == false
-                  ? Color.fromARGB(255, 197, 125, 149)
-                  : Color.fromARGB(255, 159, 101, 120),
-              description: Descriptions.cevab,
-              link: 'https://www.hakikatkitabevi.net/bookread.php?bookCode=006',
-            ),
-            BookCard(
-              bookName: 'Eshâb-ı Kirâm',
-              col: _isDark == false
-                  ? Color.fromARGB(255, 31, 147, 189)
-                  : Color.fromARGB(255, 23, 109, 140),
-              description: Descriptions.eshabikiram,
-              link: 'https://www.hakikatkitabevi.net/bookread.php?bookCode=007',
-            ),
-            BookCard(
-              bookName: 'Fâideli Bilgiler',
-              col: _isDark == false ? Colors.orange[300]! : const Color.fromARGB(255, 209, 151, 64),
-              description: Descriptions.faideli,
-              link: 'https://www.hakikatkitabevi.net/bookread.php?bookCode=008',
-            ),
-            BookCard(
-              bookName: 'Hak Sözün Vesîkaları',
-              col: _isDark == false
-                  ? const Color.fromARGB(255, 117, 146, 160)
-                  : const Color.fromARGB(255, 96, 119, 130),
-              description: Descriptions.haksoz,
-              link: 'https://www.hakikatkitabevi.net/bookread.php?bookCode=009',
-            ),
-            BookCard(
-              bookName: 'Herkese Lâzım Olan Îmân',
-              col: _isDark == false
-                  ? const Color.fromARGB(255, 180, 133, 189)
-                  : const Color.fromARGB(255, 137, 101, 144),
-              description: Descriptions.iman,
-              link: 'https://www.hakikatkitabevi.net/bookread.php?bookCode=010',
-            ),
-            BookCard(
-              bookName: 'İngiliz Câsûsunun İ`tirâfları',
-              col: _isDark == false
-                  ? const Color.fromARGB(255, 205, 196, 111)
-                  : const Color.fromARGB(255, 136, 130, 75),
-              description: Descriptions.casus,
-              link: 'https://www.hakikatkitabevi.net/bookread.php?bookCode=011',
-            ),
-            BookCard(
-              bookName: 'Kıymetsiz Yazılar',
-              col: _isDark == false
-                  ? const Color.fromARGB(255, 199, 141, 160)
-                  : const Color.fromARGB(255, 150, 107, 122),
-              description: Descriptions.kiymetsiz,
-              link: 'https://www.hakikatkitabevi.net/bookread.php?bookCode=012',
-            ),
-            BookCard(
-              bookName: 'Menâkıb-ı Çihâr Yâr-i Güzîn',
-              col: _isDark == false
-                  ? const Color.fromARGB(255, 195, 168, 128)
-                  : const Color.fromARGB(255, 142, 123, 95),
-              description: Descriptions.menakib,
-              link: 'https://www.hakikatkitabevi.net/bookread.php?bookCode=013',
-            ),
-            BookCard(
-              bookName: 'Şevâhid-ün Nübüvve',
-              col: _isDark == false
-                  ? const Color.fromARGB(255, 187, 137, 63)
-                  : const Color.fromARGB(255, 142, 105, 49),
-              description: Descriptions.sevahid,
-              link: 'https://www.hakikatkitabevi.net/bookread.php?bookCode=014',
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 50.0),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(elevation: 10),
-                onPressed: () async {
-                  final Uri url = Uri.parse('https://www.hakikatkitabevi.net/');
-                  await launchUrl(url);
-                },
-                child: Text(
-                  'www.hakikatkitabevi.net',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Kaynak Kitaplar'),
+        ),
+        body: Scrollbar(
+          child: ListView(
+            children: [
+              SizedBox(
+                height: 10,
+              ),
+              BookCard(
+                bookName: 'Tam İlmihâl Se`âdet-i Ebediyye',
+                col: _isDark == false
+                    ? Color.fromARGB(255, 177, 65, 57)
+                    : Color.fromARGB(255, 136, 50, 44),
+                description: Descriptions.ilmihal,
+                link: 'https://www.hakikatkitabevi.net/bookread.php?bookCode=001',
+              ),
+              BookCard(
+                bookName: 'Mektûbat Tercemesi',
+                col: _isDark == false
+                    ? Color.fromARGB(255, 47, 104, 150)
+                    : Color.fromARGB(255, 34, 75, 108),
+                description: Descriptions.mektubat,
+                link: 'https://www.hakikatkitabevi.net/bookread.php?bookCode=002',
+              ),
+              BookCard(
+                bookName: 'İslâm Ahlâkı',
+                col: _isDark == false
+                    ? Color.fromARGB(255, 203, 193, 103)
+                    : Color.fromARGB(255, 152, 145, 78),
+                description: Descriptions.islam,
+                link: 'https://www.hakikatkitabevi.net/bookread.php?bookCode=003',
+              ),
+              BookCard(
+                bookName: 'Kıyâmet ve Âhıret',
+                col: _isDark == false
+                    ? Color.fromARGB(255, 213, 106, 99)
+                    : Color.fromARGB(255, 165, 83, 77),
+                description: Descriptions.kiyamet,
+                link: 'https://www.hakikatkitabevi.net/bookread.php?bookCode=004',
+              ),
+              BookCard(
+                bookName: 'Namâz Kitâbı',
+                col: _isDark == false
+                    ? Color.fromARGB(255, 121, 179, 123)
+                    : Color.fromARGB(255, 89, 132, 91),
+                description: Descriptions.namaz,
+                link: 'https://www.hakikatkitabevi.net/bookread.php?bookCode=005',
+              ),
+              BookCard(
+                bookName: 'Cevâb Veremedi',
+                col: _isDark == false
+                    ? Color.fromARGB(255, 197, 125, 149)
+                    : Color.fromARGB(255, 159, 101, 120),
+                description: Descriptions.cevab,
+                link: 'https://www.hakikatkitabevi.net/bookread.php?bookCode=006',
+              ),
+              BookCard(
+                bookName: 'Eshâb-ı Kirâm',
+                col: _isDark == false
+                    ? Color.fromARGB(255, 31, 147, 189)
+                    : Color.fromARGB(255, 23, 109, 140),
+                description: Descriptions.eshabikiram,
+                link: 'https://www.hakikatkitabevi.net/bookread.php?bookCode=007',
+              ),
+              BookCard(
+                bookName: 'Fâideli Bilgiler',
+                col: _isDark == false
+                    ? Colors.orange[300]!
+                    : const Color.fromARGB(255, 209, 151, 64),
+                description: Descriptions.faideli,
+                link: 'https://www.hakikatkitabevi.net/bookread.php?bookCode=008',
+              ),
+              BookCard(
+                bookName: 'Hak Sözün Vesîkaları',
+                col: _isDark == false
+                    ? const Color.fromARGB(255, 117, 146, 160)
+                    : const Color.fromARGB(255, 96, 119, 130),
+                description: Descriptions.haksoz,
+                link: 'https://www.hakikatkitabevi.net/bookread.php?bookCode=009',
+              ),
+              BookCard(
+                bookName: 'Herkese Lâzım Olan Îmân',
+                col: _isDark == false
+                    ? const Color.fromARGB(255, 180, 133, 189)
+                    : const Color.fromARGB(255, 137, 101, 144),
+                description: Descriptions.iman,
+                link: 'https://www.hakikatkitabevi.net/bookread.php?bookCode=010',
+              ),
+              BookCard(
+                bookName: 'İngiliz Câsûsunun İ`tirâfları',
+                col: _isDark == false
+                    ? const Color.fromARGB(255, 205, 196, 111)
+                    : const Color.fromARGB(255, 136, 130, 75),
+                description: Descriptions.casus,
+                link: 'https://www.hakikatkitabevi.net/bookread.php?bookCode=011',
+              ),
+              BookCard(
+                bookName: 'Kıymetsiz Yazılar',
+                col: _isDark == false
+                    ? const Color.fromARGB(255, 199, 141, 160)
+                    : const Color.fromARGB(255, 150, 107, 122),
+                description: Descriptions.kiymetsiz,
+                link: 'https://www.hakikatkitabevi.net/bookread.php?bookCode=012',
+              ),
+              BookCard(
+                bookName: 'Menâkıb-ı Çihâr Yâr-i Güzîn',
+                col: _isDark == false
+                    ? const Color.fromARGB(255, 195, 168, 128)
+                    : const Color.fromARGB(255, 142, 123, 95),
+                description: Descriptions.menakib,
+                link: 'https://www.hakikatkitabevi.net/bookread.php?bookCode=013',
+              ),
+              BookCard(
+                bookName: 'Şevâhid-ün Nübüvve',
+                col: _isDark == false
+                    ? const Color.fromARGB(255, 187, 137, 63)
+                    : const Color.fromARGB(255, 142, 105, 49),
+                description: Descriptions.sevahid,
+                link: 'https://www.hakikatkitabevi.net/bookread.php?bookCode=014',
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(elevation: 10),
+                  onPressed: () async {
+                    final Uri url = Uri.parse('https://www.hakikatkitabevi.net/');
+                    await launchUrl(url);
+                  },
+                  child: Text(
+                    'www.hakikatkitabevi.net',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-          ],
+              SizedBox(
+                height: 10,
+              ),
+            ],
+          ),
         ),
       ),
     );

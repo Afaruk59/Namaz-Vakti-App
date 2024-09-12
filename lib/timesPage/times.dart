@@ -568,8 +568,37 @@ class DetailedTimesBtn extends StatelessWidget {
   const DetailedTimesBtn({super.key});
   static TextStyle style = TextStyle(fontSize: MainApp.currentHeight! < 700.0 ? 17.0 : 18.0);
 
+  static DateTime? _imsak;
+  static DateTime? _sabah;
+  static DateTime? _gunes;
+  static DateTime? _ogle;
+  static DateTime? _ikindi;
+  static DateTime? _aksam;
+  static DateTime? _yatsi;
+  static DateTime? _israk;
+  static DateTime? _kerahat;
+  static DateTime? _asrisani;
+  static DateTime? _isfirar;
+  static DateTime? _istibak;
+  static DateTime? _isaisani;
+  static DateTime? _kible;
+
   @override
   Widget build(BuildContext context) {
+    _imsak = Provider.of<TimeData>(context).imsak;
+    _sabah = Provider.of<TimeData>(context).sabah;
+    _gunes = Provider.of<TimeData>(context).gunes;
+    _ogle = Provider.of<TimeData>(context).ogle;
+    _ikindi = Provider.of<TimeData>(context).ikindi;
+    _aksam = Provider.of<TimeData>(context).aksam;
+    _yatsi = Provider.of<TimeData>(context).yatsi;
+    _israk = Provider.of<TimeData>(context).israk;
+    _kerahat = Provider.of<TimeData>(context).kerahat;
+    _asrisani = Provider.of<TimeData>(context).asrisani;
+    _isfirar = Provider.of<TimeData>(context).isfirar;
+    _istibak = Provider.of<TimeData>(context).istibak;
+    _isaisani = Provider.of<TimeData>(context).isaisani;
+    _kible = Provider.of<TimeData>(context).kible;
     return Positioned(
       bottom: 15,
       left: 13,
@@ -581,7 +610,7 @@ class DetailedTimesBtn extends StatelessWidget {
             backgroundColor: Theme.of(context).cardTheme.color,
             context: context,
             showDragHandle: true,
-            scrollControlDisabledMaxHeightRatio: 0.7,
+            scrollControlDisabledMaxHeightRatio: 0.8,
             elevation: 10,
             isScrollControlled: MainApp.currentHeight! < 700.0 ? true : false,
             builder: (BuildContext context) {
@@ -680,59 +709,59 @@ class DetailedTimesBtn extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               Text(
-                                '${DateFormat('HH:mm').format(Provider.of<TimeData>(context).imsak!)}',
+                                '${DateFormat('HH:mm').format(_imsak!)}',
                                 style: style,
                               ),
                               Text(
-                                '${DateFormat('HH:mm').format(Provider.of<TimeData>(context).sabah!)}',
+                                '${DateFormat('HH:mm').format(_sabah!)}',
                                 style: style,
                               ),
                               Text(
-                                '${DateFormat('HH:mm').format(Provider.of<TimeData>(context).gunes!)}',
+                                '${DateFormat('HH:mm').format(_gunes!)}',
                                 style: style,
                               ),
                               Text(
-                                '${DateFormat('HH:mm').format(Provider.of<TimeData>(context).israk!)}',
+                                '${DateFormat('HH:mm').format(_israk!)}',
                                 style: style,
                               ),
                               Text(
-                                '${DateFormat('HH:mm').format(Provider.of<TimeData>(context).kerahat!)}',
+                                '${DateFormat('HH:mm').format(_kerahat!)}',
                                 style: style,
                               ),
                               Text(
-                                '${DateFormat('HH:mm').format(Provider.of<TimeData>(context).ogle!)}',
+                                '${DateFormat('HH:mm').format(_ogle!)}',
                                 style: style,
                               ),
                               Text(
-                                '${DateFormat('HH:mm').format(Provider.of<TimeData>(context).ikindi!)}',
+                                '${DateFormat('HH:mm').format(_ikindi!)}',
                                 style: style,
                               ),
                               Text(
-                                '${DateFormat('HH:mm').format(Provider.of<TimeData>(context).asrisani!)}',
+                                '${DateFormat('HH:mm').format(_asrisani!)}',
                                 style: style,
                               ),
                               Text(
-                                '${DateFormat('HH:mm').format(Provider.of<TimeData>(context).isfirar!)}',
+                                '${DateFormat('HH:mm').format(_isfirar!)}',
                                 style: style,
                               ),
                               Text(
-                                '${DateFormat('HH:mm').format(Provider.of<TimeData>(context).aksam!)}',
+                                '${DateFormat('HH:mm').format(_aksam!)}',
                                 style: style,
                               ),
                               Text(
-                                '${DateFormat('HH:mm').format(Provider.of<TimeData>(context).istibak!)}',
+                                '${DateFormat('HH:mm').format(_istibak!)}',
                                 style: style,
                               ),
                               Text(
-                                '${DateFormat('HH:mm').format(Provider.of<TimeData>(context).yatsi!)}',
+                                '${DateFormat('HH:mm').format(_yatsi!)}',
                                 style: style,
                               ),
                               Text(
-                                '${DateFormat('HH:mm').format(Provider.of<TimeData>(context).isaisani!)}',
+                                '${DateFormat('HH:mm').format(_isaisani!)}',
                                 style: style,
                               ),
                               Text(
-                                '${Provider.of<TimeData>(context).kible != null ? DateFormat('HH:mm').format(Provider.of<TimeData>(context).kible!) : '-'}',
+                                '${_kible != null ? DateFormat('HH:mm').format(_kible!) : '-'}',
                                 style: style,
                               ),
                             ],
@@ -895,7 +924,14 @@ class _ClockState extends State<Clock> {
   @override
   Widget build(BuildContext context) {
     return Provider.of<TimeData>(context).isEnabled == false
-        ? Container()
+        ? IconButton(
+            iconSize: 25,
+            style: ElevatedButton.styleFrom(elevation: 10),
+            onPressed: () {
+              Navigator.popAndPushNamed(context, '/');
+            },
+            icon: Icon(Icons.replay_outlined),
+          )
         : Padding(
             padding: MainApp.currentHeight! < 700.0
                 ? const EdgeInsets.fromLTRB(60, 0, 60, 0)
@@ -911,7 +947,7 @@ class _ClockState extends State<Clock> {
                       borderRadius: BorderRadius.circular(10),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.3), // Gölge rengi ve opaklığı
+                          color: Colors.black.withOpacity(0.25), // Gölge rengi ve opaklığı
                           spreadRadius: 5, // Gölgenin yayılma alanı
                           blurRadius: 10, // Gölgenin bulanıklığı
                           offset: Offset(0, 5), // Gölgenin yatay ve dikey kayması

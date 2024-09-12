@@ -107,7 +107,7 @@ class _CalendarBtnState extends State<CalendarBtn> {
             backgroundColor: Theme.of(context).cardTheme.color,
             context: context,
             showDragHandle: true,
-            scrollControlDisabledMaxHeightRatio: 0.7,
+            scrollControlDisabledMaxHeightRatio: 0.8,
             isScrollControlled: MainApp.currentHeight! < 700.0 ? true : false,
             elevation: 10,
             builder: (BuildContext context) {

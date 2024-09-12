@@ -8,6 +8,7 @@ import 'package:namaz_vakti_app/qibla.dart';
 import 'package:namaz_vakti_app/settings.dart';
 import 'package:namaz_vakti_app/timesPage/times.dart';
 import 'package:namaz_vakti_app/zikir.dart';
+import 'package:provider/provider.dart';
 
 class homePage extends StatefulWidget {
   const homePage({
@@ -94,24 +95,38 @@ class _homePageState extends State<homePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: PageView(
-        controller: _pageController,
-        onPageChanged: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        children: [
-          Times(),
-          Qibla(),
-          Zikir(),
-          Settings(),
-          More(),
-        ],
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Provider.of<ChangeSettings>(context).isDark == false
+                  ? Provider.of<ChangeSettings>(context).color.shade300
+                  : Provider.of<ChangeSettings>(context).color.shade800,
+              Theme.of(context).colorScheme.surfaceContainer,
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            stops: [0.01, 0.4],
+          ),
+        ),
+        child: PageView(
+          controller: _pageController,
+          onPageChanged: (index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
+          children: [
+            Times(),
+            Qibla(),
+            Zikir(),
+            More(),
+            Settings(),
+          ],
+        ),
       ),
       bottomNavigationBar: NavigationBar(
-        backgroundColor: Colors.transparent,
-        height: MainApp.currentHeight! < 700.0 ? 55 : 70,
+        height: MainApp.currentHeight! < 700.0 ? 55 : 65,
         labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
         selectedIndex: _currentIndex,
         onDestinationSelected: (int index) {
@@ -139,14 +154,14 @@ class _homePageState extends State<homePage> {
             label: 'Zikir',
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.settings),
-            icon: Icon(Icons.settings_outlined),
-            label: 'Ayarlar',
-          ),
-          NavigationDestination(
             selectedIcon: Icon(Icons.more_horiz),
             icon: Icon(Icons.more_horiz),
             label: 'Daha Fazla',
+          ),
+          NavigationDestination(
+            selectedIcon: Icon(Icons.settings),
+            icon: Icon(Icons.settings_outlined),
+            label: 'Ayarlar',
           ),
         ],
       ),
