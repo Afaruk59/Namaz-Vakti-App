@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:namaz_vakti_app/main.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -117,6 +118,18 @@ class SettingsCard extends StatelessWidget {
                     ),
                   ),
                 ),
+              ),
+              FilledButton.tonal(
+                onPressed: () {
+                  FlutterBackgroundService().startService();
+                },
+                child: Text('Start'),
+              ),
+              FilledButton.tonal(
+                onPressed: () {
+                  FlutterBackgroundService().invoke('stopService');
+                },
+                child: Text('Stop'),
               ),
             ],
           ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:namaz_vakti_app/background.dart';
 import 'package:namaz_vakti_app/kaza.dart';
 import 'package:namaz_vakti_app/timesPage/alarms.dart';
 import 'package:namaz_vakti_app/books.dart';
@@ -19,6 +20,7 @@ import 'package:timezone/data/latest.dart' as tz;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await initService();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
