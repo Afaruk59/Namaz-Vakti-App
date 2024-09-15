@@ -192,7 +192,7 @@ class _QiblaCardState extends State<QiblaCard> {
                                       children: [
                                         Text(
                                           'Hedef: ${_target! < 0 ? (360 + _target!).toStringAsFixed(2) : _target!.toStringAsFixed(2)}°',
-                                          style: TextStyle(fontSize: 18),
+                                          style: TextStyle(fontSize: 16),
                                         ),
                                         Text(
                                           '${_direction! < 0 ? (360 + _direction!).toStringAsFixed(2) : _direction!.toStringAsFixed(2)}°',

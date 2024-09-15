@@ -916,6 +916,11 @@ class _ClockState extends State<Clock> {
     super.initState();
     Timer.periodic(Duration(seconds: 1), (Timer t) {
       if (mounted) {
+        if (DateTime.now().hour == 00 &&
+            DateTime.now().minute == 00 &&
+            DateTime.now().second == 01) {
+          Navigator.popAndPushNamed(context, '/');
+        }
         Provider.of<TimeData>(context, listen: false).updateTime();
       }
     });

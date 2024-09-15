@@ -21,6 +21,7 @@ import 'package:timezone/data/latest.dart' as tz;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initService();
+  await requestNotificationPermission();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);

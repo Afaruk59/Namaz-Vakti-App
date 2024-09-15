@@ -185,6 +185,7 @@ class _ZikirCardState extends State<ZikirCard> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Expanded(
+                                        flex: 3,
                                         child: Column(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
@@ -218,12 +219,77 @@ class _ZikirCardState extends State<ZikirCard> {
                                                             Divider(
                                                               height: 20,
                                                             ),
-                                                            Text(
-                                                              textAlign: TextAlign.center,
-                                                              '$_target',
-                                                              style: TextStyle(
-                                                                  fontSize: 25,
-                                                                  fontWeight: FontWeight.bold),
+                                                            TextButton(
+                                                              onPressed: () {
+                                                                showDialog(
+                                                                    context: context,
+                                                                    builder:
+                                                                        (BuildContext context) {
+                                                                      return AlertDialog(
+                                                                        title:
+                                                                            Text('Zikir Sayısı:'),
+                                                                        content: TextField(
+                                                                          keyboardType:
+                                                                              TextInputType.number,
+                                                                          inputFormatters: <TextInputFormatter>[
+                                                                            FilteringTextInputFormatter
+                                                                                .digitsOnly, // Sadece rakamlar
+                                                                          ],
+                                                                          controller:
+                                                                              _textFieldController,
+                                                                          decoration:
+                                                                              InputDecoration(
+                                                                                  hintText:
+                                                                                      '$_target'),
+                                                                        ),
+                                                                        actions: [
+                                                                          TextButton(
+                                                                            onPressed: () {
+                                                                              Navigator.of(context)
+                                                                                  .pop();
+                                                                            },
+                                                                            child: Text('Vazgeç'),
+                                                                          ),
+                                                                          TextButton(
+                                                                            child: Text('OK'),
+                                                                            onPressed: () {
+                                                                              if (_textFieldController
+                                                                                          .text !=
+                                                                                      '' &&
+                                                                                  _textFieldController
+                                                                                          .text
+                                                                                          .length <
+                                                                                      5) {
+                                                                                setState(() {
+                                                                                  _target = int.parse(
+                                                                                      _textFieldController
+                                                                                          .text);
+                                                                                });
+                                                                                Provider.of<ChangeSettings>(
+                                                                                        context,
+                                                                                        listen:
+                                                                                            false)
+                                                                                    .saveZikirProfile(
+                                                                                        _selectedProfile,
+                                                                                        _count,
+                                                                                        _target,
+                                                                                        _stack);
+                                                                              }
+                                                                              Navigator.of(context)
+                                                                                  .pop();
+                                                                            },
+                                                                          ),
+                                                                        ],
+                                                                      );
+                                                                    });
+                                                              },
+                                                              child: Text(
+                                                                textAlign: TextAlign.center,
+                                                                '$_target',
+                                                                style: TextStyle(
+                                                                    fontSize: 25,
+                                                                    fontWeight: FontWeight.bold),
+                                                              ),
                                                             ),
                                                           ],
                                                         ),
@@ -237,116 +303,66 @@ class _ZikirCardState extends State<ZikirCard> {
                                         ),
                                       ),
                                       Expanded(
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            FilledButton.tonal(
-                                              onPressed: () {
-                                                showDialog(
-                                                    context: context,
-                                                    builder: (BuildContext context) {
-                                                      return AlertDialog(
-                                                        title: Text('Zikir Sayısı:'),
-                                                        content: TextField(
-                                                          keyboardType: TextInputType.number,
-                                                          inputFormatters: <TextInputFormatter>[
-                                                            FilteringTextInputFormatter
-                                                                .digitsOnly, // Sadece rakamlar
-                                                          ],
-                                                          controller: _textFieldController,
-                                                          decoration:
-                                                              InputDecoration(hintText: '$_target'),
-                                                        ),
-                                                        actions: [
-                                                          TextButton(
-                                                            onPressed: () {
-                                                              Navigator.of(context).pop();
-                                                            },
-                                                            child: Text('Vazgeç'),
-                                                          ),
-                                                          TextButton(
-                                                            child: Text('OK'),
-                                                            onPressed: () {
-                                                              if (_textFieldController.text != '' &&
-                                                                  _textFieldController.text.length <
-                                                                      5) {
-                                                                setState(() {
-                                                                  _target = int.parse(
-                                                                      _textFieldController.text);
-                                                                });
-                                                                Provider.of<ChangeSettings>(context,
-                                                                        listen: false)
-                                                                    .saveZikirProfile(
-                                                                        _selectedProfile,
-                                                                        _count,
-                                                                        _target,
-                                                                        _stack);
-                                                              }
-                                                              Navigator.of(context).pop();
-                                                            },
-                                                          ),
-                                                        ],
-                                                      );
-                                                    });
-                                              },
-                                              child: Icon(Icons.edit),
-                                              style: ElevatedButton.styleFrom(
-                                                elevation: 10,
-                                              ),
-                                            ),
-                                            FilledButton.tonal(
-                                              onLongPress: () {
-                                                setState(() {
-                                                  _target += 10;
-                                                  Provider.of<ChangeSettings>(context,
-                                                          listen: false)
-                                                      .saveZikirProfile(_selectedProfile, _count,
-                                                          _target, _stack);
-                                                });
-                                              },
-                                              onPressed: () {
-                                                setState(() {
-                                                  _target++;
-                                                  Provider.of<ChangeSettings>(context,
-                                                          listen: false)
-                                                      .saveZikirProfile(_selectedProfile, _count,
-                                                          _target, _stack);
-                                                });
-                                              },
-                                              child: Icon(Icons.add),
-                                              style: ElevatedButton.styleFrom(
-                                                elevation: 10,
-                                              ),
-                                            ),
-                                            FilledButton.tonal(
-                                              onLongPress: () {
-                                                setState(() {
-                                                  if (_target != 0) {
-                                                    _target -= 10;
+                                        flex: 2,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(right: 10.0),
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              FilledButton.tonal(
+                                                onLongPress: () {
+                                                  setState(() {
+                                                    _target += 10;
                                                     Provider.of<ChangeSettings>(context,
                                                             listen: false)
                                                         .saveZikirProfile(_selectedProfile, _count,
                                                             _target, _stack);
-                                                  }
-                                                });
-                                              },
-                                              onPressed: () {
-                                                setState(() {
-                                                  if (_target != 0) {
-                                                    _target--;
+                                                  });
+                                                },
+                                                onPressed: () {
+                                                  setState(() {
+                                                    _target++;
                                                     Provider.of<ChangeSettings>(context,
                                                             listen: false)
                                                         .saveZikirProfile(_selectedProfile, _count,
                                                             _target, _stack);
-                                                  }
-                                                });
-                                              },
-                                              child: Icon(Icons.remove),
-                                              style: ElevatedButton.styleFrom(
-                                                elevation: 10,
+                                                  });
+                                                },
+                                                child: Icon(Icons.add),
+                                                style: ElevatedButton.styleFrom(
+                                                  elevation: 10,
+                                                ),
                                               ),
-                                            ),
-                                          ],
+                                              FilledButton.tonal(
+                                                onLongPress: () {
+                                                  setState(() {
+                                                    if (_target != 0) {
+                                                      _target -= 10;
+                                                      Provider.of<ChangeSettings>(context,
+                                                              listen: false)
+                                                          .saveZikirProfile(_selectedProfile,
+                                                              _count, _target, _stack);
+                                                    }
+                                                  });
+                                                },
+                                                onPressed: () {
+                                                  setState(() {
+                                                    if (_target != 0) {
+                                                      _target--;
+                                                      Provider.of<ChangeSettings>(context,
+                                                              listen: false)
+                                                          .saveZikirProfile(_selectedProfile,
+                                                              _count, _target, _stack);
+                                                    }
+                                                  });
+                                                },
+                                                child: Icon(Icons.remove),
+                                                style: ElevatedButton.styleFrom(
+                                                  elevation: 10,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ],

@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 const AndroidNotificationChannel notificationChannel = AndroidNotificationChannel(
@@ -28,7 +29,6 @@ Future<void> initService() async {
       foregroundServiceNotificationId: 90,
     ),
   );
-  service.startService();
 }
 
 @pragma('vm:enry-point')
@@ -63,4 +63,13 @@ void onStart(ServiceInstance service) {
       );
     },
   );
+}
+
+Future<void> requestNotificationPermission() async {
+  PermissionStatus status = await Permission.notification.request();
+  if (status.isGranted) {
+    print("Bildirim izni verildi.");
+  } else if (status.isDenied || status.isPermanentlyDenied) {
+    print("Bildirim izni reddedildi.");
+  }
 }
