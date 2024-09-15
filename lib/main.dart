@@ -49,6 +49,8 @@ class MainApp extends StatelessWidget {
     Provider.of<ChangeSettings>(context, listen: false).loadCol();
     Provider.of<ChangeSettings>(context, listen: false).loadThemeFromSharedPref();
     Provider.of<ChangeSettings>(context, listen: false).loadFirstFromSharedPref();
+    Provider.of<ChangeSettings>(context, listen: false).loadNotFromSharedPref();
+    Provider.of<ChangeSettings>(context, listen: false).openNot();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

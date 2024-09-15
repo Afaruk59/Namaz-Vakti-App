@@ -185,7 +185,7 @@ class _ZikirCardState extends State<ZikirCard> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Expanded(
-                                        flex: 3,
+                                        flex: 4,
                                         child: Column(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
@@ -303,7 +303,7 @@ class _ZikirCardState extends State<ZikirCard> {
                                         ),
                                       ),
                                       Expanded(
-                                        flex: 2,
+                                        flex: 3,
                                         child: Padding(
                                           padding: const EdgeInsets.only(right: 10.0),
                                           child: Column(

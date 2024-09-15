@@ -119,17 +119,19 @@ class SettingsCard extends StatelessWidget {
                   ),
                 ),
               ),
-              FilledButton.tonal(
-                onPressed: () {
-                  FlutterBackgroundService().startService();
-                },
-                child: Text('Start'),
-              ),
-              FilledButton.tonal(
-                onPressed: () {
-                  FlutterBackgroundService().invoke('stopService');
-                },
-                child: Text('Stop'),
+              Card(
+                color: Theme.of(context).cardColor,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                  child: SwitchListTile(
+                    title: Text('Kalıcı Bildirim'),
+                    value: Provider.of<ChangeSettings>(context).isOpen,
+                    onChanged: (_) {
+                      Provider.of<ChangeSettings>(context, listen: false).toggleNot();
+                      Provider.of<ChangeSettings>(context, listen: false).openNot();
+                    },
+                  ),
+                ),
               ),
             ],
           ),
@@ -174,6 +176,35 @@ class ChangeSettings with ChangeNotifier {
   static bool isLocalized = false;
 
   static bool isfirst = true;
+
+  bool persistent = false;
+
+  //NOTIFICATION SETTINGS
+  void openNot() async {
+    if (isOpen == true) {
+      FlutterBackgroundService().startService();
+    } else {
+      FlutterBackgroundService().invoke('stopService');
+    }
+  }
+
+  void toggleNot() {
+    isOpen = !isOpen;
+    saveNottoSharedPref(isOpen);
+    notifyListeners();
+  }
+
+  void loadNotFromSharedPref() {
+    isOpen = _settings.getBool('notification') ?? false;
+    print('loaded persistent: $isOpen');
+  }
+
+  void saveNottoSharedPref(bool value) {
+    _settings.setBool('notification', value);
+    print('saved persistent: $isOpen');
+  }
+
+  //THEME SETTINGS
 
   void toggleTheme() {
     isDark = !isDark;
