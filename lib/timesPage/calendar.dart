@@ -91,7 +91,7 @@ class _CalendarBtnState extends State<CalendarBtn> {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      bottom: 15,
+      bottom: MainApp.currentHeight! < 700.0 ? 10 : 20,
       right: 13,
       child: IconButton(
         iconSize: 25,

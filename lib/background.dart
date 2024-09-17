@@ -6,7 +6,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:xml/xml.dart' as xml;
 import 'package:http/http.dart' as http;
 
@@ -33,35 +32,49 @@ String? yatsiString;
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 const AndroidNotificationChannel notificationChannel = AndroidNotificationChannel(
-  'coding is life',
-  'coding is life service',
-  description: 'Description',
+  'Persistent',
+  'Persistent Service',
+  description: 'Persistent Notification',
   importance: Importance.min,
   showBadge: false,
   enableLights: false,
   enableVibration: false,
+);
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPluginAlarm =
+    FlutterLocalNotificationsPlugin();
+const AndroidNotificationChannel notificationChannelAlarm = AndroidNotificationChannel(
+  'Alarm',
+  'Alarm Service',
+  description: 'Alarm Notification',
+  importance: Importance.high,
+  showBadge: true,
+  enableLights: true,
+  enableVibration: true,
 );
 Future<void> initService() async {
   var service = FlutterBackgroundService();
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(notificationChannel);
+  await flutterLocalNotificationsPluginAlarm
+      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(notificationChannelAlarm);
   await service.configure(
     iosConfiguration: IosConfiguration(),
     androidConfiguration: AndroidConfiguration(
       onStart: onStart,
       isForegroundMode: true,
       autoStartOnBoot: true,
-      autoStart: false,
-      notificationChannelId: 'coding is life',
+      autoStart: true,
+      notificationChannelId: 'Persistent',
       initialNotificationTitle: 'Title',
       initialNotificationContent: 'Content',
-      foregroundServiceNotificationId: 90,
+      foregroundServiceNotificationId: 12,
     ),
   );
 }
 
-@pragma('vm:enry-point')
+@pragma('vm:entry-point')
 void onStart(ServiceInstance service) async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
   DartPluginRegistrant.ensureInitialized();
@@ -76,46 +89,92 @@ void onStart(ServiceInstance service) async {
     service.stopSelf();
   });
 
-  if (sharedPreferences.getBool('notification') == false) {
+  if (sharedPreferences.getBool('notification') == false ||
+      sharedPreferences.getBool('notification') == null) {
     service.stopSelf();
   }
 
+  await loadPrayerTimes(DateTime.now());
   await showPersistent();
+  Timer.periodic(
+    Duration(minutes: 5),
+    (timer) async {
+      await loadPrayerTimes(DateTime.now());
+      await showPersistent();
+    },
+  );
+
   Timer.periodic(
     Duration(minutes: 1),
     (timer) async {
-      await showPersistent();
+      await showAlarms(imsak!, 'İmsak', 0);
+      await showAlarms(sabah!, 'Sabah', 1);
+      await showAlarms(gunes!, 'Güneş', 2);
+      await showAlarms(ogle!, 'Öğle', 3);
+      await showAlarms(ikindi!, 'İkindi', 4);
+      await showAlarms(aksam!, 'Akşam', 5);
+      await showAlarms(yatsi!, 'Yatsı', 6);
     },
   );
 }
 
-Future<void> showPersistent() async {
+Future<void> showAlarms(DateTime time, String title, int index) async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-  if (sharedPreferences.getBool('notification') == true) {
-    await loadPrayerTimes(DateTime.now());
-    flutterLocalNotificationsPlugin.show(
-      90,
-      '$cName',
-      '${DateFormat('dd/MM/yyyy').format(DateTime.now())} Namaz Vakitleri',
-      NotificationDetails(
-        android: AndroidNotificationDetails(
-          subText: '${DateFormat('dd/MM/yyyy').format(DateTime.now())}',
-          'coding is life',
-          'coding is life service',
-          ongoing: true,
-          icon: '@mipmap/ic_launcher',
-          channelShowBadge: false,
-          showWhen: false,
-          enableVibration: false,
-          enableLights: false,
-          importance: Importance.low,
-          playSound: false,
-          styleInformation: BigTextStyleInformation(
-              'İmsak - $imsakString\nSabah - $sabahString\nGüneş - $gunesString\nÖğle - $ogleString\nİkindi - $ikindiString\nAkşam - $aksamString\nYatsı - $yatsiString'),
-        ),
-      ),
-    );
+  DateTime now = DateTime.now();
+  if (now.hour == time.hour &&
+      now.minute == time.minute &&
+      sharedPreferences.getBool('$index') == true) {
+    showAlarmNot('$title', time);
   }
+}
+
+Future<void> showPersistent() async {
+  flutterLocalNotificationsPlugin.show(
+    12,
+    '$cName',
+    '${DateFormat('dd/MM/yyyy').format(DateTime.now())} Namaz Vakitleri',
+    NotificationDetails(
+      android: AndroidNotificationDetails(
+        subText: '${DateFormat('dd/MM/yyyy').format(DateTime.now())}',
+        'Persistent',
+        'Persistent Service',
+        ongoing: true,
+        icon: '@mipmap/ic_launcher',
+        channelShowBadge: false,
+        showWhen: false,
+        autoCancel: false,
+        enableVibration: false,
+        enableLights: false,
+        importance: Importance.min,
+        playSound: false,
+        styleInformation: BigTextStyleInformation(
+            'İmsak - $imsakString\nSabah - $sabahString\nGüneş - $gunesString\nÖğle - $ogleString\nİkindi - $ikindiString\nAkşam - $aksamString\nYatsı - $yatsiString'),
+      ),
+    ),
+  );
+}
+
+void showAlarmNot(String title, DateTime time) {
+  flutterLocalNotificationsPluginAlarm.show(
+    13,
+    '$title Vakti',
+    '${DateFormat('HH:mm').format(time)}',
+    NotificationDetails(
+      android: AndroidNotificationDetails(
+        'Alarm',
+        'Alarm Service',
+        ongoing: false,
+        icon: '@mipmap/ic_launcher',
+        channelShowBadge: true,
+        showWhen: true,
+        autoCancel: true,
+        enableVibration: true,
+        enableLights: true,
+        importance: Importance.high,
+        playSound: true,
+      ),
+    ),
+  );
 }
 
 Future<void> requestNotificationPermission() async {

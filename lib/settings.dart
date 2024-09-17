@@ -119,20 +119,6 @@ class SettingsCard extends StatelessWidget {
                   ),
                 ),
               ),
-              Card(
-                color: Theme.of(context).cardColor,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                  child: SwitchListTile(
-                    title: Text('Kalıcı Bildirim'),
-                    value: Provider.of<ChangeSettings>(context).isOpen,
-                    onChanged: (_) {
-                      Provider.of<ChangeSettings>(context, listen: false).toggleNot();
-                      Provider.of<ChangeSettings>(context, listen: false).openNot();
-                    },
-                  ),
-                ),
-              ),
             ],
           ),
         ),
@@ -179,12 +165,35 @@ class ChangeSettings with ChangeNotifier {
 
   bool persistent = false;
 
-  //NOTIFICATION SETTINGS
-  void openNot() async {
-    if (isOpen == true) {
-      FlutterBackgroundService().startService();
-    } else {
-      FlutterBackgroundService().invoke('stopService');
+  List<bool> alarmList = [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+  ];
+
+  void falseAll() {
+    for (int i = 0; i < 7; i++) {
+      alarmList[i] = false;
+      _settings.setBool('$i', false);
+    }
+    notifyListeners();
+  }
+
+  void toggleAlarm(int index) {
+    if (_settings.getBool('notification') ?? false) {
+      alarmList[index] = !alarmList[index];
+      _settings.setBool('$index', alarmList[index]);
+      notifyListeners();
+    }
+  }
+
+  void loadAlarm() {
+    for (int i = 0; i < 7; i++) {
+      alarmList[i] = _settings.getBool('$i') ?? false;
     }
   }
 

@@ -16,7 +16,6 @@ import 'package:namaz_vakti_app/startup.dart';
 import 'package:namaz_vakti_app/timesPage/times.dart';
 import 'package:namaz_vakti_app/zikir.dart';
 import 'package:provider/provider.dart';
-import 'package:timezone/data/latest.dart' as tz;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,7 +24,6 @@ void main() async {
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
-  tz.initializeTimeZones();
   await ChangeSettings().createSharedPrefObject();
   ChangeSettings().loadLocalFromSharedPref();
 
@@ -50,7 +48,7 @@ class MainApp extends StatelessWidget {
     Provider.of<ChangeSettings>(context, listen: false).loadThemeFromSharedPref();
     Provider.of<ChangeSettings>(context, listen: false).loadFirstFromSharedPref();
     Provider.of<ChangeSettings>(context, listen: false).loadNotFromSharedPref();
-    Provider.of<ChangeSettings>(context, listen: false).openNot();
+    Provider.of<ChangeSettings>(context, listen: false).loadAlarm();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

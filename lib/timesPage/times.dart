@@ -600,7 +600,7 @@ class DetailedTimesBtn extends StatelessWidget {
     _isaisani = Provider.of<TimeData>(context).isaisani;
     _kible = Provider.of<TimeData>(context).kible;
     return Positioned(
-      bottom: 15,
+      bottom: MainApp.currentHeight! < 700.0 ? 10 : 20,
       left: 13,
       child: IconButton(
         iconSize: 25,
