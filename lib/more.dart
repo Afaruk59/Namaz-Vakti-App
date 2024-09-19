@@ -8,7 +8,7 @@ class More extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Daha Fazla'),
+        title: const Text('Daha Fazla'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(5),
@@ -16,17 +16,17 @@ class More extends StatelessWidget {
           child: Column(
             children: [
               SizedBox(height: MainApp.currentHeight! < 700.0 ? 5 : 15.0),
-              MoreCard(
+              const MoreCard(
                 title: 'Mübarek Günler ve Geceler',
                 icon: Icon(Icons.calendar_month),
                 route: '/dates',
               ),
-              MoreCard(
+              const MoreCard(
                 title: 'Kaza Takibi',
                 icon: Icon(Icons.note_alt),
                 route: '/kaza',
               ),
-              MoreCard(
+              const MoreCard(
                 title: 'Kaynak Kitaplar',
                 icon: Icon(Icons.library_books_outlined),
                 route: '/books',

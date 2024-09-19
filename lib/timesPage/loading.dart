@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:namaz_vakti_app/main.dart';
 import 'package:namaz_vakti_app/settings.dart';
 import 'package:provider/provider.dart';
 
@@ -16,18 +18,16 @@ class _LoadingState extends State<Loading> {
   void initState() {
     super.initState();
     ChangeSettings.isLocalized = false;
-    Timer.periodic(Duration(seconds: 1), (Timer t) {
+    FlutterBackgroundService().invoke('stopService');
+    Timer.periodic(const Duration(seconds: 1), (Timer t) {
       if (ChangeSettings.isLocalized) {
         if (mounted) {
-          if (ChangeSettings.isfirst == true) {
-            Navigator.pop(context);
-            Navigator.popAndPushNamed(context, '/');
-            Provider.of<ChangeSettings>(context, listen: false).saveFirsttoSharedPref(false);
-          } else {
-            Navigator.pop(context);
-            Navigator.pushNamed(context, '/');
-            Provider.of<ChangeSettings>(context, listen: false).saveFirsttoSharedPref(false);
-          }
+          Navigator.pop(context);
+          ChangeSettings.isfirst
+              ? Navigator.popAndPushNamed(context, '/')
+              : Navigator.pushNamed(context, '/');
+          Provider.of<ChangeSettings>(context, listen: false).saveFirsttoSharedPref(false);
+          FlutterBackgroundService().startService();
         }
       }
     });
@@ -35,20 +35,7 @@ class _LoadingState extends State<Loading> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Provider.of<ChangeSettings>(context).isDark == false
-                ? Provider.of<ChangeSettings>(context).color.shade300
-                : Provider.of<ChangeSettings>(context).color.shade900,
-            Theme.of(context).colorScheme.surfaceContainer,
-          ],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          stops: [0.01, 0.4],
-        ),
-      ),
+    return const GradientBack(
       child: PopScope(
         canPop: false,
         child: Scaffold(

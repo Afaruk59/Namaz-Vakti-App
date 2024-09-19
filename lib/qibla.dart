@@ -14,9 +14,9 @@ class Qibla extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Kıble Pusulası'),
+        title: const Text('Kıble Pusulası'),
       ),
-      body: QiblaCard(),
+      body: const QiblaCard(),
     );
   }
 }
@@ -67,7 +67,7 @@ class _QiblaCardState extends State<QiblaCard> {
 
   Widget _buildCompass() {
     if (_direction == null) {
-      return Text('Yön verisi bekleniyor...');
+      return const Text('Yön verisi bekleniyor...');
     }
 
     return Stack(
@@ -104,9 +104,9 @@ class _QiblaCardState extends State<QiblaCard> {
 
   Widget _buildDirectionText() {
     if (_direction! < _target! + 3 && _direction! > _target! - 3) {
-      return Container(
-        child: Image.asset('assets/img/qibla.png'),
+      return SizedBox(
         height: 100,
+        child: Image.asset('assets/img/qibla.png'),
       );
     } else {
       return Container();
@@ -145,7 +145,7 @@ class _QiblaCardState extends State<QiblaCard> {
                               Expanded(
                                 child: Card(
                                   shape: RoundedRectangleBorder(
-                                    side: BorderSide(
+                                    side: const BorderSide(
                                       color: Colors.grey, // Kenar rengini belirleyin
                                       width: 1.0, // Kenar kalınlığını belirleyin
                                     ),
@@ -160,7 +160,7 @@ class _QiblaCardState extends State<QiblaCard> {
                                       Text(
                                         Provider.of<TimeData>(context).city!,
                                         textAlign: TextAlign.center,
-                                        style: TextStyle(fontWeight: FontWeight.bold),
+                                        style: const TextStyle(fontWeight: FontWeight.bold),
                                       ),
                                       SizedBox(
                                         width: 60,
@@ -178,7 +178,7 @@ class _QiblaCardState extends State<QiblaCard> {
                               Expanded(
                                 child: Card(
                                   shape: RoundedRectangleBorder(
-                                    side: BorderSide(
+                                    side: const BorderSide(
                                       color: Colors.grey, // Kenar rengini belirleyin
                                       width: 1.0, // Kenar kalınlığını belirleyin
                                     ),
@@ -192,11 +192,11 @@ class _QiblaCardState extends State<QiblaCard> {
                                       children: [
                                         Text(
                                           'Hedef: ${_target! < 0 ? (360 + _target!).toStringAsFixed(2) : _target!.toStringAsFixed(2)}°',
-                                          style: TextStyle(fontSize: 16),
+                                          style: const TextStyle(fontSize: 16),
                                         ),
                                         Text(
                                           '${_direction! < 0 ? (360 + _direction!).toStringAsFixed(2) : _direction!.toStringAsFixed(2)}°',
-                                          style: TextStyle(fontSize: 18),
+                                          style: const TextStyle(fontSize: 18),
                                         ),
                                       ],
                                     ),

@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:namaz_vakti_app/settings.dart';
 import 'package:namaz_vakti_app/timesPage/location.dart';
 import 'package:namaz_vakti_app/main.dart';
-import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Startup extends StatelessWidget {
@@ -11,28 +8,15 @@ class Startup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Provider.of<ChangeSettings>(context).isDark == false
-                ? Provider.of<ChangeSettings>(context).color.shade300
-                : Provider.of<ChangeSettings>(context).color.shade900,
-            Theme.of(context).colorScheme.surfaceContainer,
-          ],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          stops: [0.01, 0.4],
-        ),
-      ),
+    return GradientBack(
       child: PopScope(
         canPop: false,
         child: Scaffold(
           appBar: AppBar(
             automaticallyImplyLeading: false,
-            title: Text('Hoşgeldiniz.'),
+            title: const Text('Hoşgeldiniz.'),
           ),
-          body: StartupCard(),
+          body: const StartupCard(),
         ),
       ),
     );
@@ -59,7 +43,7 @@ class StartupCard extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     child: Card(
                       color: Theme.of(context).cardColor,
-                      child: ListTile(
+                      child: const ListTile(
                         title: Text(
                           "Vakitler Namazvakti.com'dan alınmıştır.",
                           textAlign: TextAlign.center,
@@ -68,7 +52,7 @@ class StartupCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   Padding(
@@ -76,7 +60,7 @@ class StartupCard extends StatelessWidget {
                     child: Card(
                       color: Theme.of(context).cardColor,
                       child: ListTile(
-                        title: Text(
+                        title: const Text(
                           'Namaz Vakitleri Hakkında Mühim Tenbih',
                           textAlign: TextAlign.center,
                           style: TextStyle(
@@ -91,64 +75,17 @@ class StartupCard extends StatelessWidget {
                                 'https://www.turktakvim.com/index.php?link=html/muhim_tenbih.html');
                             await launchUrl(url);
                           },
-                          child: Icon(Icons.search),
+                          child: const Icon(Icons.search),
                         ),
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
-                  FilledButton.tonal(
-                    style: ElevatedButton.styleFrom(elevation: 10),
-                    onPressed: () async {
-                      Navigator.pop(context);
-                      Navigator.pushNamed(context, '/loading');
-                      bool serviceEnabled;
-                      serviceEnabled = await Geolocator.isLocationServiceEnabled();
-                      if (!serviceEnabled) {
-                        return showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: Text("Konum Erişimi Gerekli"),
-                            content: Row(
-                              children: [
-                                Expanded(
-                                  child: Text("Devam etmek için lütfen konumu etkinleştirin."),
-                                  flex: 3,
-                                ),
-                                Expanded(
-                                  child: Icon(
-                                    Icons.location_disabled,
-                                    size: 45,
-                                  ),
-                                  flex: 1,
-                                ),
-                              ],
-                            ),
-                            actions: <Widget>[
-                              TextButton(
-                                child: Text("Vazgeç"),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                  Navigator.popAndPushNamed(context, '/startup');
-                                },
-                              ),
-                              TextButton(
-                                child: Text("Konumu Aç"),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                  Navigator.popAndPushNamed(context, '/startup');
-                                  Geolocator.openLocationSettings();
-                                },
-                              ),
-                            ],
-                          ),
-                        );
-                      }
-                      await firstLoc();
-                    },
-                    child: Text('Konumu Bul'),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 50.0),
+                    child: Location(),
                   ),
                 ],
               ),

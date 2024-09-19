@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:namaz_vakti_app/main.dart';
 import 'package:namaz_vakti_app/settings.dart';
 import 'package:provider/provider.dart';
 
@@ -8,26 +9,13 @@ class Kaza extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Provider.of<ChangeSettings>(context).isDark == false
-                ? Provider.of<ChangeSettings>(context).color.shade300
-                : Provider.of<ChangeSettings>(context).color.shade800,
-            Theme.of(context).colorScheme.surfaceContainer,
-          ],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          stops: [0.01, 0.4],
-        ),
-      ),
+    return GradientBack(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          title: Text('Kaza Takibi'),
+          title: const Text('Kaza Takibi'),
         ),
-        body: KazaCard(),
+        body: const KazaCard(),
       ),
     );
   }
@@ -44,7 +32,7 @@ class KazaCard extends StatelessWidget {
         child: Scrollbar(
           child: ListView(
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               PrayCard(
@@ -99,7 +87,7 @@ class PrayCard extends StatefulWidget {
 
 class _PrayCardState extends State<PrayCard> {
   int _changedVal = 0;
-  TextEditingController _textFieldController = TextEditingController();
+  final TextEditingController _textFieldController = TextEditingController();
 
   @override
   void initState() {
@@ -124,8 +112,8 @@ class _PrayCardState extends State<PrayCard> {
                       .saveKaza(widget.title, _changedVal);
                 });
               },
-              child: Icon(Icons.add),
-              style: ElevatedButton.styleFrom(elevation: 10, shape: CircleBorder()),
+              style: ElevatedButton.styleFrom(elevation: 10, shape: const CircleBorder()),
+              child: const Icon(Icons.add),
             ),
             Padding(
               padding: const EdgeInsets.all(5.0),
@@ -133,8 +121,8 @@ class _PrayCardState extends State<PrayCard> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    '${widget.title}',
-                    style: TextStyle(fontSize: 18),
+                    widget.title,
+                    style: const TextStyle(fontSize: 18),
                   ),
                   TextButton(
                     onPressed: () {
@@ -142,7 +130,7 @@ class _PrayCardState extends State<PrayCard> {
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
-                              title: Text('Kaza Sayısı:'),
+                              title: const Text('Kaza Sayısı:'),
                               content: TextField(
                                 keyboardType: TextInputType.number,
                                 inputFormatters: <TextInputFormatter>[
@@ -153,7 +141,7 @@ class _PrayCardState extends State<PrayCard> {
                               ),
                               actions: [
                                 TextButton(
-                                  child: Text('OK'),
+                                  child: const Text('OK'),
                                   onPressed: () {
                                     if (_textFieldController.text != '') {
                                       setState(() {
@@ -171,7 +159,7 @@ class _PrayCardState extends State<PrayCard> {
                     },
                     child: Text(
                       '$_changedVal',
-                      style: TextStyle(fontSize: 18),
+                      style: const TextStyle(fontSize: 18),
                     ),
                   ),
                 ],
@@ -187,8 +175,8 @@ class _PrayCardState extends State<PrayCard> {
                   }
                 });
               },
-              child: Icon(Icons.remove),
-              style: ElevatedButton.styleFrom(elevation: 10, shape: CircleBorder()),
+              style: ElevatedButton.styleFrom(elevation: 10, shape: const CircleBorder()),
+              child: const Icon(Icons.remove),
             ),
           ],
         ),

@@ -157,13 +157,13 @@ class TimeData extends ChangeSettings {
         kible = null;
       }
 
-      selectDate(time.add(Duration(days: 1)));
+      selectDate(time.add(const Duration(days: 1)));
       try {
         imsak2 = DateFormat('HH:mm').parse((selectedDayTimes?['imsak']).toString());
       } on Exception catch (_) {
         imsak2 = null;
       }
-      selectDate(time.subtract(Duration(days: 1)));
+      selectDate(time.subtract(const Duration(days: 1)));
       try {
         yatsi2 = DateFormat('HH:mm').parse((selectedDayTimes?['yatsı']).toString());
       } on Exception catch (_) {
@@ -175,13 +175,13 @@ class TimeData extends ChangeSettings {
   }
 
   String clock = '';
-  Duration difference = Duration(minutes: 1);
+  Duration difference = const Duration(minutes: 1);
   String pray = '';
   DateTime soontime = DateTime.now();
   bool hour = true;
   bool minute = true;
   DateTime preTime = DateTime.now();
-  Duration mainDifference = Duration(minutes: 1);
+  Duration mainDifference = const Duration(minutes: 1);
   bool isEnabled = true;
 
   void switchClock(bool value) {
@@ -278,28 +278,28 @@ class Times extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Vakitler'),
+        title: const Text('Vakitler'),
         actions: [
           IconButton(
               iconSize: MainApp.currentHeight! < 700.0 ? 22.0 : 25.0,
               onPressed: () {
                 Navigator.pushNamed(context, '/alarms');
               },
-              icon: Icon(
+              icon: const Icon(
                 Icons.alarm,
               )),
-          SizedBox(
+          const SizedBox(
             width: 20,
           ),
         ],
       ),
-      body: TimesBody(),
+      body: const TimesBody(),
     );
   }
 }
 
 class TimesBody extends StatefulWidget {
-  TimesBody({super.key});
+  const TimesBody({super.key});
 
   @override
   State<TimesBody> createState() => _TimesBodyState();
@@ -329,7 +329,7 @@ class _TimesBodyState extends State<TimesBody> {
   void initState() {
     super.initState();
     miladi = DateFormat('dd MMMM yyyy', 'tr_TR').format(DateTime.now());
-    hicri = '${HijriCalendar.fromDate(DateTime.now()).toFormat('dd MMMM yy')}';
+    hicri = HijriCalendar.fromDate(DateTime.now()).toFormat('dd MMMM yy');
   }
 
   @override
@@ -378,7 +378,7 @@ class _TimesBodyState extends State<TimesBody> {
                                               .loadPrayerTimes(
                                                   DateTime.now().add(Duration(days: count)));
                                         },
-                                        icon: Icon(Icons.arrow_back_ios_new),
+                                        icon: const Icon(Icons.arrow_back_ios_new),
                                       ),
                                     ],
                                   ),
@@ -413,7 +413,7 @@ class _TimesBodyState extends State<TimesBody> {
                                               .loadPrayerTimes(
                                                   DateTime.now().add(Duration(days: count)));
                                         },
-                                        icon: Icon(Icons.arrow_forward_ios),
+                                        icon: const Icon(Icons.arrow_forward_ios),
                                       ),
                                     ],
                                   ),
@@ -422,7 +422,7 @@ class _TimesBodyState extends State<TimesBody> {
                               Center(
                                 child: Text(
                                   miladi,
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                                 ),
                               ),
                             ],
@@ -434,14 +434,14 @@ class _TimesBodyState extends State<TimesBody> {
                           child: Text(
                             textAlign: TextAlign.center,
                             hicri,
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                           ),
                         ),
                       ),
                       Expanded(
                         child: TimesCard(
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+                          child: const Padding(
+                            padding: EdgeInsets.fromLTRB(15, 5, 15, 5),
                             child: Location(),
                           ),
                         ),
@@ -451,7 +451,7 @@ class _TimesBodyState extends State<TimesBody> {
                 ),
                 Expanded(
                   child: TimesCard(
-                    child: CityNameCard(),
+                    child: const CityNameCard(),
                   ),
                 ),
               ],
@@ -462,7 +462,7 @@ class _TimesBodyState extends State<TimesBody> {
             child: TimesCard(
               child: Padding(
                 padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
-                child: Stack(
+                child: const Stack(
                   children: [
                     PrayerTimesPage(),
                     DetailedTimesBtn(),
@@ -540,6 +540,8 @@ class _CityNameCardState extends State<CityNameCard> {
 }
 
 class PrayerTimesPage extends StatefulWidget {
+  const PrayerTimesPage({super.key});
+
   @override
   _PrayerTimesPageState createState() => _PrayerTimesPageState();
 }
@@ -556,10 +558,10 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: Provider.of<TimeData>(context).isLoading
-          ? Center(child: CircularProgressIndicator())
-          : mainTimes(),
       color: Theme.of(context).cardColor,
+      child: Provider.of<TimeData>(context).isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : const MainTimes(),
     );
   }
 }
@@ -604,7 +606,7 @@ class DetailedTimesBtn extends StatelessWidget {
       left: 13,
       child: IconButton(
         iconSize: 25,
-        icon: Icon(Icons.menu),
+        icon: const Icon(Icons.menu),
         onPressed: () {
           showModalBottomSheet(
             backgroundColor: Theme.of(context).cardTheme.color,
@@ -623,7 +625,7 @@ class DetailedTimesBtn extends StatelessWidget {
                       Expanded(
                         child: Card(
                           shape: RoundedRectangleBorder(
-                            side: BorderSide(
+                            side: const BorderSide(
                               color: Colors.grey, // Kenar rengini belirleyin
                               width: 1.0, // Kenar kalınlığını belirleyin
                             ),
@@ -697,7 +699,7 @@ class DetailedTimesBtn extends StatelessWidget {
                       Expanded(
                         child: Card(
                           shape: RoundedRectangleBorder(
-                            side: BorderSide(
+                            side: const BorderSide(
                               color: Colors.grey, // Kenar rengini belirleyin
                               width: 1.0, // Kenar kalınlığını belirleyin
                             ),
@@ -709,59 +711,59 @@ class DetailedTimesBtn extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               Text(
-                                '${DateFormat('HH:mm').format(_imsak!)}',
+                                DateFormat('HH:mm').format(_imsak!),
                                 style: style,
                               ),
                               Text(
-                                '${DateFormat('HH:mm').format(_sabah!)}',
+                                DateFormat('HH:mm').format(_sabah!),
                                 style: style,
                               ),
                               Text(
-                                '${DateFormat('HH:mm').format(_gunes!)}',
+                                DateFormat('HH:mm').format(_gunes!),
                                 style: style,
                               ),
                               Text(
-                                '${DateFormat('HH:mm').format(_israk!)}',
+                                DateFormat('HH:mm').format(_israk!),
                                 style: style,
                               ),
                               Text(
-                                '${DateFormat('HH:mm').format(_kerahat!)}',
+                                DateFormat('HH:mm').format(_kerahat!),
                                 style: style,
                               ),
                               Text(
-                                '${DateFormat('HH:mm').format(_ogle!)}',
+                                DateFormat('HH:mm').format(_ogle!),
                                 style: style,
                               ),
                               Text(
-                                '${DateFormat('HH:mm').format(_ikindi!)}',
+                                DateFormat('HH:mm').format(_ikindi!),
                                 style: style,
                               ),
                               Text(
-                                '${DateFormat('HH:mm').format(_asrisani!)}',
+                                DateFormat('HH:mm').format(_asrisani!),
                                 style: style,
                               ),
                               Text(
-                                '${DateFormat('HH:mm').format(_isfirar!)}',
+                                DateFormat('HH:mm').format(_isfirar!),
                                 style: style,
                               ),
                               Text(
-                                '${DateFormat('HH:mm').format(_aksam!)}',
+                                DateFormat('HH:mm').format(_aksam!),
                                 style: style,
                               ),
                               Text(
-                                '${DateFormat('HH:mm').format(_istibak!)}',
+                                DateFormat('HH:mm').format(_istibak!),
                                 style: style,
                               ),
                               Text(
-                                '${DateFormat('HH:mm').format(_yatsi!)}',
+                                DateFormat('HH:mm').format(_yatsi!),
                                 style: style,
                               ),
                               Text(
-                                '${DateFormat('HH:mm').format(_isaisani!)}',
+                                DateFormat('HH:mm').format(_isaisani!),
                                 style: style,
                               ),
                               Text(
-                                '${_kible != null ? DateFormat('HH:mm').format(_kible!) : '-'}',
+                                _kible != null ? DateFormat('HH:mm').format(_kible!) : '-',
                                 style: style,
                               ),
                             ],
@@ -780,8 +782,8 @@ class DetailedTimesBtn extends StatelessWidget {
   }
 }
 
-class mainTimes extends StatelessWidget {
-  mainTimes({
+class MainTimes extends StatelessWidget {
+  const MainTimes({
     super.key,
   });
 
@@ -801,7 +803,7 @@ class mainTimes extends StatelessWidget {
                 Expanded(
                   child: Card(
                     shape: RoundedRectangleBorder(
-                      side: BorderSide(
+                      side: const BorderSide(
                         color: Colors.grey, // Kenar rengini belirleyin
                         width: 1.0, // Kenar kalınlığını belirleyin
                       ),
@@ -840,7 +842,6 @@ class mainTimes extends StatelessWidget {
                           'Yatsı',
                           style: timeStyle,
                         ),
-                        Container(),
                       ],
                     ),
                   ),
@@ -848,7 +849,7 @@ class mainTimes extends StatelessWidget {
                 Expanded(
                   child: Card(
                     shape: RoundedRectangleBorder(
-                      side: BorderSide(
+                      side: const BorderSide(
                         color: Colors.grey, // Kenar rengini belirleyin
                         width: 1.0, // Kenar kalınlığını belirleyin
                       ),
@@ -860,31 +861,38 @@ class mainTimes extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Text(
-                          '${DateFormat('HH:mm').format(Provider.of<TimeData>(context).imsak ?? DateTime.now())}',
+                          DateFormat('HH:mm')
+                              .format(Provider.of<TimeData>(context).imsak ?? DateTime.now()),
                           style: timeStyle,
                         ),
                         Text(
-                          '${DateFormat('HH:mm').format(Provider.of<TimeData>(context).sabah ?? DateTime.now())}',
+                          DateFormat('HH:mm')
+                              .format(Provider.of<TimeData>(context).sabah ?? DateTime.now()),
                           style: timeStyle,
                         ),
                         Text(
-                          '${DateFormat('HH:mm').format(Provider.of<TimeData>(context).gunes ?? DateTime.now())}',
+                          DateFormat('HH:mm')
+                              .format(Provider.of<TimeData>(context).gunes ?? DateTime.now()),
                           style: timeStyle,
                         ),
                         Text(
-                          '${DateFormat('HH:mm').format(Provider.of<TimeData>(context).ogle ?? DateTime.now())}',
+                          DateFormat('HH:mm')
+                              .format(Provider.of<TimeData>(context).ogle ?? DateTime.now()),
                           style: timeStyle,
                         ),
                         Text(
-                          '${DateFormat('HH:mm').format(Provider.of<TimeData>(context).ikindi ?? DateTime.now())}',
+                          DateFormat('HH:mm')
+                              .format(Provider.of<TimeData>(context).ikindi ?? DateTime.now()),
                           style: timeStyle,
                         ),
                         Text(
-                          '${DateFormat('HH:mm').format(Provider.of<TimeData>(context).aksam ?? DateTime.now())}',
+                          DateFormat('HH:mm')
+                              .format(Provider.of<TimeData>(context).aksam ?? DateTime.now()),
                           style: timeStyle,
                         ),
                         Text(
-                          '${DateFormat('HH:mm').format(Provider.of<TimeData>(context).yatsi ?? DateTime.now())}',
+                          DateFormat('HH:mm')
+                              .format(Provider.of<TimeData>(context).yatsi ?? DateTime.now()),
                           style: timeStyle,
                         ),
                       ],
@@ -894,9 +902,9 @@ class mainTimes extends StatelessWidget {
               ],
             ),
           ),
-          Expanded(
-            child: Clock(),
+          const Expanded(
             flex: 1,
+            child: Clock(),
           ),
         ],
       ),
@@ -906,6 +914,8 @@ class mainTimes extends StatelessWidget {
 
 // ignore: must_be_immutable
 class Clock extends StatefulWidget {
+  const Clock({super.key});
+
   @override
   State<Clock> createState() => _ClockState();
 }
@@ -914,7 +924,7 @@ class _ClockState extends State<Clock> {
   @override
   void initState() {
     super.initState();
-    Timer.periodic(Duration(seconds: 1), (Timer t) {
+    Timer.periodic(const Duration(seconds: 1), (Timer t) {
       if (mounted) {
         if (DateTime.now().hour == 00 &&
             DateTime.now().minute == 00 &&
@@ -935,13 +945,13 @@ class _ClockState extends State<Clock> {
             onPressed: () {
               Navigator.popAndPushNamed(context, '/');
             },
-            icon: Icon(Icons.replay_outlined),
+            icon: const Icon(Icons.replay_outlined),
           )
         : Padding(
             padding: MainApp.currentHeight! < 700.0
                 ? const EdgeInsets.fromLTRB(60, 0, 60, 0)
                 : const EdgeInsets.fromLTRB(60, 5, 60, 5),
-            child: Container(
+            child: SizedBox(
               height: 55,
               child: Stack(
                 children: [
@@ -955,7 +965,7 @@ class _ClockState extends State<Clock> {
                           color: Colors.black.withOpacity(0.25), // Gölge rengi ve opaklığı
                           spreadRadius: 5, // Gölgenin yayılma alanı
                           blurRadius: 10, // Gölgenin bulanıklığı
-                          offset: Offset(0, 5), // Gölgenin yatay ve dikey kayması
+                          offset: const Offset(0, 5), // Gölgenin yatay ve dikey kayması
                         ),
                       ],
                     ),
@@ -983,7 +993,7 @@ class _ClockState extends State<Clock> {
                                     fontSize: MainApp.currentHeight! < 700.0 ? 16.0 : 17.0,
                                     fontWeight: FontWeight.bold),
                               )
-                            : Text('0'),
+                            : const Text('0'),
                       ],
                     ),
                   ),

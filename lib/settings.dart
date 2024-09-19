@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:namaz_vakti_app/main.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,9 +10,9 @@ class Settings extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Ayarlar'),
+        title: const Text('Ayarlar'),
       ),
-      body: SettingsCard(),
+      body: const SettingsCard(),
     );
   }
 }
@@ -37,7 +36,7 @@ class SettingsCard extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15.0),
                   child: SwitchListTile(
-                    title: Text('Koyu Tema'),
+                    title: const Text('Koyu Tema'),
                     value: Provider.of<ChangeSettings>(context).isDark,
                     onChanged: (_) =>
                         Provider.of<ChangeSettings>(context, listen: false).toggleTheme(),
@@ -49,7 +48,7 @@ class SettingsCard extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15.0),
                   child: ListTile(
-                    title: Text('Tema Rengi'),
+                    title: const Text('Tema Rengi'),
                     trailing: FilledButton.tonal(
                       style: ElevatedButton.styleFrom(
                         elevation: 10,
@@ -58,8 +57,8 @@ class SettingsCard extends StatelessWidget {
                         showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                            title: Text("Renk Seçimi"),
-                            content: Container(
+                            title: const Text("Renk Seçimi"),
+                            content: const SizedBox(
                               height: 200,
                               child: Column(
                                 children: [
@@ -108,13 +107,13 @@ class SettingsCard extends StatelessWidget {
                                 onPressed: () {
                                   Navigator.pop(context);
                                 },
-                                child: Text('Tamam'),
+                                child: const Text('Tamam'),
                               ),
                             ],
                           ),
                         );
                       },
-                      child: Icon(Icons.color_lens),
+                      child: const Icon(Icons.color_lens),
                     ),
                   ),
                 ),
@@ -135,7 +134,7 @@ class ColorCircle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: Card(
-        shape: CircleBorder(),
+        shape: const CircleBorder(),
         color: col,
         child: TextButton(
           child: Container(),
@@ -163,8 +162,6 @@ class ChangeSettings with ChangeNotifier {
 
   static bool isfirst = true;
 
-  bool persistent = false;
-
   List<bool> alarmList = [
     false,
     false,
@@ -174,6 +171,24 @@ class ChangeSettings with ChangeNotifier {
     false,
     false,
   ];
+
+  List<int> gaps = [0, 0, 0, 0, 0, 0, 0];
+
+  int currentSound = 0;
+
+  //ALARMS & NOTIFICATIONS
+
+  void loadGaps() {
+    for (int i = 0; i < 7; i++) {
+      gaps[i] = _settings.getInt('${i}gap') ?? 0;
+    }
+  }
+
+  void saveGap(int index, int gap) {
+    gaps[index] = gap;
+    _settings.setInt('${index}gap', gap);
+    notifyListeners();
+  }
 
   void falseAll() {
     for (int i = 0; i < 7; i++) {
@@ -205,12 +220,10 @@ class ChangeSettings with ChangeNotifier {
 
   void loadNotFromSharedPref() {
     isOpen = _settings.getBool('notification') ?? false;
-    print('loaded persistent: $isOpen');
   }
 
   void saveNottoSharedPref(bool value) {
     _settings.setBool('notification', value);
-    print('saved persistent: $isOpen');
   }
 
   //THEME SETTINGS
@@ -227,17 +240,14 @@ class ChangeSettings with ChangeNotifier {
 
   void loadThemeFromSharedPref() {
     isDark = _settings.getBool('darkTheme') ?? false;
-    print('loaded: $isDark');
   }
 
   void saveThemetoSharedPref(bool value) {
     _settings.setBool('darkTheme', value);
-    print('saved: $isDark');
   }
 
   void changeCol(MaterialColor col) {
     color = col;
-    print('Color: $color');
     notifyListeners();
   }
 
@@ -331,9 +341,8 @@ class ChangeSettings with ChangeNotifier {
   //LOCATION SETTINGS
   void loadLocalFromSharedPref() {
     cityID = _settings.getString('location') ?? '16741';
-    cityName = _settings.getString('name') ?? null;
-    cityState = _settings.getString('state') ?? null;
-    print('Loaded: $cityID');
+    cityName = _settings.getString('name') ?? 'Merkez';
+    cityState = _settings.getString('state') ?? 'İstanbul';
   }
 
   void saveLocaltoSharedPref(String value, String name, String state) {
@@ -343,19 +352,16 @@ class ChangeSettings with ChangeNotifier {
     cityID = value;
     cityName = name;
     cityState = state;
-    print('Saved: $cityID');
     isLocalized = true;
   }
 
   //STARTUP SETTINGS
   void loadFirstFromSharedPref() {
     isfirst = _settings.getBool('startup') ?? true;
-    print('First: $isfirst');
   }
 
   saveFirsttoSharedPref(bool value) {
     _settings.setBool('startup', value);
-    print('First: $isfirst');
   }
 
   //KAZA SETTINGS

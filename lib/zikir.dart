@@ -13,9 +13,9 @@ class Zikir extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text('Zikir'),
+        title: const Text('Zikir'),
       ),
-      body: ZikirCard(),
+      body: const ZikirCard(),
     );
   }
 }
@@ -31,8 +31,8 @@ class _ZikirCardState extends State<ZikirCard> {
   static int _target = 33;
   static int _count = 0;
   static int _stack = 0;
-  TextEditingController _textFieldController = TextEditingController();
-  TextEditingController _textFieldController2 = TextEditingController();
+  final TextEditingController _textFieldController = TextEditingController();
+  final TextEditingController _textFieldController2 = TextEditingController();
   static String _selectedProfile = 'Varsayılan';
   static List<String> _profiles = ['Varsayılan'];
 
@@ -47,21 +47,11 @@ class _ZikirCardState extends State<ZikirCard> {
   }
 
   void _vibratePhone() async {
-    var isVib = await Vibration.hasVibrator();
-    if (isVib ?? false == true) {
-      Vibration.vibrate(duration: 50);
-    } else {
-      print('Device cannot vibrate.');
-    }
+    Vibration.vibrate(duration: 50);
   }
 
   void _vibrateCustom() async {
-    var isVib = await Vibration.hasCustomVibrationsSupport();
-    if (isVib ?? false == true) {
-      Vibration.vibrate(pattern: [0, 200, 100, 200]);
-    } else {
-      print('Device cannot vibrate.');
-    }
+    Vibration.vibrate(pattern: [0, 200, 100, 200]);
   }
 
   @override
@@ -88,7 +78,7 @@ class _ZikirCardState extends State<ZikirCard> {
                                 flex: 1,
                                 child: Card(
                                   shape: RoundedRectangleBorder(
-                                    side: BorderSide(
+                                    side: const BorderSide(
                                       color: Colors.grey, // Kenar rengini belirleyin
                                       width: 1.0, // Kenar kalınlığını belirleyin
                                     ),
@@ -105,15 +95,15 @@ class _ZikirCardState extends State<ZikirCard> {
                                               context: context,
                                               builder: (BuildContext context) {
                                                 return AlertDialog(
-                                                  title: Text('Zikiri Sıfırla'),
-                                                  content:
-                                                      Text('Gerçekten sıfırlamak istiyor musunuz?'),
+                                                  title: const Text('Zikiri Sıfırla'),
+                                                  content: const Text(
+                                                      'Gerçekten sıfırlamak istiyor musunuz?'),
                                                   actions: [
                                                     TextButton(
                                                       onPressed: () {
                                                         Navigator.pop(context);
                                                       },
-                                                      child: Text('Vazgeç'),
+                                                      child: const Text('Vazgeç'),
                                                     ),
                                                     TextButton(
                                                       onPressed: () {
@@ -128,14 +118,14 @@ class _ZikirCardState extends State<ZikirCard> {
                                                                 _count, _target, _stack);
                                                         Navigator.pop(context);
                                                       },
-                                                      child: Text('Evet'),
+                                                      child: const Text('Evet'),
                                                     ),
                                                   ],
                                                 );
                                               });
                                         },
-                                        child: Icon(Icons.restart_alt),
                                         style: ElevatedButton.styleFrom(elevation: 10),
+                                        child: const Icon(Icons.restart_alt),
                                       ),
                                       Provider.of<ChangeSettings>(context, listen: false)
                                                   .loadVib() ==
@@ -148,8 +138,8 @@ class _ZikirCardState extends State<ZikirCard> {
                                                       .saveVib(false);
                                                 });
                                               },
-                                              child: Icon(Icons.vibration),
                                               style: ElevatedButton.styleFrom(elevation: 10),
+                                              child: const Icon(Icons.vibration),
                                             )
                                           : OutlinedButton(
                                               onPressed: () {
@@ -159,11 +149,12 @@ class _ZikirCardState extends State<ZikirCard> {
                                                       .saveVib(true);
                                                 });
                                               },
-                                              child: Icon(Icons.vibration),
+                                              child: const Icon(Icons.vibration),
                                             ),
                                       Text(
                                         '$_stack',
-                                        style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                                        style: const TextStyle(
+                                            fontSize: 25, fontWeight: FontWeight.bold),
                                       ),
                                     ],
                                   ),
@@ -173,7 +164,7 @@ class _ZikirCardState extends State<ZikirCard> {
                                 flex: 2,
                                 child: Card(
                                   shape: RoundedRectangleBorder(
-                                    side: BorderSide(
+                                    side: const BorderSide(
                                       color: Colors.grey, // Kenar rengini belirleyin
                                       width: 1.0, // Kenar kalınlığını belirleyin
                                     ),
@@ -195,7 +186,7 @@ class _ZikirCardState extends State<ZikirCard> {
                                                     MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
                                                 child: Card(
                                                   shape: RoundedRectangleBorder(
-                                                    side: BorderSide(
+                                                    side: const BorderSide(
                                                       color:
                                                           Colors.grey, // Kenar rengini belirleyin
                                                       width: 1.0, // Kenar kalınlığını belirleyin
@@ -211,12 +202,16 @@ class _ZikirCardState extends State<ZikirCard> {
                                                           mainAxisAlignment:
                                                               MainAxisAlignment.spaceEvenly,
                                                           children: [
-                                                            Text(
-                                                              textAlign: TextAlign.center,
-                                                              'Zikir Sayısı',
-                                                              style: TextStyle(fontSize: 17),
+                                                            const Padding(
+                                                              padding: EdgeInsets.symmetric(
+                                                                  horizontal: 10.0),
+                                                              child: Text(
+                                                                textAlign: TextAlign.center,
+                                                                'Zikir Sayısı',
+                                                                style: TextStyle(fontSize: 17),
+                                                              ),
                                                             ),
-                                                            Divider(
+                                                            const Divider(
                                                               height: 20,
                                                             ),
                                                             TextButton(
@@ -226,8 +221,8 @@ class _ZikirCardState extends State<ZikirCard> {
                                                                     builder:
                                                                         (BuildContext context) {
                                                                       return AlertDialog(
-                                                                        title:
-                                                                            Text('Zikir Sayısı:'),
+                                                                        title: const Text(
+                                                                            'Zikir Sayısı:'),
                                                                         content: TextField(
                                                                           keyboardType:
                                                                               TextInputType.number,
@@ -248,10 +243,11 @@ class _ZikirCardState extends State<ZikirCard> {
                                                                               Navigator.of(context)
                                                                                   .pop();
                                                                             },
-                                                                            child: Text('Vazgeç'),
+                                                                            child: const Text(
+                                                                                'Vazgeç'),
                                                                           ),
                                                                           TextButton(
-                                                                            child: Text('OK'),
+                                                                            child: const Text('OK'),
                                                                             onPressed: () {
                                                                               if (_textFieldController
                                                                                           .text !=
@@ -286,7 +282,7 @@ class _ZikirCardState extends State<ZikirCard> {
                                                               child: Text(
                                                                 textAlign: TextAlign.center,
                                                                 '$_target',
-                                                                style: TextStyle(
+                                                                style: const TextStyle(
                                                                     fontSize: 25,
                                                                     fontWeight: FontWeight.bold),
                                                               ),
@@ -328,10 +324,10 @@ class _ZikirCardState extends State<ZikirCard> {
                                                             _target, _stack);
                                                   });
                                                 },
-                                                child: Icon(Icons.add),
                                                 style: ElevatedButton.styleFrom(
                                                   elevation: 10,
                                                 ),
+                                                child: const Icon(Icons.add),
                                               ),
                                               FilledButton.tonal(
                                                 onLongPress: () {
@@ -356,10 +352,10 @@ class _ZikirCardState extends State<ZikirCard> {
                                                     }
                                                   });
                                                 },
-                                                child: Icon(Icons.remove),
                                                 style: ElevatedButton.styleFrom(
                                                   elevation: 10,
                                                 ),
+                                                child: const Icon(Icons.remove),
                                               ),
                                             ],
                                           ),
@@ -418,12 +414,13 @@ class _ZikirCardState extends State<ZikirCard> {
                                                 .withOpacity(0.3), // Gölge rengi ve opaklığı
                                             spreadRadius: 5, // Gölgenin yayılma alanı
                                             blurRadius: 10, // Gölgenin bulanıklığı
-                                            offset: Offset(0, 5), // Gölgenin yatay ve dikey kayması
+                                            offset: const Offset(
+                                                0, 5), // Gölgenin yatay ve dikey kayması
                                           ),
                                         ],
                                       ),
                                       child: LinearProgressIndicator(
-                                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                                        borderRadius: const BorderRadius.all(Radius.circular(10)),
                                         value: _count / _target, // İlerleme yüzdesi
                                         minHeight: 4.0, // Göstergenin yüksekliği
                                         backgroundColor:
@@ -437,7 +434,7 @@ class _ZikirCardState extends State<ZikirCard> {
                                   Center(
                                     child: Text(
                                       '$_count',
-                                      style: TextStyle(fontSize: 40),
+                                      style: const TextStyle(fontSize: 40),
                                     ),
                                   ),
                                 ],
@@ -453,7 +450,7 @@ class _ZikirCardState extends State<ZikirCard> {
                                         padding: const EdgeInsets.all(8.0),
                                         child: Text(
                                           _selectedProfile,
-                                          style: TextStyle(fontSize: 15),
+                                          style: const TextStyle(fontSize: 15),
                                         ),
                                       ),
                                     ),
@@ -463,6 +460,7 @@ class _ZikirCardState extends State<ZikirCard> {
                               left: 15,
                               top: 15,
                               child: PopupMenuButton<String>(
+                                offset: const Offset(5, 0),
                                 elevation: 10,
                                 enabled: true,
                                 onSelected: (String result) {
@@ -477,41 +475,60 @@ class _ZikirCardState extends State<ZikirCard> {
                                     _stack = Provider.of<ChangeSettings>(context, listen: false)
                                         .loadZikirStack(_selectedProfile);
                                   });
-                                  print("Seçilen: $result");
                                 },
+                                color: Theme.of(context).cardTheme.color!,
                                 itemBuilder: (BuildContext context) {
                                   return _profiles.map((String item) {
                                     return PopupMenuItem<String>(
                                       value: item,
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Text(item),
-                                          Text(
-                                            '${Provider.of<ChangeSettings>(context, listen: false).loadZikirStack(item)} - ${Provider.of<ChangeSettings>(context, listen: false).loadZikirSet(item)} / ${Provider.of<ChangeSettings>(context, listen: false).loadZikirCount(item)}',
+                                      child: Card(
+                                        color: Theme.of(context).cardColor,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(5.0),
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                item,
+                                                style: const TextStyle(fontWeight: FontWeight.bold),
+                                              ),
+                                              Text(
+                                                'Biten: ${Provider.of<ChangeSettings>(context, listen: false).loadZikirStack(item)}',
+                                              ),
+                                              Text(
+                                                  'Çekilen: ${Provider.of<ChangeSettings>(context, listen: false).loadZikirSet(item)}/${Provider.of<ChangeSettings>(context, listen: false).loadZikirCount(item)}'),
+                                              const SizedBox(
+                                                height: 5,
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(horizontal: 15.0),
+                                                child: SizedBox(
+                                                  height: 8,
+                                                  child: LinearProgressIndicator(
+                                                    borderRadius:
+                                                        const BorderRadius.all(Radius.circular(10)),
+                                                    value: Provider.of<ChangeSettings>(context,
+                                                                listen: false)
+                                                            .loadZikirCount(item) /
+                                                        Provider.of<ChangeSettings>(context,
+                                                                listen: false)
+                                                            .loadZikirSet(item), // İlerleme yüzdesi
+                                                    minHeight: 4.0, // Göstergenin yüksekliği
+                                                    backgroundColor: Colors.grey, // Arka plan rengi
+                                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                                        Theme.of(context)
+                                                            .cardTheme
+                                                            .color!), // İlerleme çubuğu rengi
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                height: 10,
+                                              ),
+                                            ],
                                           ),
-                                          SizedBox(
-                                            height: 5,
-                                          ),
-                                          LinearProgressIndicator(
-                                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                                            value: Provider.of<ChangeSettings>(context,
-                                                        listen: false)
-                                                    .loadZikirCount(item) /
-                                                Provider.of<ChangeSettings>(context, listen: false)
-                                                    .loadZikirSet(item), // İlerleme yüzdesi
-                                            minHeight: 4.0, // Göstergenin yüksekliği
-                                            backgroundColor:
-                                                Theme.of(context).cardColor, // Arka plan rengi
-                                            valueColor: AlwaysStoppedAnimation<Color>(
-                                                Theme.of(context)
-                                                    .cardTheme
-                                                    .color!), // İlerleme çubuğu rengi
-                                          ),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                        ],
+                                        ),
                                       ),
                                     );
                                   }).toList();
@@ -527,25 +544,26 @@ class _ZikirCardState extends State<ZikirCard> {
                                       context: context,
                                       builder: (BuildContext context) {
                                         return AlertDialog(
-                                          title: Text('Yeni Profil'),
+                                          title: const Text('Yeni Profil'),
                                           content: TextField(
                                             controller: _textFieldController2,
-                                            decoration: InputDecoration(hintText: ''),
+                                            decoration: const InputDecoration(hintText: ''),
                                           ),
                                           actions: [
                                             TextButton(
                                               onPressed: () {
                                                 Navigator.of(context).pop();
                                               },
-                                              child: Text('Vazgeç'),
+                                              child: const Text('Vazgeç'),
                                             ),
                                             TextButton(
-                                              child: Text('OK'),
+                                              child: const Text('OK'),
                                               onPressed: () {
                                                 setState(() {
                                                   if (_textFieldController2.text != '' &&
                                                       _textFieldController2.text.startsWith(' ') ==
-                                                          false) {
+                                                          false &&
+                                                      _textFieldController2.text.length <= 20) {
                                                     _profiles.add(_textFieldController2.text);
                                                     Provider.of<ChangeSettings>(context,
                                                             listen: false)
@@ -573,7 +591,7 @@ class _ZikirCardState extends State<ZikirCard> {
                                         );
                                       });
                                 },
-                                icon: Icon(Icons.add),
+                                icon: const Icon(Icons.add),
                               ),
                             ),
                             _selectedProfile != 'Varsayılan'
@@ -586,18 +604,18 @@ class _ZikirCardState extends State<ZikirCard> {
                                             context: context,
                                             builder: (BuildContext context) {
                                               return AlertDialog(
-                                                title: Text('Profili Sil'),
-                                                content: Text(
+                                                title: const Text('Profili Sil'),
+                                                content: const Text(
                                                     'Gerçekten profili silmek istiyor musunuz?'),
                                                 actions: [
                                                   TextButton(
                                                     onPressed: () {
                                                       Navigator.of(context).pop();
                                                     },
-                                                    child: Text('Vazgeç'),
+                                                    child: const Text('Vazgeç'),
                                                   ),
                                                   TextButton(
-                                                    child: Text('Sil'),
+                                                    child: const Text('Sil'),
                                                     onPressed: () {
                                                       _profiles.remove(_selectedProfile);
                                                       Provider.of<ChangeSettings>(context,
@@ -626,7 +644,7 @@ class _ZikirCardState extends State<ZikirCard> {
                                               );
                                             });
                                       },
-                                      icon: Icon(Icons.remove_circle_outline),
+                                      icon: const Icon(Icons.remove_circle_outline),
                                     ),
                                   )
                                 : Container(),

@@ -63,7 +63,7 @@ class _CalendarBtnState extends State<CalendarBtn> {
   }
 
   Future<void> fetchCalendar() async {
-    final url =
+    const url =
         'https://www.turktakvim.com/10/Tr/'; // İçeriğini almak istediğiniz web sayfası URL'si
 
     // Web sayfasının HTML içeriğini almak için HTTP isteği yap
@@ -81,12 +81,10 @@ class _CalendarBtnState extends State<CalendarBtn> {
       setState(() {
         _calendar = textContent;
       });
-    } else {
-      print('Sayfa alınamadı: ${response.statusCode}');
     }
   }
 
-  final titleStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
+  final titleStyle = const TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +93,7 @@ class _CalendarBtnState extends State<CalendarBtn> {
       right: 13,
       child: IconButton(
         iconSize: 25,
-        icon: Icon(Icons.date_range_rounded),
+        icon: const Icon(Icons.date_range_rounded),
         onPressed: () async {
           if (_ilk) {
             await _fetchDay();
@@ -114,7 +112,7 @@ class _CalendarBtnState extends State<CalendarBtn> {
               return Card(
                 elevation: 20,
                 shape: RoundedRectangleBorder(
-                  side: BorderSide(
+                  side: const BorderSide(
                     color: Colors.grey, // Kenar rengini belirleyin
                     width: 2.0, // Kenar kalınlığını belirleyin
                   ),
@@ -129,7 +127,7 @@ class _CalendarBtnState extends State<CalendarBtn> {
                         Text(
                           _day!,
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 20,
                         ),
                         Text(
@@ -139,19 +137,19 @@ class _CalendarBtnState extends State<CalendarBtn> {
                         Text(
                           _word!,
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 20,
                         ),
                         Text(
                           'Arka Yaprak:',
                           style: titleStyle,
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 20,
                         ),
                         Container(
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            borderRadius: const BorderRadius.all(Radius.circular(10)),
                             border: Border.all(
                               color: Colors.grey,
                               width: 2,
@@ -171,11 +169,11 @@ class _CalendarBtnState extends State<CalendarBtn> {
                               final Uri url = Uri.parse('https://www.turktakvim.com/');
                               await launchUrl(url);
                             },
-                            child: Text('Turktakvim.com'),
                             style: ElevatedButton.styleFrom(elevation: 10),
+                            child: const Text('Turktakvim.com'),
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 20,
                         ),
                       ],

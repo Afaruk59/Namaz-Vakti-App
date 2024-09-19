@@ -7,7 +7,7 @@ import 'package:namaz_vakti_app/kaza.dart';
 import 'package:namaz_vakti_app/timesPage/alarms.dart';
 import 'package:namaz_vakti_app/books.dart';
 import 'package:namaz_vakti_app/dates.dart';
-import 'package:namaz_vakti_app/homePage.dart';
+import 'package:namaz_vakti_app/home_page.dart';
 import 'package:namaz_vakti_app/timesPage/loading.dart';
 import 'package:namaz_vakti_app/timesPage/location.dart';
 import 'package:namaz_vakti_app/qibla.dart';
@@ -49,6 +49,7 @@ class MainApp extends StatelessWidget {
     Provider.of<ChangeSettings>(context, listen: false).loadFirstFromSharedPref();
     Provider.of<ChangeSettings>(context, listen: false).loadNotFromSharedPref();
     Provider.of<ChangeSettings>(context, listen: false).loadAlarm();
+    Provider.of<ChangeSettings>(context, listen: false).loadGaps();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -88,23 +89,48 @@ class MainApp extends StatelessWidget {
       routes: {
         '/': (context) => ChangeNotifierProvider<TimeData>(
               create: (context) => TimeData(),
-              child: homePage(),
+              child: const HomePage(),
             ),
-        '/times': (context) => Times(),
-        '/qibla': (context) => Qibla(),
-        '/zikir': (context) => Zikir(),
-        '/dates': (context) => Dates(),
-        '/books': (context) => Books(),
-        '/settings': (context) => Settings(),
-        '/kaza': (context) => Kaza(),
-        '/location': (context) => Location(),
+        '/times': (context) => const Times(),
+        '/qibla': (context) => const Qibla(),
+        '/zikir': (context) => const Zikir(),
+        '/dates': (context) => const Dates(),
+        '/books': (context) => const Books(),
+        '/settings': (context) => const Settings(),
+        '/kaza': (context) => const Kaza(),
+        '/location': (context) => const Location(),
         '/loading': (context) => ChangeNotifierProvider<TimeData>(
               create: (context) => TimeData(),
-              child: Loading(),
+              child: const Loading(),
             ),
-        '/alarms': (context) => Alarms(),
-        '/startup': (context) => Startup(),
+        '/alarms': (context) => const Alarms(),
+        '/startup': (context) => const Startup(),
       },
+    );
+  }
+}
+
+class GradientBack extends StatelessWidget {
+  const GradientBack({super.key, required this.child});
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Provider.of<ChangeSettings>(context).isDark == false
+                ? Provider.of<ChangeSettings>(context).color.shade300
+                : Provider.of<ChangeSettings>(context).color.shade800,
+            Theme.of(context).colorScheme.surfaceContainer,
+          ],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          stops: const [0.01, 0.4],
+        ),
+      ),
+      child: child,
     );
   }
 }

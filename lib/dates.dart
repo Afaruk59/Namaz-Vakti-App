@@ -3,33 +3,18 @@ import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as html_parser;
 import 'package:html/dom.dart' as dom;
 import 'package:namaz_vakti_app/main.dart';
-import 'package:namaz_vakti_app/settings.dart';
-import 'package:provider/provider.dart';
 
 class Dates extends StatelessWidget {
   const Dates({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Provider.of<ChangeSettings>(context).isDark == false
-                ? Provider.of<ChangeSettings>(context).color.shade300
-                : Provider.of<ChangeSettings>(context).color.shade900,
-            Theme.of(context).colorScheme.surfaceContainer,
-          ],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          stops: [0.01, 0.4],
-        ),
-      ),
+    return GradientBack(
       child: Scaffold(
         appBar: AppBar(
           title: Text(MainApp.currentHeight! < 700.0 ? 'Mübarek Günler' : 'Mübarek Gün ve Geceler'),
         ),
-        body: DatesCard(),
+        body: const DatesCard(),
       ),
     );
   }
@@ -47,7 +32,7 @@ class _DatesCardState extends State<DatesCard> {
   @override
   initState() {
     super.initState();
-    if (_list.length == 0) {
+    if (_list.isEmpty) {
       _loadDates();
     }
   }
@@ -70,8 +55,8 @@ class _DatesCardState extends State<DatesCard> {
       padding: const EdgeInsets.all(5),
       child: Card(
         child: Scrollbar(
-          child: _list.length == 0
-              ? Center(child: CircularProgressIndicator())
+          child: _list.isEmpty
+              ? const Center(child: CircularProgressIndicator())
               : Padding(
                   padding:
                       EdgeInsets.symmetric(vertical: MainApp.currentHeight! < 700.0 ? 5 : 10.0),

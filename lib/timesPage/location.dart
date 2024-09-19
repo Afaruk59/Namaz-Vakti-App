@@ -5,11 +5,9 @@ import 'package:namaz_vakti_app/main.dart';
 import 'package:namaz_vakti_app/settings.dart';
 import 'package:namaz_vakti_app/timesPage/loading.dart';
 
-Future<void> firstLoc() async {
-  await _LocationState().getCurrentLocation();
-}
-
 class Location extends StatefulWidget {
+  const Location({super.key});
+
   @override
   _LocationState createState() => _LocationState();
 }
@@ -26,41 +24,49 @@ class _LocationState extends State<Location> {
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled && mounted) {
       return showDialog(
+        barrierDismissible: false,
         context: context,
-        builder: (context) => AlertDialog(
-          title: Text("Konum Erişimi Gerekli"),
-          content: Row(
-            children: [
-              Expanded(
-                child: Text("Devam etmek için lütfen konumu etkinleştirin."),
-                flex: 3,
-              ),
-              Expanded(
-                child: Icon(
-                  Icons.location_disabled,
-                  size: 45,
+        builder: (context) => PopScope(
+          canPop: false,
+          child: AlertDialog(
+            title: const Text("Konum Erişimi Gerekli"),
+            content: const Row(
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: Text("Devam etmek için lütfen konumu etkinleştirin."),
                 ),
-                flex: 1,
+                Expanded(
+                  flex: 1,
+                  child: Icon(
+                    Icons.location_disabled,
+                    size: 45,
+                  ),
+                ),
+              ],
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text("Vazgeç"),
+                onPressed: () {
+                  Navigator.pop(context);
+                  ChangeSettings.isfirst == true
+                      ? Navigator.popAndPushNamed(context, '/startup')
+                      : Navigator.popAndPushNamed(context, '/');
+                },
+              ),
+              TextButton(
+                child: const Text("Konumu Aç"),
+                onPressed: () {
+                  Navigator.pop(context);
+                  ChangeSettings.isfirst == true
+                      ? Navigator.popAndPushNamed(context, '/startup')
+                      : Navigator.popAndPushNamed(context, '/');
+                  Geolocator.openLocationSettings();
+                },
               ),
             ],
           ),
-          actions: <Widget>[
-            TextButton(
-              child: Text("Vazgeç"),
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.popAndPushNamed(context, '/');
-              },
-            ),
-            TextButton(
-              child: Text("Konumu Aç"),
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.popAndPushNamed(context, '/');
-                Geolocator.openLocationSettings();
-              },
-            ),
-          ],
         ),
       );
     }
@@ -79,20 +85,24 @@ class _LocationState extends State<Location> {
         return showDialog(
           barrierDismissible: false,
           context: context,
-          builder: (context) => AlertDialog(
-            title: Text("Konum İzni Gerekli"),
-            content: Text("Bu uygulamanın düzgün çalışabilmesi için konum izni gereklidir."),
-            actions: <Widget>[
-              TextButton(
-                child: Text("Tekrar Dene"),
-                onPressed: () async {
-                  if (mounted) {
-                    Navigator.pop(context);
-                    await getCurrentLocation(); // İzin tekrar isteniyor
-                  }
-                },
-              ),
-            ],
+          builder: (context) => PopScope(
+            canPop: false,
+            child: AlertDialog(
+              title: const Text("Konum İzni Gerekli"),
+              content:
+                  const Text("Bu uygulamanın düzgün çalışabilmesi için konum izni gereklidir."),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text("Tekrar Dene"),
+                  onPressed: () async {
+                    if (mounted) {
+                      Navigator.pop(context);
+                      await getCurrentLocation(); // İzin tekrar isteniyor
+                    }
+                  },
+                ),
+              ],
+            ),
           ),
         );
       }
@@ -103,20 +113,23 @@ class _LocationState extends State<Location> {
         barrierDismissible: false,
         useRootNavigator: serviceEnabled,
         context: context,
-        builder: (context) => AlertDialog(
-          title: Text("Konum İzni Gerekli"),
-          content: Text(
-              "Konum izni kalıcı olarak reddedildi. Devam edebilmek için lütfen ayarlardan izin verin."),
-          actions: <Widget>[
-            TextButton(
-              child: Text("Ayarları Aç"),
-              onPressed: () {
-                ChangeSettings.isLocalized = true;
-                Navigator.pop(context);
-                Geolocator.openAppSettings();
-              },
-            ),
-          ],
+        builder: (context) => PopScope(
+          canPop: false,
+          child: AlertDialog(
+            title: const Text("Konum İzni Gerekli"),
+            content: const Text(
+                "Konum izni kalıcı olarak reddedildi. Devam edebilmek için lütfen ayarlardan izin verin."),
+            actions: <Widget>[
+              TextButton(
+                child: const Text("Ayarları Aç"),
+                onPressed: () {
+                  ChangeSettings.isLocalized = true;
+                  Navigator.pop(context);
+                  Geolocator.openAppSettings();
+                },
+              ),
+            ],
+          ),
         ),
       );
     }
@@ -138,7 +151,7 @@ class _LocationState extends State<Location> {
       onPressed: () async {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => Loading()),
+          MaterialPageRoute(builder: (context) => const Loading()),
         );
         await getCurrentLocation();
       },

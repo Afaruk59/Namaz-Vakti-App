@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:namaz_vakti_app/main.dart';
 import 'package:provider/provider.dart';
 
@@ -27,23 +28,60 @@ class _AlarmsState extends State<Alarms> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Provider.of<ChangeSettings>(context).isDark == false
-                ? Provider.of<ChangeSettings>(context).color.shade300
-                : Provider.of<ChangeSettings>(context).color.shade900,
-            Theme.of(context).colorScheme.surfaceContainer,
-          ],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          stops: [0.01, 0.4],
-        ),
-      ),
+    return GradientBack(
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Alarmlar'),
+          title: const Text('Bildirimler'),
+          actions: [
+            IconButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text('Pil Tasarrufu'),
+                      content: const Row(
+                        children: [
+                          Expanded(
+                            flex: 5,
+                            child: Text(
+                                'Bildirimler hakkında sorun yaşıyorsanız uygulama ayarlarından pil tasarrufu modunu kapatmayı deneyin.'),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: Icon(
+                              Icons.battery_alert_rounded,
+                              size: 50,
+                            ),
+                          ),
+                        ],
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text('Tamam'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            Geolocator.openAppSettings();
+                          },
+                          child: const Text('Ayarlara Git'),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              icon: const Icon(Icons.info_outline_rounded),
+              iconSize: MainApp.currentHeight! < 700.0 ? 22.0 : 25.0,
+            ),
+            const SizedBox(
+              width: 20,
+            ),
+          ],
         ),
         body: Padding(
           padding: const EdgeInsets.all(5),
@@ -57,7 +95,7 @@ class _AlarmsState extends State<Alarms> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 15.0),
                       child: SwitchListTile(
-                        title: Text('Bildirim Servisleri'),
+                        title: const Text('Bildirim Servisleri'),
                         value: Provider.of<ChangeSettings>(context).isOpen,
                         onChanged: (_) async {
                           Provider.of<ChangeSettings>(context, listen: false).toggleNot();
@@ -66,31 +104,31 @@ class _AlarmsState extends State<Alarms> {
                       ),
                     ),
                   ),
-                  AlarmSwitch(
+                  const AlarmSwitch(
                     title: 'İmsak Alarmı',
                     index: 0,
                   ),
-                  AlarmSwitch(
+                  const AlarmSwitch(
                     title: 'Sabah Alarmı',
                     index: 1,
                   ),
-                  AlarmSwitch(
+                  const AlarmSwitch(
                     title: 'Güneş Alarmı',
                     index: 2,
                   ),
-                  AlarmSwitch(
+                  const AlarmSwitch(
                     title: 'Öğle Alarmı',
                     index: 3,
                   ),
-                  AlarmSwitch(
+                  const AlarmSwitch(
                     title: 'İkindi Alarmı',
                     index: 4,
                   ),
-                  AlarmSwitch(
+                  const AlarmSwitch(
                     title: 'Akşam Alarmı',
                     index: 5,
                   ),
-                  AlarmSwitch(
+                  const AlarmSwitch(
                     title: 'Yatsı Alarmı',
                     index: 6,
                   ),
@@ -116,15 +154,36 @@ class AlarmSwitch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Theme.of(context).cardColor,
+      color:
+          Provider.of<ChangeSettings>(context).isOpen ? Theme.of(context).cardColor : Colors.grey,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15.0),
-        child: SwitchListTile(
-          title: Text(title),
-          value: Provider.of<ChangeSettings>(context).alarmList[index],
-          onChanged: (_) async {
-            Provider.of<ChangeSettings>(context, listen: false).toggleAlarm(index);
-          },
+        child: Column(
+          children: [
+            SwitchListTile(
+              title: Text(
+                title,
+              ),
+              value: Provider.of<ChangeSettings>(context).alarmList[index],
+              onChanged: (val) async {
+                Provider.of<ChangeSettings>(context, listen: false).toggleAlarm(index);
+              },
+            ),
+            Provider.of<ChangeSettings>(context).alarmList[index] == true
+                ? Slider(
+                    value: Provider.of<ChangeSettings>(context).gaps[index].toDouble(),
+                    min: -60,
+                    max: 60,
+                    divisions: 24,
+                    secondaryTrackValue: 0,
+                    label: Provider.of<ChangeSettings>(context).gaps[index].toString(),
+                    onChanged: (value) {
+                      Provider.of<ChangeSettings>(context, listen: false)
+                          .saveGap(index, value.toInt());
+                    },
+                  )
+                : Container(),
+          ],
         ),
       ),
     );

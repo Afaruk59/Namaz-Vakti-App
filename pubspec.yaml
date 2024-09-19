@@ -7,6 +7,7 @@ environment:
   sdk: '>=3.4.4 <4.0.0'
 
 dependencies:
+  audioplayers: ^6.1.0
   carousel_slider: ^5.0.0
   connectivity_plus: ^6.0.5
   device_info_plus: ^10.1.2
@@ -32,6 +33,7 @@ dependencies:
   xml: ^6.5.0
 
 dev_dependencies:
+  flutter_lints: ^4.0.0
   flutter_test:
     sdk: flutter
 
@@ -39,4 +41,5 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/img/ 
+    - assets/img/
+    - assets/sound/

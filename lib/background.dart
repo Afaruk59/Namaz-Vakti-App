@@ -21,6 +21,7 @@ List<Map<String, String>> prayerTimes = [];
 Map<String, String>? selectedDayTimes;
 DateTime? selectedDate;
 String? cName;
+int? alarmSound;
 
 String? imsakString;
 String? sabahString;
@@ -43,14 +44,15 @@ const AndroidNotificationChannel notificationChannel = AndroidNotificationChanne
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPluginAlarm =
     FlutterLocalNotificationsPlugin();
 const AndroidNotificationChannel notificationChannelAlarm = AndroidNotificationChannel(
-  'Alarm',
-  'Alarm Service',
-  description: 'Alarm Notification',
-  importance: Importance.high,
-  showBadge: true,
-  enableLights: true,
-  enableVibration: true,
-);
+    'Alarm', 'Alarm Service',
+    description: 'Alarm Notification',
+    importance: Importance.max,
+    showBadge: true,
+    enableLights: true,
+    enableVibration: true,
+    playSound: true,
+    sound: RawResourceAndroidNotificationSound('alarm_sound'));
+
 Future<void> initService() async {
   var service = FlutterBackgroundService();
   await flutterLocalNotificationsPlugin
@@ -79,12 +81,8 @@ void onStart(ServiceInstance service) async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
   DartPluginRegistrant.ensureInitialized();
 
-  service.on('setAsForeground').listen((event) {
-    print('foreground');
-  });
-  service.on('setAsBackground').listen((event) {
-    print('background');
-  });
+  service.on('setAsForeground').listen((event) {});
+  service.on('setAsBackground').listen((event) {});
   service.on('stopService').listen((event) {
     service.stopSelf();
   });
@@ -96,35 +94,59 @@ void onStart(ServiceInstance service) async {
 
   await loadPrayerTimes(DateTime.now());
   await showPersistent();
+
   Timer.periodic(
-    Duration(minutes: 5),
+    const Duration(minutes: 1),
     (timer) async {
       await loadPrayerTimes(DateTime.now());
       await showPersistent();
-    },
-  );
-
-  Timer.periodic(
-    Duration(minutes: 1),
-    (timer) async {
-      await showAlarms(imsak!, 'İmsak', 0);
-      await showAlarms(sabah!, 'Sabah', 1);
-      await showAlarms(gunes!, 'Güneş', 2);
-      await showAlarms(ogle!, 'Öğle', 3);
-      await showAlarms(ikindi!, 'İkindi', 4);
-      await showAlarms(aksam!, 'Akşam', 5);
-      await showAlarms(yatsi!, 'Yatsı', 6);
+      await showAlarm(imsak!, 'İmsak', 0, sharedPreferences.getInt('0gap') ?? 0);
+      await showAlarm(sabah!, 'Sabah', 1, sharedPreferences.getInt('1gap') ?? 0);
+      await showAlarm(gunes!, 'Güneş', 2, sharedPreferences.getInt('2gap') ?? 0);
+      await showAlarm(ogle!, 'Öğle', 3, sharedPreferences.getInt('3gap') ?? 0);
+      await showAlarm(ikindi!, 'İkindi', 4, sharedPreferences.getInt('4gap') ?? 0);
+      await showAlarm(aksam!, 'Akşam', 5, sharedPreferences.getInt('5gap') ?? 0);
+      await showAlarm(yatsi!, 'Yatsı', 6, sharedPreferences.getInt('6gap') ?? 0);
     },
   );
 }
 
-Future<void> showAlarms(DateTime time, String title, int index) async {
+Future<void> showAlarm(DateTime time, String title, int index, int gap) async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+  time = time.add(Duration(minutes: gap));
   DateTime now = DateTime.now();
   if (now.hour == time.hour &&
       now.minute == time.minute &&
       sharedPreferences.getBool('$index') == true) {
-    showAlarmNot('$title', time);
+    String titleTrailing;
+    if (gap < 0) {
+      titleTrailing = '${gap.abs()} Dakika Öncesi';
+    } else if (gap > 0) {
+      titleTrailing = '${gap.abs()} Dakika Sonrası';
+    } else {
+      titleTrailing = 'Vakti';
+    }
+    flutterLocalNotificationsPluginAlarm.show(
+      13,
+      '$title $titleTrailing',
+      DateFormat('HH:mm').format(time),
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'Alarm',
+          'Alarm Service',
+          ongoing: false,
+          icon: '@mipmap/ic_launcher',
+          channelShowBadge: true,
+          showWhen: true,
+          autoCancel: true,
+          enableVibration: true,
+          enableLights: true,
+          importance: Importance.max,
+          playSound: true,
+          sound: RawResourceAndroidNotificationSound('alarm_sound'),
+        ),
+      ),
+    );
   }
 }
 
@@ -135,7 +157,7 @@ Future<void> showPersistent() async {
     '${DateFormat('dd/MM/yyyy').format(DateTime.now())} Namaz Vakitleri',
     NotificationDetails(
       android: AndroidNotificationDetails(
-        subText: '${DateFormat('dd/MM/yyyy').format(DateTime.now())}',
+        subText: DateFormat('dd/MM/yyyy').format(DateTime.now()),
         'Persistent',
         'Persistent Service',
         ongoing: true,
@@ -149,29 +171,6 @@ Future<void> showPersistent() async {
         playSound: false,
         styleInformation: BigTextStyleInformation(
             'İmsak - $imsakString\nSabah - $sabahString\nGüneş - $gunesString\nÖğle - $ogleString\nİkindi - $ikindiString\nAkşam - $aksamString\nYatsı - $yatsiString'),
-      ),
-    ),
-  );
-}
-
-void showAlarmNot(String title, DateTime time) {
-  flutterLocalNotificationsPluginAlarm.show(
-    13,
-    '$title Vakti',
-    '${DateFormat('HH:mm').format(time)}',
-    NotificationDetails(
-      android: AndroidNotificationDetails(
-        'Alarm',
-        'Alarm Service',
-        ongoing: false,
-        icon: '@mipmap/ic_launcher',
-        channelShowBadge: true,
-        showWhen: true,
-        autoCancel: true,
-        enableVibration: true,
-        enableLights: true,
-        importance: Importance.high,
-        playSound: true,
       ),
     ),
   );

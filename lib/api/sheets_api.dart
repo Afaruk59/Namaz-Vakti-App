@@ -20,7 +20,7 @@ class SheetsApi {
 }
 
 ''';
-  static final _spreadsheetId = '1uEEtkBzjCAqjD9NdaWPBnue5fQzvmzumbrH3oQpRfmA';
+  static const _spreadsheetId = '1uEEtkBzjCAqjD9NdaWPBnue5fQzvmzumbrH3oQpRfmA';
   static final _gsheets = GSheets(_credentials);
   static Worksheet? _sheet;
 

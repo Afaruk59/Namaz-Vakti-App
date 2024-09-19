@@ -8,18 +8,17 @@ import 'package:namaz_vakti_app/qibla.dart';
 import 'package:namaz_vakti_app/settings.dart';
 import 'package:namaz_vakti_app/timesPage/times.dart';
 import 'package:namaz_vakti_app/zikir.dart';
-import 'package:provider/provider.dart';
 
-class homePage extends StatefulWidget {
-  const homePage({
+class HomePage extends StatefulWidget {
+  const HomePage({
     super.key,
   });
 
   @override
-  State<homePage> createState() => _homePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _homePageState extends State<homePage> {
+class _HomePageState extends State<HomePage> {
   Timer? timer;
   static bool alertOpen = false;
   int _currentIndex = 0;
@@ -47,46 +46,49 @@ class _homePageState extends State<homePage> {
     showDialog(
       barrierDismissible: false,
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text("İnternet Bağlantısı Gerekli"),
-        content: Row(
-          children: [
-            Expanded(
-              child: Container(
-                height: 100,
-                child: Column(
-                  children: [
-                    Text("Devam etmek için lütfen Wi-Fi'yi yada Mobil Veri'yi etkinleştirin."),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Text('(Servisler internet olmadan düzgün çalışmayacaktır.)'),
-                  ],
+      builder: (context) => PopScope(
+        canPop: false,
+        child: AlertDialog(
+          title: const Text("İnternet Bağlantısı Gerekli"),
+          content: const Row(
+            children: [
+              Expanded(
+                flex: 3,
+                child: SizedBox(
+                  height: 100,
+                  child: Column(
+                    children: [
+                      Text("Devam etmek için lütfen Wi-Fi'yi yada Mobil Veri'yi etkinleştirin."),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text('(Servisler internet olmadan düzgün çalışmayacaktır.)'),
+                    ],
+                  ),
                 ),
               ),
-              flex: 3,
-            ),
-            Expanded(
-              child: Icon(
-                Icons.wifi_off,
-                size: 45,
+              Expanded(
+                flex: 1,
+                child: Icon(
+                  Icons.wifi_off,
+                  size: 45,
+                ),
               ),
-              flex: 1,
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("Tekrar Dene"),
+              onPressed: () {
+                Navigator.pop(context);
+                alertOpen = false;
+                _checkWifi();
+                Navigator.pop(context);
+                Navigator.of(context).pushNamed('/');
+              },
             ),
           ],
         ),
-        actions: <Widget>[
-          TextButton(
-            child: Text("Tekrar Dene"),
-            onPressed: () {
-              Navigator.pop(context);
-              alertOpen = false;
-              _checkWifi();
-              Navigator.pop(context);
-              Navigator.of(context).pushNamed('/');
-            },
-          ),
-        ],
       ),
     );
   }
@@ -95,20 +97,7 @@ class _homePageState extends State<homePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Provider.of<ChangeSettings>(context).isDark == false
-                  ? Provider.of<ChangeSettings>(context).color.shade300
-                  : Provider.of<ChangeSettings>(context).color.shade800,
-              Theme.of(context).colorScheme.surfaceContainer,
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            stops: [0.01, 0.4],
-          ),
-        ),
+      body: GradientBack(
         child: PageView(
           controller: _pageController,
           onPageChanged: (index) {
@@ -116,7 +105,7 @@ class _homePageState extends State<homePage> {
               _currentIndex = index;
             });
           },
-          children: [
+          children: const [
             Times(),
             Qibla(),
             Zikir(),
@@ -135,7 +124,7 @@ class _homePageState extends State<homePage> {
           });
           // Sayfalar arası geçişi PageView ile kontrol et
           _pageController.animateToPage(index,
-              duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
+              duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
         },
         destinations: const <Widget>[
           NavigationDestination(
