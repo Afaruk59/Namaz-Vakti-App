@@ -30,7 +30,7 @@ class SheetsApi {
   }
 
   static Future<Worksheet> _getWorkSheet(Spreadsheet spreadsheet, {required String title}) async {
-    return await spreadsheet.worksheetByTitle(title)!;
+    return spreadsheet.worksheetByTitle(title)!;
   }
 
   Future<void> searchLoc(double lat, double long) async {

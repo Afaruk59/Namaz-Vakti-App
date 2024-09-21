@@ -277,6 +277,7 @@ class Times extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text('Vakitler'),
         actions: [
@@ -324,6 +325,22 @@ class _TimesBodyState extends State<TimesBody> {
   String miladi = '';
   String hicri = '';
   int count = 0;
+  DateTime customDate = DateTime.now();
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(DateTime.now().year, 1, 1),
+      lastDate: DateTime(DateTime.now().year, 12, 31),
+    );
+
+    if (pickedDate != null && pickedDate != customDate) {
+      setState(() {
+        customDate = pickedDate;
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -420,9 +437,43 @@ class _TimesBodyState extends State<TimesBody> {
                                 ],
                               ),
                               Center(
-                                child: Text(
-                                  miladi,
-                                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                                child: TextButton(
+                                  style: TextButton.styleFrom(
+                                      foregroundColor:
+                                          Theme.of(context).textTheme.displayMedium!.color),
+                                  onPressed: () async {
+                                    var now = DateTime.now();
+                                    await _selectDate(context);
+                                    Provider.of<TimeData>(context, listen: false)
+                                        .switchLoading(true);
+                                    setState(() {
+                                      count = customDate
+                                          .difference(
+                                              DateTime(now.year, now.month, now.day, 00, 00))
+                                          .inDays;
+                                      if (count != 0) {
+                                        Provider.of<TimeData>(context, listen: false)
+                                            .switchClock(false);
+                                      } else {
+                                        Provider.of<TimeData>(context, listen: false)
+                                            .switchClock(true);
+                                      }
+                                      miladi = DateFormat('dd MMMM yyyy', 'tr_TR')
+                                          .format(DateTime.now().add(Duration(days: count)));
+                                      hicri = HijriCalendar.fromDate(
+                                              DateTime.now().add(Duration(days: count)))
+                                          .toFormat('dd MMMM yy');
+                                    });
+                                    Provider.of<TimeData>(context, listen: false)
+                                        .loadPrayerTimes(DateTime.now().add(Duration(days: count)));
+                                  },
+                                  child: Text(
+                                    miladi,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ],
