@@ -62,7 +62,7 @@ class _CalendarBtnState extends State<CalendarBtn> {
     }
   }
 
-  Future<void> fetchCalendar() async {
+  Future<void> _fetchCalendar() async {
     const url =
         'https://www.turktakvim.com/10/Tr/'; // İçeriğini almak istediğiniz web sayfası URL'si
 
@@ -98,8 +98,10 @@ class _CalendarBtnState extends State<CalendarBtn> {
           if (_ilk) {
             await _fetchDay();
             await _fetchWord();
-            await fetchCalendar();
-            _ilk = false;
+            await _fetchCalendar();
+            setState(() {
+              _ilk = false;
+            });
           }
           showModalBottomSheet(
             backgroundColor: Theme.of(context).cardTheme.color,

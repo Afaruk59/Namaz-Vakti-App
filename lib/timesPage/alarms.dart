@@ -176,7 +176,7 @@ class AlarmSwitch extends StatelessWidget {
                     max: 60,
                     divisions: 24,
                     secondaryTrackValue: 0,
-                    label: Provider.of<ChangeSettings>(context).gaps[index].toString(),
+                    label: '${Provider.of<ChangeSettings>(context).gaps[index].toString()} dk',
                     onChanged: (value) {
                       Provider.of<ChangeSettings>(context, listen: false)
                           .saveGap(index, value.toInt());
