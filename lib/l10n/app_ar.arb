@@ -1,0 +1,45 @@
+{
+    "@@locale": "ar",
+
+    "lang": "عربي",
+    "@lang":{
+        "description": "Language"
+    },
+
+    "timesPageTitle": "مرات",
+    "qiblaPageTitle": "Prayer Compass",
+    "zikirPageTitle": "Dhikr",
+    "morePageTitle": "More",
+    "settingsPageTitle": "Settings",
+
+    "locationButtonText": "Sync",
+
+    "imsak": "İmsak",
+    "sabah": "Sabah",
+    "gunes": "Güneş",
+    "ogle": "Öğle",
+    "ikindi": "İkindi",
+    "aksam": "Akşam",
+    "yatsi": "Yatsı",
+    "israk": "İşrak",
+    "kerahat": "Kerahat",
+    "asrisani": "Asri Sani",
+    "isfirar": "İsfirar-ı Şems",
+    "istibak": "İstibak-ı Nücum",
+    "isaisani": "İşa-i Sani",
+    "kible": "Kıble",
+
+    "timeLeftImsak": "Left Until Fajr",
+    "timeLeftSabah": "Left Until Morning",
+    "timeLeftGunes": "Left Until Tulu",
+    "timeLeftOgle": "Left Until Zuhr",
+    "timeLeftIkindi": "Left Until Asr",
+    "timeLeftAksam": "Left Until Maghrib",
+    "timeLeftYatsi": "Left Until Isha",
+
+    "nav1": "Times",
+    "nav2": "Qibla",
+    "nav3": "Dhikr",
+    "nav4": "More",
+    "nav5": "Settings"
+}

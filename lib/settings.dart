@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:namaz_vakti_app/main.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class Settings extends StatelessWidget {
   const Settings({super.key});
@@ -10,7 +11,7 @@ class Settings extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ayarlar'),
+        title: Text(AppLocalizations.of(context)!.settingsPageTitle),
       ),
       body: const SettingsCard(),
     );
@@ -18,12 +19,14 @@ class Settings extends StatelessWidget {
 }
 
 class SettingsCard extends StatelessWidget {
+  static String preLang = '';
   const SettingsCard({
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
+    preLang = Provider.of<ChangeSettings>(context, listen: false).loadLanguage();
     return Padding(
       padding: const EdgeInsets.all(5),
       child: Card(
@@ -35,11 +38,103 @@ class SettingsCard extends StatelessWidget {
                 color: Theme.of(context).cardColor,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                  child: ListTile(
+                    title: const Text('Dil'),
+                    subtitle: Text(AppLocalizations.of(context)!.lang),
+                    trailing: PopupMenuButton<int>(
+                      elevation: 10,
+                      enabled: true,
+                      onSelected: (int result) {
+                        Provider.of<ChangeSettings>(context, listen: false).saveLanguage(result);
+                        if (preLang !=
+                            Provider.of<ChangeSettings>(context, listen: false).loadLanguage()) {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text('Dil'),
+                                content: const Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 5,
+                                      child: Text('Uygulama yeniden başlatıldığında değişecektir.'),
+                                    ),
+                                    Expanded(
+                                      flex: 1,
+                                      child: Icon(
+                                        Icons.language,
+                                        size: 50,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text('Tamam'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        }
+                      },
+                      color: Theme.of(context).cardTheme.color!,
+                      itemBuilder: (context) {
+                        return <PopupMenuEntry<int>>[
+                          const PopupMenuItem<int>(
+                            value: 0,
+                            child: Center(
+                              child: Text(
+                                'Türkçe',
+                              ),
+                            ),
+                          ),
+                          const PopupMenuItem<int>(
+                            value: 1,
+                            child: Center(
+                              child: Text(
+                                'English',
+                              ),
+                            ),
+                          ),
+                          const PopupMenuItem<int>(
+                            value: 2,
+                            child: Center(
+                              child: Text(
+                                'عربي',
+                              ),
+                            ),
+                          ),
+                        ];
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              Card(
+                color: Theme.of(context).cardColor,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
                   child: SwitchListTile(
                     title: const Text('Koyu Tema'),
                     value: Provider.of<ChangeSettings>(context).isDark,
                     onChanged: (_) =>
                         Provider.of<ChangeSettings>(context, listen: false).toggleTheme(),
+                  ),
+                ),
+              ),
+              Card(
+                color: Theme.of(context).cardColor,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                  child: SwitchListTile(
+                    title: const Text('Geçişli Arkaplan'),
+                    value: Provider.of<ChangeSettings>(context).gradient,
+                    onChanged: (_) =>
+                        Provider.of<ChangeSettings>(context, listen: false).toggleGrad(),
                   ),
                 ),
               ),
@@ -152,8 +247,8 @@ class ChangeSettings with ChangeNotifier {
   static late SharedPreferences _settings;
 
   bool isDark = false;
-  bool isOpen = false;
   MaterialColor color = Colors.blueGrey;
+  bool gradient = true;
 
   static String? cityID;
   static String? cityName;
@@ -162,6 +257,7 @@ class ChangeSettings with ChangeNotifier {
 
   static bool isfirst = true;
 
+  bool isOpen = false;
   List<bool> alarmList = [
     false,
     false,
@@ -171,10 +267,24 @@ class ChangeSettings with ChangeNotifier {
     false,
     false,
   ];
-
   List<int> gaps = [0, 0, 0, 0, 0, 0, 0];
 
-  int currentSound = 0;
+  //LANGUAGE
+
+  String loadLanguage() {
+    return _settings.getString('lang') ?? 'tr';
+  }
+
+  void saveLanguage(int val) {
+    switch (val) {
+      case 0:
+        _settings.setString('lang', 'tr');
+      case 1:
+        _settings.setString('lang', 'en');
+      case 2:
+        _settings.setString('lang', 'ar');
+    }
+  }
 
   //ALARMS & NOTIFICATIONS
 
@@ -227,6 +337,20 @@ class ChangeSettings with ChangeNotifier {
   }
 
   //THEME SETTINGS
+
+  void toggleGrad() {
+    gradient = !gradient;
+    saveGradtoSharedPref(gradient);
+    notifyListeners();
+  }
+
+  void loadGradFromSharedPref() {
+    gradient = _settings.getBool('gradient') ?? true;
+  }
+
+  void saveGradtoSharedPref(bool value) {
+    _settings.setBool('gradient', value);
+  }
 
   void toggleTheme() {
     isDark = !isDark;

@@ -9,14 +9,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.7"
-  archive:
-    dependency: transitive
-    description:
-      name: archive
-      sha256: cb6a278ef2dbb298455e1a713bda08524a175630ec643a242c399c932a0a1f7d
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.6.1"
   args:
     dependency: transitive
     description:
@@ -97,14 +89,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
-  carousel_slider:
-    dependency: "direct main"
-    description:
-      name: carousel_slider
-      sha256: "7b006ec356205054af5beaef62e2221160ea36b90fb70a35e4deacd49d0349ae"
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.0.0"
   characters:
     dependency: transitive
     description:
@@ -170,7 +154,7 @@ packages:
     source: hosted
     version: "0.7.10"
   device_info_plus:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: device_info_plus
       sha256: a7fd703482b391a87d60b6061d04dfdeab07826b96f9abd8f5ed98068acc0074
@@ -185,22 +169,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.0.1"
-  equatable:
-    dependency: transitive
-    description:
-      name: equatable
-      sha256: c2b87cb7756efdf69892005af546c56c0b5037f54d2a88269b4f347a505e3ca2
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.5"
-  excel:
-    dependency: "direct main"
-    description:
-      name: excel
-      sha256: "1a15327dcad260d5db21d1f6e04f04838109b39a2f6a84ea486ceda36e468780"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.6"
   fake_async:
     dependency: transitive
     description:
@@ -310,6 +278,19 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.2.0"
+  flutter_localization:
+    dependency: "direct main"
+    description:
+      name: flutter_localization
+      sha256: "9b3b8825146a3850297a0ec3686b326d618328dca4cd5178b764af9303a26379"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.2"
+  flutter_localizations:
+    dependency: transitive
+    description: flutter
+    source: sdk
+    version: "0.0.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter

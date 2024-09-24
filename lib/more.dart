@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:namaz_vakti_app/main.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class More extends StatelessWidget {
   const More({super.key});
@@ -8,7 +9,7 @@ class More extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Daha Fazla'),
+        title: Text(AppLocalizations.of(context)!.morePageTitle),
       ),
       body: Padding(
         padding: const EdgeInsets.all(5),

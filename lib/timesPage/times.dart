@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:xml/xml.dart' as xml;
 import 'package:http/http.dart' as http;
 import 'package:hijri/hijri_calendar.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class TimeData extends ChangeSettings {
   DateTime? yatsi2;
@@ -176,7 +177,7 @@ class TimeData extends ChangeSettings {
 
   String clock = '';
   Duration difference = const Duration(minutes: 1);
-  String pray = '';
+  int pray = 0;
   DateTime soontime = DateTime.now();
   bool hour = true;
   bool minute = true;
@@ -209,47 +210,47 @@ class TimeData extends ChangeSettings {
     if (isTimeLoading == false && imsak != null) {
       if (DateTime(now.year, now.month, now.day, imsak!.hour, imsak!.minute, 0).difference(now) >
           DateTime.now().difference(now)) {
-        pray = 'İmsaka';
+        pray = 0;
         soontime = imsak!;
         preTime = yatsi2!;
       } else if (DateTime(now.year, now.month, now.day, sabah!.hour, sabah!.minute, 0)
               .difference(now) >
           DateTime.now().difference(now)) {
-        pray = 'Sabaha';
+        pray = 1;
         soontime = sabah!;
         preTime = imsak!;
       } else if (DateTime(now.year, now.month, now.day, gunes!.hour, gunes!.minute, 0)
               .difference(now) >
           DateTime.now().difference(now)) {
-        pray = 'Güneşe';
+        pray = 2;
         soontime = gunes!;
         preTime = sabah!;
       } else if (DateTime(now.year, now.month, now.day, ogle!.hour, ogle!.minute, 0)
               .difference(now) >
           DateTime.now().difference(now)) {
-        pray = 'Öğleye';
+        pray = 3;
         soontime = ogle!;
         preTime = gunes!;
       } else if (DateTime(now.year, now.month, now.day, ikindi!.hour, ikindi!.minute, 0)
               .difference(now) >
           DateTime.now().difference(now)) {
-        pray = 'İkindiye';
+        pray = 4;
         soontime = ikindi!;
         preTime = ogle!;
       } else if (DateTime(now.year, now.month, now.day, aksam!.hour, aksam!.minute, 0)
               .difference(now) >
           DateTime.now().difference(now)) {
-        pray = 'Akşama';
+        pray = 5;
         soontime = aksam!;
         preTime = ikindi!;
       } else if (DateTime(now.year, now.month, now.day, yatsi!.hour, yatsi!.minute, 0)
               .difference(now) >
           DateTime.now().difference(now)) {
-        pray = 'Yatsıya';
+        pray = 6;
         soontime = yatsi!;
         preTime = aksam!;
       } else {
-        pray = 'İmsaka';
+        pray = 7;
         soontime = imsak2!;
         preTime = yatsi!;
       }
@@ -279,20 +280,20 @@ class Times extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('Vakitler'),
-        actions: [
-          IconButton(
-              iconSize: MainApp.currentHeight! < 700.0 ? 22.0 : 25.0,
-              onPressed: () {
-                Navigator.pushNamed(context, '/alarms');
-              },
-              icon: const Icon(
-                Icons.alarm,
-              )),
-          const SizedBox(
-            width: 20,
-          ),
-        ],
+        title: Text(AppLocalizations.of(context)!.timesPageTitle),
+        // actions: [
+        //   IconButton(
+        //       iconSize: MainApp.currentHeight! < 700.0 ? 22.0 : 25.0,
+        //       onPressed: () {
+        //         Navigator.pushNamed(context, '/alarms');
+        //       },
+        //       icon: const Icon(
+        //         Icons.alarm,
+        //       )),
+        //   const SizedBox(
+        //     width: 20,
+        //   ),
+        // ],
       ),
       body: const TimesBody(),
     );
@@ -307,21 +308,6 @@ class TimesBody extends StatefulWidget {
 }
 
 class _TimesBodyState extends State<TimesBody> {
-  final List<String> turkishMonths = [
-    'Muharrem',
-    'Safer',
-    'Rebiülevvel',
-    'Rebiülahir',
-    'Cemaziyelevvel',
-    'Cemaziyelahir',
-    'Recep',
-    'Şaban',
-    'Ramazan',
-    'Şevval',
-    'Zilkade',
-    'Zilhicce'
-  ];
-
   String miladi = '';
   String hicri = '';
   int count = 0;
@@ -345,7 +331,9 @@ class _TimesBodyState extends State<TimesBody> {
   @override
   void initState() {
     super.initState();
-    miladi = DateFormat('dd MMMM yyyy', 'tr_TR').format(DateTime.now());
+    miladi = DateFormat(
+            'dd MMMM yyyy', Provider.of<ChangeSettings>(context, listen: false).loadLanguage())
+        .format(DateTime.now());
     hicri = HijriCalendar.fromDate(DateTime.now()).toFormat('dd MMMM yy');
   }
 
@@ -366,6 +354,49 @@ class _TimesBodyState extends State<TimesBody> {
                         child: TimesCard(
                           child: Stack(
                             children: [
+                              Center(
+                                child: TextButton(
+                                  style: TextButton.styleFrom(
+                                      foregroundColor:
+                                          Theme.of(context).textTheme.displayMedium!.color),
+                                  onPressed: () async {
+                                    var now = DateTime.now();
+                                    await _selectDate(context);
+                                    Provider.of<TimeData>(context, listen: false)
+                                        .switchLoading(true);
+                                    setState(() {
+                                      count = customDate
+                                          .difference(
+                                              DateTime(now.year, now.month, now.day, 00, 00))
+                                          .inDays;
+                                      if (count != 0) {
+                                        Provider.of<TimeData>(context, listen: false)
+                                            .switchClock(false);
+                                      } else {
+                                        Provider.of<TimeData>(context, listen: false)
+                                            .switchClock(true);
+                                      }
+                                      miladi = DateFormat(
+                                              'dd MMMM yyyy',
+                                              Provider.of<ChangeSettings>(context, listen: false)
+                                                  .loadLanguage())
+                                          .format(DateTime.now().add(Duration(days: count)));
+                                      hicri = HijriCalendar.fromDate(
+                                              DateTime.now().add(Duration(days: count)))
+                                          .toFormat('dd MMMM yy');
+                                    });
+                                    Provider.of<TimeData>(context, listen: false)
+                                        .loadPrayerTimes(DateTime.now().add(Duration(days: count)));
+                                  },
+                                  child: Text(
+                                    miladi,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ),
+                              ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
@@ -385,7 +416,11 @@ class _TimesBodyState extends State<TimesBody> {
                                               Provider.of<TimeData>(context, listen: false)
                                                   .switchClock(true);
                                             }
-                                            miladi = DateFormat('dd MMMM yyyy', 'tr_TR')
+                                            miladi = DateFormat(
+                                                    'dd MMMM yyyy',
+                                                    Provider.of<ChangeSettings>(context,
+                                                            listen: false)
+                                                        .loadLanguage())
                                                 .format(DateTime.now().add(Duration(days: count)));
                                             hicri = HijriCalendar.fromDate(
                                                     DateTime.now().add(Duration(days: count)))
@@ -420,7 +455,11 @@ class _TimesBodyState extends State<TimesBody> {
                                               Provider.of<TimeData>(context, listen: false)
                                                   .switchClock(true);
                                             }
-                                            miladi = DateFormat('dd MMMM yyyy', 'tr_TR')
+                                            miladi = DateFormat(
+                                                    'dd MMMM yyyy',
+                                                    Provider.of<ChangeSettings>(context,
+                                                            listen: false)
+                                                        .loadLanguage())
                                                 .format(DateTime.now().add(Duration(days: count)));
                                             hicri = HijriCalendar.fromDate(
                                                     DateTime.now().add(Duration(days: count)))
@@ -435,46 +474,6 @@ class _TimesBodyState extends State<TimesBody> {
                                     ],
                                   ),
                                 ],
-                              ),
-                              Center(
-                                child: TextButton(
-                                  style: TextButton.styleFrom(
-                                      foregroundColor:
-                                          Theme.of(context).textTheme.displayMedium!.color),
-                                  onPressed: () async {
-                                    var now = DateTime.now();
-                                    await _selectDate(context);
-                                    Provider.of<TimeData>(context, listen: false)
-                                        .switchLoading(true);
-                                    setState(() {
-                                      count = customDate
-                                          .difference(
-                                              DateTime(now.year, now.month, now.day, 00, 00))
-                                          .inDays;
-                                      if (count != 0) {
-                                        Provider.of<TimeData>(context, listen: false)
-                                            .switchClock(false);
-                                      } else {
-                                        Provider.of<TimeData>(context, listen: false)
-                                            .switchClock(true);
-                                      }
-                                      miladi = DateFormat('dd MMMM yyyy', 'tr_TR')
-                                          .format(DateTime.now().add(Duration(days: count)));
-                                      hicri = HijriCalendar.fromDate(
-                                              DateTime.now().add(Duration(days: count)))
-                                          .toFormat('dd MMMM yy');
-                                    });
-                                    Provider.of<TimeData>(context, listen: false)
-                                        .loadPrayerTimes(DateTime.now().add(Duration(days: count)));
-                                  },
-                                  child: Text(
-                                    miladi,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 15,
-                                    ),
-                                  ),
-                                ),
                               ),
                             ],
                           ),
@@ -688,59 +687,59 @@ class DetailedTimesBtn extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               Text(
-                                'İmsak',
+                                AppLocalizations.of(context)!.imsak,
                                 style: style,
                               ),
                               Text(
-                                'Sabah',
+                                AppLocalizations.of(context)!.sabah,
                                 style: style,
                               ),
                               Text(
-                                'Güneş',
+                                AppLocalizations.of(context)!.gunes,
                                 style: style,
                               ),
                               Text(
-                                'İşrak',
+                                AppLocalizations.of(context)!.israk,
                                 style: style,
                               ),
                               Text(
-                                'Kerahat',
+                                AppLocalizations.of(context)!.kerahat,
                                 style: style,
                               ),
                               Text(
-                                'Öğle',
+                                AppLocalizations.of(context)!.ogle,
                                 style: style,
                               ),
                               Text(
-                                'İkindi',
+                                AppLocalizations.of(context)!.ikindi,
                                 style: style,
                               ),
                               Text(
-                                'Asri Sani',
+                                AppLocalizations.of(context)!.asrisani,
                                 style: style,
                               ),
                               Text(
-                                'İsfirar-ı şems',
+                                AppLocalizations.of(context)!.isfirar,
                                 style: style,
                               ),
                               Text(
-                                'Akşam',
+                                AppLocalizations.of(context)!.aksam,
                                 style: style,
                               ),
                               Text(
-                                'İstibak-ı nücum',
+                                AppLocalizations.of(context)!.istibak,
                                 style: style,
                               ),
                               Text(
-                                'Yatsı',
+                                AppLocalizations.of(context)!.yatsi,
                                 style: style,
                               ),
                               Text(
-                                'İşa-i Sani',
+                                AppLocalizations.of(context)!.isaisani,
                                 style: style,
                               ),
                               Text(
-                                'Kıble',
+                                AppLocalizations.of(context)!.kible,
                                 style: style,
                               ),
                             ],
@@ -866,31 +865,31 @@ class MainTimes extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Text(
-                          'İmsak',
+                          AppLocalizations.of(context)!.imsak,
                           style: timeStyle,
                         ),
                         Text(
-                          'Sabah',
+                          AppLocalizations.of(context)!.sabah,
                           style: timeStyle,
                         ),
                         Text(
-                          'Güneş',
+                          AppLocalizations.of(context)!.gunes,
                           style: timeStyle,
                         ),
                         Text(
-                          'Öğle',
+                          AppLocalizations.of(context)!.ogle,
                           style: timeStyle,
                         ),
                         Text(
-                          'İkindi',
+                          AppLocalizations.of(context)!.ikindi,
                           style: timeStyle,
                         ),
                         Text(
-                          'Akşam',
+                          AppLocalizations.of(context)!.aksam,
                           style: timeStyle,
                         ),
                         Text(
-                          'Yatsı',
+                          AppLocalizations.of(context)!.yatsi,
                           style: timeStyle,
                         ),
                       ],
@@ -987,8 +986,27 @@ class _ClockState extends State<Clock> {
     });
   }
 
+  final List<String> _prayList = [
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+  ];
+
   @override
   Widget build(BuildContext context) {
+    _prayList[0] = AppLocalizations.of(context)!.timeLeftImsak;
+    _prayList[1] = AppLocalizations.of(context)!.timeLeftSabah;
+    _prayList[2] = AppLocalizations.of(context)!.timeLeftGunes;
+    _prayList[3] = AppLocalizations.of(context)!.timeLeftOgle;
+    _prayList[4] = AppLocalizations.of(context)!.timeLeftIkindi;
+    _prayList[5] = AppLocalizations.of(context)!.timeLeftAksam;
+    _prayList[6] = AppLocalizations.of(context)!.timeLeftYatsi;
+    _prayList[7] = AppLocalizations.of(context)!.timeLeftImsak;
     return Provider.of<TimeData>(context).isEnabled == false
         ? IconButton(
             iconSize: 25,
@@ -1034,7 +1052,7 @@ class _ClockState extends State<Clock> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Text(
-                          '${Provider.of<TimeData>(context).pray} Kalan',
+                          _prayList[Provider.of<TimeData>(context).pray],
                           style: TextStyle(fontSize: MainApp.currentHeight! < 700.0 ? 16.0 : 17.0),
                         ),
                         Provider.of<TimeData>(context).imsak != null

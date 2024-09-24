@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:namaz_vakti_app/main.dart';
 import 'package:namaz_vakti_app/settings.dart';
 import 'package:provider/provider.dart';
@@ -18,7 +17,7 @@ class _LoadingState extends State<Loading> {
   void initState() {
     super.initState();
     ChangeSettings.isLocalized = false;
-    FlutterBackgroundService().invoke('stopService');
+    //FlutterBackgroundService().invoke('stopService');
     Timer.periodic(const Duration(seconds: 1), (Timer t) {
       if (ChangeSettings.isLocalized) {
         if (mounted) {
@@ -27,7 +26,7 @@ class _LoadingState extends State<Loading> {
               ? Navigator.popAndPushNamed(context, '/')
               : Navigator.pushNamed(context, '/');
           Provider.of<ChangeSettings>(context, listen: false).saveFirsttoSharedPref(false);
-          FlutterBackgroundService().startService();
+          //FlutterBackgroundService().startService();
         }
       }
     });

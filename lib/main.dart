@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hijri/hijri_calendar.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:namaz_vakti_app/background.dart';
 import 'package:namaz_vakti_app/kaza.dart';
+import 'package:namaz_vakti_app/l10n/l10n.dart';
 import 'package:namaz_vakti_app/timesPage/alarms.dart';
 import 'package:namaz_vakti_app/books.dart';
 import 'package:namaz_vakti_app/dates.dart';
@@ -16,11 +17,12 @@ import 'package:namaz_vakti_app/startup.dart';
 import 'package:namaz_vakti_app/timesPage/times.dart';
 import 'package:namaz_vakti_app/zikir.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await initService();
-  await requestNotificationPermission();
+  //await initService();
+  //await requestNotificationPermission();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
@@ -46,14 +48,23 @@ class MainApp extends StatelessWidget {
     MainApp.currentHeight = MediaQuery.of(context).size.height;
     Provider.of<ChangeSettings>(context, listen: false).loadCol();
     Provider.of<ChangeSettings>(context, listen: false).loadThemeFromSharedPref();
+    Provider.of<ChangeSettings>(context, listen: false).loadGradFromSharedPref();
     Provider.of<ChangeSettings>(context, listen: false).loadFirstFromSharedPref();
-    Provider.of<ChangeSettings>(context, listen: false).loadNotFromSharedPref();
-    Provider.of<ChangeSettings>(context, listen: false).loadAlarm();
-    Provider.of<ChangeSettings>(context, listen: false).loadGaps();
+    //Provider.of<ChangeSettings>(context, listen: false).loadNotFromSharedPref();
+    //Provider.of<ChangeSettings>(context, listen: false).loadAlarm();
+    //Provider.of<ChangeSettings>(context, listen: false).loadGaps();
+    Provider.of<ChangeSettings>(context, listen: false).loadLanguage() == 'ar'
+        ? HijriCalendar.setLocal('ar')
+        : HijriCalendar.setLocal('en');
     return MaterialApp(
+      supportedLocales: L10n.all,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      locale: Locale(Provider.of<ChangeSettings>(context, listen: false).loadLanguage()),
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        scaffoldBackgroundColor: Colors.transparent,
+        scaffoldBackgroundColor: Provider.of<ChangeSettings>(context).gradient == true
+            ? Colors.transparent
+            : Theme.of(context).navigationBarTheme.backgroundColor,
         useMaterial3: true,
         brightness: Provider.of<ChangeSettings>(context).isDark == false
             ? Brightness.light

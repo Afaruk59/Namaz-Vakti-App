@@ -1,0 +1,141 @@
+{
+    "@@locale": "tr",
+
+    "lang": "Türkçe",
+    "@lang":{
+        "description": "Language"
+    },
+
+    "timesPageTitle": "Vakitler",
+    "@timesPageTitle":{
+        "description": "Page title"
+    },
+    "qiblaPageTitle": "Kıble Pusulası",
+    "@qiblaPageTitle":{
+        "description": "Page title"
+    },
+    "zikirPageTitle": "Zikir",
+    "@zikirPageTitle":{
+        "description": "Page title"
+    },
+    "morePageTitle": "Daha Fazla",
+    "@morePageTitle":{
+        "description": "Page title"
+    },
+    "settingsPageTitle": "Ayarlar",
+    "@settingsPageTitle":{
+        "description": "Page title"
+    },
+
+    "locationButtonText": "Güncelle",
+    "@locationButtonText":{
+        "description": "Button text"
+    },
+
+    "imsak": "İmsak",
+    "@imsak":{
+        "description": "Text"
+    },
+    "sabah": "Sabah",
+    "@sabah":{
+        "description": "Text"
+    },
+    "gunes": "Güneş",
+    "@gunes":{
+        "description": "Text"
+    },
+    "ogle": "Öğle",
+    "@ogle":{
+        "description": "Text"
+    },
+    "ikindi": "İkindi",
+    "@ikindi":{
+        "description": "Text"
+    },
+    "aksam": "Akşam",
+    "@aksam":{
+        "description": "Text"
+    },
+    "yatsi": "Yatsı",
+    "@yatsi":{
+        "description": "Text"
+    },
+    "israk": "İşrak",
+    "@israk":{
+        "description": "Text"
+    },
+    "kerahat": "Kerahat",
+    "@kerahat":{
+        "description": "Text"
+    },
+    "asrisani": "Asr-ı Sani",
+    "@asrisani":{
+        "description": "Text"
+    },
+    "isfirar": "İsfirar-ı Şems",
+    "@isfirar":{
+        "description": "Text"
+    },
+    "istibak": "İstibak-ı Nücum",
+    "@istibak":{
+        "description": "Text"
+    },
+    "isaisani": "İşa-i Sani",
+    "@isaisani":{
+        "description": "Text"
+    },
+    "kible": "Kıble",
+    "@kible":{
+        "description": "Text"
+    },
+
+    "timeLeftImsak": "İmsaka Kalan",
+    "@timeLeftImsak":{
+        "description": "Text"
+    },
+    "timeLeftSabah": "Sabaha Kalan",
+    "@timeLeftSabah":{
+        "description": "Text"
+    },
+    "timeLeftGunes": "Güneşe Kalan",
+    "@timeLeftGunes":{
+        "description": "Text"
+    },
+    "timeLeftOgle": "Öğleye Kalan",
+    "@timeLeftOgle":{
+        "description": "Text"
+    },
+    "timeLeftIkindi": "İkindiye Kalan",
+    "@timeLeftIkindi":{
+        "description": "Text"
+    },
+    "timeLeftAksam": "Akşama Kalan",
+    "@timeLeftAksam":{
+        "description": "Text"
+    },
+    "timeLeftYatsi": "Yatsıya Kalan",
+    "@timeLeftYatsi":{
+        "description": "Text"
+    },
+
+    "nav1": "Vakitler",
+    "@nav1":{
+        "description": "Navbar text"
+    },
+    "nav2": "Kıble",
+    "@nav2":{
+        "description": "Navbar text"
+    },
+    "nav3": "Zikir",
+    "@nav3":{
+        "description": "Navbar text"
+    },
+    "nav4": "Daha Fazla",
+    "@nav4":{
+        "description": "Navbar text"
+    },
+    "nav5": "Ayarlar",
+    "@nav5":{
+        "description": "Navbar text"
+    }
+}

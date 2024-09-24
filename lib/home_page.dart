@@ -8,6 +8,7 @@ import 'package:namaz_vakti_app/qibla.dart';
 import 'package:namaz_vakti_app/settings.dart';
 import 'package:namaz_vakti_app/timesPage/times.dart';
 import 'package:namaz_vakti_app/zikir.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({
@@ -126,31 +127,31 @@ class _HomePageState extends State<HomePage> {
           _pageController.animateToPage(index,
               duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
         },
-        destinations: const <Widget>[
+        destinations: <Widget>[
           NavigationDestination(
-            selectedIcon: Icon(Icons.schedule),
-            icon: Icon(Icons.schedule),
-            label: 'Vakitler',
+            selectedIcon: const Icon(Icons.schedule),
+            icon: const Icon(Icons.schedule),
+            label: AppLocalizations.of(context)!.nav1,
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.navigation),
-            icon: Icon(Icons.navigation_outlined),
-            label: 'Kıble',
+            selectedIcon: const Icon(Icons.navigation),
+            icon: const Icon(Icons.navigation_outlined),
+            label: AppLocalizations.of(context)!.nav2,
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.timer),
-            icon: Icon(Icons.timer_outlined),
-            label: 'Zikir',
+            selectedIcon: const Icon(Icons.timer),
+            icon: const Icon(Icons.timer_outlined),
+            label: AppLocalizations.of(context)!.nav3,
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.more_horiz),
-            icon: Icon(Icons.more_horiz),
-            label: 'Daha Fazla',
+            selectedIcon: const Icon(Icons.more_horiz),
+            icon: const Icon(Icons.more_horiz),
+            label: AppLocalizations.of(context)!.nav4,
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.settings),
-            icon: Icon(Icons.settings_outlined),
-            label: 'Ayarlar',
+            selectedIcon: const Icon(Icons.settings),
+            icon: const Icon(Icons.settings_outlined),
+            label: AppLocalizations.of(context)!.nav5,
           ),
         ],
       ),

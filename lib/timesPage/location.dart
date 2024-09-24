@@ -4,6 +4,7 @@ import 'package:namaz_vakti_app/api/sheets_api.dart';
 import 'package:namaz_vakti_app/main.dart';
 import 'package:namaz_vakti_app/settings.dart';
 import 'package:namaz_vakti_app/timesPage/loading.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class Location extends StatefulWidget {
   const Location({super.key});
@@ -71,7 +72,7 @@ class _LocationState extends State<Location> {
       );
     }
 
-// Konum izni kontrol et
+    // Konum izni kontrol et
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
@@ -160,7 +161,7 @@ class _LocationState extends State<Location> {
         children: [
           Icon(Icons.location_on, size: MainApp.currentHeight! < 700.0 ? 20.0 : 22.0),
           Text(
-            'Güncelle',
+            AppLocalizations.of(context)!.locationButtonText,
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: MainApp.currentHeight! < 700.0 ? 12.0 : 15.0),
           ),

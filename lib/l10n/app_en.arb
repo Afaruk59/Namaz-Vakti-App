@@ -1,0 +1,45 @@
+{
+    "@@locale": "en",
+
+    "lang": "English",
+    "@lang":{
+        "description": "Language"
+    },
+
+    "timesPageTitle": "Times",
+    "qiblaPageTitle": "Prayer Compass",
+    "zikirPageTitle": "Dhikr",
+    "morePageTitle": "More",
+    "settingsPageTitle": "Settings",
+
+    "locationButtonText": "Sync",
+
+    "imsak": "Fajr",
+    "sabah": "Morning",
+    "gunes": "Tulu",
+    "ogle": "Zuhr",
+    "ikindi": "Asr",
+    "aksam": "Maghrib",
+    "yatsi": "Isha",
+    "israk": "Ishrâq",
+    "kerahat": "Karahat",
+    "asrisani": "Asr-i Thâni",
+    "isfirar": "Isfirâr",
+    "istibak": "Ishtibâk",
+    "isaisani": "Ishâ-i Thani",
+    "kible": "Qibla Time",
+
+    "timeLeftImsak": "Left Until Fajr",
+    "timeLeftSabah": "Left Until Morning",
+    "timeLeftGunes": "Left Until Tulu",
+    "timeLeftOgle": "Left Until Zuhr",
+    "timeLeftIkindi": "Left Until Asr",
+    "timeLeftAksam": "Left Until Maghrib",
+    "timeLeftYatsi": "Left Until Isha",
+
+    "nav1": "Times",
+    "nav2": "Qibla",
+    "nav3": "Dhikr",
+    "nav4": "More",
+    "nav5": "Settings"
+}
