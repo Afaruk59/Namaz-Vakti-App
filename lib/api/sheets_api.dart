@@ -34,9 +34,6 @@ class SheetsApi {
   }
 
   Future<void> searchLoc(double lat, double long) async {
-    print('lat: $lat');
-    print('long: $long');
-
     final latValues = await _sheet!.values.column(5);
     final longValues = await _sheet!.values.column(6);
 

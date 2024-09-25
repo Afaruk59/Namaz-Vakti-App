@@ -11,8 +11,22 @@
     "zikirPageTitle": "Dhikr",
     "morePageTitle": "More",
     "settingsPageTitle": "Settings",
+    "datesTitle": "Holy Days",
+    "datesTitleShort": "Holy Days",
+    "kazaTitle": "Missed Prayers",
+    "booksTitle": "Sourcebooks",
+
+    "nav1": "Times",
+    "nav2": "Qibla",
+    "nav3": "Dhikr",
+    "nav4": "More",
+    "nav5": "Settings",
 
     "locationButtonText": "Sync",
+    "yes": "Yes",
+    "leave": "Leave",
+    "ok": "OK",
+    "remove": "Remove",
 
     "imsak": "Fajr",
     "sabah": "Morning",
@@ -28,6 +42,8 @@
     "istibak": "Ishtibâk",
     "isaisani": "Ishâ-i Thani",
     "kible": "Qibla Time",
+    "vitir": "Witr",
+    "oruc": "Fast",
 
     "timeLeftImsak": "Left Until Fajr",
     "timeLeftSabah": "Left Until Morning",
@@ -37,9 +53,32 @@
     "timeLeftAksam": "Left Until Maghrib",
     "timeLeftYatsi": "Left Until Isha",
 
-    "nav1": "Times",
-    "nav2": "Qibla",
-    "nav3": "Dhikr",
-    "nav4": "More",
-    "nav5": "Settings"
+    "calendarTitle1": "Word of the Day:",
+    "calendarTitle2": "Back Page:",
+
+    "qiblaTargetText": "Goal:",
+
+    "zikirCount": "Dhikr Count",
+    "popupInfo1": "Finished:",
+    "popupInfo2": "Run-on:",
+    "resetMessageTitle": "Reset Dhikr",
+    "resetMessageBody": "Do you really want to reset?",
+    "zikirMessageTitle": "Dhikr Count:",
+    "defaultProf": "Default",
+    "profileMessageTitle": "New Profile",
+    "removeMessageTitle": "Remove Profile",
+    "removeMessageBody": "Do you really want to remove?",
+
+    "ln": "Language",
+    "languageMessageBody": "It will change when the app is restarted.",
+    "darkMode": "Dark Mode",
+    "gradient": "Gradient Background",
+    "themeColor": "Theme Color",
+    "colorPaletteTitle": "Color Selection",
+
+    "startupTitle": "Welcome.",
+    "startupDescription": "Prayer times are taken from Namazvakti.com",
+    "tenbih": "An Important Cautioning About Different Prayer Times",
+
+    "loading": "Searching"
 }

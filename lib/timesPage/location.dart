@@ -163,7 +163,7 @@ class _LocationState extends State<Location> {
           Text(
             AppLocalizations.of(context)!.locationButtonText,
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: MainApp.currentHeight! < 700.0 ? 12.0 : 15.0),
+            style: TextStyle(fontSize: MainApp.currentHeight! < 700.0 ? 14.0 : 15.0),
           ),
         ],
       ),

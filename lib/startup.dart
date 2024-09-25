@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:namaz_vakti_app/settings.dart';
 import 'package:namaz_vakti_app/timesPage/location.dart';
 import 'package:namaz_vakti_app/main.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class Startup extends StatelessWidget {
   const Startup({super.key});
@@ -14,7 +17,7 @@ class Startup extends StatelessWidget {
         child: Scaffold(
           appBar: AppBar(
             automaticallyImplyLeading: false,
-            title: const Text('Hoşgeldiniz.'),
+            title: Text(AppLocalizations.of(context)!.startupTitle),
           ),
           body: const StartupCard(),
         ),
@@ -43,11 +46,39 @@ class StartupCard extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     child: Card(
                       color: Theme.of(context).cardColor,
-                      child: const ListTile(
+                      child: ListTile(
                         title: Text(
-                          "Vakitler Namazvakti.com'dan alınmıştır.",
+                          AppLocalizations.of(context)!.startupDescription,
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 15),
+                          style: const TextStyle(fontSize: 15),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Card(
+                      color: Theme.of(context).cardColor,
+                      child: ListTile(
+                        title: Text(
+                          AppLocalizations.of(context)!.tenbih,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        trailing: FilledButton.tonal(
+                          style: ElevatedButton.styleFrom(elevation: 10),
+                          onPressed: () async {
+                            final Uri url = Uri.parse(
+                                'https://www.turktakvim.com/index.php?link=html/muhim_tenbih.html');
+                            await launchUrl(url);
+                          },
+                          child: const Icon(Icons.search),
                         ),
                       ),
                     ),
@@ -61,21 +92,49 @@ class StartupCard extends StatelessWidget {
                       color: Theme.of(context).cardColor,
                       child: ListTile(
                         title: const Text(
-                          'Namaz Vakitleri Hakkında Mühim Tenbih',
-                          textAlign: TextAlign.center,
+                          'Language',
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        trailing: FilledButton.tonal(
-                          style: ElevatedButton.styleFrom(elevation: 10),
-                          onPressed: () async {
-                            final Uri url = Uri.parse(
-                                'https://www.turktakvim.com/index.php?link=html/muhim_tenbih.html');
-                            await launchUrl(url);
+                        subtitle: Text(AppLocalizations.of(context)!.lang),
+                        trailing: PopupMenuButton<int>(
+                          elevation: 10,
+                          enabled: true,
+                          onSelected: (int result) {
+                            Provider.of<ChangeSettings>(context, listen: false)
+                                .saveLanguage(result);
                           },
-                          child: const Icon(Icons.search),
+                          color: Theme.of(context).cardTheme.color!,
+                          itemBuilder: (context) {
+                            return <PopupMenuEntry<int>>[
+                              const PopupMenuItem<int>(
+                                value: 0,
+                                child: Center(
+                                  child: Text(
+                                    'Türkçe',
+                                  ),
+                                ),
+                              ),
+                              const PopupMenuItem<int>(
+                                value: 1,
+                                child: Center(
+                                  child: Text(
+                                    'English',
+                                  ),
+                                ),
+                              ),
+                              const PopupMenuItem<int>(
+                                value: 2,
+                                child: Center(
+                                  child: Text(
+                                    'عربي',
+                                  ),
+                                ),
+                              ),
+                            ];
+                          },
                         ),
                       ),
                     ),

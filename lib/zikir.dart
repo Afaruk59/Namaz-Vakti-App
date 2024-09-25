@@ -34,8 +34,8 @@ class _ZikirCardState extends State<ZikirCard> {
   static int _stack = 0;
   final TextEditingController _textFieldController = TextEditingController();
   final TextEditingController _textFieldController2 = TextEditingController();
-  static String _selectedProfile = 'Varsayılan';
-  static List<String> _profiles = ['Varsayılan'];
+  static String _selectedProfile = ' ';
+  static List<String> _profiles = [' '];
 
   @override
   void initState() {
@@ -96,15 +96,17 @@ class _ZikirCardState extends State<ZikirCard> {
                                               context: context,
                                               builder: (BuildContext context) {
                                                 return AlertDialog(
-                                                  title: const Text('Zikiri Sıfırla'),
-                                                  content: const Text(
-                                                      'Gerçekten sıfırlamak istiyor musunuz?'),
+                                                  title: Text(AppLocalizations.of(context)!
+                                                      .resetMessageTitle),
+                                                  content: Text(AppLocalizations.of(context)!
+                                                      .resetMessageBody),
                                                   actions: [
                                                     TextButton(
                                                       onPressed: () {
                                                         Navigator.pop(context);
                                                       },
-                                                      child: const Text('Vazgeç'),
+                                                      child:
+                                                          Text(AppLocalizations.of(context)!.leave),
                                                     ),
                                                     TextButton(
                                                       onPressed: () {
@@ -119,7 +121,8 @@ class _ZikirCardState extends State<ZikirCard> {
                                                                 _count, _target, _stack);
                                                         Navigator.pop(context);
                                                       },
-                                                      child: const Text('Evet'),
+                                                      child:
+                                                          Text(AppLocalizations.of(context)!.yes),
                                                     ),
                                                   ],
                                                 );
@@ -203,13 +206,15 @@ class _ZikirCardState extends State<ZikirCard> {
                                                           mainAxisAlignment:
                                                               MainAxisAlignment.spaceEvenly,
                                                           children: [
-                                                            const Padding(
-                                                              padding: EdgeInsets.symmetric(
+                                                            Padding(
+                                                              padding: const EdgeInsets.symmetric(
                                                                   horizontal: 10.0),
                                                               child: Text(
                                                                 textAlign: TextAlign.center,
-                                                                'Zikir Sayısı',
-                                                                style: TextStyle(fontSize: 17),
+                                                                AppLocalizations.of(context)!
+                                                                    .zikirCount,
+                                                                style:
+                                                                    const TextStyle(fontSize: 17),
                                                               ),
                                                             ),
                                                             const Divider(
@@ -222,8 +227,10 @@ class _ZikirCardState extends State<ZikirCard> {
                                                                     builder:
                                                                         (BuildContext context) {
                                                                       return AlertDialog(
-                                                                        title: const Text(
-                                                                            'Zikir Sayısı:'),
+                                                                        title: Text(
+                                                                            AppLocalizations.of(
+                                                                                    context)!
+                                                                                .zikirMessageTitle),
                                                                         content: TextField(
                                                                           keyboardType:
                                                                               TextInputType.number,
@@ -244,11 +251,16 @@ class _ZikirCardState extends State<ZikirCard> {
                                                                               Navigator.of(context)
                                                                                   .pop();
                                                                             },
-                                                                            child: const Text(
-                                                                                'Vazgeç'),
+                                                                            child: Text(
+                                                                                AppLocalizations.of(
+                                                                                        context)!
+                                                                                    .leave),
                                                                           ),
                                                                           TextButton(
-                                                                            child: const Text('OK'),
+                                                                            child: Text(
+                                                                                AppLocalizations.of(
+                                                                                        context)!
+                                                                                    .ok),
                                                                             onPressed: () {
                                                                               if (_textFieldController
                                                                                           .text !=
@@ -441,7 +453,7 @@ class _ZikirCardState extends State<ZikirCard> {
                                 ],
                               ),
                             ),
-                            _selectedProfile != 'Varsayılan'
+                            _selectedProfile != ' '
                                 ? Positioned(
                                     right: 20,
                                     top: 20,
@@ -489,15 +501,18 @@ class _ZikirCardState extends State<ZikirCard> {
                                           child: Column(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
+                                              item != ' '
+                                                  ? Text(
+                                                      item,
+                                                      style: const TextStyle(
+                                                          fontWeight: FontWeight.bold),
+                                                    )
+                                                  : Container(),
                                               Text(
-                                                item,
-                                                style: const TextStyle(fontWeight: FontWeight.bold),
+                                                '${AppLocalizations.of(context)!.popupInfo1} ${Provider.of<ChangeSettings>(context, listen: false).loadZikirStack(item)}',
                                               ),
                                               Text(
-                                                'Biten: ${Provider.of<ChangeSettings>(context, listen: false).loadZikirStack(item)}',
-                                              ),
-                                              Text(
-                                                  'Çekilen: ${Provider.of<ChangeSettings>(context, listen: false).loadZikirSet(item)}/${Provider.of<ChangeSettings>(context, listen: false).loadZikirCount(item)}'),
+                                                  '${AppLocalizations.of(context)!.popupInfo2} ${Provider.of<ChangeSettings>(context, listen: false).loadZikirSet(item)}/${Provider.of<ChangeSettings>(context, listen: false).loadZikirCount(item)}'),
                                               const SizedBox(
                                                 height: 5,
                                               ),
@@ -545,7 +560,8 @@ class _ZikirCardState extends State<ZikirCard> {
                                       context: context,
                                       builder: (BuildContext context) {
                                         return AlertDialog(
-                                          title: const Text('Yeni Profil'),
+                                          title: Text(
+                                              AppLocalizations.of(context)!.profileMessageTitle),
                                           content: TextField(
                                             controller: _textFieldController2,
                                             decoration: const InputDecoration(hintText: ''),
@@ -555,10 +571,10 @@ class _ZikirCardState extends State<ZikirCard> {
                                               onPressed: () {
                                                 Navigator.of(context).pop();
                                               },
-                                              child: const Text('Vazgeç'),
+                                              child: Text(AppLocalizations.of(context)!.leave),
                                             ),
                                             TextButton(
-                                              child: const Text('OK'),
+                                              child: Text(AppLocalizations.of(context)!.ok),
                                               onPressed: () {
                                                 setState(() {
                                                   if (_textFieldController2.text != '' &&
@@ -595,7 +611,7 @@ class _ZikirCardState extends State<ZikirCard> {
                                 icon: const Icon(Icons.add),
                               ),
                             ),
-                            _selectedProfile != 'Varsayılan'
+                            _selectedProfile != ' '
                                 ? Positioned(
                                     left: 15,
                                     top: 95,
@@ -605,25 +621,28 @@ class _ZikirCardState extends State<ZikirCard> {
                                             context: context,
                                             builder: (BuildContext context) {
                                               return AlertDialog(
-                                                title: const Text('Profili Sil'),
-                                                content: const Text(
-                                                    'Gerçekten profili silmek istiyor musunuz?'),
+                                                title: Text(AppLocalizations.of(context)!
+                                                    .removeMessageTitle),
+                                                content: Text(AppLocalizations.of(context)!
+                                                    .removeMessageBody),
                                                 actions: [
                                                   TextButton(
                                                     onPressed: () {
                                                       Navigator.of(context).pop();
                                                     },
-                                                    child: const Text('Vazgeç'),
+                                                    child:
+                                                        Text(AppLocalizations.of(context)!.leave),
                                                   ),
                                                   TextButton(
-                                                    child: const Text('Sil'),
+                                                    child:
+                                                        Text(AppLocalizations.of(context)!.remove),
                                                     onPressed: () {
                                                       _profiles.remove(_selectedProfile);
                                                       Provider.of<ChangeSettings>(context,
                                                               listen: false)
                                                           .saveProfiles(_profiles);
                                                       setState(() {
-                                                        _selectedProfile = 'Varsayılan';
+                                                        _selectedProfile = ' ';
                                                       });
                                                       Provider.of<ChangeSettings>(context,
                                                               listen: false)

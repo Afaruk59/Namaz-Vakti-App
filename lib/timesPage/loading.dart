@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:namaz_vakti_app/main.dart';
 import 'package:namaz_vakti_app/settings.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class Loading extends StatefulWidget {
   const Loading({super.key});
@@ -34,7 +35,7 @@ class _LoadingState extends State<Loading> {
 
   @override
   Widget build(BuildContext context) {
-    return const GradientBack(
+    return GradientBack(
       child: PopScope(
         canPop: false,
         child: Scaffold(
@@ -42,11 +43,11 @@ class _LoadingState extends State<Loading> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Konum Aranıyor'),
-                SizedBox(
+                Text(AppLocalizations.of(context)!.loading),
+                const SizedBox(
                   height: 20,
                 ),
-                CircularProgressIndicator(),
+                const CircularProgressIndicator(),
               ],
             ),
           ),

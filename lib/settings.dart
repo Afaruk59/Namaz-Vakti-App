@@ -19,14 +19,14 @@ class Settings extends StatelessWidget {
 }
 
 class SettingsCard extends StatelessWidget {
-  static String preLang = '';
+  static Locale? preLang;
   const SettingsCard({
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    preLang = Provider.of<ChangeSettings>(context, listen: false).loadLanguage();
+    preLang = Provider.of<ChangeSettings>(context).locale;
     return Padding(
       padding: const EdgeInsets.all(5),
       child: Card(
@@ -39,47 +39,13 @@ class SettingsCard extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15.0),
                   child: ListTile(
-                    title: const Text('Dil'),
+                    title: Text(AppLocalizations.of(context)!.ln),
                     subtitle: Text(AppLocalizations.of(context)!.lang),
                     trailing: PopupMenuButton<int>(
                       elevation: 10,
                       enabled: true,
                       onSelected: (int result) {
                         Provider.of<ChangeSettings>(context, listen: false).saveLanguage(result);
-                        if (preLang !=
-                            Provider.of<ChangeSettings>(context, listen: false).loadLanguage()) {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: const Text('Dil'),
-                                content: const Row(
-                                  children: [
-                                    Expanded(
-                                      flex: 5,
-                                      child: Text('Uygulama yeniden başlatıldığında değişecektir.'),
-                                    ),
-                                    Expanded(
-                                      flex: 1,
-                                      child: Icon(
-                                        Icons.language,
-                                        size: 50,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: const Text('Tamam'),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        }
                       },
                       color: Theme.of(context).cardTheme.color!,
                       itemBuilder: (context) {
@@ -119,7 +85,7 @@ class SettingsCard extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15.0),
                   child: SwitchListTile(
-                    title: const Text('Koyu Tema'),
+                    title: Text(AppLocalizations.of(context)!.darkMode),
                     value: Provider.of<ChangeSettings>(context).isDark,
                     onChanged: (_) =>
                         Provider.of<ChangeSettings>(context, listen: false).toggleTheme(),
@@ -131,7 +97,7 @@ class SettingsCard extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15.0),
                   child: SwitchListTile(
-                    title: const Text('Geçişli Arkaplan'),
+                    title: Text(AppLocalizations.of(context)!.gradient),
                     value: Provider.of<ChangeSettings>(context).gradient,
                     onChanged: (_) =>
                         Provider.of<ChangeSettings>(context, listen: false).toggleGrad(),
@@ -143,7 +109,7 @@ class SettingsCard extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15.0),
                   child: ListTile(
-                    title: const Text('Tema Rengi'),
+                    title: Text(AppLocalizations.of(context)!.themeColor),
                     trailing: FilledButton.tonal(
                       style: ElevatedButton.styleFrom(
                         elevation: 10,
@@ -152,7 +118,7 @@ class SettingsCard extends StatelessWidget {
                         showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                            title: const Text("Renk Seçimi"),
+                            title: Text(AppLocalizations.of(context)!.colorPaletteTitle),
                             content: const SizedBox(
                               height: 200,
                               child: Column(
@@ -202,7 +168,7 @@ class SettingsCard extends StatelessWidget {
                                 onPressed: () {
                                   Navigator.pop(context);
                                 },
-                                child: const Text('Tamam'),
+                                child: Text(AppLocalizations.of(context)!.ok),
                               ),
                             ],
                           ),
@@ -269,21 +235,32 @@ class ChangeSettings with ChangeNotifier {
   ];
   List<int> gaps = [0, 0, 0, 0, 0, 0, 0];
 
+  Locale? locale;
+  String? langCode;
+
   //LANGUAGE
 
-  String loadLanguage() {
-    return _settings.getString('lang') ?? 'tr';
+  void loadLanguage() {
+    locale = Locale(_settings.getString('lang') ?? 'tr');
+    langCode = _settings.getString('lang') ?? 'tr';
   }
 
   void saveLanguage(int val) {
     switch (val) {
       case 0:
         _settings.setString('lang', 'tr');
+        locale = const Locale('tr');
+        langCode = 'tr';
       case 1:
         _settings.setString('lang', 'en');
+        locale = const Locale('en');
+        langCode = 'en';
       case 2:
         _settings.setString('lang', 'ar');
+        locale = const Locale('ar');
+        langCode = 'ar';
     }
+    notifyListeners();
   }
 
   //ALARMS & NOTIFICATIONS
@@ -529,7 +506,7 @@ class ChangeSettings with ChangeNotifier {
   }
 
   List<String> loadProfiles() {
-    return _settings.getStringList('profiles') ?? ['Varsayılan'];
+    return _settings.getStringList('profiles') ?? [' '];
   }
 
   void saveSelectedProfile(String value) {
@@ -537,6 +514,6 @@ class ChangeSettings with ChangeNotifier {
   }
 
   String loadSelectedProfile() {
-    return _settings.getString('selectedProfile') ?? 'Varsayılan';
+    return _settings.getString('selectedProfile') ?? ' ';
   }
 }

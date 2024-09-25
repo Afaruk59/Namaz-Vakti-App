@@ -331,8 +331,7 @@ class _TimesBodyState extends State<TimesBody> {
   @override
   void initState() {
     super.initState();
-    miladi = DateFormat(
-            'dd MMMM yyyy', Provider.of<ChangeSettings>(context, listen: false).loadLanguage())
+    miladi = DateFormat('dd MMMM yy', Provider.of<ChangeSettings>(context, listen: false).langCode)
         .format(DateTime.now());
     hicri = HijriCalendar.fromDate(DateTime.now()).toFormat('dd MMMM yy');
   }
@@ -376,10 +375,8 @@ class _TimesBodyState extends State<TimesBody> {
                                         Provider.of<TimeData>(context, listen: false)
                                             .switchClock(true);
                                       }
-                                      miladi = DateFormat(
-                                              'dd MMMM yyyy',
-                                              Provider.of<ChangeSettings>(context, listen: false)
-                                                  .loadLanguage())
+                                      miladi = DateFormat('dd MMMM yy',
+                                              Provider.of<ChangeSettings>(context).langCode)
                                           .format(DateTime.now().add(Duration(days: count)));
                                       hicri = HijriCalendar.fromDate(
                                               DateTime.now().add(Duration(days: count)))
@@ -390,9 +387,9 @@ class _TimesBodyState extends State<TimesBody> {
                                   },
                                   child: Text(
                                     miladi,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 15,
+                                      fontSize: MainApp.currentHeight! < 700.0 ? 13 : 15,
                                     ),
                                   ),
                                 ),
@@ -416,11 +413,8 @@ class _TimesBodyState extends State<TimesBody> {
                                               Provider.of<TimeData>(context, listen: false)
                                                   .switchClock(true);
                                             }
-                                            miladi = DateFormat(
-                                                    'dd MMMM yyyy',
-                                                    Provider.of<ChangeSettings>(context,
-                                                            listen: false)
-                                                        .loadLanguage())
+                                            miladi = DateFormat('dd MMMM yy',
+                                                    Provider.of<ChangeSettings>(context).langCode)
                                                 .format(DateTime.now().add(Duration(days: count)));
                                             hicri = HijriCalendar.fromDate(
                                                     DateTime.now().add(Duration(days: count)))
@@ -455,11 +449,8 @@ class _TimesBodyState extends State<TimesBody> {
                                               Provider.of<TimeData>(context, listen: false)
                                                   .switchClock(true);
                                             }
-                                            miladi = DateFormat(
-                                                    'dd MMMM yyyy',
-                                                    Provider.of<ChangeSettings>(context,
-                                                            listen: false)
-                                                        .loadLanguage())
+                                            miladi = DateFormat('dd MMMM yy',
+                                                    Provider.of<ChangeSettings>(context).langCode)
                                                 .format(DateTime.now().add(Duration(days: count)));
                                             hicri = HijriCalendar.fromDate(
                                                     DateTime.now().add(Duration(days: count)))
@@ -484,7 +475,10 @@ class _TimesBodyState extends State<TimesBody> {
                           child: Text(
                             textAlign: TextAlign.center,
                             hicri,
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: MainApp.currentHeight! < 700.0 ? 13 : 15,
+                            ),
                           ),
                         ),
                       ),
@@ -1053,13 +1047,13 @@ class _ClockState extends State<Clock> {
                       children: [
                         Text(
                           _prayList[Provider.of<TimeData>(context).pray],
-                          style: TextStyle(fontSize: MainApp.currentHeight! < 700.0 ? 16.0 : 17.0),
+                          style: TextStyle(fontSize: MainApp.currentHeight! < 700.0 ? 15.0 : 17.0),
                         ),
                         Provider.of<TimeData>(context).imsak != null
                             ? Text(
                                 '${(Provider.of<TimeData>(context).difference.inHours).toString().padLeft(2, '0')} : ${(Provider.of<TimeData>(context).difference.inMinutes % 60).toString().padLeft(2, '0')} : ${(Provider.of<TimeData>(context).difference.inSeconds % 60).toString().padLeft(2, '0')}',
                                 style: TextStyle(
-                                    fontSize: MainApp.currentHeight! < 700.0 ? 16.0 : 17.0,
+                                    fontSize: MainApp.currentHeight! < 700.0 ? 15.0 : 17.0,
                                     fontWeight: FontWeight.bold),
                               )
                             : const Text('0'),

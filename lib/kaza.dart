@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:namaz_vakti_app/main.dart';
 import 'package:namaz_vakti_app/settings.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class Kaza extends StatelessWidget {
   const Kaza({super.key});
@@ -13,7 +14,7 @@ class Kaza extends StatelessWidget {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          title: const Text('Kaza Takibi'),
+          title: Text(AppLocalizations.of(context)!.kazaTitle),
         ),
         body: const KazaCard(),
       ),
@@ -36,31 +37,31 @@ class KazaCard extends StatelessWidget {
                 height: 10,
               ),
               PrayCard(
-                title: 'Sabah',
+                title: AppLocalizations.of(context)!.sabah,
                 value: Provider.of<ChangeSettings>(context, listen: false).loadKaza('Sabah'),
               ),
               PrayCard(
-                title: 'Öğle',
+                title: AppLocalizations.of(context)!.ogle,
                 value: Provider.of<ChangeSettings>(context, listen: false).loadKaza('Öğle'),
               ),
               PrayCard(
-                title: 'İkindi',
+                title: AppLocalizations.of(context)!.ikindi,
                 value: Provider.of<ChangeSettings>(context, listen: false).loadKaza('İkindi'),
               ),
               PrayCard(
-                title: 'Akşam',
+                title: AppLocalizations.of(context)!.aksam,
                 value: Provider.of<ChangeSettings>(context, listen: false).loadKaza('Akşam'),
               ),
               PrayCard(
-                title: 'Yatsı',
+                title: AppLocalizations.of(context)!.yatsi,
                 value: Provider.of<ChangeSettings>(context, listen: false).loadKaza('Yatsı'),
               ),
               PrayCard(
-                title: 'Vitir',
+                title: AppLocalizations.of(context)!.vitir,
                 value: Provider.of<ChangeSettings>(context, listen: false).loadKaza('Vitir'),
               ),
               PrayCard(
-                title: 'Oruç',
+                title: AppLocalizations.of(context)!.oruc,
                 value: Provider.of<ChangeSettings>(context, listen: false).loadKaza('Oruç'),
               ),
             ],

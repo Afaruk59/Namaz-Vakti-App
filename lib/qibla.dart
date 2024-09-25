@@ -192,7 +192,7 @@ class _QiblaCardState extends State<QiblaCard> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          'Hedef: ${_target! < 0 ? (360 + _target!).toStringAsFixed(2) : _target!.toStringAsFixed(2)}°',
+                                          '${AppLocalizations.of(context)!.qiblaTargetText} ${_target! < 0 ? (360 + _target!).toStringAsFixed(2) : _target!.toStringAsFixed(2)}°',
                                           style: const TextStyle(fontSize: 16),
                                         ),
                                         Text(

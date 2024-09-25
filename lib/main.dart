@@ -50,16 +50,17 @@ class MainApp extends StatelessWidget {
     Provider.of<ChangeSettings>(context, listen: false).loadThemeFromSharedPref();
     Provider.of<ChangeSettings>(context, listen: false).loadGradFromSharedPref();
     Provider.of<ChangeSettings>(context, listen: false).loadFirstFromSharedPref();
+    Provider.of<ChangeSettings>(context, listen: false).loadLanguage();
+    Provider.of<ChangeSettings>(context).locale == const Locale('ar')
+        ? HijriCalendar.setLocal('ar')
+        : HijriCalendar.setLocal('en');
     //Provider.of<ChangeSettings>(context, listen: false).loadNotFromSharedPref();
     //Provider.of<ChangeSettings>(context, listen: false).loadAlarm();
     //Provider.of<ChangeSettings>(context, listen: false).loadGaps();
-    Provider.of<ChangeSettings>(context, listen: false).loadLanguage() == 'ar'
-        ? HijriCalendar.setLocal('ar')
-        : HijriCalendar.setLocal('en');
     return MaterialApp(
       supportedLocales: L10n.all,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
-      locale: Locale(Provider.of<ChangeSettings>(context, listen: false).loadLanguage()),
+      locale: Provider.of<ChangeSettings>(context).locale,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         scaffoldBackgroundColor: Provider.of<ChangeSettings>(context).gradient == true

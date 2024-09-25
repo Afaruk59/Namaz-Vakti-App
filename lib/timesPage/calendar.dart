@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as html_parser;
 import 'package:html/dom.dart' as dom;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class CalendarBtn extends StatefulWidget {
   const CalendarBtn({super.key});
@@ -133,7 +134,7 @@ class _CalendarBtnState extends State<CalendarBtn> {
                           height: 20,
                         ),
                         Text(
-                          'Günün Sözü:',
+                          AppLocalizations.of(context)!.calendarTitle1,
                           style: titleStyle,
                         ),
                         Text(
@@ -143,7 +144,7 @@ class _CalendarBtnState extends State<CalendarBtn> {
                           height: 20,
                         ),
                         Text(
-                          'Arka Yaprak:',
+                          AppLocalizations.of(context)!.calendarTitle2,
                           style: titleStyle,
                         ),
                         const SizedBox(

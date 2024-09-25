@@ -3,6 +3,7 @@ import 'package:namaz_vakti_app/main.dart';
 import 'package:namaz_vakti_app/settings.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class Books extends StatelessWidget {
   const Books({super.key});
@@ -14,7 +15,7 @@ class Books extends StatelessWidget {
     return GradientBack(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Kaynak Kitaplar'),
+          title: Text(AppLocalizations.of(context)!.booksTitle),
         ),
         body: Scrollbar(
           child: ListView(

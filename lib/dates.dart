@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as html_parser;
 import 'package:html/dom.dart' as dom;
 import 'package:namaz_vakti_app/main.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class Dates extends StatelessWidget {
   const Dates({super.key});
@@ -12,7 +13,9 @@ class Dates extends StatelessWidget {
     return GradientBack(
       child: Scaffold(
         appBar: AppBar(
-          title: Text(MainApp.currentHeight! < 700.0 ? 'Mübarek Günler' : 'Mübarek Gün ve Geceler'),
+          title: Text(MainApp.currentHeight! < 700.0
+              ? AppLocalizations.of(context)!.datesTitleShort
+              : AppLocalizations.of(context)!.datesTitle),
         ),
         body: const DatesCard(),
       ),

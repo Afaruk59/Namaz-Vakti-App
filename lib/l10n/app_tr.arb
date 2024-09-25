@@ -6,6 +6,7 @@
         "description": "Language"
     },
 
+
     "timesPageTitle": "Vakitler",
     "@timesPageTitle":{
         "description": "Page title"
@@ -26,11 +27,67 @@
     "@settingsPageTitle":{
         "description": "Page title"
     },
+    "datesTitle": "Mübarek Günler ve Geceler",
+    "@datesTitle":{
+        "description": "Page title"
+    },
+    "datesTitleShort": "Mübarek Günler",
+    "@datesTitleShort":{
+        "description": "Page title"
+    },
+    "kazaTitle": "Kaza Takibi",
+    "@kazaTitle":{
+        "description": "Page title"
+    },
+    "booksTitle": "Kaynak Kitaplar",
+    "@booksTitle":{
+        "description": "Page title"
+    },
+
+
+    "nav1": "Vakitler",
+    "@nav1":{
+        "description": "Navbar text"
+    },
+    "nav2": "Kıble",
+    "@nav2":{
+        "description": "Navbar text"
+    },
+    "nav3": "Zikir",
+    "@nav3":{
+        "description": "Navbar text"
+    },
+    "nav4": "Daha Fazla",
+    "@nav4":{
+        "description": "Navbar text"
+    },
+    "nav5": "Ayarlar",
+    "@nav5":{
+        "description": "Navbar text"
+    },
+
 
     "locationButtonText": "Güncelle",
     "@locationButtonText":{
         "description": "Button text"
     },
+    "yes": "Evet",
+    "@yes":{
+        "description": "Button text"
+    },
+    "leave": "Vazgeç",
+    "@leave":{
+        "description": "Button text"
+    },
+    "ok": "Tamam",
+    "@ok":{
+        "description": "Button text"
+    },
+    "remove": "Sil",
+    "@remove":{
+        "description": "Button text"
+    },
+
 
     "imsak": "İmsak",
     "@imsak":{
@@ -88,6 +145,15 @@
     "@kible":{
         "description": "Text"
     },
+    "vitir": "Vitir",
+    "@vitir":{
+        "description": "Text"
+    },
+    "oruc": "Oruç",
+    "@oruc":{
+        "description": "Text"
+    },
+
 
     "timeLeftImsak": "İmsaka Kalan",
     "@timeLeftImsak":{
@@ -118,24 +184,106 @@
         "description": "Text"
     },
 
-    "nav1": "Vakitler",
-    "@nav1":{
-        "description": "Navbar text"
+
+    "calendarTitle1": "Günün Sözü:",
+    "@calendarTitle1":{
+        "description": "Text"
     },
-    "nav2": "Kıble",
-    "@nav2":{
-        "description": "Navbar text"
+    "calendarTitle2": "Arka Yaprak:",
+    "@calendarTitle2":{
+        "description": "Text"
     },
-    "nav3": "Zikir",
-    "@nav3":{
-        "description": "Navbar text"
+
+    "qiblaTargetText": "Hedef:",
+    "@qiblaTargetText":{
+        "description": "Text"
     },
-    "nav4": "Daha Fazla",
-    "@nav4":{
-        "description": "Navbar text"
+
+
+    "zikirCount": "Zikir Sayısı",
+    "@zikirCount":{
+        "description": "Text"
     },
-    "nav5": "Ayarlar",
-    "@nav5":{
-        "description": "Navbar text"
+    "popupInfo1": "Biten:",
+    "@popupInfo1":{
+        "description": "Text"
+    },
+    "popupInfo2": "Çekilen:",
+    "@popupInfo2":{
+        "description": "Text"
+    },
+    "resetMessageTitle": "Zikiri Sıfırla",
+    "@resetMessageTitle":{
+        "description": "Message text"
+    },
+    "resetMessageBody": "Gerçekten sıfırlamak istiyor musunuz?",
+    "@resetMessageBody":{
+        "description": "Message text"
+    },
+    "zikirMessageTitle": "Zikir Sayısı:",
+    "@zikirMessageTitle":{
+        "description": "Message text"
+    },
+    "defaultProf": "Varsayılan",
+    "@defaultProf":{
+        "description": "Text"
+    },
+    "profileMessageTitle": "Yeni Profil",
+    "@profileMessageTitle":{
+        "description": "Message text"
+    },
+    "removeMessageTitle": "Profili Sil",
+    "@removeMessageTitle":{
+        "description": "Message text"
+    },
+    "removeMessageBody": "Gerçekten profili silmek istiyor musunuz?",
+    "@removeMessageBody":{
+        "description": "Message text"
+    },
+
+
+    "ln": "Dil",
+    "@ln":{
+        "description": "Text"
+    },
+    "languageMessageBody": "Uygulama yeniden başlatıldığında değişecektir.",
+    "@languageMessageBody":{
+        "description": "Message text"
+    },
+    "darkMode": "Koyu Tema",
+    "@darkMode":{
+        "description": "Text"
+    },
+    "gradient": "Geçişli Arkaplan",
+    "@gradient":{
+        "description": "Text"
+    },
+    "themeColor": "Tema Rengi",
+    "@themeColor":{
+        "description": "Text"
+    },
+    "colorPaletteTitle": "Renk Seçimi",
+    "@colorPaletteTitle":{
+        "description": "Message text"
+    },
+
+
+    "startupTitle": "Hoşgeldiniz.",
+    "@startupTitle":{
+        "description": "Page title"
+    },
+    "startupDescription": "Vakitler Namazvakti.com'dan alınmıştır.",
+    "@startupDescription":{
+        "description": "Text"
+    },
+    "tenbih": "Namaz Vakitleri Hakkında Mühim Tenbih",
+    "@tenbih":{
+        "description": "Text"
+    },
+
+
+    "loading": "Konum Aranıyor",
+    "@loading":{
+        "description": "Text"
     }
 }
