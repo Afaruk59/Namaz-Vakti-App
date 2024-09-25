@@ -285,5 +285,55 @@
     "loading": "Konum Aranıyor",
     "@loading":{
         "description": "Text"
+    },
+
+
+    "locationMessageTitle": "Konum Erişimi Gerekli",
+    "@locationMessageTitle":{
+        "description": "Message text"
+    },
+    "locationMessageBody": "Devam etmek için lütfen konumu etkinleştirin.",
+    "@locationMessageBody":{
+        "description": "Message text"
+    },
+    "openLoc": "Konumu Aç",
+    "@openLoc":{
+        "description": "Button text"
+    },
+
+
+    "permissionMessageTitle": "Konum İzni Gerekli",
+    "@permissionMessageTitle":{
+        "description": "Message text"
+    },
+    "permissionMessageBody": "Bu uygulamanın düzgün çalışabilmesi için konum izni gereklidir.",
+    "@permissionMessageBody":{
+        "description": "Message text"
+    },
+    "retry": "Tekrar Dene",
+    "@retry":{
+        "description": "Button text"
+    },
+    "permissionDeniedBody": "Konum izni kalıcı olarak reddedildi. Devam edebilmek için lütfen ayarlardan izin verin.",
+    "@permissionDeniedBody":{
+        "description": "Message text"
+    },
+    "openSettings": "Ayarları Aç",
+    "@openSettings":{
+        "description": "Button text"
+    },
+
+    
+    "wifiMessageTitle": "İnternet Bağlantısı Gerekli",
+    "@wifiMessageTitle":{
+        "description": "Message text"
+    },
+    "wifiMessageBody": "Devam etmek için lütfen Wi-Fi'yi yada Mobil Veri'yi etkinleştirin.",
+    "@wifiMessageBody":{
+        "description": "Message text"
+    },
+    "wifiMessageBody2": "(Servisler internet olmadan düzgün çalışmayacaktır.)",
+    "@wifiMessageBody2":{
+        "description": "Message text"
     }
 }

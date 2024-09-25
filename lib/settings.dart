@@ -41,42 +41,7 @@ class SettingsCard extends StatelessWidget {
                   child: ListTile(
                     title: Text(AppLocalizations.of(context)!.ln),
                     subtitle: Text(AppLocalizations.of(context)!.lang),
-                    trailing: PopupMenuButton<int>(
-                      elevation: 10,
-                      enabled: true,
-                      onSelected: (int result) {
-                        Provider.of<ChangeSettings>(context, listen: false).saveLanguage(result);
-                      },
-                      color: Theme.of(context).cardTheme.color!,
-                      itemBuilder: (context) {
-                        return <PopupMenuEntry<int>>[
-                          const PopupMenuItem<int>(
-                            value: 0,
-                            child: Center(
-                              child: Text(
-                                'Türkçe',
-                              ),
-                            ),
-                          ),
-                          const PopupMenuItem<int>(
-                            value: 1,
-                            child: Center(
-                              child: Text(
-                                'English',
-                              ),
-                            ),
-                          ),
-                          const PopupMenuItem<int>(
-                            value: 2,
-                            child: Center(
-                              child: Text(
-                                'عربي',
-                              ),
-                            ),
-                          ),
-                        ];
-                      },
-                    ),
+                    trailing: const LangSelector(),
                   ),
                 ),
               ),
@@ -183,6 +148,52 @@ class SettingsCard extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class LangSelector extends StatelessWidget {
+  const LangSelector({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton<int>(
+      elevation: 10,
+      enabled: true,
+      onSelected: (int result) {
+        Provider.of<ChangeSettings>(context, listen: false).saveLanguage(result);
+      },
+      color: Theme.of(context).cardTheme.color!,
+      itemBuilder: (context) {
+        return <PopupMenuEntry<int>>[
+          const PopupMenuItem<int>(
+            value: 0,
+            child: Center(
+              child: Text(
+                'Türkçe',
+              ),
+            ),
+          ),
+          const PopupMenuItem<int>(
+            value: 1,
+            child: Center(
+              child: Text(
+                'English',
+              ),
+            ),
+          ),
+          const PopupMenuItem<int>(
+            value: 2,
+            child: Center(
+              child: Text(
+                'عربي',
+              ),
+            ),
+          ),
+        ];
+      },
     );
   }
 }

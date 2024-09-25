@@ -50,8 +50,8 @@ class _HomePageState extends State<HomePage> {
       builder: (context) => PopScope(
         canPop: false,
         child: AlertDialog(
-          title: const Text("İnternet Bağlantısı Gerekli"),
-          content: const Row(
+          title: Text(AppLocalizations.of(context)!.wifiMessageTitle),
+          content: Row(
             children: [
               Expanded(
                 flex: 3,
@@ -59,16 +59,16 @@ class _HomePageState extends State<HomePage> {
                   height: 100,
                   child: Column(
                     children: [
-                      Text("Devam etmek için lütfen Wi-Fi'yi yada Mobil Veri'yi etkinleştirin."),
-                      SizedBox(
+                      Text(AppLocalizations.of(context)!.wifiMessageBody),
+                      const SizedBox(
                         height: 20,
                       ),
-                      Text('(Servisler internet olmadan düzgün çalışmayacaktır.)'),
+                      Text(AppLocalizations.of(context)!.wifiMessageBody2),
                     ],
                   ),
                 ),
               ),
-              Expanded(
+              const Expanded(
                 flex: 1,
                 child: Icon(
                   Icons.wifi_off,
@@ -79,7 +79,7 @@ class _HomePageState extends State<HomePage> {
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text("Tekrar Dene"),
+              child: Text(AppLocalizations.of(context)!.retry),
               onPressed: () {
                 Navigator.pop(context);
                 alertOpen = false;

@@ -80,5 +80,19 @@
     "startupDescription": "Prayer times are taken from Namazvakti.com",
     "tenbih": "An Important Cautioning About Different Prayer Times",
 
-    "loading": "Searching"
+    "loading": "Searching",
+
+    "locationMessageTitle": "Location Access Required",
+    "locationMessageBody": "Please turn on location to continue.",
+    "openLoc": "Turn on",
+
+    "permissionMessageTitle": "Location Permission Required",
+    "permissionMessageBody": "Location permission is required for this app to work properly.",
+    "retry": "Retry",
+    "permissionDeniedBody": "Location permission has been permanently denied. Please allow permission from settings to continue.",
+    "openSettings": "Open Settings",
+    
+    "wifiMessageTitle": "Internet Connection Required",
+    "wifiMessageBody": "Please enable Wi-Fi or Mobile Data to continue.",
+    "wifiMessageBody2": "(The app will not work properly without internet.)"
 }

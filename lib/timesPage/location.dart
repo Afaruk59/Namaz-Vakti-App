@@ -30,14 +30,14 @@ class _LocationState extends State<Location> {
         builder: (context) => PopScope(
           canPop: false,
           child: AlertDialog(
-            title: const Text("Konum Erişimi Gerekli"),
-            content: const Row(
+            title: Text(AppLocalizations.of(context)!.locationMessageTitle),
+            content: Row(
               children: [
                 Expanded(
                   flex: 3,
-                  child: Text("Devam etmek için lütfen konumu etkinleştirin."),
+                  child: Text(AppLocalizations.of(context)!.locationMessageBody),
                 ),
-                Expanded(
+                const Expanded(
                   flex: 1,
                   child: Icon(
                     Icons.location_disabled,
@@ -48,7 +48,7 @@ class _LocationState extends State<Location> {
             ),
             actions: <Widget>[
               TextButton(
-                child: const Text("Vazgeç"),
+                child: Text(AppLocalizations.of(context)!.leave),
                 onPressed: () {
                   Navigator.pop(context);
                   ChangeSettings.isfirst == true
@@ -57,7 +57,7 @@ class _LocationState extends State<Location> {
                 },
               ),
               TextButton(
-                child: const Text("Konumu Aç"),
+                child: Text(AppLocalizations.of(context)!.openLoc),
                 onPressed: () {
                   Navigator.pop(context);
                   ChangeSettings.isfirst == true
@@ -89,12 +89,11 @@ class _LocationState extends State<Location> {
           builder: (context) => PopScope(
             canPop: false,
             child: AlertDialog(
-              title: const Text("Konum İzni Gerekli"),
-              content:
-                  const Text("Bu uygulamanın düzgün çalışabilmesi için konum izni gereklidir."),
+              title: Text(AppLocalizations.of(context)!.permissionMessageTitle),
+              content: Text(AppLocalizations.of(context)!.permissionMessageBody),
               actions: <Widget>[
                 TextButton(
-                  child: const Text("Tekrar Dene"),
+                  child: Text(AppLocalizations.of(context)!.retry),
                   onPressed: () async {
                     if (mounted) {
                       Navigator.pop(context);
@@ -117,12 +116,11 @@ class _LocationState extends State<Location> {
         builder: (context) => PopScope(
           canPop: false,
           child: AlertDialog(
-            title: const Text("Konum İzni Gerekli"),
-            content: const Text(
-                "Konum izni kalıcı olarak reddedildi. Devam edebilmek için lütfen ayarlardan izin verin."),
+            title: Text(AppLocalizations.of(context)!.permissionMessageTitle),
+            content: Text(AppLocalizations.of(context)!.permissionDeniedBody),
             actions: <Widget>[
               TextButton(
-                child: const Text("Ayarları Aç"),
+                child: Text(AppLocalizations.of(context)!.openSettings),
                 onPressed: () {
                   ChangeSettings.isLocalized = true;
                   Navigator.pop(context);

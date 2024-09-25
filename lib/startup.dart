@@ -74,9 +74,19 @@ class StartupCard extends StatelessWidget {
                         trailing: FilledButton.tonal(
                           style: ElevatedButton.styleFrom(elevation: 10),
                           onPressed: () async {
-                            final Uri url = Uri.parse(
-                                'https://www.turktakvim.com/index.php?link=html/muhim_tenbih.html');
-                            await launchUrl(url);
+                            Uri? url;
+                            switch (Provider.of<ChangeSettings>(context, listen: false).langCode) {
+                              case 'tr':
+                                url = Uri.parse(
+                                    'https://www.turktakvim.com/index.php?link=html/muhim_tenbih.html');
+                              case 'en':
+                                url = Uri.parse(
+                                    'https://www.turktakvim.com/index.php?link=html/en/Important_Cautions.html');
+                              case 'ar':
+                                url = Uri.parse(
+                                    'https://www.turktakvim.com/index.php?link=html/en/Important_Cautions.html');
+                            }
+                            await launchUrl(url!);
                           },
                           child: const Icon(Icons.search),
                         ),
@@ -91,6 +101,7 @@ class StartupCard extends StatelessWidget {
                     child: Card(
                       color: Theme.of(context).cardColor,
                       child: ListTile(
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 40),
                         title: const Text(
                           'Language',
                           style: TextStyle(
@@ -99,43 +110,7 @@ class StartupCard extends StatelessWidget {
                           ),
                         ),
                         subtitle: Text(AppLocalizations.of(context)!.lang),
-                        trailing: PopupMenuButton<int>(
-                          elevation: 10,
-                          enabled: true,
-                          onSelected: (int result) {
-                            Provider.of<ChangeSettings>(context, listen: false)
-                                .saveLanguage(result);
-                          },
-                          color: Theme.of(context).cardTheme.color!,
-                          itemBuilder: (context) {
-                            return <PopupMenuEntry<int>>[
-                              const PopupMenuItem<int>(
-                                value: 0,
-                                child: Center(
-                                  child: Text(
-                                    'Türkçe',
-                                  ),
-                                ),
-                              ),
-                              const PopupMenuItem<int>(
-                                value: 1,
-                                child: Center(
-                                  child: Text(
-                                    'English',
-                                  ),
-                                ),
-                              ),
-                              const PopupMenuItem<int>(
-                                value: 2,
-                                child: Center(
-                                  child: Text(
-                                    'عربي',
-                                  ),
-                                ),
-                              ),
-                            ];
-                          },
-                        ),
+                        trailing: const LangSelector(),
                       ),
                     ),
                   ),
