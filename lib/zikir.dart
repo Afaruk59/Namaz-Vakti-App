@@ -314,7 +314,10 @@ class _ZikirCardState extends State<ZikirCard> {
                                       Expanded(
                                         flex: 3,
                                         child: Padding(
-                                          padding: const EdgeInsets.only(right: 10.0),
+                                          padding:
+                                              Provider.of<ChangeSettings>(context).langCode == 'ar'
+                                                  ? const EdgeInsets.only(left: 10.0)
+                                                  : const EdgeInsets.only(right: 10.0),
                                           child: Column(
                                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                             children: [

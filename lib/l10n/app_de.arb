@@ -1,0 +1,95 @@
+{
+    "@@locale": "de",
+
+    "lang": "Deutsch",
+
+    "timesPageTitle": "Zeiten",
+    "qiblaPageTitle": "Gebetskompass",
+    "zikirPageTitle": "Dhikr",
+    "morePageTitle": "Mehr",
+    "settingsPageTitle": "Einstellungen",
+    "datesTitle": "Heilige Tage",
+    "datesTitleShort": "Heilige Tage",
+    "kazaTitle": "Versäumte Gebete",
+    "booksTitle": "Quellenbücher",
+
+    "nav1": "Zeiten",
+    "nav2": "Qibla",
+    "nav3": "Dhikr",
+    "nav4": "Mehr",
+    "nav5": "Einstellungen",
+
+    "locationButtonText": "Synch",
+    "yes": "Ja",
+    "leave": "Verlassen",
+    "ok": "OK",
+    "remove": "Entfernen",
+
+    "imsak": "Fajr",
+    "sabah": "Morgen",
+    "gunes": "Tulu",
+    "ogle": "Zuhr",
+    "ikindi": "Asr",
+    "aksam": "Maghrib",
+    "yatsi": "Isha",
+    "israk": "Ishrâq",
+    "kerahat": "Karahat",
+    "asrisani": "Asr-i Thâni",
+    "isfirar": "Isfirâr",
+    "istibak": "Ishtibâk",
+    "isaisani": "Ishâ-i Thani",
+    "kible": "Qibla-Zeit",
+    "vitir": "Witr",
+    "oruc": "Fasten",
+
+    "timeLeftImsak": "Verbleibend bis Fajr",
+    "timeLeftSabah": "Verbleibend bis Morgen",
+    "timeLeftGunes": "Verbleibend bis Tulu",
+    "timeLeftOgle": "Verbleibend bis Zuhr",
+    "timeLeftIkindi": "Verbleibend bis Asr",
+    "timeLeftAksam": "Verbleibend bis Maghrib",
+    "timeLeftYatsi": "Verbleibend bis Isha",
+
+    "calendarTitle1": "Wort des Tages:",
+    "calendarTitle2": "Rückseite:",
+
+    "qiblaTargetText": "Ziel:",
+
+    "zikirCount": "Dhikr Zähler",
+    "popupInfo1": "Fertig:",
+    "popupInfo2": "Fortlaufend:",
+    "resetMessageTitle": "Dhikr zurücksetzen",
+    "resetMessageBody": "Möchten Sie wirklich zurücksetzen?",
+    "zikirMessageTitle": "Dhikr Zähler:",
+    "defaultProf": "Standard",
+    "profileMessageTitle": "Neues Profil",
+    "removeMessageTitle": "Profil entfernen",
+    "removeMessageBody": "Möchten Sie wirklich entfernen?",
+
+    "ln": "Sprache",
+    "languageMessageBody": "Änderungen werden beim Neustart der App wirksam.",
+    "darkMode": "Dunkelmodus",
+    "gradient": "Verlauf Hintergrund",
+    "themeColor": "Themenfarbe",
+    "colorPaletteTitle": "Farbauswahl",
+
+    "startupTitle": "Willkommen.",
+    "startupDescription": "Die Gebetszeiten werden von Namazvakti.com bezogen",
+    "tenbih": "Ein wichtiger Hinweis zu unterschiedlichen Gebetszeiten",
+
+    "loading": "Suche läuft",
+
+    "locationMessageTitle": "Standortzugriff erforderlich",
+    "locationMessageBody": "Bitte aktivieren Sie den Standort, um fortzufahren.",
+    "openLoc": "Einschalten",
+
+    "permissionMessageTitle": "Standortgenehmigung erforderlich",
+    "permissionMessageBody": "Für das ordnungsgemäße Funktionieren dieser App ist eine Standortgenehmigung erforderlich.",
+    "retry": "Erneut versuchen",
+    "permissionDeniedBody": "Standortgenehmigung wurde dauerhaft verweigert. Bitte erlauben Sie die Berechtigung in den Einstellungen, um fortzufahren.",
+    "openSettings": "Einstellungen öffnen",
+    
+    "wifiMessageTitle": "Internetverbindung erforderlich",
+    "wifiMessageBody": "Bitte aktivieren Sie WLAN oder mobile Daten, um fortzufahren.",
+    "wifiMessageBody2": "(Die App funktioniert ohne Internet nicht richtig.)"
+}

@@ -312,6 +312,7 @@ class _TimesBodyState extends State<TimesBody> {
   String hicri = '';
   int count = 0;
   DateTime customDate = DateTime.now();
+  String yearFormat = 'yy';
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
@@ -331,8 +332,9 @@ class _TimesBodyState extends State<TimesBody> {
   @override
   void initState() {
     super.initState();
-    miladi = DateFormat('dd MMMM yy', Provider.of<ChangeSettings>(context, listen: false).langCode)
-        .format(DateTime.now());
+    miladi =
+        DateFormat('dd MMMM yyyy', Provider.of<ChangeSettings>(context, listen: false).langCode)
+            .format(DateTime.now());
     hicri = HijriCalendar.fromDate(DateTime.now()).toFormat('dd MMMM yy');
   }
 
@@ -356,6 +358,7 @@ class _TimesBodyState extends State<TimesBody> {
                               Center(
                                 child: TextButton(
                                   style: TextButton.styleFrom(
+                                      backgroundColor: Theme.of(context).highlightColor,
                                       foregroundColor:
                                           Theme.of(context).textTheme.displayMedium!.color),
                                   onPressed: () async {
@@ -375,8 +378,10 @@ class _TimesBodyState extends State<TimesBody> {
                                         Provider.of<TimeData>(context, listen: false)
                                             .switchClock(true);
                                       }
-                                      miladi = DateFormat('dd MMMM yy',
-                                              Provider.of<ChangeSettings>(context).langCode)
+                                      miladi = DateFormat(
+                                              'dd MMMM yyyy',
+                                              Provider.of<ChangeSettings>(context, listen: false)
+                                                  .langCode)
                                           .format(DateTime.now().add(Duration(days: count)));
                                       hicri = HijriCalendar.fromDate(
                                               DateTime.now().add(Duration(days: count)))
@@ -413,8 +418,11 @@ class _TimesBodyState extends State<TimesBody> {
                                               Provider.of<TimeData>(context, listen: false)
                                                   .switchClock(true);
                                             }
-                                            miladi = DateFormat('dd MMMM yy',
-                                                    Provider.of<ChangeSettings>(context).langCode)
+                                            miladi = DateFormat(
+                                                    'dd MMMM yyyy',
+                                                    Provider.of<ChangeSettings>(context,
+                                                            listen: false)
+                                                        .langCode)
                                                 .format(DateTime.now().add(Duration(days: count)));
                                             hicri = HijriCalendar.fromDate(
                                                     DateTime.now().add(Duration(days: count)))
@@ -449,8 +457,11 @@ class _TimesBodyState extends State<TimesBody> {
                                               Provider.of<TimeData>(context, listen: false)
                                                   .switchClock(true);
                                             }
-                                            miladi = DateFormat('dd MMMM yy',
-                                                    Provider.of<ChangeSettings>(context).langCode)
+                                            miladi = DateFormat(
+                                                    'dd MMMM yyyy',
+                                                    Provider.of<ChangeSettings>(context,
+                                                            listen: false)
+                                                        .langCode)
                                                 .format(DateTime.now().add(Duration(days: count)));
                                             hicri = HijriCalendar.fromDate(
                                                     DateTime.now().add(Duration(days: count)))

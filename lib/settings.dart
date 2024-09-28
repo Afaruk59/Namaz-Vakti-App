@@ -192,6 +192,38 @@ class LangSelector extends StatelessWidget {
               ),
             ),
           ),
+          const PopupMenuItem<int>(
+            value: 3,
+            child: Center(
+              child: Text(
+                'Deutsch',
+              ),
+            ),
+          ),
+          const PopupMenuItem<int>(
+            value: 4,
+            child: Center(
+              child: Text(
+                'Español',
+              ),
+            ),
+          ),
+          const PopupMenuItem<int>(
+            value: 5,
+            child: Center(
+              child: Text(
+                'Français',
+              ),
+            ),
+          ),
+          const PopupMenuItem<int>(
+            value: 6,
+            child: Center(
+              child: Text(
+                'Italiano',
+              ),
+            ),
+          ),
         ];
       },
     );
@@ -270,6 +302,22 @@ class ChangeSettings with ChangeNotifier {
         _settings.setString('lang', 'ar');
         locale = const Locale('ar');
         langCode = 'ar';
+      case 3:
+        _settings.setString('lang', 'de');
+        locale = const Locale('de');
+        langCode = 'de';
+      case 4:
+        _settings.setString('lang', 'es');
+        locale = const Locale('es');
+        langCode = 'es';
+      case 5:
+        _settings.setString('lang', 'fr');
+        locale = const Locale('fr');
+        langCode = 'fr';
+      case 6:
+        _settings.setString('lang', 'it');
+        locale = const Locale('it');
+        langCode = 'its';
     }
     notifyListeners();
   }

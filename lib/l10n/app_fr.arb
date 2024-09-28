@@ -1,0 +1,95 @@
+{
+    "@@locale": "fr",
+
+    "lang": "Français",
+
+    "timesPageTitle": "Heures",
+    "qiblaPageTitle": "Boussole de prière",
+    "zikirPageTitle": "Dhikr",
+    "morePageTitle": "Plus",
+    "settingsPageTitle": "Paramètres",
+    "datesTitle": "Jours Saints",
+    "datesTitleShort": "Jours Saints",
+    "kazaTitle": "Prières Manquées",
+    "booksTitle": "Livres Sources",
+
+    "nav1": "Heures",
+    "nav2": "Qibla",
+    "nav3": "Dhikr",
+    "nav4": "Plus",
+    "nav5": "Paramètres",
+
+    "locationButtonText": "Synchroniser",
+    "yes": "Oui",
+    "leave": "Quitter",
+    "ok": "OK",
+    "remove": "Supprimer",
+
+    "imsak": "Fajr",
+    "sabah": "Matin",
+    "gunes": "Tulu",
+    "ogle": "Zuhr",
+    "ikindi": "Asr",
+    "aksam": "Maghrib",
+    "yatsi": "Isha",
+    "israk": "Ishrâq",
+    "kerahat": "Karahat",
+    "asrisani": "Asr-i Thâni",
+    "isfirar": "Isfirâr",
+    "istibak": "Ishtibâk",
+    "isaisani": "Ishâ-i Thani",
+    "kible": "Heure de Qibla",
+    "vitir": "Witr",
+    "oruc": "Jeûne",
+
+    "timeLeftImsak": "Temps restant avant Fajr",
+    "timeLeftSabah": "Temps restant avant Matin",
+    "timeLeftGunes": "Temps restant avant Tulu",
+    "timeLeftOgle": "Temps restant avant Zuhr",
+    "timeLeftIkindi": "Temps restant avant Asr",
+    "timeLeftAksam": "Temps restant avant Maghrib",
+    "timeLeftYatsi": "Temps restant avant Isha",
+
+    "calendarTitle1": "Mot du jour:",
+    "calendarTitle2": "Page arrière:",
+
+    "qiblaTargetText": "Objectif:",
+
+    "zikirCount": "Compteur de Dhikr",
+    "popupInfo1": "Terminé:",
+    "popupInfo2": "En cours:",
+    "resetMessageTitle": "Réinitialiser Dhikr",
+    "resetMessageBody": "Voulez-vous vraiment réinitialiser ?",
+    "zikirMessageTitle": "Compteur de Dhikr:",
+    "defaultProf": "Défaut",
+    "profileMessageTitle": "Nouveau profil",
+    "removeMessageTitle": "Supprimer le profil",
+    "removeMessageBody": "Voulez-vous vraiment supprimer ?",
+
+    "ln": "Langue",
+    "languageMessageBody": "Cela changera au redémarrage de l'application.",
+    "darkMode": "Mode Sombre",
+    "gradient": "Fond dégradé",
+    "themeColor": "Couleur du Thème",
+    "colorPaletteTitle": "Sélection de Couleur",
+
+    "startupTitle": "Bienvenue.",
+    "startupDescription": "Les heures de prière sont fournies par Namazvakti.com",
+    "tenbih": "Une importante mise en garde concernant les différentes heures de prière",
+
+    "loading": "Recherche en cours",
+
+    "locationMessageTitle": "Accès à la localisation requis",
+    "locationMessageBody": "Veuillez activer la localisation pour continuer.",
+    "openLoc": "Activer",
+
+    "permissionMessageTitle": "Autorisation de localisation requise",
+    "permissionMessageBody": "L'autorisation de localisation est requise pour que cette application fonctionne correctement.",
+    "retry": "Réessayer",
+    "permissionDeniedBody": "L'autorisation de localisation a été refusée de façon permanente. Veuillez accorder l'autorisation depuis les paramètres pour continuer.",
+    "openSettings": "Ouvrir les Paramètres",
+    
+    "wifiMessageTitle": "Connexion Internet requise",
+    "wifiMessageBody": "Veuillez activer le Wi-Fi ou les données mobiles pour continuer.",
+    "wifiMessageBody2": "(L'application ne fonctionnera pas correctement sans Internet.)"
+}

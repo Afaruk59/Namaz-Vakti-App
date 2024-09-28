@@ -2,9 +2,6 @@
     "@@locale": "en",
 
     "lang": "English",
-    "@lang":{
-        "description": "Language"
-    },
 
     "timesPageTitle": "Times",
     "qiblaPageTitle": "Prayer Compass",
@@ -45,13 +42,13 @@
     "vitir": "Witr",
     "oruc": "Fast",
 
-    "timeLeftImsak": "Left Until Fajr",
-    "timeLeftSabah": "Left Until Morning",
-    "timeLeftGunes": "Left Until Tulu",
-    "timeLeftOgle": "Left Until Zuhr",
-    "timeLeftIkindi": "Left Until Asr",
-    "timeLeftAksam": "Left Until Maghrib",
-    "timeLeftYatsi": "Left Until Isha",
+    "timeLeftImsak": "Remaining Time for Fajr",
+    "timeLeftSabah": "Remaining Time for Morning",
+    "timeLeftGunes": "Remaining Time for Tulu",
+    "timeLeftOgle": "Remaining Time for Zuhr",
+    "timeLeftIkindi": "Remaining Time for Asr",
+    "timeLeftAksam": "Remaining Time for Maghrib",
+    "timeLeftYatsi": "Remaining Time for Isha",
 
     "calendarTitle1": "Word of the Day:",
     "calendarTitle2": "Back Page:",

@@ -1,0 +1,95 @@
+{
+    "@@locale": "es",
+
+    "lang": "Español",
+
+    "timesPageTitle": "Horarios",
+    "qiblaPageTitle": "Brújula de Oración",
+    "zikirPageTitle": "Dhikr",
+    "morePageTitle": "Más",
+    "settingsPageTitle": "Configuraciones",
+    "datesTitle": "Días Santos",
+    "datesTitleShort": "Días Santos",
+    "kazaTitle": "Oraciones Perdidas",
+    "booksTitle": "Libros Fuente",
+
+    "nav1": "Horarios",
+    "nav2": "Qibla",
+    "nav3": "Dhikr",
+    "nav4": "Más",
+    "nav5": "Configuraciones",
+
+    "locationButtonText": "Sincronizar",
+    "yes": "Sí",
+    "leave": "Salir",
+    "ok": "OK",
+    "remove": "Eliminar",
+
+    "imsak": "Fajr",
+    "sabah": "Mañana",
+    "gunes": "Tulu",
+    "ogle": "Zuhr",
+    "ikindi": "Asr",
+    "aksam": "Maghrib",
+    "yatsi": "Isha",
+    "israk": "Ishrâq",
+    "kerahat": "Karahat",
+    "asrisani": "Asr-i Thâni",
+    "isfirar": "Isfirâr",
+    "istibak": "Ishtibâk",
+    "isaisani": "Ishâ-i Thani",
+    "kible": "Hora de Qibla",
+    "vitir": "Witr",
+    "oruc": "Ayuno",
+
+    "timeLeftImsak": "Tiempo Restante para Fajr",
+    "timeLeftSabah": "Tiempo Restante para Mañana",
+    "timeLeftGunes": "Tiempo Restante para Tulu",
+    "timeLeftOgle": "Tiempo Restante para Zuhr",
+    "timeLeftIkindi": "Tiempo Restante para Asr",
+    "timeLeftAksam": "Tiempo Restante para Maghrib",
+    "timeLeftYatsi": "Tiempo Restante para Isha",
+
+    "calendarTitle1": "Palabra del Día:",
+    "calendarTitle2": "Página Trasera:",
+
+    "qiblaTargetText": "Objetivo:",
+
+    "zikirCount": "Conteo de Dhikr",
+    "popupInfo1": "Terminado:",
+    "popupInfo2": "Continuo:",
+    "resetMessageTitle": "Reiniciar Dhikr",
+    "resetMessageBody": "¿Realmente quieres reiniciar?",
+    "zikirMessageTitle": "Conteo de Dhikr:",
+    "defaultProf": "Predeterminado",
+    "profileMessageTitle": "Nuevo Perfil",
+    "removeMessageTitle": "Eliminar Perfil",
+    "removeMessageBody": "¿Realmente quieres eliminar?",
+
+    "ln": "Idioma",
+    "languageMessageBody": "Cambiará cuando la aplicación se reinicie.",
+    "darkMode": "Modo Oscuro",
+    "gradient": "Fondo Degradado",
+    "themeColor": "Color del Tema",
+    "colorPaletteTitle": "Selección de Color",
+
+    "startupTitle": "Bienvenido.",
+    "startupDescription": "Los horarios de oración son obtenidos de Namazvakti.com",
+    "tenbih": "Una Importante Advertencia Sobre Diferentes Horarios de Oración",
+
+    "loading": "Buscando",
+
+    "locationMessageTitle": "Se requiere acceso a la ubicación",
+    "locationMessageBody": "Por favor, active la ubicación para continuar.",
+    "openLoc": "Activar",
+
+    "permissionMessageTitle": "Se requiere permiso de ubicación",
+    "permissionMessageBody": "Se requiere permiso de ubicación para que esta aplicación funcione correctamente.",
+    "retry": "Reintentar",
+    "permissionDeniedBody": "El permiso de ubicación ha sido denegado permanentemente. Por favor, permita el permiso desde la configuración para continuar.",
+    "openSettings": "Abrir Configuración",
+    
+    "wifiMessageTitle": "Se requiere conexión a Internet",
+    "wifiMessageBody": "Por favor, habilite Wi-Fi o datos móviles para continuar.",
+    "wifiMessageBody2": "(La aplicación no funcionará correctamente sin Internet.)"
+}
