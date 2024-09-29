@@ -75,18 +75,15 @@ class StartupCard extends StatelessWidget {
                           style: ElevatedButton.styleFrom(elevation: 10),
                           onPressed: () async {
                             Uri? url;
-                            switch (Provider.of<ChangeSettings>(context, listen: false).langCode) {
-                              case 'tr':
-                                url = Uri.parse(
-                                    'https://www.turktakvim.com/index.php?link=html/muhim_tenbih.html');
-                              case 'en':
-                                url = Uri.parse(
-                                    'https://www.turktakvim.com/index.php?link=html/en/Important_Cautions.html');
-                              case 'ar':
-                                url = Uri.parse(
-                                    'https://www.turktakvim.com/index.php?link=html/en/Important_Cautions.html');
+                            if (Provider.of<ChangeSettings>(context, listen: false).langCode ==
+                                'tr') {
+                              url = Uri.parse(
+                                  'https://www.turktakvim.com/index.php?link=html/muhim_tenbih.html');
+                            } else {
+                              url = Uri.parse(
+                                  'https://www.turktakvim.com/index.php?link=html/en/Important_Cautions.html');
                             }
-                            await launchUrl(url!);
+                            await launchUrl(url);
                           },
                           child: const Icon(Icons.search),
                         ),
