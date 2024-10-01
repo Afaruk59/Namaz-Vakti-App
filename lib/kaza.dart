@@ -131,7 +131,7 @@ class _PrayCardState extends State<PrayCard> {
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
-                              title: const Text('Kaza Sayısı:'),
+                              title: Text(AppLocalizations.of(context)!.kazaMessageTitle),
                               content: TextField(
                                 keyboardType: TextInputType.number,
                                 inputFormatters: <TextInputFormatter>[
@@ -142,7 +142,7 @@ class _PrayCardState extends State<PrayCard> {
                               ),
                               actions: [
                                 TextButton(
-                                  child: const Text('OK'),
+                                  child: Text(AppLocalizations.of(context)!.ok),
                                   onPressed: () {
                                     if (_textFieldController.text != '') {
                                       setState(() {

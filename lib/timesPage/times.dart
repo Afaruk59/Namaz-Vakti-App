@@ -358,7 +358,6 @@ class _TimesBodyState extends State<TimesBody> {
                               Center(
                                 child: TextButton(
                                   style: TextButton.styleFrom(
-                                      backgroundColor: Theme.of(context).highlightColor,
                                       foregroundColor:
                                           Theme.of(context).textTheme.displayMedium!.color),
                                   onPressed: () async {
@@ -390,11 +389,17 @@ class _TimesBodyState extends State<TimesBody> {
                                     Provider.of<TimeData>(context, listen: false)
                                         .loadPrayerTimes(DateTime.now().add(Duration(days: count)));
                                   },
-                                  child: Text(
-                                    miladi,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: MainApp.currentHeight! < 700.0 ? 13 : 15,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                    child: FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(
+                                        miladi,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: MainApp.currentHeight! < 700.0 ? 13 : 15,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -1053,22 +1058,29 @@ class _ClockState extends State<Clock> {
                     ),
                   ),
                   Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Text(
-                          _prayList[Provider.of<TimeData>(context).pray],
-                          style: TextStyle(fontSize: MainApp.currentHeight! < 700.0 ? 15.0 : 17.0),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text(
+                              _prayList[Provider.of<TimeData>(context).pray],
+                              style:
+                                  TextStyle(fontSize: MainApp.currentHeight! < 700.0 ? 15.0 : 17.0),
+                            ),
+                            Provider.of<TimeData>(context).imsak != null
+                                ? Text(
+                                    '${(Provider.of<TimeData>(context).difference.inHours).toString().padLeft(2, '0')} : ${(Provider.of<TimeData>(context).difference.inMinutes % 60).toString().padLeft(2, '0')} : ${(Provider.of<TimeData>(context).difference.inSeconds % 60).toString().padLeft(2, '0')}',
+                                    style: TextStyle(
+                                        fontSize: MainApp.currentHeight! < 700.0 ? 15.0 : 17.0,
+                                        fontWeight: FontWeight.bold),
+                                  )
+                                : const Text('0'),
+                          ],
                         ),
-                        Provider.of<TimeData>(context).imsak != null
-                            ? Text(
-                                '${(Provider.of<TimeData>(context).difference.inHours).toString().padLeft(2, '0')} : ${(Provider.of<TimeData>(context).difference.inMinutes % 60).toString().padLeft(2, '0')} : ${(Provider.of<TimeData>(context).difference.inSeconds % 60).toString().padLeft(2, '0')}',
-                                style: TextStyle(
-                                    fontSize: MainApp.currentHeight! < 700.0 ? 15.0 : 17.0,
-                                    fontWeight: FontWeight.bold),
-                              )
-                            : const Text('0'),
-                      ],
+                      ),
                     ),
                   ),
                 ],

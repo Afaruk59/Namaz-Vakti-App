@@ -160,6 +160,7 @@ class LangSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<int>(
+      icon: const Icon(Icons.language),
       elevation: 10,
       enabled: true,
       onSelected: (int result) {

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:namaz_vakti_app/main.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
+import 'package:namaz_vakti_app/settings.dart';
+import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class More extends StatelessWidget {
   const More({super.key});
@@ -27,7 +30,7 @@ class More extends StatelessWidget {
                 icon: const Icon(Icons.note_alt),
                 route: '/kaza',
               ),
-              MoreCard(
+              BooksCard(
                 title: AppLocalizations.of(context)!.booksTitle,
                 icon: const Icon(Icons.library_books_outlined),
                 route: '/books',
@@ -70,6 +73,62 @@ class MoreCard extends StatelessWidget {
               style: ElevatedButton.styleFrom(elevation: 10),
               onPressed: () {
                 Navigator.pushNamed(context, route);
+              },
+              child: icon,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class BooksCard extends StatelessWidget {
+  const BooksCard({
+    super.key,
+    required this.title,
+    required this.icon,
+    required this.route,
+  });
+
+  final String title;
+  final Icon icon;
+  final String route;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: MainApp.currentHeight! < 700.0 ? 5 : 15.0),
+      child: Card(
+        color: Theme.of(context).cardColor,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: MainApp.currentHeight! < 700.0 ? 5 : 15.0),
+          child: ListTile(
+            splashColor: Colors.transparent,
+            onTap: () async {
+              final String code =
+                  Provider.of<ChangeSettings>(context, listen: false).langCode ?? 'tr';
+              if (code == 'tr') {
+                Navigator.pushNamed(context, route);
+              } else {
+                final Uri url =
+                    Uri.parse('https://www.hakikatkitabevi.net/books.php?listBook=$code');
+                await launchUrl(url);
+              }
+            },
+            title: Text(title),
+            trailing: FilledButton.tonal(
+              style: ElevatedButton.styleFrom(elevation: 10),
+              onPressed: () async {
+                final String code =
+                    Provider.of<ChangeSettings>(context, listen: false).langCode ?? 'tr';
+                if (code == 'tr') {
+                  Navigator.pushNamed(context, route);
+                } else {
+                  final Uri url =
+                      Uri.parse('https://www.hakikatkitabevi.net/books.php?listBook=$code');
+                  await launchUrl(url);
+                }
               },
               child: icon,
             ),

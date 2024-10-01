@@ -71,6 +71,18 @@ class StartupCard extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
+                        onTap: () async {
+                          Uri? url;
+                          if (Provider.of<ChangeSettings>(context, listen: false).langCode ==
+                              'tr') {
+                            url = Uri.parse(
+                                'https://www.turktakvim.com/index.php?link=html/muhim_tenbih.html');
+                          } else {
+                            url = Uri.parse(
+                                'https://www.turktakvim.com/index.php?link=html/en/Important_Cautions.html');
+                          }
+                          await launchUrl(url);
+                        },
                         trailing: FilledButton.tonal(
                           style: ElevatedButton.styleFrom(elevation: 10),
                           onPressed: () async {
