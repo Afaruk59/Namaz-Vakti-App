@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:namaz_vakti_app/settings.dart';
-import 'package:namaz_vakti_app/timesPage/location.dart';
+import 'package:namaz_vakti_app/pages/settings.dart';
+import 'package:namaz_vakti_app/pages/timesPage/location.dart';
 import 'package:namaz_vakti_app/main.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';

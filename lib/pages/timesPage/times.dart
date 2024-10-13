@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:namaz_vakti_app/timesPage/calendar.dart';
-import 'package:namaz_vakti_app/timesPage/location.dart';
+import 'package:namaz_vakti_app/pages/timesPage/calendar.dart';
+import 'package:namaz_vakti_app/pages/timesPage/location.dart';
 import 'package:namaz_vakti_app/main.dart';
-import 'package:namaz_vakti_app/settings.dart';
+import 'package:namaz_vakti_app/pages/settings.dart';
 import 'package:provider/provider.dart';
 import 'package:xml/xml.dart' as xml;
 import 'package:http/http.dart' as http;

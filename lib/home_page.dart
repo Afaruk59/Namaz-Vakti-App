@@ -2,11 +2,11 @@ import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:namaz_vakti_app/main.dart';
-import 'package:namaz_vakti_app/more.dart';
-import 'package:namaz_vakti_app/qibla.dart';
-import 'package:namaz_vakti_app/settings.dart';
-import 'package:namaz_vakti_app/timesPage/times.dart';
-import 'package:namaz_vakti_app/zikir.dart';
+import 'package:namaz_vakti_app/pages/more.dart';
+import 'package:namaz_vakti_app/pages/qibla.dart';
+import 'package:namaz_vakti_app/pages/settings.dart';
+import 'package:namaz_vakti_app/pages/timesPage/times.dart';
+import 'package:namaz_vakti_app/pages/zikir.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class HomePage extends StatefulWidget {
