@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:namaz_vakti_app/main.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as html_parser;
 import 'package:html/dom.dart' as dom;
+import 'package:namaz_vakti_app/settings.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
@@ -90,7 +93,7 @@ class _CalendarBtnState extends State<CalendarBtn> {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      bottom: MainApp.currentHeight! < 700.0 ? 10 : 20,
+      bottom: 20,
       right: 13,
       child: IconButton(
         iconSize: 25,
@@ -127,6 +130,16 @@ class _CalendarBtnState extends State<CalendarBtn> {
                     padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 15.0),
                     child: ListView(
                       children: [
+                        Text(
+                          DateFormat(
+                            'dd MMMM yy',
+                            Provider.of<ChangeSettings>(context, listen: false).langCode,
+                          ).format(DateTime.now()),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
                         Text(
                           _day!,
                         ),

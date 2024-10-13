@@ -5,11 +5,9 @@ import 'package:hijri/hijri_calendar.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:namaz_vakti_app/kaza.dart';
 import 'package:namaz_vakti_app/l10n/l10n.dart';
-import 'package:namaz_vakti_app/timesPage/alarms.dart';
 import 'package:namaz_vakti_app/books.dart';
 import 'package:namaz_vakti_app/dates.dart';
 import 'package:namaz_vakti_app/home_page.dart';
-import 'package:namaz_vakti_app/timesPage/loading.dart';
 import 'package:namaz_vakti_app/timesPage/location.dart';
 import 'package:namaz_vakti_app/qibla.dart';
 import 'package:namaz_vakti_app/settings.dart';
@@ -111,11 +109,8 @@ class MainApp extends StatelessWidget {
         '/settings': (context) => const Settings(),
         '/kaza': (context) => const Kaza(),
         '/location': (context) => const Location(),
-        '/loading': (context) => ChangeNotifierProvider<TimeData>(
-              create: (context) => TimeData(),
-              child: const Loading(),
-            ),
-        '/alarms': (context) => const Alarms(),
+
+        // '/alarms': (context) => const Alarms(),
         '/startup': (context) => const Startup(),
       },
     );

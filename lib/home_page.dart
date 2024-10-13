@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:namaz_vakti_app/api/sheets_api.dart';
 import 'package:namaz_vakti_app/main.dart';
 import 'package:namaz_vakti_app/more.dart';
 import 'package:namaz_vakti_app/qibla.dart';
@@ -38,8 +37,6 @@ class _HomePageState extends State<HomePage> {
         _showWifiAlert();
         alertOpen = true;
       }
-    } else {
-      await SheetsApi.init();
     }
   }
 

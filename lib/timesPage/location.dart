@@ -1,10 +1,12 @@
+import 'dart:math';
+import 'package:excel/excel.dart';
+import 'package:flutter/services.dart' show ByteData, rootBundle;
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:namaz_vakti_app/api/sheets_api.dart';
 import 'package:namaz_vakti_app/main.dart';
 import 'package:namaz_vakti_app/settings.dart';
-import 'package:namaz_vakti_app/timesPage/loading.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
+import 'package:provider/provider.dart';
 
 class Location extends StatefulWidget {
   const Location({super.key});
@@ -16,6 +18,26 @@ class Location extends StatefulWidget {
 class _LocationState extends State<Location> {
   double lat = 0;
   double long = 0;
+  bool progress = false;
+
+  double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+    const R = 6371; // Dünya'nın yarıçapı (kilometre)
+
+    double dLat = _toRadians(lat2 - lat1);
+    double dLon = _toRadians(lon2 - lon1);
+
+    double a = sin(dLat / 2) * sin(dLat / 2) +
+        cos(_toRadians(lat1)) * cos(_toRadians(lat2)) * sin(dLon / 2) * sin(dLon / 2);
+
+    double c = 2 * atan2(sqrt(a), sqrt(1 - a));
+
+    return R * c;
+  }
+
+// Dereceyi radyana çeviren yardımcı fonksiyon
+  double _toRadians(double degree) {
+    return degree * pi / 180;
+  }
 
   Future<void> getCurrentLocation() async {
     bool serviceEnabled;
@@ -80,7 +102,6 @@ class _LocationState extends State<Location> {
       // İzin tekrar reddedildiyse bir uyarı göster
       if (permission == LocationPermission.denied) {
         if (!mounted) {
-          ChangeSettings.isLocalized = true;
           return; // Eğer widget unmounted olduysa fonksiyonu terk et
         }
         return showDialog(
@@ -96,7 +117,9 @@ class _LocationState extends State<Location> {
                   child: Text(AppLocalizations.of(context)!.retry),
                   onPressed: () async {
                     if (mounted) {
-                      Navigator.pop(context);
+                      setState(() {
+                        progress = true;
+                      });
                       await getCurrentLocation(); // İzin tekrar isteniyor
                     }
                   },
@@ -122,8 +145,6 @@ class _LocationState extends State<Location> {
               TextButton(
                 child: Text(AppLocalizations.of(context)!.openSettings),
                 onPressed: () {
-                  ChangeSettings.isLocalized = true;
-                  Navigator.pop(context);
                   Geolocator.openAppSettings();
                 },
               ),
@@ -139,8 +160,51 @@ class _LocationState extends State<Location> {
           await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
       lat = position.latitude;
       long = position.longitude;
-      await SheetsApi().searchLoc(lat, long);
+
+      await findCity();
     }
+  }
+
+  Future<void> findCity() async {
+    ByteData data = await rootBundle.load("assets/cities/cities.xlsx");
+    var bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+    var excel = Excel.decodeBytes(bytes);
+    var sheet = excel.tables.keys.first;
+
+    List<dynamic> column1Data = [];
+    List<dynamic> column2Data = [];
+    List<dynamic> column3Data = [];
+    List<dynamic> column5Data = [];
+    List<dynamic> column6Data = [];
+
+    for (var row in excel.tables[sheet]!.rows) {
+      if (row.isNotEmpty) {
+        column1Data.add(row[0]?.value);
+        column2Data.add(row[1]?.value);
+        column3Data.add(row[2]?.value);
+        column5Data.add(row[4]?.value);
+        column6Data.add(row[5]?.value);
+      }
+    }
+
+    int index = 0;
+    double minDistance = double.infinity;
+
+    for (int i = 0; i < column5Data.length; i++) {
+      double distance = calculateDistance(lat, long, double.parse(column5Data[i].toString()),
+          double.parse(column6Data[i].toString()));
+
+      if (distance < minDistance) {
+        minDistance = distance;
+        index = i;
+      }
+    }
+
+    String cityId = column1Data[index].toString();
+    String cityName = column2Data[index].toString();
+    String stateName = column3Data[index].toString();
+
+    ChangeSettings().saveLocaltoSharedPref(cityId, cityName, stateName);
   }
 
   @override
@@ -148,23 +212,34 @@ class _LocationState extends State<Location> {
     return FilledButton.tonal(
       style: ElevatedButton.styleFrom(elevation: 10),
       onPressed: () async {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const Loading()),
-        );
+        setState(() {
+          progress = true;
+        });
         await getCurrentLocation();
+        Navigator.popAndPushNamed(context, '/');
+        Provider.of<ChangeSettings>(context, listen: false).saveFirsttoSharedPref(false);
       },
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.location_on, size: MainApp.currentHeight! < 700.0 ? 20.0 : 22.0),
-          Text(
-            AppLocalizations.of(context)!.locationButtonText,
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: MainApp.currentHeight! < 700.0 ? 14.0 : 15.0),
-          ),
-        ],
-      ),
+      child: progress == true
+          ? const Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 5.0),
+                  child: CircularProgressIndicator(),
+                ),
+              ],
+            )
+          : Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.location_on, size: MainApp.currentHeight! < 700.0 ? 20.0 : 22.0),
+                Text(
+                  AppLocalizations.of(context)!.locationButtonText,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: MainApp.currentHeight! < 700.0 ? 14.0 : 15.0),
+                ),
+              ],
+            ),
     );
   }
 }

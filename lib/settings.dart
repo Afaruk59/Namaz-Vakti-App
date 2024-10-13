@@ -263,7 +263,6 @@ class ChangeSettings with ChangeNotifier {
   static String? cityID;
   static String? cityName;
   static String? cityState;
-  static bool isLocalized = false;
 
   static bool isfirst = true;
 
@@ -318,60 +317,60 @@ class ChangeSettings with ChangeNotifier {
       case 6:
         _settings.setString('lang', 'it');
         locale = const Locale('it');
-        langCode = 'its';
+        langCode = 'it';
     }
     notifyListeners();
   }
 
   //ALARMS & NOTIFICATIONS
 
-  void loadGaps() {
-    for (int i = 0; i < 7; i++) {
-      gaps[i] = _settings.getInt('${i}gap') ?? 0;
-    }
-  }
+  // void loadGaps() {
+  //   for (int i = 0; i < 7; i++) {
+  //     gaps[i] = _settings.getInt('${i}gap') ?? 0;
+  //   }
+  // }
 
-  void saveGap(int index, int gap) {
-    gaps[index] = gap;
-    _settings.setInt('${index}gap', gap);
-    notifyListeners();
-  }
+  // void saveGap(int index, int gap) {
+  //   gaps[index] = gap;
+  //   _settings.setInt('${index}gap', gap);
+  //   notifyListeners();
+  // }
 
-  void falseAll() {
-    for (int i = 0; i < 7; i++) {
-      alarmList[i] = false;
-      _settings.setBool('$i', false);
-    }
-    notifyListeners();
-  }
+  // void falseAll() {
+  //   for (int i = 0; i < 7; i++) {
+  //     alarmList[i] = false;
+  //     _settings.setBool('$i', false);
+  //   }
+  //   notifyListeners();
+  // }
 
-  void toggleAlarm(int index) {
-    if (_settings.getBool('notification') ?? false) {
-      alarmList[index] = !alarmList[index];
-      _settings.setBool('$index', alarmList[index]);
-      notifyListeners();
-    }
-  }
+  // void toggleAlarm(int index) {
+  //   if (_settings.getBool('notification') ?? false) {
+  //     alarmList[index] = !alarmList[index];
+  //     _settings.setBool('$index', alarmList[index]);
+  //     notifyListeners();
+  //   }
+  // }
 
-  void loadAlarm() {
-    for (int i = 0; i < 7; i++) {
-      alarmList[i] = _settings.getBool('$i') ?? false;
-    }
-  }
+  // void loadAlarm() {
+  //   for (int i = 0; i < 7; i++) {
+  //     alarmList[i] = _settings.getBool('$i') ?? false;
+  //   }
+  // }
 
-  void toggleNot() {
-    isOpen = !isOpen;
-    saveNottoSharedPref(isOpen);
-    notifyListeners();
-  }
+  // void toggleNot() {
+  //   isOpen = !isOpen;
+  //   saveNottoSharedPref(isOpen);
+  //   notifyListeners();
+  // }
 
-  void loadNotFromSharedPref() {
-    isOpen = _settings.getBool('notification') ?? false;
-  }
+  // void loadNotFromSharedPref() {
+  //   isOpen = _settings.getBool('notification') ?? false;
+  // }
 
-  void saveNottoSharedPref(bool value) {
-    _settings.setBool('notification', value);
-  }
+  // void saveNottoSharedPref(bool value) {
+  //   _settings.setBool('notification', value);
+  // }
 
   //THEME SETTINGS
 
@@ -513,7 +512,6 @@ class ChangeSettings with ChangeNotifier {
     cityID = value;
     cityName = name;
     cityState = state;
-    isLocalized = true;
   }
 
   //STARTUP SETTINGS
