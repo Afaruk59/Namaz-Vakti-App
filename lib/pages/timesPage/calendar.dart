@@ -117,13 +117,6 @@ class _CalendarBtnState extends State<CalendarBtn> {
             builder: (BuildContext context) {
               return Card(
                 elevation: 20,
-                shape: RoundedRectangleBorder(
-                  side: const BorderSide(
-                    color: Colors.grey, // Kenar rengini belirleyin
-                    width: 2.0, // Kenar kalınlığını belirleyin
-                  ),
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
                 color: Theme.of(context).cardColor,
                 child: Scrollbar(
                   child: Padding(
@@ -132,7 +125,7 @@ class _CalendarBtnState extends State<CalendarBtn> {
                       children: [
                         Text(
                           DateFormat(
-                            'dd MMMM yy',
+                            'dd MMMM yyyy',
                             Provider.of<ChangeSettings>(context, listen: false).langCode,
                           ).format(DateTime.now()),
                           textAlign: TextAlign.center,

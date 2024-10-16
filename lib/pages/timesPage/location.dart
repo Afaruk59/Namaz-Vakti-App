@@ -1,6 +1,6 @@
 import 'dart:math';
-import 'package:excel/excel.dart';
-import 'package:flutter/services.dart' show ByteData, rootBundle;
+import 'package:csv/csv.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:namaz_vakti_app/main.dart';
@@ -166,10 +166,12 @@ class _LocationState extends State<Location> {
   }
 
   Future<void> findCity() async {
-    ByteData data = await rootBundle.load("assets/cities/cities.xlsx");
-    var bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
-    var excel = Excel.decodeBytes(bytes);
-    var sheet = excel.tables.keys.first;
+    final String csvData = await rootBundle.loadString("assets/cities/cities.csv");
+
+    List<List<dynamic>> rowsAsListOfValues = const CsvToListConverter(
+      eol: '\n', // Satır sonu ayırıcı
+      fieldDelimiter: ',',
+    ).convert(csvData);
 
     List<dynamic> column1Data = [];
     List<dynamic> column2Data = [];
@@ -177,13 +179,13 @@ class _LocationState extends State<Location> {
     List<dynamic> column5Data = [];
     List<dynamic> column6Data = [];
 
-    for (var row in excel.tables[sheet]!.rows) {
+    for (var row in rowsAsListOfValues) {
       if (row.isNotEmpty) {
-        column1Data.add(row[0]?.value);
-        column2Data.add(row[1]?.value);
-        column3Data.add(row[2]?.value);
-        column5Data.add(row[4]?.value);
-        column6Data.add(row[5]?.value);
+        column1Data.add(row[0]);
+        column2Data.add(row[1]);
+        column3Data.add(row[2]);
+        column5Data.add(row[4]);
+        column6Data.add(row[5]);
       }
     }
 

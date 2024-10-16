@@ -8,6 +8,7 @@ import 'package:namaz_vakti_app/pages/settings.dart';
 import 'package:namaz_vakti_app/pages/timesPage/times.dart';
 import 'package:namaz_vakti_app/pages/zikir.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({
@@ -113,6 +114,9 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       bottomNavigationBar: NavigationBar(
+        backgroundColor: Provider.of<ChangeSettings>(context).gradient == true
+            ? Theme.of(context).colorScheme.surfaceContainer
+            : Colors.transparent,
         height: MainApp.currentHeight! < 700.0 ? 55 : 65,
         labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
         selectedIndex: _currentIndex,

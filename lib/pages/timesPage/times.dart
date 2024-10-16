@@ -38,6 +38,18 @@ class TimeData extends ChangeSettings {
 
   bool isTimeLoading = true;
 
+  String clock = '';
+  Duration difference = const Duration(minutes: 1);
+  int pray = 0;
+  DateTime soontime = DateTime.now();
+  bool hour = true;
+  bool minute = true;
+  DateTime preTime = DateTime.now();
+  Duration mainDifference = const Duration(minutes: 1);
+  bool isEnabled = true;
+
+  String miladi = DateFormat('dd MMMM yyyy').format(DateTime.now());
+
   void selectDate(DateTime time) {
     final DateTime picked = time;
 
@@ -175,16 +187,6 @@ class TimeData extends ChangeSettings {
     }
   }
 
-  String clock = '';
-  Duration difference = const Duration(minutes: 1);
-  int pray = 0;
-  DateTime soontime = DateTime.now();
-  bool hour = true;
-  bool minute = true;
-  DateTime preTime = DateTime.now();
-  Duration mainDifference = const Duration(minutes: 1);
-  bool isEnabled = true;
-
   void switchClock(bool value) {
     if (value) {
       isEnabled = true;
@@ -270,6 +272,10 @@ class TimeData extends ChangeSettings {
       notifyListeners();
     }
   }
+
+  void changeTime(String time) {
+    miladi = time;
+  }
 }
 
 class Times extends StatelessWidget {
@@ -312,7 +318,6 @@ class _TimesBodyState extends State<TimesBody> {
   String hicri = '';
   int count = 0;
   DateTime customDate = DateTime.now();
-  String yearFormat = 'yy';
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
@@ -336,6 +341,7 @@ class _TimesBodyState extends State<TimesBody> {
         DateFormat('dd MMMM yyyy', Provider.of<ChangeSettings>(context, listen: false).langCode)
             .format(DateTime.now());
     hicri = HijriCalendar.fromDate(DateTime.now()).toFormat('dd MMMM yy');
+    Provider.of<TimeData>(context, listen: false).changeTime(miladi);
   }
 
   @override
@@ -388,6 +394,8 @@ class _TimesBodyState extends State<TimesBody> {
                                     });
                                     Provider.of<TimeData>(context, listen: false)
                                         .loadPrayerTimes(DateTime.now().add(Duration(days: count)));
+                                    Provider.of<TimeData>(context, listen: false)
+                                        .changeTime(miladi);
                                   },
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -436,6 +444,8 @@ class _TimesBodyState extends State<TimesBody> {
                                           Provider.of<TimeData>(context, listen: false)
                                               .loadPrayerTimes(
                                                   DateTime.now().add(Duration(days: count)));
+                                          Provider.of<TimeData>(context, listen: false)
+                                              .changeTime(miladi);
                                         },
                                         icon: const Icon(Icons.arrow_back_ios_new),
                                       ),
@@ -475,6 +485,8 @@ class _TimesBodyState extends State<TimesBody> {
                                           Provider.of<TimeData>(context, listen: false)
                                               .loadPrayerTimes(
                                                   DateTime.now().add(Duration(days: count)));
+                                          Provider.of<TimeData>(context, listen: false)
+                                              .changeTime(miladi);
                                         },
                                         icon: const Icon(Icons.arrow_forward_ios),
                                       ),
@@ -644,6 +656,7 @@ class DetailedTimesBtn extends StatelessWidget {
   static DateTime? _istibak;
   static DateTime? _isaisani;
   static DateTime? _kible;
+  static String? _time;
 
   @override
   Widget build(BuildContext context) {
@@ -661,6 +674,7 @@ class DetailedTimesBtn extends StatelessWidget {
     _istibak = Provider.of<TimeData>(context).istibak;
     _isaisani = Provider.of<TimeData>(context).isaisani;
     _kible = Provider.of<TimeData>(context).kible;
+    _time = Provider.of<TimeData>(context).miladi;
     return Positioned(
       bottom: 20,
       left: 13,
@@ -680,159 +694,168 @@ class DetailedTimesBtn extends StatelessWidget {
                 color: Theme.of(context).cardColor,
                 child: Column(
                   children: [
-                    Padding(
-                      padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Card(
-                              shape: RoundedRectangleBorder(
-                                side: const BorderSide(
-                                  color: Colors.grey, // Kenar rengini belirleyin
-                                  width: 1.0, // Kenar kalınlığını belirleyin
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      _time!,
+                      textAlign: TextAlign.center,
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Card(
+                                shape: RoundedRectangleBorder(
+                                  side: const BorderSide(
+                                    color: Colors.grey, // Kenar rengini belirleyin
+                                    width: 1.0, // Kenar kalınlığını belirleyin
+                                  ),
+                                  borderRadius: BorderRadius.circular(
+                                      10.0), // Kenarların yuvarlaklığını belirleyin
                                 ),
-                                borderRadius: BorderRadius.circular(
-                                    10.0), // Kenarların yuvarlaklığını belirleyin
-                              ),
-                              color: Theme.of(context).cardColor,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Text(
-                                    AppLocalizations.of(context)!.imsak,
-                                    style: style,
-                                  ),
-                                  Text(
-                                    AppLocalizations.of(context)!.sabah,
-                                    style: style,
-                                  ),
-                                  Text(
-                                    AppLocalizations.of(context)!.gunes,
-                                    style: style,
-                                  ),
-                                  Text(
-                                    AppLocalizations.of(context)!.israk,
-                                    style: style,
-                                  ),
-                                  Text(
-                                    AppLocalizations.of(context)!.kerahat,
-                                    style: style,
-                                  ),
-                                  Text(
-                                    AppLocalizations.of(context)!.ogle,
-                                    style: style,
-                                  ),
-                                  Text(
-                                    AppLocalizations.of(context)!.ikindi,
-                                    style: style,
-                                  ),
-                                  Text(
-                                    AppLocalizations.of(context)!.asrisani,
-                                    style: style,
-                                  ),
-                                  Text(
-                                    AppLocalizations.of(context)!.isfirar,
-                                    style: style,
-                                  ),
-                                  Text(
-                                    AppLocalizations.of(context)!.aksam,
-                                    style: style,
-                                  ),
-                                  Text(
-                                    AppLocalizations.of(context)!.istibak,
-                                    style: style,
-                                  ),
-                                  Text(
-                                    AppLocalizations.of(context)!.yatsi,
-                                    style: style,
-                                  ),
-                                  Text(
-                                    AppLocalizations.of(context)!.isaisani,
-                                    style: style,
-                                  ),
-                                  Text(
-                                    AppLocalizations.of(context)!.kible,
-                                    style: style,
-                                  ),
-                                ],
+                                color: Theme.of(context).cardColor,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Text(
+                                      AppLocalizations.of(context)!.imsak,
+                                      style: style,
+                                    ),
+                                    Text(
+                                      AppLocalizations.of(context)!.sabah,
+                                      style: style,
+                                    ),
+                                    Text(
+                                      AppLocalizations.of(context)!.gunes,
+                                      style: style,
+                                    ),
+                                    Text(
+                                      AppLocalizations.of(context)!.israk,
+                                      style: style,
+                                    ),
+                                    Text(
+                                      AppLocalizations.of(context)!.kerahat,
+                                      style: style,
+                                    ),
+                                    Text(
+                                      AppLocalizations.of(context)!.ogle,
+                                      style: style,
+                                    ),
+                                    Text(
+                                      AppLocalizations.of(context)!.ikindi,
+                                      style: style,
+                                    ),
+                                    Text(
+                                      AppLocalizations.of(context)!.asrisani,
+                                      style: style,
+                                    ),
+                                    Text(
+                                      AppLocalizations.of(context)!.isfirar,
+                                      style: style,
+                                    ),
+                                    Text(
+                                      AppLocalizations.of(context)!.aksam,
+                                      style: style,
+                                    ),
+                                    Text(
+                                      AppLocalizations.of(context)!.istibak,
+                                      style: style,
+                                    ),
+                                    Text(
+                                      AppLocalizations.of(context)!.yatsi,
+                                      style: style,
+                                    ),
+                                    Text(
+                                      AppLocalizations.of(context)!.isaisani,
+                                      style: style,
+                                    ),
+                                    Text(
+                                      AppLocalizations.of(context)!.kible,
+                                      style: style,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                          Expanded(
-                            child: Card(
-                              shape: RoundedRectangleBorder(
-                                side: const BorderSide(
-                                  color: Colors.grey, // Kenar rengini belirleyin
-                                  width: 1.0, // Kenar kalınlığını belirleyin
+                            Expanded(
+                              child: Card(
+                                shape: RoundedRectangleBorder(
+                                  side: const BorderSide(
+                                    color: Colors.grey, // Kenar rengini belirleyin
+                                    width: 1.0, // Kenar kalınlığını belirleyin
+                                  ),
+                                  borderRadius: BorderRadius.circular(
+                                      10.0), // Kenarların yuvarlaklığını belirleyin
                                 ),
-                                borderRadius: BorderRadius.circular(
-                                    10.0), // Kenarların yuvarlaklığını belirleyin
-                              ),
-                              color: Theme.of(context).cardColor,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Text(
-                                    DateFormat('HH:mm').format(_imsak!),
-                                    style: style,
-                                  ),
-                                  Text(
-                                    DateFormat('HH:mm').format(_sabah!),
-                                    style: style,
-                                  ),
-                                  Text(
-                                    DateFormat('HH:mm').format(_gunes!),
-                                    style: style,
-                                  ),
-                                  Text(
-                                    DateFormat('HH:mm').format(_israk!),
-                                    style: style,
-                                  ),
-                                  Text(
-                                    DateFormat('HH:mm').format(_kerahat!),
-                                    style: style,
-                                  ),
-                                  Text(
-                                    DateFormat('HH:mm').format(_ogle!),
-                                    style: style,
-                                  ),
-                                  Text(
-                                    DateFormat('HH:mm').format(_ikindi!),
-                                    style: style,
-                                  ),
-                                  Text(
-                                    DateFormat('HH:mm').format(_asrisani!),
-                                    style: style,
-                                  ),
-                                  Text(
-                                    DateFormat('HH:mm').format(_isfirar!),
-                                    style: style,
-                                  ),
-                                  Text(
-                                    DateFormat('HH:mm').format(_aksam!),
-                                    style: style,
-                                  ),
-                                  Text(
-                                    DateFormat('HH:mm').format(_istibak!),
-                                    style: style,
-                                  ),
-                                  Text(
-                                    DateFormat('HH:mm').format(_yatsi!),
-                                    style: style,
-                                  ),
-                                  Text(
-                                    DateFormat('HH:mm').format(_isaisani!),
-                                    style: style,
-                                  ),
-                                  Text(
-                                    _kible != null ? DateFormat('HH:mm').format(_kible!) : '-',
-                                    style: style,
-                                  ),
-                                ],
+                                color: Theme.of(context).cardColor,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Text(
+                                      DateFormat('HH:mm').format(_imsak!),
+                                      style: style,
+                                    ),
+                                    Text(
+                                      DateFormat('HH:mm').format(_sabah!),
+                                      style: style,
+                                    ),
+                                    Text(
+                                      DateFormat('HH:mm').format(_gunes!),
+                                      style: style,
+                                    ),
+                                    Text(
+                                      DateFormat('HH:mm').format(_israk!),
+                                      style: style,
+                                    ),
+                                    Text(
+                                      DateFormat('HH:mm').format(_kerahat!),
+                                      style: style,
+                                    ),
+                                    Text(
+                                      DateFormat('HH:mm').format(_ogle!),
+                                      style: style,
+                                    ),
+                                    Text(
+                                      DateFormat('HH:mm').format(_ikindi!),
+                                      style: style,
+                                    ),
+                                    Text(
+                                      DateFormat('HH:mm').format(_asrisani!),
+                                      style: style,
+                                    ),
+                                    Text(
+                                      DateFormat('HH:mm').format(_isfirar!),
+                                      style: style,
+                                    ),
+                                    Text(
+                                      DateFormat('HH:mm').format(_aksam!),
+                                      style: style,
+                                    ),
+                                    Text(
+                                      DateFormat('HH:mm').format(_istibak!),
+                                      style: style,
+                                    ),
+                                    Text(
+                                      DateFormat('HH:mm').format(_yatsi!),
+                                      style: style,
+                                    ),
+                                    Text(
+                                      DateFormat('HH:mm').format(_isaisani!),
+                                      style: style,
+                                    ),
+                                    Text(
+                                      _kible != null ? DateFormat('HH:mm').format(_kible!) : '-',
+                                      style: style,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ],
@@ -1022,9 +1045,9 @@ class _ClockState extends State<Clock> {
     _prayList[6] = AppLocalizations.of(context)!.timeLeftYatsi;
     _prayList[7] = AppLocalizations.of(context)!.timeLeftImsak;
     return Provider.of<TimeData>(context).isEnabled == false
-        ? IconButton(
+        ? IconButton.filledTonal(
             iconSize: 25,
-            style: ElevatedButton.styleFrom(elevation: 10),
+            style: IconButton.styleFrom(shape: const CircleBorder()),
             onPressed: () {
               Navigator.popAndPushNamed(context, '/');
             },
