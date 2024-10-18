@@ -473,9 +473,11 @@ class _ZikirCardState extends State<ZikirCard> {
                                   )
                                 : Container(),
                             Positioned(
-                              left: 15,
+                              left: 20,
                               top: 15,
                               child: PopupMenuButton<String>(
+                                icon: const Icon(Icons.my_library_books_outlined),
+                                iconColor: Theme.of(context).indicatorColor,
                                 offset: const Offset(5, 0),
                                 elevation: 10,
                                 enabled: true,
@@ -508,6 +510,7 @@ class _ZikirCardState extends State<ZikirCard> {
                                                   ? Text(
                                                       item,
                                                       style: const TextStyle(
+                                                          fontSize: 15,
                                                           fontWeight: FontWeight.bold),
                                                     )
                                                   : Container(),
@@ -555,8 +558,8 @@ class _ZikirCardState extends State<ZikirCard> {
                               ),
                             ),
                             Positioned(
-                              left: 15,
-                              top: 55,
+                              left: 20,
+                              top: 60,
                               child: IconButton(
                                 onPressed: () {
                                   showDialog(
@@ -611,13 +614,13 @@ class _ZikirCardState extends State<ZikirCard> {
                                         );
                                       });
                                 },
-                                icon: const Icon(Icons.add),
+                                icon: const Icon(Icons.edit),
                               ),
                             ),
                             _selectedProfile != ' '
                                 ? Positioned(
-                                    left: 15,
-                                    top: 95,
+                                    left: 20,
+                                    top: 105,
                                     child: IconButton(
                                       onPressed: () {
                                         showDialog(

@@ -94,6 +94,9 @@ class MainApp extends StatelessWidget {
         cardColor: Provider.of<ChangeSettings>(context).isDark == false
             ? const Color.fromARGB(255, 230, 230, 230)
             : const Color.fromARGB(255, 40, 40, 40),
+        navigationBarTheme: NavigationBarThemeData(
+          height: MainApp.currentHeight! < 700.0 ? 55 : 65,
+        ),
       ),
       initialRoute: ChangeSettings.isfirst == true ? '/startup' : '/',
       routes: {
@@ -113,31 +116,6 @@ class MainApp extends StatelessWidget {
         // '/alarms': (context) => const Alarms(),
         '/startup': (context) => const Startup(),
       },
-    );
-  }
-}
-
-class GradientBack extends StatelessWidget {
-  const GradientBack({super.key, required this.child});
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Provider.of<ChangeSettings>(context).isDark == false
-                ? Provider.of<ChangeSettings>(context).color.shade300
-                : Provider.of<ChangeSettings>(context).color.shade800,
-            Theme.of(context).colorScheme.surfaceContainer,
-          ],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          stops: const [0.01, 0.4],
-        ),
-      ),
-      child: child,
     );
   }
 }

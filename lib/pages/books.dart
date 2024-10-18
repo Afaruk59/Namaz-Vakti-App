@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:namaz_vakti_app/home_page.dart';
 import 'package:namaz_vakti_app/main.dart';
 import 'package:namaz_vakti_app/pages/settings.dart';
 import 'package:provider/provider.dart';
@@ -194,13 +195,6 @@ class BookCard extends StatelessWidget {
                   builder: (BuildContext context) {
                     return Card(
                       elevation: 20,
-                      shape: RoundedRectangleBorder(
-                        side: const BorderSide(
-                          color: Colors.grey, // Kenar rengini belirleyin
-                          width: 2.0, // Kenar kalınlığını belirleyin
-                        ),
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
                       color: Theme.of(context).cardColor,
                       child: Scrollbar(
                         child: Padding(

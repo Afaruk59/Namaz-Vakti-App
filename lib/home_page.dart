@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:namaz_vakti_app/main.dart';
 import 'package:namaz_vakti_app/pages/more.dart';
 import 'package:namaz_vakti_app/pages/qibla.dart';
 import 'package:namaz_vakti_app/pages/settings.dart';
@@ -9,6 +8,31 @@ import 'package:namaz_vakti_app/pages/timesPage/times.dart';
 import 'package:namaz_vakti_app/pages/zikir.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:provider/provider.dart';
+
+class GradientBack extends StatelessWidget {
+  const GradientBack({super.key, required this.child});
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Provider.of<ChangeSettings>(context).isDark == false
+                ? Provider.of<ChangeSettings>(context).color.shade300
+                : Provider.of<ChangeSettings>(context).color.shade800,
+            Theme.of(context).colorScheme.surfaceContainer,
+          ],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          stops: const [0.01, 0.4],
+        ),
+      ),
+      child: child,
+    );
+  }
+}
 
 class HomePage extends StatefulWidget {
   const HomePage({
@@ -117,7 +141,6 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Provider.of<ChangeSettings>(context).gradient == true
             ? Theme.of(context).colorScheme.surfaceContainer
             : Colors.transparent,
-        height: MainApp.currentHeight! < 700.0 ? 55 : 65,
         labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
         selectedIndex: _currentIndex,
         onDestinationSelected: (int index) {
