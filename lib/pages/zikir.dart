@@ -477,7 +477,6 @@ class _ZikirCardState extends State<ZikirCard> {
                               top: 15,
                               child: PopupMenuButton<String>(
                                 icon: const Icon(Icons.my_library_books_outlined),
-                                iconColor: Theme.of(context).indicatorColor,
                                 offset: const Offset(5, 0),
                                 elevation: 10,
                                 enabled: true,

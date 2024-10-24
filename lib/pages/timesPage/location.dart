@@ -146,6 +146,7 @@ class _LocationState extends State<Location> {
                 child: Text(AppLocalizations.of(context)!.openSettings),
                 onPressed: () {
                   Geolocator.openAppSettings();
+                  Navigator.pop(context);
                 },
               ),
             ],
@@ -218,7 +219,7 @@ class _LocationState extends State<Location> {
           progress = true;
         });
         await getCurrentLocation();
-        Navigator.popAndPushNamed(context, '/');
+        Navigator.pop(context);
         Provider.of<ChangeSettings>(context, listen: false).saveFirsttoSharedPref(false);
       },
       child: progress == true

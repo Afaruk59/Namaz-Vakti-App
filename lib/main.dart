@@ -94,9 +94,6 @@ class MainApp extends StatelessWidget {
         cardColor: Provider.of<ChangeSettings>(context).isDark == false
             ? const Color.fromARGB(255, 230, 230, 230)
             : const Color.fromARGB(255, 40, 40, 40),
-        navigationBarTheme: NavigationBarThemeData(
-          height: MainApp.currentHeight! < 700.0 ? 55 : 65,
-        ),
       ),
       initialRoute: ChangeSettings.isfirst == true ? '/startup' : '/',
       routes: {
