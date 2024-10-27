@@ -95,7 +95,8 @@ class MainApp extends StatelessWidget {
             ? const Color.fromARGB(255, 230, 230, 230)
             : const Color.fromARGB(255, 40, 40, 40),
       ),
-      initialRoute: ChangeSettings.isfirst == true ? '/startup' : '/',
+      initialRoute:
+          Provider.of<ChangeSettings>(context, listen: false).isfirst == true ? '/startup' : '/',
       routes: {
         '/': (context) => ChangeNotifierProvider<TimeData>(
               create: (context) => TimeData(),
@@ -109,7 +110,6 @@ class MainApp extends StatelessWidget {
         '/settings': (context) => const Settings(),
         '/kaza': (context) => const Kaza(),
         '/location': (context) => const Location(),
-
         // '/alarms': (context) => const Alarms(),
         '/startup': (context) => const Startup(),
       },

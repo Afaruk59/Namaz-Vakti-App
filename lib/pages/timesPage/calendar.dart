@@ -88,7 +88,7 @@ class _CalendarBtnState extends State<CalendarBtn> {
     }
   }
 
-  final titleStyle = const TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
+  final _titleStyle = const TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
 
   @override
   Widget build(BuildContext context) {
@@ -116,7 +116,7 @@ class _CalendarBtnState extends State<CalendarBtn> {
             elevation: 10,
             builder: (BuildContext context) {
               return Card(
-                elevation: 20,
+                elevation: 10,
                 color: Theme.of(context).cardColor,
                 child: Scrollbar(
                   child: Padding(
@@ -141,7 +141,7 @@ class _CalendarBtnState extends State<CalendarBtn> {
                         ),
                         Text(
                           AppLocalizations.of(context)!.calendarTitle1,
-                          style: titleStyle,
+                          style: _titleStyle,
                         ),
                         Text(
                           _word!,
@@ -151,7 +151,7 @@ class _CalendarBtnState extends State<CalendarBtn> {
                         ),
                         Text(
                           AppLocalizations.of(context)!.calendarTitle2,
-                          style: titleStyle,
+                          style: _titleStyle,
                         ),
                         const SizedBox(
                           height: 20,
@@ -170,6 +170,9 @@ class _CalendarBtnState extends State<CalendarBtn> {
                               _calendar!,
                             ),
                           ),
+                        ),
+                        const SizedBox(
+                          height: 20,
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20.0),

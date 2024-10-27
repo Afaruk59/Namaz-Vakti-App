@@ -191,10 +191,11 @@ class BookCard extends StatelessWidget {
                   showDragHandle: true,
                   backgroundColor: col,
                   elevation: 10,
+                  scrollControlDisabledMaxHeightRatio: 0.6,
                   isScrollControlled: MainApp.currentHeight! < 700.0 ? true : false,
                   builder: (BuildContext context) {
                     return Card(
-                      elevation: 20,
+                      elevation: 10,
                       color: Theme.of(context).cardColor,
                       child: Scrollbar(
                         child: Padding(

@@ -27,7 +27,7 @@ class GradientBack extends StatelessWidget {
           ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          stops: const [0.01, 0.4],
+          stops: const [0.01, 0.6],
         ),
       ),
       child: child,
@@ -119,10 +119,10 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: GradientBack(
-        child: PageView(
+    return GradientBack(
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: PageView(
           controller: _pageController,
           onPageChanged: (index) {
             setState(() {
@@ -137,49 +137,47 @@ class _HomePageState extends State<HomePage> {
             Settings(),
           ],
         ),
-      ),
-      bottomNavigationBar: NavigationBar(
-        height: MainApp.currentHeight! < 700.0 ? 55 : 65,
-        backgroundColor: Provider.of<ChangeSettings>(context).gradient == true
-            ? Theme.of(context).colorScheme.surfaceContainer
-            : Colors.transparent,
-        labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
-        selectedIndex: _currentIndex,
-        onDestinationSelected: (int index) {
-          setState(() {
-            _currentIndex = index;
-          });
-          // Sayfalar arası geçişi PageView ile kontrol et
-          _pageController.animateToPage(index,
-              duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
-        },
-        destinations: <Widget>[
-          NavigationDestination(
-            selectedIcon: const Icon(Icons.schedule),
-            icon: const Icon(Icons.schedule),
-            label: AppLocalizations.of(context)!.nav1,
-          ),
-          NavigationDestination(
-            selectedIcon: const Icon(Icons.navigation),
-            icon: const Icon(Icons.navigation_outlined),
-            label: AppLocalizations.of(context)!.nav2,
-          ),
-          NavigationDestination(
-            selectedIcon: const Icon(Icons.timer),
-            icon: const Icon(Icons.timer_outlined),
-            label: AppLocalizations.of(context)!.nav3,
-          ),
-          NavigationDestination(
-            selectedIcon: const Icon(Icons.more_horiz),
-            icon: const Icon(Icons.more_horiz),
-            label: AppLocalizations.of(context)!.nav4,
-          ),
-          NavigationDestination(
-            selectedIcon: const Icon(Icons.settings),
-            icon: const Icon(Icons.settings_outlined),
-            label: AppLocalizations.of(context)!.nav5,
-          ),
-        ],
+        bottomNavigationBar: NavigationBar(
+          height: MainApp.currentHeight! < 700.0 ? 55 : 65,
+          backgroundColor: Colors.transparent,
+          labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+          selectedIndex: _currentIndex,
+          onDestinationSelected: (int index) {
+            setState(() {
+              _currentIndex = index;
+            });
+            // Sayfalar arası geçişi PageView ile kontrol et
+            _pageController.animateToPage(index,
+                duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+          },
+          destinations: <Widget>[
+            NavigationDestination(
+              selectedIcon: const Icon(Icons.schedule),
+              icon: const Icon(Icons.schedule),
+              label: AppLocalizations.of(context)!.nav1,
+            ),
+            NavigationDestination(
+              selectedIcon: const Icon(Icons.navigation),
+              icon: const Icon(Icons.navigation_outlined),
+              label: AppLocalizations.of(context)!.nav2,
+            ),
+            NavigationDestination(
+              selectedIcon: const Icon(Icons.timer),
+              icon: const Icon(Icons.timer_outlined),
+              label: AppLocalizations.of(context)!.nav3,
+            ),
+            NavigationDestination(
+              selectedIcon: const Icon(Icons.more_horiz),
+              icon: const Icon(Icons.more_horiz),
+              label: AppLocalizations.of(context)!.nav4,
+            ),
+            NavigationDestination(
+              selectedIcon: const Icon(Icons.settings),
+              icon: const Icon(Icons.settings_outlined),
+              label: AppLocalizations.of(context)!.nav5,
+            ),
+          ],
+        ),
       ),
     );
   }

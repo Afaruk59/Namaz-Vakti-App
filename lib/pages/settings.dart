@@ -264,7 +264,7 @@ class ChangeSettings with ChangeNotifier {
   static String? cityName;
   static String? cityState;
 
-  static bool isfirst = true;
+  bool isfirst = true;
 
   bool isOpen = false;
   List<bool> alarmList = [
@@ -521,6 +521,7 @@ class ChangeSettings with ChangeNotifier {
 
   saveFirsttoSharedPref(bool value) {
     _settings.setBool('startup', value);
+    notifyListeners();
   }
 
   //KAZA SETTINGS

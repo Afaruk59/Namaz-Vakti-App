@@ -12,10 +12,10 @@ class Location extends StatefulWidget {
   const Location({super.key});
 
   @override
-  _LocationState createState() => _LocationState();
+  LocationState createState() => LocationState();
 }
 
-class _LocationState extends State<Location> {
+class LocationState extends State<Location> {
   double lat = 0;
   double long = 0;
   bool progress = false;
@@ -73,7 +73,7 @@ class _LocationState extends State<Location> {
                 child: Text(AppLocalizations.of(context)!.leave),
                 onPressed: () {
                   Navigator.pop(context);
-                  ChangeSettings.isfirst == true
+                  Provider.of<ChangeSettings>(context, listen: false).isfirst == true
                       ? Navigator.popAndPushNamed(context, '/startup')
                       : Navigator.popAndPushNamed(context, '/');
                 },
@@ -82,7 +82,7 @@ class _LocationState extends State<Location> {
                 child: Text(AppLocalizations.of(context)!.openLoc),
                 onPressed: () {
                   Navigator.pop(context);
-                  ChangeSettings.isfirst == true
+                  Provider.of<ChangeSettings>(context, listen: false).isfirst == true
                       ? Navigator.popAndPushNamed(context, '/startup')
                       : Navigator.popAndPushNamed(context, '/');
                   Geolocator.openLocationSettings();
@@ -219,7 +219,9 @@ class _LocationState extends State<Location> {
           progress = true;
         });
         await getCurrentLocation();
-        Navigator.pop(context);
+        Provider.of<ChangeSettings>(context, listen: false).isfirst == true
+            ? Navigator.pop(context)
+            : Navigator.popAndPushNamed(context, '/');
         Provider.of<ChangeSettings>(context, listen: false).saveFirsttoSharedPref(false);
       },
       child: progress == true

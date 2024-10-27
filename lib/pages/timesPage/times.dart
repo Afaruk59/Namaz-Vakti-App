@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:namaz_vakti_app/pages/timesPage/calendar.dart';
+import 'package:namaz_vakti_app/pages/timesPage/detailed_times.dart';
 import 'package:namaz_vakti_app/pages/timesPage/location.dart';
 import 'package:namaz_vakti_app/main.dart';
 import 'package:namaz_vakti_app/pages/settings.dart';
@@ -358,172 +359,182 @@ class _TimesBodyState extends State<TimesBody> {
                   child: Column(
                     children: [
                       Expanded(
-                        child: TimesCard(
-                          child: Stack(
-                            children: [
-                              Center(
-                                child: TextButton(
-                                  style: TextButton.styleFrom(
-                                      foregroundColor:
-                                          Theme.of(context).textTheme.displayMedium!.color),
-                                  onPressed: () async {
-                                    var now = DateTime.now();
-                                    await _selectDate(context);
-                                    Provider.of<TimeData>(context, listen: false)
-                                        .switchLoading(true);
-                                    setState(() {
-                                      count = customDate
-                                          .difference(
-                                              DateTime(now.year, now.month, now.day, 00, 00))
-                                          .inDays;
-                                      if (count != 0) {
-                                        Provider.of<TimeData>(context, listen: false)
-                                            .switchClock(false);
-                                      } else {
-                                        Provider.of<TimeData>(context, listen: false)
-                                            .switchClock(true);
-                                      }
-                                      miladi = DateFormat(
-                                              'dd MMMM yyyy',
-                                              Provider.of<ChangeSettings>(context, listen: false)
-                                                  .langCode)
-                                          .format(DateTime.now().add(Duration(days: count)));
-                                      hicri = HijriCalendar.fromDate(
-                                              DateTime.now().add(Duration(days: count)))
-                                          .toFormat('dd MMMM yy');
-                                    });
-                                    Provider.of<TimeData>(context, listen: false)
-                                        .loadPrayerTimes(DateTime.now().add(Duration(days: count)));
-                                    Provider.of<TimeData>(context, listen: false)
-                                        .changeTime(miladi);
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                                    child: FittedBox(
-                                      fit: BoxFit.scaleDown,
-                                      child: Text(
-                                        miladi,
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: MainApp.currentHeight! < 700.0 ? 13 : 15,
+                        child: Card(
+                          child: Center(
+                            child: Stack(
+                              children: [
+                                Center(
+                                  child: TextButton(
+                                    style: TextButton.styleFrom(
+                                        foregroundColor:
+                                            Theme.of(context).textTheme.displayMedium!.color),
+                                    onPressed: () async {
+                                      var now = DateTime.now();
+                                      await _selectDate(context);
+                                      Provider.of<TimeData>(context, listen: false)
+                                          .switchLoading(true);
+                                      setState(() {
+                                        count = customDate
+                                            .difference(
+                                                DateTime(now.year, now.month, now.day, 00, 00))
+                                            .inDays;
+                                        if (count != 0) {
+                                          Provider.of<TimeData>(context, listen: false)
+                                              .switchClock(false);
+                                        } else {
+                                          Provider.of<TimeData>(context, listen: false)
+                                              .switchClock(true);
+                                        }
+                                        miladi = DateFormat(
+                                                'dd MMMM yyyy',
+                                                Provider.of<ChangeSettings>(context, listen: false)
+                                                    .langCode)
+                                            .format(DateTime.now().add(Duration(days: count)));
+                                        hicri = HijriCalendar.fromDate(
+                                                DateTime.now().add(Duration(days: count)))
+                                            .toFormat('dd MMMM yy');
+                                      });
+                                      Provider.of<TimeData>(context, listen: false).loadPrayerTimes(
+                                          DateTime.now().add(Duration(days: count)));
+                                      Provider.of<TimeData>(context, listen: false)
+                                          .changeTime(miladi);
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                      child: FittedBox(
+                                        fit: BoxFit.scaleDown,
+                                        child: Text(
+                                          miladi,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: MainApp.currentHeight! < 700.0 ? 13 : 15,
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      IconButton(
-                                        onPressed: () {
-                                          Provider.of<TimeData>(context, listen: false)
-                                              .switchLoading(true);
-                                          setState(() {
-                                            count--;
-                                            if (count != 0) {
-                                              Provider.of<TimeData>(context, listen: false)
-                                                  .switchClock(false);
-                                            } else {
-                                              Provider.of<TimeData>(context, listen: false)
-                                                  .switchClock(true);
-                                            }
-                                            miladi = DateFormat(
-                                                    'dd MMMM yyyy',
-                                                    Provider.of<ChangeSettings>(context,
-                                                            listen: false)
-                                                        .langCode)
-                                                .format(DateTime.now().add(Duration(days: count)));
-                                            hicri = HijriCalendar.fromDate(
-                                                    DateTime.now().add(Duration(days: count)))
-                                                .toFormat('dd MMMM yy');
-                                          });
-                                          Provider.of<TimeData>(context, listen: false)
-                                              .loadPrayerTimes(
-                                                  DateTime.now().add(Duration(days: count)));
-                                          Provider.of<TimeData>(context, listen: false)
-                                              .changeTime(miladi);
-                                        },
-                                        icon: const Icon(Icons.arrow_back_ios_new),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      IconButton(
-                                        onPressed: () {
-                                          Provider.of<TimeData>(context, listen: false)
-                                              .switchLoading(true);
-                                          setState(() {
-                                            count++;
-                                            if (count != 0) {
-                                              Provider.of<TimeData>(context, listen: false)
-                                                  .switchClock(false);
-                                            } else {
-                                              Provider.of<TimeData>(context, listen: false)
-                                                  .switchClock(true);
-                                            }
-                                            miladi = DateFormat(
-                                                    'dd MMMM yyyy',
-                                                    Provider.of<ChangeSettings>(context,
-                                                            listen: false)
-                                                        .langCode)
-                                                .format(DateTime.now().add(Duration(days: count)));
-                                            hicri = HijriCalendar.fromDate(
-                                                    DateTime.now().add(Duration(days: count)))
-                                                .toFormat('dd MMMM yy');
-                                          });
-                                          Provider.of<TimeData>(context, listen: false)
-                                              .loadPrayerTimes(
-                                                  DateTime.now().add(Duration(days: count)));
-                                          Provider.of<TimeData>(context, listen: false)
-                                              .changeTime(miladi);
-                                        },
-                                        icon: const Icon(Icons.arrow_forward_ios),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: TimesCard(
-                          child: Text(
-                            textAlign: TextAlign.center,
-                            hicri,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: MainApp.currentHeight! < 700.0 ? 13 : 15,
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        IconButton(
+                                          onPressed: () {
+                                            Provider.of<TimeData>(context, listen: false)
+                                                .switchLoading(true);
+                                            setState(() {
+                                              count--;
+                                              if (count != 0) {
+                                                Provider.of<TimeData>(context, listen: false)
+                                                    .switchClock(false);
+                                              } else {
+                                                Provider.of<TimeData>(context, listen: false)
+                                                    .switchClock(true);
+                                              }
+                                              miladi = DateFormat(
+                                                      'dd MMMM yyyy',
+                                                      Provider.of<ChangeSettings>(context,
+                                                              listen: false)
+                                                          .langCode)
+                                                  .format(
+                                                      DateTime.now().add(Duration(days: count)));
+                                              hicri = HijriCalendar.fromDate(
+                                                      DateTime.now().add(Duration(days: count)))
+                                                  .toFormat('dd MMMM yy');
+                                            });
+                                            Provider.of<TimeData>(context, listen: false)
+                                                .loadPrayerTimes(
+                                                    DateTime.now().add(Duration(days: count)));
+                                            Provider.of<TimeData>(context, listen: false)
+                                                .changeTime(miladi);
+                                          },
+                                          icon: const Icon(Icons.arrow_back_ios_new),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        IconButton(
+                                          onPressed: () {
+                                            Provider.of<TimeData>(context, listen: false)
+                                                .switchLoading(true);
+                                            setState(() {
+                                              count++;
+                                              if (count != 0) {
+                                                Provider.of<TimeData>(context, listen: false)
+                                                    .switchClock(false);
+                                              } else {
+                                                Provider.of<TimeData>(context, listen: false)
+                                                    .switchClock(true);
+                                              }
+                                              miladi = DateFormat(
+                                                      'dd MMMM yyyy',
+                                                      Provider.of<ChangeSettings>(context,
+                                                              listen: false)
+                                                          .langCode)
+                                                  .format(
+                                                      DateTime.now().add(Duration(days: count)));
+                                              hicri = HijriCalendar.fromDate(
+                                                      DateTime.now().add(Duration(days: count)))
+                                                  .toFormat('dd MMMM yy');
+                                            });
+                                            Provider.of<TimeData>(context, listen: false)
+                                                .loadPrayerTimes(
+                                                    DateTime.now().add(Duration(days: count)));
+                                            Provider.of<TimeData>(context, listen: false)
+                                                .changeTime(miladi);
+                                          },
+                                          icon: const Icon(Icons.arrow_forward_ios),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
                         ),
                       ),
                       Expanded(
-                        child: TimesCard(
-                          child: const Padding(
-                            padding: EdgeInsets.fromLTRB(15, 5, 15, 5),
-                            child: Location(),
+                        child: Card(
+                          child: Center(
+                            child: Text(
+                              textAlign: TextAlign.center,
+                              hicri,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: MainApp.currentHeight! < 700.0 ? 13 : 15,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const Expanded(
+                        child: Card(
+                          child: Center(
+                            child: Padding(
+                              padding: EdgeInsets.fromLTRB(15, 5, 15, 5),
+                              child: Location(),
+                            ),
                           ),
                         ),
                       ),
                     ],
                   ),
                 ),
-                Expanded(
-                  child: TimesCard(
-                    child: const CityNameCard(),
+                const Expanded(
+                  child: Card(
+                    child: Center(
+                      child: CityNameCard(),
+                    ),
                   ),
                 ),
               ],
@@ -531,34 +542,23 @@ class _TimesBodyState extends State<TimesBody> {
           ),
           Expanded(
             flex: 11,
-            child: TimesCard(
-              child: Padding(
-                padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
-                child: const Stack(
-                  children: [
-                    PrayerTimesPage(),
-                    DetailedTimesBtn(),
-                    CalendarBtn(),
-                  ],
+            child: Card(
+              child: Center(
+                child: Padding(
+                  padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
+                  child: const Stack(
+                    children: [
+                      PrayerTimesPage(),
+                      DetailedTimesBtn(),
+                      CalendarBtn(),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
         ],
       ),
-    );
-  }
-}
-
-// ignore: must_be_immutable
-class TimesCard extends StatelessWidget {
-  Widget child;
-  TimesCard({super.key, required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Center(child: child),
     );
   }
 }
@@ -615,10 +615,10 @@ class PrayerTimesPage extends StatefulWidget {
   const PrayerTimesPage({super.key});
 
   @override
-  _PrayerTimesPageState createState() => _PrayerTimesPageState();
+  PrayerTimesPageState createState() => PrayerTimesPageState();
 }
 
-class _PrayerTimesPageState extends State<PrayerTimesPage> {
+class PrayerTimesPageState extends State<PrayerTimesPage> {
   @override
   void initState() {
     super.initState();
@@ -634,237 +634,6 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
       child: Provider.of<TimeData>(context).isLoading
           ? const Center(child: CircularProgressIndicator())
           : const MainTimes(),
-    );
-  }
-}
-
-class DetailedTimesBtn extends StatelessWidget {
-  const DetailedTimesBtn({super.key});
-  static TextStyle style = TextStyle(fontSize: MainApp.currentHeight! < 700.0 ? 17.0 : 18.0);
-
-  static DateTime? _imsak;
-  static DateTime? _sabah;
-  static DateTime? _gunes;
-  static DateTime? _ogle;
-  static DateTime? _ikindi;
-  static DateTime? _aksam;
-  static DateTime? _yatsi;
-  static DateTime? _israk;
-  static DateTime? _kerahat;
-  static DateTime? _asrisani;
-  static DateTime? _isfirar;
-  static DateTime? _istibak;
-  static DateTime? _isaisani;
-  static DateTime? _kible;
-  static String? _time;
-
-  @override
-  Widget build(BuildContext context) {
-    _imsak = Provider.of<TimeData>(context).imsak;
-    _sabah = Provider.of<TimeData>(context).sabah;
-    _gunes = Provider.of<TimeData>(context).gunes;
-    _ogle = Provider.of<TimeData>(context).ogle;
-    _ikindi = Provider.of<TimeData>(context).ikindi;
-    _aksam = Provider.of<TimeData>(context).aksam;
-    _yatsi = Provider.of<TimeData>(context).yatsi;
-    _israk = Provider.of<TimeData>(context).israk;
-    _kerahat = Provider.of<TimeData>(context).kerahat;
-    _asrisani = Provider.of<TimeData>(context).asrisani;
-    _isfirar = Provider.of<TimeData>(context).isfirar;
-    _istibak = Provider.of<TimeData>(context).istibak;
-    _isaisani = Provider.of<TimeData>(context).isaisani;
-    _kible = Provider.of<TimeData>(context).kible;
-    _time = Provider.of<TimeData>(context).miladi;
-    return Positioned(
-      bottom: 20,
-      left: 13,
-      child: IconButton(
-        iconSize: 25,
-        icon: const Icon(Icons.menu),
-        onPressed: () {
-          showModalBottomSheet(
-            backgroundColor: Theme.of(context).cardTheme.color,
-            context: context,
-            showDragHandle: true,
-            scrollControlDisabledMaxHeightRatio: 0.8,
-            elevation: 10,
-            isScrollControlled: MainApp.currentHeight! < 700.0 ? true : false,
-            builder: (BuildContext context) {
-              return Card(
-                color: Theme.of(context).cardColor,
-                child: Column(
-                  children: [
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      _time!,
-                      textAlign: TextAlign.center,
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Card(
-                                shape: RoundedRectangleBorder(
-                                  side: const BorderSide(
-                                    color: Colors.grey, // Kenar rengini belirleyin
-                                    width: 1.0, // Kenar kalınlığını belirleyin
-                                  ),
-                                  borderRadius: BorderRadius.circular(
-                                      10.0), // Kenarların yuvarlaklığını belirleyin
-                                ),
-                                color: Theme.of(context).cardColor,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Text(
-                                      AppLocalizations.of(context)!.imsak,
-                                      style: style,
-                                    ),
-                                    Text(
-                                      AppLocalizations.of(context)!.sabah,
-                                      style: style,
-                                    ),
-                                    Text(
-                                      AppLocalizations.of(context)!.gunes,
-                                      style: style,
-                                    ),
-                                    Text(
-                                      AppLocalizations.of(context)!.israk,
-                                      style: style,
-                                    ),
-                                    Text(
-                                      AppLocalizations.of(context)!.kerahat,
-                                      style: style,
-                                    ),
-                                    Text(
-                                      AppLocalizations.of(context)!.ogle,
-                                      style: style,
-                                    ),
-                                    Text(
-                                      AppLocalizations.of(context)!.ikindi,
-                                      style: style,
-                                    ),
-                                    Text(
-                                      AppLocalizations.of(context)!.asrisani,
-                                      style: style,
-                                    ),
-                                    Text(
-                                      AppLocalizations.of(context)!.isfirar,
-                                      style: style,
-                                    ),
-                                    Text(
-                                      AppLocalizations.of(context)!.aksam,
-                                      style: style,
-                                    ),
-                                    Text(
-                                      AppLocalizations.of(context)!.istibak,
-                                      style: style,
-                                    ),
-                                    Text(
-                                      AppLocalizations.of(context)!.yatsi,
-                                      style: style,
-                                    ),
-                                    Text(
-                                      AppLocalizations.of(context)!.isaisani,
-                                      style: style,
-                                    ),
-                                    Text(
-                                      AppLocalizations.of(context)!.kible,
-                                      style: style,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Card(
-                                shape: RoundedRectangleBorder(
-                                  side: const BorderSide(
-                                    color: Colors.grey, // Kenar rengini belirleyin
-                                    width: 1.0, // Kenar kalınlığını belirleyin
-                                  ),
-                                  borderRadius: BorderRadius.circular(
-                                      10.0), // Kenarların yuvarlaklığını belirleyin
-                                ),
-                                color: Theme.of(context).cardColor,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Text(
-                                      DateFormat('HH:mm').format(_imsak!),
-                                      style: style,
-                                    ),
-                                    Text(
-                                      DateFormat('HH:mm').format(_sabah!),
-                                      style: style,
-                                    ),
-                                    Text(
-                                      DateFormat('HH:mm').format(_gunes!),
-                                      style: style,
-                                    ),
-                                    Text(
-                                      DateFormat('HH:mm').format(_israk!),
-                                      style: style,
-                                    ),
-                                    Text(
-                                      DateFormat('HH:mm').format(_kerahat!),
-                                      style: style,
-                                    ),
-                                    Text(
-                                      DateFormat('HH:mm').format(_ogle!),
-                                      style: style,
-                                    ),
-                                    Text(
-                                      DateFormat('HH:mm').format(_ikindi!),
-                                      style: style,
-                                    ),
-                                    Text(
-                                      DateFormat('HH:mm').format(_asrisani!),
-                                      style: style,
-                                    ),
-                                    Text(
-                                      DateFormat('HH:mm').format(_isfirar!),
-                                      style: style,
-                                    ),
-                                    Text(
-                                      DateFormat('HH:mm').format(_aksam!),
-                                      style: style,
-                                    ),
-                                    Text(
-                                      DateFormat('HH:mm').format(_istibak!),
-                                      style: style,
-                                    ),
-                                    Text(
-                                      DateFormat('HH:mm').format(_yatsi!),
-                                      style: style,
-                                    ),
-                                    Text(
-                                      DateFormat('HH:mm').format(_isaisani!),
-                                      style: style,
-                                    ),
-                                    Text(
-                                      _kible != null ? DateFormat('HH:mm').format(_kible!) : '-',
-                                      style: style,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          );
-        },
-      ),
     );
   }
 }
