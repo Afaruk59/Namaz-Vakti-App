@@ -225,6 +225,14 @@ class LangSelector extends StatelessWidget {
               ),
             ),
           ),
+          const PopupMenuItem<int>(
+            value: 7,
+            child: Center(
+              child: Text(
+                'Русский',
+              ),
+            ),
+          ),
         ];
       },
     );

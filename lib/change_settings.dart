@@ -66,6 +66,10 @@ class ChangeSettings with ChangeNotifier {
         _settings.setString('lang', 'it');
         locale = const Locale('it');
         langCode = 'it';
+      case 7:
+        _settings.setString('lang', 'ru');
+        locale = const Locale('ru');
+        langCode = 'ru';
     }
     notifyListeners();
   }

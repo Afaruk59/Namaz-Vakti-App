@@ -238,12 +238,18 @@ class _TimesBodyState extends State<TimesBody> {
                       Expanded(
                         child: Card(
                           child: Center(
-                            child: Text(
-                              textAlign: TextAlign.center,
-                              hicri,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: MainApp.currentHeight! < 700.0 ? 13 : 15,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  textAlign: TextAlign.center,
+                                  hicri,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: MainApp.currentHeight! < 700.0 ? 13 : 15,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
