@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:namaz_vakti_app/main.dart';
-import 'package:namaz_vakti_app/pages/timesPage/times.dart';
+import 'package:namaz_vakti_app/time_data.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 

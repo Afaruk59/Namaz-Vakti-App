@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:namaz_vakti_app/main.dart';
-import 'package:namaz_vakti_app/pages/settings.dart';
+import 'package:namaz_vakti_app/change_settings.dart';
 import 'package:provider/provider.dart';
 import 'package:vibration/vibration.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';

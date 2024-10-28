@@ -6,6 +6,7 @@ import 'package:namaz_vakti_app/main.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
+import 'package:namaz_vakti_app/change_settings.dart';
 
 class Startup extends StatelessWidget {
   const Startup({super.key});

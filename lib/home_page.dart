@@ -9,6 +9,7 @@ import 'package:namaz_vakti_app/pages/timesPage/times.dart';
 import 'package:namaz_vakti_app/pages/zikir.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:provider/provider.dart';
+import 'package:namaz_vakti_app/change_settings.dart';
 
 class GradientBack extends StatelessWidget {
   const GradientBack({super.key, required this.child});
