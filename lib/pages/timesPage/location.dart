@@ -228,42 +228,47 @@ class LocationState extends State<Location> {
 
   @override
   Widget build(BuildContext context) {
-    return FilledButton.tonal(
-      style: ElevatedButton.styleFrom(elevation: 10),
-      onPressed: () async {
-        setState(() {
-          progress = true;
-        });
-        await getCurrentLocation();
-        Provider.of<ChangeSettings>(context, listen: false).isfirst == true
-            ? Navigator.pop(context)
-            : Navigator.popAndPushNamed(context, '/');
-        Provider.of<ChangeSettings>(context, listen: false).saveFirsttoSharedPref(false);
-      },
-      child: progress == true
-          ? const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 5.0),
-                  child: CircularProgressIndicator(),
-                ),
-              ],
-            )
-          : FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Row(
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6.0),
+      child: FilledButton.tonal(
+        style: ElevatedButton.styleFrom(elevation: 10),
+        onPressed: () async {
+          setState(() {
+            progress = true;
+          });
+          await getCurrentLocation();
+          Provider.of<ChangeSettings>(context, listen: false).isfirst == true
+              ? Navigator.pop(context)
+              : Navigator.popAndPushNamed(context, '/');
+          Provider.of<ChangeSettings>(context, listen: false).saveFirsttoSharedPref(false);
+        },
+        child: progress == true
+            ? const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.location_on, size: MainApp.currentHeight! < 700.0 ? 20.0 : 22.0),
-                  Text(
-                    AppLocalizations.of(context)!.locationButtonText,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: MainApp.currentHeight! < 700.0 ? 14.0 : 15.0),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 5.0),
+                    child: CircularProgressIndicator(),
                   ),
                 ],
+              )
+            : SizedBox.expand(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.location_on, size: MainApp.currentHeight! < 700.0 ? 20.0 : 22.0),
+                      Text(
+                        AppLocalizations.of(context)!.locationButtonText,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: MainApp.currentHeight! < 700.0 ? 14.0 : 15.0),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
+      ),
     );
   }
 }
