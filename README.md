@@ -23,3 +23,11 @@ ______     ___                         __      ______     __    __
              \ \_\   \ \_\                                                          
               \/_/    \/_/                                                          
 </pre>
+
+<table>
+  <tr>
+    <td><img src="screenshots/Screenshot_1.png"/></td>
+    <td><img src="screenshots/Screenshot_2.png"/></td>
+    <td><img src="screenshots/Screenshot_3.png"/></td>
+  </tr>
+</table>
