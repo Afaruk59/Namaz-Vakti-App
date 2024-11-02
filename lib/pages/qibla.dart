@@ -87,31 +87,36 @@ class _QiblaCardState extends State<QiblaCard> {
       return const Text('Yön verisi bekleniyor...');
     }
 
-    return Stack(
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Center(
-          child: Transform.rotate(
-            angle: ((_direction ?? 0) * (3.14159265358979323846 / 180) * -1),
-            child: Image.asset('assets/img/compass.png'),
+        Padding(
+          padding: const EdgeInsets.only(top: 20.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  _buildDirectionText(),
+                ],
+              ),
+            ],
           ),
         ),
-        Center(
-          child: Transform.rotate(
-            angle: ((_targetDir ?? 0) * (3.14159265358979323846 / 180) * -1),
-            child: Image.asset('assets/img/target.png'),
-          ),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        Stack(
           children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 30.0),
-                  child: _buildDirectionText(),
-                ),
-              ],
+            Center(
+              child: Transform.rotate(
+                angle: ((_direction ?? 0) * (3.14159265358979323846 / 180) * -1),
+                child: Image.asset('assets/img/compass.png'),
+              ),
+            ),
+            Center(
+              child: Transform.rotate(
+                angle: ((_targetDir ?? 0) * (3.14159265358979323846 / 180) * -1),
+                child: Image.asset('assets/img/target.png'),
+              ),
             ),
           ],
         ),
@@ -126,7 +131,9 @@ class _QiblaCardState extends State<QiblaCard> {
         child: Image.asset('assets/img/qibla.png'),
       );
     } else {
-      return Container();
+      return Container(
+        height: 100,
+      );
     }
   }
 
