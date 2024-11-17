@@ -610,6 +610,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.0"
+  translator:
+    dependency: "direct main"
+    description:
+      name: translator
+      sha256: b866c2b1106847b6362e50c3e98f433dc93ce365dffa70696ca44ebbd069c072
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.2"
   typed_data:
     dependency: transitive
     description:

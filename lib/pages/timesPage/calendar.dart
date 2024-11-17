@@ -22,6 +22,7 @@ import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as html_parser;
 import 'package:html/dom.dart' as dom;
 import 'package:provider/provider.dart';
+import 'package:translator/translator.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
@@ -40,28 +41,6 @@ class _CalendarBtnState extends State<CalendarBtn> {
 
   Future<void> _fetchDay() async {
     final response = await http
-        .get(Uri.parse('https://www.turktakvim.com/vakitler.asp?fr=5&bg=FFFFFF&fn=000000&sz=12'));
-
-    if (response.statusCode == 200) {
-      // HTML sayfasını parse et
-      dom.Document document = html_parser.parse(response.body);
-
-      // İstediğiniz elementleri seçin (örneğin, ilk <p> elementi)
-      final element = document.querySelector('td');
-
-      setState(() {
-        // Elementin içeriğini al
-        _word = element != null ? element.text : 'İçerik bulunamadı';
-      });
-    } else {
-      setState(() {
-        _word = 'İçerik alınamadı';
-      });
-    }
-  }
-
-  Future<void> _fetchWord() async {
-    final response = await http
         .get(Uri.parse('https://www.turktakvim.com/vakitler.asp?fr=4&bg=FFFFFF&fn=000000&sz=12'));
 
     if (response.statusCode == 200) {
@@ -78,6 +57,35 @@ class _CalendarBtnState extends State<CalendarBtn> {
     } else {
       setState(() {
         _day = 'İçerik alınamadı';
+      });
+    }
+
+    final translator = GoogleTranslator();
+    var translation = await translator.translate(_day!,
+        to: Provider.of<ChangeSettings>(context, listen: false).langCode ?? 'tr');
+    setState(() {
+      _day = translation.text;
+    });
+  }
+
+  Future<void> _fetchWord() async {
+    final response = await http
+        .get(Uri.parse('https://www.turktakvim.com/vakitler.asp?fr=5&bg=FFFFFF&fn=000000&sz=12'));
+
+    if (response.statusCode == 200) {
+      // HTML sayfasını parse et
+      dom.Document document = html_parser.parse(response.body);
+
+      // İstediğiniz elementleri seçin (örneğin, ilk <p> elementi)
+      final element = document.querySelector('td');
+
+      setState(() {
+        // Elementin içeriğini al
+        _word = element != null ? element.text : 'İçerik bulunamadı';
+      });
+    } else {
+      setState(() {
+        _word = 'İçerik alınamadı';
       });
     }
   }
