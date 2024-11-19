@@ -17,7 +17,6 @@ limitations under the License.
 import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:namaz_vakti_app/main.dart';
 import 'package:namaz_vakti_app/pages/more.dart';
 import 'package:namaz_vakti_app/pages/qibla.dart';
 import 'package:namaz_vakti_app/pages/settings.dart';
@@ -155,7 +154,6 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         bottomNavigationBar: NavigationBar(
-          height: MainApp.currentHeight! < 700.0 ? 55 : 65,
           backgroundColor: Colors.transparent,
           labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
           selectedIndex: _currentIndex,

@@ -61,11 +61,13 @@ class _CalendarBtnState extends State<CalendarBtn> {
     }
 
     final translator = GoogleTranslator();
-    var translation = await translator.translate(_day!,
-        to: Provider.of<ChangeSettings>(context, listen: false).langCode ?? 'tr');
-    setState(() {
-      _day = translation.text;
-    });
+    if (Provider.of<ChangeSettings>(context, listen: false).langCode != 'tr') {
+      var translation = await translator.translate(_day!,
+          to: Provider.of<ChangeSettings>(context, listen: false).langCode ?? 'tr');
+      setState(() {
+        _day = translation.text;
+      });
+    }
   }
 
   Future<void> _fetchWord() async {
