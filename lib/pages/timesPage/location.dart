@@ -252,21 +252,24 @@ class LocationState extends State<Location> {
                   ),
                 ],
               )
-            : SizedBox.expand(
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.location_on, size: MainApp.currentHeight! < 700.0 ? 20.0 : 22.0),
-                      Text(
-                        AppLocalizations.of(context)!.locationButtonText,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: MainApp.currentHeight! < 700.0 ? 14.0 : 15.0),
-                      ),
-                    ],
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.location_on, size: MainApp.currentHeight! < 700.0 ? 20.0 : 22.0),
+                        Text(
+                          AppLocalizations.of(context)!.locationButtonText,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: MainApp.currentHeight! < 700.0 ? 14.0 : 15.0),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+                ],
               ),
       ),
     );
