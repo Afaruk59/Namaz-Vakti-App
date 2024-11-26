@@ -265,11 +265,10 @@ class TimeData extends ChangeSettings {
         preTime = yatsi!;
       }
 
-      if (soontime == imsak2) {
+      if (soontime == imsak2 && now.hour > yatsi!.hour) {
         mainDifference = DateTime(1970, 1, 2, soontime.hour, soontime.minute, soontime.second)
             .difference(preTime);
-        difference = soontime.difference(DateTime(1970, 1, 1, now.hour, now.minute, now.second)
-            .subtract(const Duration(days: 1)));
+        difference = soontime.difference(DateTime(1969, 12, 31, now.hour, now.minute, now.second));
       } else if (soontime == imsak) {
         mainDifference = DateTime(1970, 1, 2, soontime.hour, soontime.minute, soontime.second)
             .difference(preTime);
