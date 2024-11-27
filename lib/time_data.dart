@@ -214,7 +214,8 @@ class TimeData extends ChangeSettings {
   }
 
   void updateTime() {
-    DateTime now = DateTime.now();
+    DateTime now =
+        DateTime(1970, 1, 1, DateTime.now().hour, DateTime.now().minute, DateTime.now().second);
     clock = DateFormat('HH:mm:ss').format(now);
 
     if (isTimeLoading == false && imsak != null) {
@@ -265,7 +266,7 @@ class TimeData extends ChangeSettings {
         preTime = yatsi!;
       }
 
-      if (soontime == imsak2 && now.hour > yatsi!.hour) {
+      if (soontime == imsak2 && now.isAfter(yatsi!)) {
         mainDifference = DateTime(1970, 1, 2, soontime.hour, soontime.minute, soontime.second)
             .difference(preTime);
         difference = soontime.difference(DateTime(1969, 12, 31, now.hour, now.minute, now.second));
