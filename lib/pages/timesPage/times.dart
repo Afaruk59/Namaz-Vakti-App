@@ -255,7 +255,7 @@ class _TimesBodyState extends State<TimesBody> {
                         child: Card(
                           child: Center(
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                              padding: const EdgeInsets.symmetric(horizontal: 15.0),
                               child: FittedBox(
                                 fit: BoxFit.scaleDown,
                                 child: Text(
@@ -276,7 +276,9 @@ class _TimesBodyState extends State<TimesBody> {
                           child: Center(
                             child: Padding(
                               padding: EdgeInsets.fromLTRB(15, 5, 15, 5),
-                              child: Location(),
+                              child: SizedBox.expand(
+                                child: Location(),
+                              ),
                             ),
                           ),
                         ),

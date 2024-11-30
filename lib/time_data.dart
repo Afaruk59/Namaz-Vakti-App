@@ -214,8 +214,7 @@ class TimeData extends ChangeSettings {
   }
 
   void updateTime() {
-    DateTime now =
-        DateTime(1970, 1, 1, DateTime.now().hour, DateTime.now().minute, DateTime.now().second);
+    DateTime now = DateTime.now();
     clock = DateFormat('HH:mm:ss').format(now);
 
     if (isTimeLoading == false && imsak != null) {

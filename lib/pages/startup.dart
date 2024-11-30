@@ -146,7 +146,13 @@ class StartupCard extends StatelessWidget {
                   ),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 50.0),
-                    child: Location(),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Location(),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
