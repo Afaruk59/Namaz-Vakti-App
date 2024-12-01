@@ -19,12 +19,13 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:namaz_vakti_app/pages/about.dart';
 import 'package:namaz_vakti_app/pages/kaza.dart';
 import 'package:namaz_vakti_app/l10n/l10n.dart';
 import 'package:namaz_vakti_app/pages/books.dart';
 import 'package:namaz_vakti_app/pages/dates.dart';
 import 'package:namaz_vakti_app/home_page.dart';
-import 'package:namaz_vakti_app/pages/timesPage/location.dart';
+import 'package:namaz_vakti_app/pages/license.dart';
 import 'package:namaz_vakti_app/pages/qibla.dart';
 import 'package:namaz_vakti_app/pages/settings.dart';
 import 'package:namaz_vakti_app/pages/startup.dart';
@@ -58,6 +59,7 @@ void main() async {
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
   static double? currentHeight;
+  static String version = '1.0.1';
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +97,7 @@ class MainApp extends StatelessWidget {
                 ? Brightness.dark
                 : Brightness.light, // Durum çubuğu simgeleri koyu renk yap
           ),
-          toolbarHeight: currentHeight! < 700 ? 40 : 45,
+          toolbarHeight: currentHeight! < 700 ? 40 : 50,
           titleSpacing: 30,
           color: Colors.transparent,
           titleTextStyle: GoogleFonts.ubuntu(
@@ -112,6 +114,11 @@ class MainApp extends StatelessWidget {
         cardColor: Provider.of<ChangeSettings>(context).isDark == false
             ? const Color.fromARGB(255, 230, 230, 230)
             : const Color.fromARGB(255, 40, 40, 40),
+        navigationBarTheme: NavigationBarThemeData(
+          height: currentHeight! < 700 ? 70 : 80,
+          backgroundColor: Colors.transparent,
+          labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+        ),
       ),
       initialRoute:
           Provider.of<ChangeSettings>(context, listen: false).isfirst == true ? '/startup' : '/',
@@ -127,9 +134,10 @@ class MainApp extends StatelessWidget {
         '/books': (context) => const Books(),
         '/settings': (context) => const Settings(),
         '/kaza': (context) => const Kaza(),
-        '/location': (context) => const Location(),
         // '/alarms': (context) => const Alarms(),
         '/startup': (context) => const Startup(),
+        '/about': (context) => const About(),
+        '/license': (context) => const License(),
       },
     );
   }

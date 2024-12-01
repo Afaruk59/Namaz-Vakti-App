@@ -12,6 +12,9 @@
     "datesTitleShort": "الأيام المقدسة",
     "kazaTitle": "الصلوات الفائتة",
     "booksTitle": "كتب المصادر",
+    "aboutTitle": "حول",
+    "githubTitle": "صفحة Github",
+    "licenseTitle": "الترخيص",
 
     "nav1": "الأوقات",
     "nav2": "القبلة",

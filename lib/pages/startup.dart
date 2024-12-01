@@ -60,6 +60,13 @@ class StartupCard extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  Image.asset(
+                    'assets/img/logo.png',
+                    height: MainApp.currentHeight! < 700.0 ? 150 : 200,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     child: Card(

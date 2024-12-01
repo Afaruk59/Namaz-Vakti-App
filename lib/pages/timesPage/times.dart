@@ -36,19 +36,26 @@ class Times extends StatelessWidget {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.timesPageTitle),
-        // actions: [
-        //   IconButton(
-        //       iconSize: MainApp.currentHeight! < 700.0 ? 22.0 : 25.0,
-        //       onPressed: () {
-        //         Navigator.pushNamed(context, '/alarms');
-        //       },
-        //       icon: const Icon(
-        //         Icons.alarm,
-        //       )),
-        //   const SizedBox(
-        //     width: 20,
-        //   ),
-        // ],
+        actions: [
+          Image.asset(
+            'assets/img/logoSmall.png',
+            height: 45,
+          ),
+          const SizedBox(
+            width: 20,
+          ),
+          //   IconButton(
+          //       iconSize: MainApp.currentHeight! < 700.0 ? 22.0 : 25.0,
+          //       onPressed: () {
+          //         Navigator.pushNamed(context, '/alarms');
+          //       },
+          //       icon: const Icon(
+          //         Icons.alarm,
+          //       )),
+          //   const SizedBox(
+          //     width: 20,
+          //   ),
+        ],
       ),
       body: const TimesBody(),
     );

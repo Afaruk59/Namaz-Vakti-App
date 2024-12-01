@@ -12,6 +12,9 @@
     "datesTitleShort": "Святые дни",
     "kazaTitle": "Пропущенные молитвы",
     "booksTitle": "Исходники",
+    "aboutTitle": "О нас",
+    "githubTitle": "Страница на Github",
+    "licenseTitle": "Лицензия",
 
     "nav1": "Время",
     "nav2": "Кибла",

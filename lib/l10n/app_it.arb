@@ -12,6 +12,9 @@
     "datesTitleShort": "Giorni Sacri",
     "kazaTitle": "Preghiere Mancate",
     "booksTitle": "Libri di Riferimento",
+    "aboutTitle": "Informazioni",
+    "githubTitle": "Pagina Github",
+    "licenseTitle": "Licenza",
 
     "nav1": "Orari",
     "nav2": "Qibla",

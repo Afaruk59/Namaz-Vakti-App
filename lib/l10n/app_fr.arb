@@ -12,6 +12,9 @@
     "datesTitleShort": "Jours Saints",
     "kazaTitle": "Prières Manquées",
     "booksTitle": "Livres Sources",
+    "aboutTitle": "À propos",
+    "githubTitle": "Page Github",
+    "licenseTitle": "Licence",
 
     "nav1": "Heures",
     "nav2": "Qibla",

@@ -12,6 +12,9 @@
     "datesTitleShort": "Heilige Tage",
     "kazaTitle": "Versäumte Gebete",
     "booksTitle": "Quellenbücher",
+    "aboutTitle": "Über",
+    "githubTitle": "Github-Seite",
+    "licenseTitle": "Lizenz",
 
     "nav1": "Zeiten",
     "nav2": "Qibla",

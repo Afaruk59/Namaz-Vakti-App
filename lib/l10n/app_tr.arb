@@ -43,6 +43,18 @@
     "@booksTitle":{
         "description": "Page title"
     },
+    "aboutTitle": "Hakkkında",
+    "@aboutTitle":{
+        "description": "Page title"
+    },
+    "githubTitle": "Github Sayfası",
+    "@githubTitle":{
+        "description": "Page title"
+    },
+    "licenseTitle": "Lisans",
+    "@licenseTitle":{
+        "description": "Page title"
+    },
 
 
     "nav1": "Vakitler",
@@ -389,7 +401,7 @@
         "description": "Text"
     },
     "kiymetsiz": "Kıymetsiz Yazılar",
-    "@kymetsiz":{
+    "@kiymetsiz":{
         "description": "Text"
     },
     "menakib": "Menâkıb-ı Çihâr Yâr-i Güzîn",
@@ -447,7 +459,7 @@
         "description": "Text"
     },
     "kiymetsizInfo": "İmâm-ı Rabbânî Müceddîd-i Elf-i sânî Ahmed Fârûkî Serhendi hazretlerinin üç cild (MEKTÛBÂT) kitâbından ve oğulları Muhammed Ma’sûm-i Fârûkî hazretlerinin de üç cild (MEKTÛBÂT) kitâbından, çıkarılan kıymetli cümleler, Elif-ba sırasına göre tanzîm edilmiş, Seyyid Abdülhakîm Arvâsî hazretlerine okunmuşdur. Dikkat ile dinledikden sonra, bunun adı (Kıymetsiz Yazılar) olsun demişdir. Okuyanın hayreti üzere, anlamadın mı, (Bunun kıymetine karşılık olabilecek birşey bulunabilir mi?) buyurmuşdur. Son sayfasında şu cümleler yer almakdadır: (Fırsat ganîmetdir. Ömrün temâmını fâidesiz işlerle telef ve sarf etmemek lâzımdır. Belki temâm ömrü, Hak celle ve a’lânın rızâsına muvâfık ve mutâbık şeylere sarf etmek lâzımdır....)",
-    "@kymetsizInfo":{
+    "@kiymetsizInfo":{
         "description": "Text"
     },
     "menakibInfo": "Dört halîfenin ve Eshâb-ı Kirâmın bütününün büyüklüklerini, kıymetlerini menkıbeler ile çok uzun ve çok güzel anlatan bu kitâb, türkçe olup, ilk defa 1325 senesinde basılmıştır. Kitabevimiz yeniden 1998'de basdırmıştır. Bu kitâbı Seyyid Eyyûb hazretleri yazmıştır. On iki bâb dan oluşmakdadır.",

@@ -12,6 +12,9 @@
     "datesTitleShort": "Holy Days",
     "kazaTitle": "Missed Prayers",
     "booksTitle": "Sourcebooks",
+    "aboutTitle": "About",
+    "githubTitle": "Github Page",
+    "licenseTitle": "License",
 
     "nav1": "Times",
     "nav2": "Qibla",

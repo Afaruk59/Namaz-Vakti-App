@@ -51,6 +51,11 @@ class More extends StatelessWidget {
                 icon: const Icon(Icons.library_books_outlined),
                 route: '/books',
               ),
+              MoreCard(
+                title: AppLocalizations.of(context)!.aboutTitle,
+                icon: const Icon(Icons.info),
+                route: '/about',
+              ),
             ],
           ),
         ),
