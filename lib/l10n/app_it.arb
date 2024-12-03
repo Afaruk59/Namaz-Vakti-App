@@ -2,6 +2,7 @@
     "@@locale": "it",
 
     "lang": "Italiano",
+    "appName": "Orari di Preghiera",
 
     "timesPageTitle": "Orari",
     "qiblaPageTitle": "Bussola di Preghiera",

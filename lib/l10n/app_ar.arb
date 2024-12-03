@@ -2,6 +2,7 @@
     "@@locale": "ar",
 
     "lang": "العربية",
+    "appName": "أوقات الصلاة",
 
     "timesPageTitle": "أوقات الصلاة",
     "qiblaPageTitle": "بوصلة القبلة",

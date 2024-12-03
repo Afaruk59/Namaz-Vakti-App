@@ -2,6 +2,7 @@
     "@@locale": "de",
 
     "lang": "Deutsch",
+    "appName": "Gebetszeiten-App",
 
     "timesPageTitle": "Zeiten",
     "qiblaPageTitle": "Gebetskompass",

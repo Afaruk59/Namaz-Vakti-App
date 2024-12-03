@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:namaz_vakti_app/main.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:namaz_vakti_app/change_settings.dart';
+import 'package:namaz_vakti_app/pages/startup.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -48,8 +49,13 @@ class More extends StatelessWidget {
               ),
               BooksCard(
                 title: AppLocalizations.of(context)!.booksTitle,
-                icon: const Icon(Icons.library_books_outlined),
+                icon: const Icon(Icons.library_books),
                 route: '/books',
+              ),
+              Padding(
+                padding:
+                    EdgeInsets.symmetric(horizontal: MainApp.currentHeight! < 700.0 ? 5 : 15.0),
+                child: const TenbihCard(),
               ),
               MoreCard(
                 title: AppLocalizations.of(context)!.aboutTitle,

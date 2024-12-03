@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:namaz_vakti_app/home_page.dart';
 import 'package:namaz_vakti_app/pages/settings.dart';
 import 'package:namaz_vakti_app/pages/timesPage/location.dart';
@@ -60,72 +61,40 @@ class StartupCard extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    'assets/img/logo.png',
-                    height: MainApp.currentHeight! < 700.0 ? 150 : 200,
+                  Card(
+                    color: Theme.of(context).cardColor,
+                    child: Image.asset(
+                      'assets/img/logo.png',
+                      height: MainApp.currentHeight! < 700.0 ? 150 : 200,
+                    ),
                   ),
-                  const SizedBox(
-                    height: 20,
+                  Text(
+                    AppLocalizations.of(context)!.appName,
+                    style: GoogleFonts.ubuntu(
+                        fontWeight: FontWeight.bold,
+                        fontSize: MainApp.currentHeight! < 700.0 ? 25 : 30,
+                        color: Theme.of(context).primaryColor),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Card(
-                      color: Theme.of(context).cardColor,
-                      child: ListTile(
-                        title: Text(
-                          AppLocalizations.of(context)!.startupDescription,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(fontSize: 15),
-                        ),
-                      ),
+                  Text(
+                    '${MainApp.version} - by Afaruk59',
+                    style: GoogleFonts.ubuntu(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
                     ),
                   ),
                   const SizedBox(
                     height: 20,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Card(
-                      color: Theme.of(context).cardColor,
-                      child: ListTile(
-                        title: Text(
-                          AppLocalizations.of(context)!.tenbih,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        onTap: () async {
-                          Uri? url;
-                          if (Provider.of<ChangeSettings>(context, listen: false).langCode ==
-                              'tr') {
-                            url = Uri.parse(
-                                'https://www.turktakvim.com/index.php?link=html/muhim_tenbih.html');
-                          } else {
-                            url = Uri.parse(
-                                'https://www.turktakvim.com/index.php?link=html/en/Important_Cautions.html');
-                          }
-                          await launchUrl(url);
-                        },
-                        trailing: FilledButton.tonal(
-                          style: ElevatedButton.styleFrom(elevation: 10),
-                          onPressed: () async {
-                            Uri? url;
-                            if (Provider.of<ChangeSettings>(context, listen: false).langCode ==
-                                'tr') {
-                              url = Uri.parse(
-                                  'https://www.turktakvim.com/index.php?link=html/muhim_tenbih.html');
-                            } else {
-                              url = Uri.parse(
-                                  'https://www.turktakvim.com/index.php?link=html/en/Important_Cautions.html');
-                            }
-                            await launchUrl(url);
-                          },
-                          child: const Icon(Icons.search),
-                        ),
-                      ),
-                    ),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10.0),
+                    child: TimeNote(),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10.0),
+                    child: TenbihCard(),
                   ),
                   const SizedBox(
                     height: 20,
@@ -164,6 +133,75 @@ class StartupCard extends StatelessWidget {
                 ],
               ),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class TimeNote extends StatelessWidget {
+  const TimeNote({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: Theme.of(context).cardColor,
+      child: ListTile(
+        title: Text(
+          AppLocalizations.of(context)!.startupDescription,
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontSize: 15),
+        ),
+      ),
+    );
+  }
+}
+
+class TenbihCard extends StatelessWidget {
+  const TenbihCard({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: Theme.of(context).cardColor,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: MainApp.currentHeight! < 700.0 ? 5 : 15.0),
+        child: ListTile(
+          title: Text(
+            AppLocalizations.of(context)!.tenbih,
+            style: const TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          onTap: () async {
+            Uri? url;
+            if (Provider.of<ChangeSettings>(context, listen: false).langCode == 'tr') {
+              url = Uri.parse('https://www.turktakvim.com/index.php?link=html/muhim_tenbih.html');
+            } else {
+              url = Uri.parse(
+                  'https://www.turktakvim.com/index.php?link=html/en/Important_Cautions.html');
+            }
+            await launchUrl(url);
+          },
+          trailing: FilledButton.tonal(
+            style: ElevatedButton.styleFrom(elevation: 10),
+            onPressed: () async {
+              Uri? url;
+              if (Provider.of<ChangeSettings>(context, listen: false).langCode == 'tr') {
+                url = Uri.parse('https://www.turktakvim.com/index.php?link=html/muhim_tenbih.html');
+              } else {
+                url = Uri.parse(
+                    'https://www.turktakvim.com/index.php?link=html/en/Important_Cautions.html');
+              }
+              await launchUrl(url);
+            },
+            child: const Icon(Icons.search),
           ),
         ),
       ),

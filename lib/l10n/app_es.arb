@@ -2,6 +2,7 @@
     "@@locale": "es",
 
     "lang": "Español",
+    "appName": "Horarios de Oración",
 
     "timesPageTitle": "Horarios",
     "qiblaPageTitle": "Brújula de Oración",

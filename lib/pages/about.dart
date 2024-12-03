@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:namaz_vakti_app/home_page.dart';
 import 'package:namaz_vakti_app/main.dart';
+import 'package:namaz_vakti_app/pages/startup.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
@@ -59,7 +60,7 @@ class AboutPage extends StatelessWidget {
                 ),
               ),
               Text(
-                'Namaz Vakti App',
+                AppLocalizations.of(context)!.appName,
                 style: GoogleFonts.ubuntu(
                     fontWeight: FontWeight.bold,
                     fontSize: MainApp.currentHeight! < 700.0 ? 25 : 30,
@@ -125,6 +126,7 @@ class AboutPage extends StatelessWidget {
                   ),
                 ),
               ),
+              const TimeNote(),
             ],
           ),
         ),

@@ -160,9 +160,9 @@ class _TimesBodyState extends State<TimesBody> {
                                         fit: BoxFit.scaleDown,
                                         child: Text(
                                           miladi,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            fontSize: MainApp.currentHeight! < 700.0 ? 13 : 15,
+                                            fontSize: 15,
                                           ),
                                         ),
                                       ),
@@ -268,9 +268,9 @@ class _TimesBodyState extends State<TimesBody> {
                                 child: Text(
                                   textAlign: TextAlign.center,
                                   hicri,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    fontSize: MainApp.currentHeight! < 700.0 ? 13 : 15,
+                                    fontSize: 15,
                                   ),
                                 ),
                               ),
@@ -345,30 +345,31 @@ class _CityNameCardState extends State<CityNameCard> {
   Widget build(BuildContext context) {
     Provider.of<TimeData>(context).cityState = ChangeSettings.cityState;
     Provider.of<TimeData>(context).city = ChangeSettings.cityName;
-    return Padding(
-      padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            '${Provider.of<TimeData>(context).cityState}',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: MainApp.currentHeight! < 700.0 ? 15.0 : 18.0),
-          ),
-          SizedBox(
-            width: MainApp.currentHeight! < 700.0 ? 70.0 : 100.0,
-            child: Divider(
-              height: MainApp.currentHeight! < 700.0 ? 10.0 : 20.0,
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      child: Padding(
+        padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              '${Provider.of<TimeData>(context).cityState}',
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 18.0),
             ),
-          ),
-          Text(
-            '$cityName',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                fontSize: MainApp.currentHeight! < 700.0 ? 16.0 : 18.0,
-                fontWeight: FontWeight.bold),
-          ),
-        ],
+            const SizedBox(
+              width: 100.0,
+              child: Divider(
+                height: 20.0,
+              ),
+            ),
+            Text(
+              '$cityName',
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
       ),
     );
   }

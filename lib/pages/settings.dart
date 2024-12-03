@@ -40,6 +40,67 @@ class SettingsCard extends StatelessWidget {
     super.key,
   });
 
+  Future<dynamic> colorPalette(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(AppLocalizations.of(context)!.colorPaletteTitle),
+        content: const SizedBox(
+          height: 200,
+          child: Column(
+            children: [
+              Expanded(
+                child: Row(
+                  children: [
+                    ColorCircle(col: Colors.blueGrey),
+                    ColorCircle(col: Colors.red),
+                    ColorCircle(col: Colors.blue),
+                    ColorCircle(col: Colors.green),
+                    ColorCircle(col: Colors.yellow),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Row(
+                  children: [
+                    ColorCircle(col: Colors.amber),
+                    ColorCircle(col: Colors.grey),
+                    ColorCircle(col: Colors.indigo),
+                    ColorCircle(col: Colors.lightBlue),
+                    ColorCircle(col: Colors.lightGreen),
+                    ColorCircle(col: Colors.lime),
+                    ColorCircle(col: Colors.orange),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Row(
+                  children: [
+                    ColorCircle(col: Colors.pink),
+                    ColorCircle(col: Colors.purple),
+                    ColorCircle(col: Colors.teal),
+                    ColorCircle(col: Colors.brown),
+                    ColorCircle(col: Colors.cyan),
+                    ColorCircle(col: Colors.deepOrange),
+                    ColorCircle(col: Colors.deepPurple),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text(AppLocalizations.of(context)!.ok),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     preLang = Provider.of<ChangeSettings>(context).locale;
@@ -91,69 +152,15 @@ class SettingsCard extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 15.0),
                   child: ListTile(
                     title: Text(AppLocalizations.of(context)!.themeColor),
+                    onTap: () {
+                      colorPalette(context);
+                    },
                     trailing: FilledButton.tonal(
                       style: ElevatedButton.styleFrom(
                         elevation: 10,
                       ),
                       onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: Text(AppLocalizations.of(context)!.colorPaletteTitle),
-                            content: const SizedBox(
-                              height: 200,
-                              child: Column(
-                                children: [
-                                  Expanded(
-                                    child: Row(
-                                      children: [
-                                        ColorCircle(col: Colors.blueGrey),
-                                        ColorCircle(col: Colors.red),
-                                        ColorCircle(col: Colors.blue),
-                                        ColorCircle(col: Colors.green),
-                                        ColorCircle(col: Colors.yellow),
-                                      ],
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Row(
-                                      children: [
-                                        ColorCircle(col: Colors.amber),
-                                        ColorCircle(col: Colors.grey),
-                                        ColorCircle(col: Colors.indigo),
-                                        ColorCircle(col: Colors.lightBlue),
-                                        ColorCircle(col: Colors.lightGreen),
-                                        ColorCircle(col: Colors.lime),
-                                        ColorCircle(col: Colors.orange),
-                                      ],
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Row(
-                                      children: [
-                                        ColorCircle(col: Colors.pink),
-                                        ColorCircle(col: Colors.purple),
-                                        ColorCircle(col: Colors.teal),
-                                        ColorCircle(col: Colors.brown),
-                                        ColorCircle(col: Colors.cyan),
-                                        ColorCircle(col: Colors.deepOrange),
-                                        ColorCircle(col: Colors.deepPurple),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Text(AppLocalizations.of(context)!.ok),
-                              ),
-                            ],
-                          ),
-                        );
+                        colorPalette(context);
                       },
                       child: const Icon(Icons.color_lens),
                     ),

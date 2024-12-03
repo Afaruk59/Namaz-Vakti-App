@@ -20,7 +20,6 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:namaz_vakti_app/change_settings.dart';
-import 'package:namaz_vakti_app/main.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:provider/provider.dart';
 
@@ -62,6 +61,9 @@ class LocationState extends State<Location> {
     // Konum servisi etkin mi kontrol et
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled && mounted) {
+      setState(() {
+        progress = false;
+      });
       return showDialog(
         barrierDismissible: false,
         context: context,
@@ -89,18 +91,12 @@ class LocationState extends State<Location> {
                 child: Text(AppLocalizations.of(context)!.leave),
                 onPressed: () {
                   Navigator.pop(context);
-                  Provider.of<ChangeSettings>(context, listen: false).isfirst == true
-                      ? Navigator.popAndPushNamed(context, '/startup')
-                      : Navigator.popAndPushNamed(context, '/');
                 },
               ),
               TextButton(
                 child: Text(AppLocalizations.of(context)!.openLoc),
                 onPressed: () {
                   Navigator.pop(context);
-                  Provider.of<ChangeSettings>(context, listen: false).isfirst == true
-                      ? Navigator.popAndPushNamed(context, '/startup')
-                      : Navigator.popAndPushNamed(context, '/');
                   Geolocator.openLocationSettings();
                 },
               ),
@@ -224,6 +220,10 @@ class LocationState extends State<Location> {
     String stateName = column3Data[index].toString();
 
     ChangeSettings().saveLocaltoSharedPref(cityId, cityName, stateName);
+    Provider.of<ChangeSettings>(context, listen: false).isfirst == true
+        ? Navigator.pop(context)
+        : Navigator.popAndPushNamed(context, '/');
+    Provider.of<ChangeSettings>(context, listen: false).saveFirsttoSharedPref(false);
   }
 
   @override
@@ -237,10 +237,6 @@ class LocationState extends State<Location> {
             progress = true;
           });
           await getCurrentLocation();
-          Provider.of<ChangeSettings>(context, listen: false).isfirst == true
-              ? Navigator.pop(context)
-              : Navigator.popAndPushNamed(context, '/');
-          Provider.of<ChangeSettings>(context, listen: false).saveFirsttoSharedPref(false);
         },
         child: progress == true
             ? const Row(
@@ -257,11 +253,11 @@ class LocationState extends State<Location> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.location_on, size: MainApp.currentHeight! < 700.0 ? 20.0 : 22.0),
+                    const Icon(Icons.location_on, size: 22),
                     Text(
                       AppLocalizations.of(context)!.locationButtonText,
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: MainApp.currentHeight! < 700.0 ? 14.0 : 15.0),
+                      style: const TextStyle(fontSize: 15.0),
                     ),
                   ],
                 ),

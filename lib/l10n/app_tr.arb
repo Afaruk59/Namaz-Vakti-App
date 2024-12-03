@@ -5,6 +5,10 @@
     "@lang":{
         "description": "Language"
     },
+    "appName": "Namaz Vakti App",
+    "@appName":{
+        "description": "Application Name"
+    },
 
 
     "timesPageTitle": "Vakitler",
