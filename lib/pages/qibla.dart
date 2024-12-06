@@ -91,7 +91,7 @@ class _QiblaCardState extends State<QiblaCard> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Padding(
-          padding: const EdgeInsets.only(top: 20.0),
+          padding: EdgeInsets.only(top: MainApp.currentHeight! < 700 ? 0 : 20.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -127,12 +127,12 @@ class _QiblaCardState extends State<QiblaCard> {
   Widget _buildDirectionText() {
     if (_direction! < _target! + 3 && _direction! > _target! - 3) {
       return SizedBox(
-        height: 100,
+        height: MainApp.currentHeight! < 700 ? 30 : 100,
         child: Image.asset('assets/img/qibla.png'),
       );
     } else {
       return Container(
-        height: 100,
+        height: MainApp.currentHeight! < 700 ? 30 : 100,
       );
     }
   }

@@ -59,7 +59,7 @@ class DetailedTimesBtn extends StatelessWidget {
     _kible = Provider.of<TimeData>(context).kible;
     _time = Provider.of<TimeData>(context).miladi;
     return Positioned(
-      bottom: 20,
+      bottom: MainApp.currentHeight! < 700 ? 10 : 20,
       left: 13,
       child: IconButton(
         iconSize: 25,

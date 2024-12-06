@@ -73,8 +73,8 @@ class AboutPage extends StatelessWidget {
                   fontSize: 15,
                 ),
               ),
-              const SizedBox(
-                height: 40,
+              SizedBox(
+                height: MainApp.currentHeight! < 700 ? 10 : 40,
               ),
               Card(
                 color: Theme.of(context).cardColor,

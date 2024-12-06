@@ -65,7 +65,7 @@ class StartupCard extends StatelessWidget {
                     color: Theme.of(context).cardColor,
                     child: Image.asset(
                       'assets/img/logo.png',
-                      height: MainApp.currentHeight! < 700.0 ? 150 : 200,
+                      height: MainApp.currentHeight! < 700.0 ? 100 : 200,
                     ),
                   ),
                   Text(
@@ -82,22 +82,22 @@ class StartupCard extends StatelessWidget {
                       fontSize: 15,
                     ),
                   ),
-                  const SizedBox(
-                    height: 20,
+                  SizedBox(
+                    height: MainApp.currentHeight! < 700 ? 0 : 20,
                   ),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10.0),
                     child: TimeNote(),
                   ),
-                  const SizedBox(
-                    height: 20,
+                  SizedBox(
+                    height: MainApp.currentHeight! < 700 ? 0 : 20,
                   ),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10.0),
                     child: TenbihCard(),
                   ),
-                  const SizedBox(
-                    height: 20,
+                  SizedBox(
+                    height: MainApp.currentHeight! < 700 ? 0 : 20,
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -117,8 +117,8 @@ class StartupCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 20,
+                  SizedBox(
+                    height: MainApp.currentHeight! < 700 ? 0 : 20,
                   ),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 50.0),
