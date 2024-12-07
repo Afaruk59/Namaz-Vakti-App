@@ -20,7 +20,6 @@ import 'package:intl/intl.dart';
 import 'package:namaz_vakti_app/pages/timesPage/calendar.dart';
 import 'package:namaz_vakti_app/pages/timesPage/detailed_times.dart';
 import 'package:namaz_vakti_app/pages/timesPage/location.dart';
-import 'package:namaz_vakti_app/main.dart';
 import 'package:namaz_vakti_app/change_settings.dart';
 import 'package:namaz_vakti_app/time_data.dart';
 import 'package:provider/provider.dart';
@@ -125,11 +124,12 @@ class _TimesBodyState extends State<TimesBody> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 0.0 : 5.0),
+      padding:
+          EdgeInsets.all(Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 0.0 : 5.0),
       child: Column(
         children: [
           Expanded(
-            flex: MainApp.currentHeight! < 700.0 ? 6 : 5,
+            flex: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 6 : 5,
             child: Row(
               children: [
                 Expanded(
@@ -206,41 +206,46 @@ class _TimesBodyState extends State<TimesBody> {
                                       children: [
                                         IconButton(
                                           onPressed: () {
-                                            Provider.of<TimeData>(context, listen: false)
-                                                .switchLoading(true);
-                                            setState(() {
-                                              count--;
-                                              if (count != 0) {
-                                                Provider.of<TimeData>(context, listen: false)
-                                                    .switchClock(false);
-                                              } else {
-                                                Provider.of<TimeData>(context, listen: false)
-                                                    .switchClock(true);
-                                              }
-                                              miladi = DateFormat(
-                                                      'dd MMMM yyyy',
-                                                      Provider.of<ChangeSettings>(context,
-                                                              listen: false)
-                                                          .langCode)
-                                                  .format(
+                                            if (DateTime.now().add(Duration(days: count)).day !=
+                                                    1 ||
+                                                DateTime.now().add(Duration(days: count)).month !=
+                                                    1) {
+                                              Provider.of<TimeData>(context, listen: false)
+                                                  .switchLoading(true);
+                                              setState(() {
+                                                count--;
+                                                if (count != 0) {
+                                                  Provider.of<TimeData>(context, listen: false)
+                                                      .switchClock(false);
+                                                } else {
+                                                  Provider.of<TimeData>(context, listen: false)
+                                                      .switchClock(true);
+                                                }
+                                                miladi = DateFormat(
+                                                        'dd MMMM yyyy',
+                                                        Provider.of<ChangeSettings>(context,
+                                                                listen: false)
+                                                            .langCode)
+                                                    .format(
+                                                        DateTime.now().add(Duration(days: count)));
+                                                if (Provider.of<ChangeSettings>(context,
+                                                            listen: false)
+                                                        .langCode ==
+                                                    'tr') {
+                                                  hicri =
+                                                      '${HijriCalendar.fromDate(DateTime.now().add(Duration(days: count + 1))).toFormat('dd')} ${hijriList[HijriCalendar.fromDate(DateTime.now().add(Duration(days: count + 1))).hMonth - 1]} ${HijriCalendar.fromDate(DateTime.now().add(Duration(days: count + 1))).toFormat('yy')}';
+                                                } else {
+                                                  hicri = HijriCalendar.fromDate(DateTime.now()
+                                                          .add(Duration(days: count + 1)))
+                                                      .toFormat('dd MMMM yy');
+                                                }
+                                              });
+                                              Provider.of<TimeData>(context, listen: false)
+                                                  .loadPrayerTimes(
                                                       DateTime.now().add(Duration(days: count)));
-                                              if (Provider.of<ChangeSettings>(context,
-                                                          listen: false)
-                                                      .langCode ==
-                                                  'tr') {
-                                                hicri =
-                                                    '${HijriCalendar.fromDate(DateTime.now().add(Duration(days: count + 1))).toFormat('dd')} ${hijriList[HijriCalendar.fromDate(DateTime.now().add(Duration(days: count + 1))).hMonth - 1]} ${HijriCalendar.fromDate(DateTime.now().add(Duration(days: count + 1))).toFormat('yy')}';
-                                              } else {
-                                                hicri = HijriCalendar.fromDate(DateTime.now()
-                                                        .add(Duration(days: count + 1)))
-                                                    .toFormat('dd MMMM yy');
-                                              }
-                                            });
-                                            Provider.of<TimeData>(context, listen: false)
-                                                .loadPrayerTimes(
-                                                    DateTime.now().add(Duration(days: count)));
-                                            Provider.of<TimeData>(context, listen: false)
-                                                .changeTime(miladi);
+                                              Provider.of<TimeData>(context, listen: false)
+                                                  .changeTime(miladi);
+                                            }
                                           },
                                           icon: const Icon(Icons.arrow_back_ios_new),
                                         ),
@@ -256,41 +261,46 @@ class _TimesBodyState extends State<TimesBody> {
                                       children: [
                                         IconButton(
                                           onPressed: () {
-                                            Provider.of<TimeData>(context, listen: false)
-                                                .switchLoading(true);
-                                            setState(() {
-                                              count++;
-                                              if (count != 0) {
-                                                Provider.of<TimeData>(context, listen: false)
-                                                    .switchClock(false);
-                                              } else {
-                                                Provider.of<TimeData>(context, listen: false)
-                                                    .switchClock(true);
-                                              }
-                                              miladi = DateFormat(
-                                                      'dd MMMM yyyy',
-                                                      Provider.of<ChangeSettings>(context,
-                                                              listen: false)
-                                                          .langCode)
-                                                  .format(
+                                            if (DateTime.now().add(Duration(days: count)).day !=
+                                                    31 ||
+                                                DateTime.now().add(Duration(days: count)).month !=
+                                                    12) {
+                                              Provider.of<TimeData>(context, listen: false)
+                                                  .switchLoading(true);
+                                              setState(() {
+                                                count++;
+                                                if (count != 0) {
+                                                  Provider.of<TimeData>(context, listen: false)
+                                                      .switchClock(false);
+                                                } else {
+                                                  Provider.of<TimeData>(context, listen: false)
+                                                      .switchClock(true);
+                                                }
+                                                miladi = DateFormat(
+                                                        'dd MMMM yyyy',
+                                                        Provider.of<ChangeSettings>(context,
+                                                                listen: false)
+                                                            .langCode)
+                                                    .format(
+                                                        DateTime.now().add(Duration(days: count)));
+                                                if (Provider.of<ChangeSettings>(context,
+                                                            listen: false)
+                                                        .langCode ==
+                                                    'tr') {
+                                                  hicri =
+                                                      '${HijriCalendar.fromDate(DateTime.now().add(Duration(days: count + 1))).toFormat('dd')} ${hijriList[HijriCalendar.fromDate(DateTime.now().add(Duration(days: count + 1))).hMonth - 1]} ${HijriCalendar.fromDate(DateTime.now().add(Duration(days: count + 1))).toFormat('yy')}';
+                                                } else {
+                                                  hicri = HijriCalendar.fromDate(DateTime.now()
+                                                          .add(Duration(days: count + 1)))
+                                                      .toFormat('dd MMMM yy');
+                                                }
+                                              });
+                                              Provider.of<TimeData>(context, listen: false)
+                                                  .loadPrayerTimes(
                                                       DateTime.now().add(Duration(days: count)));
-                                              if (Provider.of<ChangeSettings>(context,
-                                                          listen: false)
-                                                      .langCode ==
-                                                  'tr') {
-                                                hicri =
-                                                    '${HijriCalendar.fromDate(DateTime.now().add(Duration(days: count + 1))).toFormat('dd')} ${hijriList[HijriCalendar.fromDate(DateTime.now().add(Duration(days: count + 1))).hMonth - 1]} ${HijriCalendar.fromDate(DateTime.now().add(Duration(days: count + 1))).toFormat('yy')}';
-                                              } else {
-                                                hicri = HijriCalendar.fromDate(DateTime.now()
-                                                        .add(Duration(days: count + 1)))
-                                                    .toFormat('dd MMMM yy');
-                                              }
-                                            });
-                                            Provider.of<TimeData>(context, listen: false)
-                                                .loadPrayerTimes(
-                                                    DateTime.now().add(Duration(days: count)));
-                                            Provider.of<TimeData>(context, listen: false)
-                                                .changeTime(miladi);
+                                              Provider.of<TimeData>(context, listen: false)
+                                                  .changeTime(miladi);
+                                            }
                                           },
                                           icon: const Icon(Icons.arrow_forward_ios),
                                         ),
@@ -353,7 +363,8 @@ class _TimesBodyState extends State<TimesBody> {
             child: Card(
               child: Center(
                 child: Padding(
-                  padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
+                  padding: EdgeInsets.all(
+                      Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5.0 : 10.0),
                   child: const Stack(
                     children: [
                       PrayerTimesPage(),
@@ -390,31 +401,29 @@ class _CityNameCardState extends State<CityNameCard> {
   Widget build(BuildContext context) {
     Provider.of<TimeData>(context).cityState = ChangeSettings.cityState;
     Provider.of<TimeData>(context).city = ChangeSettings.cityName;
-    return FittedBox(
-      fit: BoxFit.scaleDown,
-      child: Padding(
-        padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              '${Provider.of<TimeData>(context).cityState}',
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 18.0),
+    return Padding(
+      padding:
+          EdgeInsets.all(Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5.0 : 10.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            '${Provider.of<TimeData>(context).cityState}',
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 18.0),
+          ),
+          const SizedBox(
+            width: 100.0,
+            child: Divider(
+              height: 20.0,
             ),
-            const SizedBox(
-              width: 100.0,
-              child: Divider(
-                height: 20.0,
-              ),
-            ),
-            Text(
-              '$cityName',
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
+          ),
+          Text(
+            '$cityName',
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+          ),
+        ],
       ),
     );
   }
@@ -452,7 +461,7 @@ class MainTimes extends StatelessWidget {
     super.key,
   });
 
-  static TextStyle timeStyle = TextStyle(fontSize: MainApp.currentHeight! < 700.0 ? 18.0 : 20.0);
+  final TextStyle style = const TextStyle(fontSize: 20);
 
   @override
   Widget build(BuildContext context) {
@@ -481,31 +490,31 @@ class MainTimes extends StatelessWidget {
                       children: [
                         Text(
                           AppLocalizations.of(context)!.imsak,
-                          style: timeStyle,
+                          style: style,
                         ),
                         Text(
                           AppLocalizations.of(context)!.sabah,
-                          style: timeStyle,
+                          style: style,
                         ),
                         Text(
                           AppLocalizations.of(context)!.gunes,
-                          style: timeStyle,
+                          style: style,
                         ),
                         Text(
                           AppLocalizations.of(context)!.ogle,
-                          style: timeStyle,
+                          style: style,
                         ),
                         Text(
                           AppLocalizations.of(context)!.ikindi,
-                          style: timeStyle,
+                          style: style,
                         ),
                         Text(
                           AppLocalizations.of(context)!.aksam,
-                          style: timeStyle,
+                          style: style,
                         ),
                         Text(
                           AppLocalizations.of(context)!.yatsi,
-                          style: timeStyle,
+                          style: style,
                         ),
                       ],
                     ),
@@ -528,37 +537,37 @@ class MainTimes extends StatelessWidget {
                         Text(
                           DateFormat('HH:mm')
                               .format(Provider.of<TimeData>(context).imsak ?? DateTime.now()),
-                          style: timeStyle,
+                          style: style,
                         ),
                         Text(
                           DateFormat('HH:mm')
                               .format(Provider.of<TimeData>(context).sabah ?? DateTime.now()),
-                          style: timeStyle,
+                          style: style,
                         ),
                         Text(
                           DateFormat('HH:mm')
                               .format(Provider.of<TimeData>(context).gunes ?? DateTime.now()),
-                          style: timeStyle,
+                          style: style,
                         ),
                         Text(
                           DateFormat('HH:mm')
                               .format(Provider.of<TimeData>(context).ogle ?? DateTime.now()),
-                          style: timeStyle,
+                          style: style,
                         ),
                         Text(
                           DateFormat('HH:mm')
                               .format(Provider.of<TimeData>(context).ikindi ?? DateTime.now()),
-                          style: timeStyle,
+                          style: style,
                         ),
                         Text(
                           DateFormat('HH:mm')
                               .format(Provider.of<TimeData>(context).aksam ?? DateTime.now()),
-                          style: timeStyle,
+                          style: style,
                         ),
                         Text(
                           DateFormat('HH:mm')
                               .format(Provider.of<TimeData>(context).yatsi ?? DateTime.now()),
-                          style: timeStyle,
+                          style: style,
                         ),
                       ],
                     ),
@@ -632,7 +641,7 @@ class _ClockState extends State<Clock> {
             icon: const Icon(Icons.replay_outlined),
           )
         : Padding(
-            padding: MainApp.currentHeight! < 700.0
+            padding: Provider.of<ChangeSettings>(context).currentHeight! < 700.0
                 ? const EdgeInsets.fromLTRB(60, 0, 60, 0)
                 : const EdgeInsets.fromLTRB(60, 5, 60, 5),
             child: SizedBox(
@@ -672,14 +681,21 @@ class _ClockState extends State<Clock> {
                           children: [
                             Text(
                               _prayList[Provider.of<TimeData>(context).pray],
-                              style:
-                                  TextStyle(fontSize: MainApp.currentHeight! < 700.0 ? 15.0 : 17.0),
+                              style: TextStyle(
+                                  fontSize:
+                                      Provider.of<ChangeSettings>(context).currentHeight! < 700.0
+                                          ? 15.0
+                                          : 17.0),
                             ),
                             Provider.of<TimeData>(context).imsak != null
                                 ? Text(
                                     '${(Provider.of<TimeData>(context).difference.inHours).toString().padLeft(2, '0')} : ${(Provider.of<TimeData>(context).difference.inMinutes % 60).toString().padLeft(2, '0')} : ${(Provider.of<TimeData>(context).difference.inSeconds % 60).toString().padLeft(2, '0')}',
                                     style: TextStyle(
-                                        fontSize: MainApp.currentHeight! < 700.0 ? 15.0 : 17.0,
+                                        fontSize:
+                                            Provider.of<ChangeSettings>(context).currentHeight! <
+                                                    700.0
+                                                ? 15.0
+                                                : 17.0,
                                         fontWeight: FontWeight.bold),
                                   )
                                 : const Text('0'),

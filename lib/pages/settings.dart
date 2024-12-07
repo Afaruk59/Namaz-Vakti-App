@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import 'package:flutter/material.dart';
-import 'package:namaz_vakti_app/main.dart';
+import 'package:namaz_vakti_app/home_page.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:namaz_vakti_app/change_settings.dart';
@@ -25,11 +25,13 @@ class Settings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.settingsPageTitle),
+    return GradientBack(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(AppLocalizations.of(context)!.settingsPageTitle),
+        ),
+        body: const SettingsCard(),
       ),
-      body: const SettingsCard(),
     );
   }
 }
@@ -108,7 +110,8 @@ class SettingsCard extends StatelessWidget {
       padding: const EdgeInsets.all(5),
       child: Card(
         child: Padding(
-          padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 15.0),
+          padding: EdgeInsets.all(
+              Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5.0 : 15.0),
           child: Column(
             children: [
               Card(

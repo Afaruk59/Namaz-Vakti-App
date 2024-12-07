@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 import 'package:flutter/material.dart';
-import 'package:namaz_vakti_app/main.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:namaz_vakti_app/change_settings.dart';
 import 'package:namaz_vakti_app/pages/startup.dart';
@@ -36,7 +35,8 @@ class More extends StatelessWidget {
         child: Card(
           child: Column(
             children: [
-              SizedBox(height: MainApp.currentHeight! < 700.0 ? 5 : 15.0),
+              SizedBox(
+                  height: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
               MoreCard(
                 title: AppLocalizations.of(context)!.datesTitle,
                 icon: const Icon(Icons.calendar_month),
@@ -53,8 +53,9 @@ class More extends StatelessWidget {
                 route: '/books',
               ),
               Padding(
-                padding:
-                    EdgeInsets.symmetric(horizontal: MainApp.currentHeight! < 700.0 ? 5 : 15.0),
+                padding: EdgeInsets.symmetric(
+                    horizontal:
+                        Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
                 child: const TenbihCard(),
               ),
               MoreCard(
@@ -85,11 +86,13 @@ class MoreCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: MainApp.currentHeight! < 700.0 ? 5 : 15.0),
+      padding: EdgeInsets.symmetric(
+          horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
       child: Card(
         color: Theme.of(context).cardColor,
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: MainApp.currentHeight! < 700.0 ? 5 : 15.0),
+          padding: EdgeInsets.symmetric(
+              horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
           child: ListTile(
             splashColor: Colors.transparent,
             onTap: () {
@@ -125,11 +128,13 @@ class BooksCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: MainApp.currentHeight! < 700.0 ? 5 : 15.0),
+      padding: EdgeInsets.symmetric(
+          horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
       child: Card(
         color: Theme.of(context).cardColor,
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: MainApp.currentHeight! < 700.0 ? 5 : 15.0),
+          padding: EdgeInsets.symmetric(
+              horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
           child: ListTile(
             splashColor: Colors.transparent,
             onTap: () async {

@@ -16,14 +16,13 @@ limitations under the License.
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:namaz_vakti_app/main.dart';
+import 'package:namaz_vakti_app/change_settings.dart';
 import 'package:namaz_vakti_app/time_data.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class DetailedTimesBtn extends StatelessWidget {
   const DetailedTimesBtn({super.key});
-  static TextStyle style = TextStyle(fontSize: MainApp.currentHeight! < 700.0 ? 17.0 : 18.0);
 
   static DateTime? _imsak;
   static DateTime? _sabah;
@@ -40,6 +39,7 @@ class DetailedTimesBtn extends StatelessWidget {
   static DateTime? _isaisani;
   static DateTime? _kible;
   static String? _time;
+  final TextStyle style = const TextStyle(fontSize: 18.0);
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +59,7 @@ class DetailedTimesBtn extends StatelessWidget {
     _kible = Provider.of<TimeData>(context).kible;
     _time = Provider.of<TimeData>(context).miladi;
     return Positioned(
-      bottom: MainApp.currentHeight! < 700 ? 10 : 20,
+      bottom: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 10 : 20,
       left: 13,
       child: IconButton(
         iconSize: 25,
@@ -71,7 +71,10 @@ class DetailedTimesBtn extends StatelessWidget {
             showDragHandle: true,
             scrollControlDisabledMaxHeightRatio: 0.8,
             elevation: 10,
-            isScrollControlled: MainApp.currentHeight! < 700.0 ? true : false,
+            isScrollControlled:
+                Provider.of<ChangeSettings>(context, listen: false).currentHeight! < 700.0
+                    ? true
+                    : false,
             builder: (BuildContext context) {
               return Card(
                 color: Theme.of(context).cardColor,
@@ -86,7 +89,10 @@ class DetailedTimesBtn extends StatelessWidget {
                     ),
                     Expanded(
                       child: Padding(
-                        padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
+                        padding: EdgeInsets.all(
+                            Provider.of<ChangeSettings>(context).currentHeight! < 700.0
+                                ? 5.0
+                                : 10.0),
                         child: Row(
                           children: [
                             Expanded(

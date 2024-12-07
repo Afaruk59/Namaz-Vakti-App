@@ -16,7 +16,6 @@ limitations under the License.
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:namaz_vakti_app/main.dart';
 import 'package:namaz_vakti_app/change_settings.dart';
 import 'package:provider/provider.dart';
 import 'package:vibration/vibration.dart';
@@ -80,11 +79,12 @@ class _ZikirCardState extends State<ZikirCard> {
           children: [
             Expanded(
               child: Padding(
-                padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
+                padding: EdgeInsets.all(
+                    Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5.0 : 10.0),
                 child: Column(
                   children: [
                     Expanded(
-                      flex: MainApp.currentHeight! < 700.0 ? 3 : 2,
+                      flex: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 3 : 2,
                       child: Card(
                         color: Theme.of(context).cardColor,
                         child: Padding(
@@ -203,7 +203,11 @@ class _ZikirCardState extends State<ZikirCard> {
                                             Expanded(
                                               child: Padding(
                                                 padding: EdgeInsets.all(
-                                                    MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
+                                                    Provider.of<ChangeSettings>(context)
+                                                                .currentHeight! <
+                                                            700.0
+                                                        ? 5.0
+                                                        : 10.0),
                                                 child: Card(
                                                   shape: RoundedRectangleBorder(
                                                     side: const BorderSide(

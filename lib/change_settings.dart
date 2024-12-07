@@ -20,6 +20,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ChangeSettings with ChangeNotifier {
   static late SharedPreferences _settings;
 
+  double? currentHeight;
+
   bool isDark = false;
   MaterialColor color = Colors.blueGrey;
   bool gradient = true;
@@ -44,6 +46,10 @@ class ChangeSettings with ChangeNotifier {
 
   Locale? locale;
   String? langCode;
+
+  void changeHeight(context) {
+    currentHeight = MediaQuery.of(context).size.height;
+  }
 
   //LANGUAGE
 

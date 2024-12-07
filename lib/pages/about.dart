@@ -16,9 +16,11 @@ limitations under the License.
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:namaz_vakti_app/change_settings.dart';
 import 'package:namaz_vakti_app/home_page.dart';
 import 'package:namaz_vakti_app/main.dart';
 import 'package:namaz_vakti_app/pages/startup.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
@@ -49,21 +51,22 @@ class AboutPage extends StatelessWidget {
       padding: const EdgeInsets.all(5.0),
       child: Card(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: MainApp.currentHeight! < 700.0 ? 5 : 15.0),
+          padding: EdgeInsets.symmetric(
+              horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Card(
                 child: Image.asset(
                   'assets/img/logo.png',
-                  height: MainApp.currentHeight! < 700.0 ? 150 : 200,
+                  height: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 150 : 200,
                 ),
               ),
               Text(
                 AppLocalizations.of(context)!.appName,
                 style: GoogleFonts.ubuntu(
                     fontWeight: FontWeight.bold,
-                    fontSize: MainApp.currentHeight! < 700.0 ? 25 : 30,
+                    fontSize: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 25 : 30,
                     color: Theme.of(context).primaryColor),
               ),
               Text(
@@ -74,13 +77,14 @@ class AboutPage extends StatelessWidget {
                 ),
               ),
               SizedBox(
-                height: MainApp.currentHeight! < 700 ? 10 : 40,
+                height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 10 : 40,
               ),
               Card(
                 color: Theme.of(context).cardColor,
                 child: Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: MainApp.currentHeight! < 700.0 ? 5 : 15.0),
+                  padding: EdgeInsets.symmetric(
+                      horizontal:
+                          Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
                   child: ListTile(
                     title: Text(AppLocalizations.of(context)!.licenseTitle),
                     onTap: () {
@@ -103,8 +107,9 @@ class AboutPage extends StatelessWidget {
               Card(
                 color: Theme.of(context).cardColor,
                 child: Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: MainApp.currentHeight! < 700.0 ? 5 : 15.0),
+                  padding: EdgeInsets.symmetric(
+                      horizontal:
+                          Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
                   child: ListTile(
                     title: Text(AppLocalizations.of(context)!.githubTitle),
                     onTap: () async {

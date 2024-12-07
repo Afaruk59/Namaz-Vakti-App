@@ -58,12 +58,11 @@ void main() async {
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
-  static double? currentHeight;
-  static String version = '1.0.2';
+  static String version = '1.0.3';
 
   @override
   Widget build(BuildContext context) {
-    MainApp.currentHeight = MediaQuery.of(context).size.height;
+    Provider.of<ChangeSettings>(context, listen: false).changeHeight(context);
     Provider.of<ChangeSettings>(context, listen: false).loadCol();
     Provider.of<ChangeSettings>(context, listen: false).loadThemeFromSharedPref();
     Provider.of<ChangeSettings>(context, listen: false).loadGradFromSharedPref();
@@ -97,11 +96,11 @@ class MainApp extends StatelessWidget {
                 ? Brightness.dark
                 : Brightness.light, // Durum çubuğu simgeleri koyu renk yap
           ),
-          toolbarHeight: currentHeight! < 700 ? 40 : 50,
+          toolbarHeight: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 40 : 50,
           titleSpacing: 30,
           color: Colors.transparent,
           titleTextStyle: GoogleFonts.ubuntu(
-              fontSize: currentHeight! < 700 ? 22 : 25.0,
+              fontSize: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 22 : 25.0,
               color: Provider.of<ChangeSettings>(context).isDark == false
                   ? Colors.black87
                   : Colors.white),
@@ -115,7 +114,7 @@ class MainApp extends StatelessWidget {
             ? const Color.fromARGB(255, 230, 230, 230)
             : const Color.fromARGB(255, 40, 40, 40),
         navigationBarTheme: NavigationBarThemeData(
-          height: currentHeight! < 700 ? 70 : 80,
+          height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 70 : 80,
           backgroundColor: Colors.transparent,
           labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
         ),

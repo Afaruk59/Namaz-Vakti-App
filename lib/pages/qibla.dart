@@ -16,7 +16,6 @@ limitations under the License.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_compass/flutter_compass.dart';
-import 'package:namaz_vakti_app/main.dart';
 import 'package:namaz_vakti_app/change_settings.dart';
 import 'package:namaz_vakti_app/time_data.dart';
 import 'package:provider/provider.dart';
@@ -91,7 +90,8 @@ class _QiblaCardState extends State<QiblaCard> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Padding(
-          padding: EdgeInsets.only(top: MainApp.currentHeight! < 700 ? 0 : 20.0),
+          padding: EdgeInsets.only(
+              top: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 0 : 20.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -127,12 +127,12 @@ class _QiblaCardState extends State<QiblaCard> {
   Widget _buildDirectionText() {
     if (_direction! < _target! + 3 && _direction! > _target! - 3) {
       return SizedBox(
-        height: MainApp.currentHeight! < 700 ? 30 : 100,
+        height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 30 : 100,
         child: Image.asset('assets/img/qibla.png'),
       );
     } else {
       return Container(
-        height: MainApp.currentHeight! < 700 ? 30 : 100,
+        height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 30 : 100,
       );
     }
   }
@@ -143,7 +143,8 @@ class _QiblaCardState extends State<QiblaCard> {
       padding: const EdgeInsets.all(5),
       child: Card(
         child: Padding(
-          padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
+          padding: EdgeInsets.all(
+              Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5.0 : 10.0),
           child: Row(
             children: [
               Expanded(
@@ -189,7 +190,11 @@ class _QiblaCardState extends State<QiblaCard> {
                                       SizedBox(
                                         width: 60,
                                         child: Divider(
-                                          height: MainApp.currentHeight! < 700.0 ? 5.0 : 15.0,
+                                          height:
+                                              Provider.of<ChangeSettings>(context).currentHeight! <
+                                                      700.0
+                                                  ? 5.0
+                                                  : 15.0,
                                         ),
                                       ),
                                       Text(

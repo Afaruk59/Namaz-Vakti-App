@@ -17,7 +17,6 @@ limitations under the License.
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:namaz_vakti_app/change_settings.dart';
-import 'package:namaz_vakti_app/main.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as html_parser;
 import 'package:html/dom.dart' as dom;
@@ -115,11 +114,23 @@ class _CalendarBtnState extends State<CalendarBtn> {
   }
 
   final _titleStyle = const TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
+  double? bottom;
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        bottom = Provider.of<ChangeSettings>(context, listen: false).currentHeight! < 700 ? 10 : 20;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      bottom: MainApp.currentHeight! < 700 ? 10 : 20,
+      bottom: bottom,
       right: 13,
       child: IconButton(
         iconSize: 25,
@@ -138,7 +149,10 @@ class _CalendarBtnState extends State<CalendarBtn> {
             context: context,
             showDragHandle: true,
             scrollControlDisabledMaxHeightRatio: 0.8,
-            isScrollControlled: MainApp.currentHeight! < 700.0 ? true : false,
+            isScrollControlled:
+                Provider.of<ChangeSettings>(context, listen: false).currentHeight! < 700.0
+                    ? true
+                    : false,
             elevation: 10,
             builder: (BuildContext context) {
               return Card(
@@ -146,7 +160,8 @@ class _CalendarBtnState extends State<CalendarBtn> {
                 color: Theme.of(context).cardColor,
                 child: Scrollbar(
                   child: Padding(
-                    padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 15.0),
+                    padding: EdgeInsets.all(
+                        Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5.0 : 15.0),
                     child: ListView(
                       children: [
                         Text(

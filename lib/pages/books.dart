@@ -16,7 +16,6 @@ limitations under the License.
 
 import 'package:flutter/material.dart';
 import 'package:namaz_vakti_app/home_page.dart';
-import 'package:namaz_vakti_app/main.dart';
 import 'package:namaz_vakti_app/change_settings.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -196,7 +195,8 @@ class BookCard extends StatelessWidget {
       child: Card(
         color: col,
         child: Padding(
-          padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 3.0 : 8.0),
+          padding: EdgeInsets.all(
+              Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 3.0 : 8.0),
           child: ListTile(
             leading: ElevatedButton(
               style: ElevatedButton.styleFrom(elevation: 10, shape: const CircleBorder()),
@@ -208,14 +208,18 @@ class BookCard extends StatelessWidget {
                   backgroundColor: col,
                   elevation: 10,
                   scrollControlDisabledMaxHeightRatio: 0.6,
-                  isScrollControlled: MainApp.currentHeight! < 700.0 ? true : false,
+                  isScrollControlled:
+                      Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? true : false,
                   builder: (BuildContext context) {
                     return Card(
                       elevation: 10,
                       color: Theme.of(context).cardColor,
                       child: Scrollbar(
                         child: Padding(
-                          padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 15.0),
+                          padding: EdgeInsets.all(
+                              Provider.of<ChangeSettings>(context).currentHeight! < 700.0
+                                  ? 5.0
+                                  : 15.0),
                           child: ListView(
                             children: [
                               Text(

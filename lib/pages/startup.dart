@@ -37,6 +37,17 @@ class Startup extends StatelessWidget {
           appBar: AppBar(
             automaticallyImplyLeading: false,
             title: Text(AppLocalizations.of(context)!.startupTitle),
+            actions: [
+              IconButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/settings');
+                },
+                icon: const Icon(Icons.settings),
+              ),
+              const SizedBox(
+                width: 20,
+              ),
+            ],
           ),
           body: const StartupCard(),
         ),
@@ -54,85 +65,72 @@ class StartupCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(5),
         child: Card(
-          child: Padding(
-            padding: EdgeInsets.all(MainApp.currentHeight! < 700.0 ? 5.0 : 10.0),
-            child: Card(
-              color: Theme.of(context).cardColor,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Card(
-                    color: Theme.of(context).cardColor,
-                    child: Image.asset(
-                      'assets/img/logo.png',
-                      height: MainApp.currentHeight! < 700.0 ? 100 : 200,
-                    ),
-                  ),
-                  Text(
-                    AppLocalizations.of(context)!.appName,
-                    style: GoogleFonts.ubuntu(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Card(
+                child: Image.asset(
+                  'assets/img/logo.png',
+                  height: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 100 : 200,
+                ),
+              ),
+              Text(
+                AppLocalizations.of(context)!.appName,
+                style: GoogleFonts.ubuntu(
+                    fontWeight: FontWeight.bold,
+                    fontSize: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 25 : 30,
+                    color: Theme.of(context).primaryColor),
+              ),
+              Text(
+                '${MainApp.version} - by Afaruk59',
+                style: GoogleFonts.ubuntu(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                ),
+              ),
+              SizedBox(
+                height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 0 : 20,
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10.0),
+                child: TimeNote(),
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10.0),
+                child: TenbihCard(),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: Card(
+                  color: Theme.of(context).cardColor,
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 40),
+                    title: const Text(
+                      'Language',
+                      style: TextStyle(
+                        fontSize: 15,
                         fontWeight: FontWeight.bold,
-                        fontSize: MainApp.currentHeight! < 700.0 ? 25 : 30,
-                        color: Theme.of(context).primaryColor),
-                  ),
-                  Text(
-                    '${MainApp.version} - by Afaruk59',
-                    style: GoogleFonts.ubuntu(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                    ),
-                  ),
-                  SizedBox(
-                    height: MainApp.currentHeight! < 700 ? 0 : 20,
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10.0),
-                    child: TimeNote(),
-                  ),
-                  SizedBox(
-                    height: MainApp.currentHeight! < 700 ? 0 : 20,
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10.0),
-                    child: TenbihCard(),
-                  ),
-                  SizedBox(
-                    height: MainApp.currentHeight! < 700 ? 0 : 20,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Card(
-                      color: Theme.of(context).cardColor,
-                      child: ListTile(
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 40),
-                        title: const Text(
-                          'Language',
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        subtitle: Text(AppLocalizations.of(context)!.lang),
-                        trailing: const LangSelector(),
                       ),
                     ),
+                    subtitle: Text(AppLocalizations.of(context)!.lang),
+                    trailing: const LangSelector(),
                   ),
-                  SizedBox(
-                    height: MainApp.currentHeight! < 700 ? 0 : 20,
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 50.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Location(),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
+              SizedBox(
+                height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 0 : 20,
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 50.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Location(),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -170,7 +168,8 @@ class TenbihCard extends StatelessWidget {
     return Card(
       color: Theme.of(context).cardColor,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: MainApp.currentHeight! < 700.0 ? 5 : 15.0),
+        padding: EdgeInsets.symmetric(
+            horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
         child: ListTile(
           title: Text(
             AppLocalizations.of(context)!.tenbih,

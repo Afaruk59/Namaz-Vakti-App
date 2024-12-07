@@ -18,9 +18,10 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as html_parser;
 import 'package:html/dom.dart' as dom;
+import 'package:namaz_vakti_app/change_settings.dart';
 import 'package:namaz_vakti_app/home_page.dart';
-import 'package:namaz_vakti_app/main.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
+import 'package:provider/provider.dart';
 
 class Dates extends StatelessWidget {
   const Dates({super.key});
@@ -30,7 +31,7 @@ class Dates extends StatelessWidget {
     return GradientBack(
       child: Scaffold(
         appBar: AppBar(
-          title: Text(MainApp.currentHeight! < 700.0
+          title: Text(Provider.of<ChangeSettings>(context).currentHeight! < 700.0
               ? AppLocalizations.of(context)!.datesTitleShort
               : AppLocalizations.of(context)!.datesTitle),
         ),
@@ -78,15 +79,18 @@ class _DatesCardState extends State<DatesCard> {
           child: _list.isEmpty
               ? const Center(child: CircularProgressIndicator())
               : Padding(
-                  padding:
-                      EdgeInsets.symmetric(vertical: MainApp.currentHeight! < 700.0 ? 5 : 10.0),
+                  padding: EdgeInsets.symmetric(
+                      vertical:
+                          Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 10.0),
                   child: ListView.builder(
                     itemCount: _list.length ~/ 3,
                     itemBuilder: (context, index) {
                       index *= 3;
                       return Padding(
                         padding: EdgeInsets.symmetric(
-                            horizontal: MainApp.currentHeight! < 700.0 ? 5 : 10.0),
+                            horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0
+                                ? 5
+                                : 10.0),
                         child: Card(
                           color: Theme.of(context).cardColor,
                           child: ListTile(
