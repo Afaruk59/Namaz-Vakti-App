@@ -114,23 +114,11 @@ class _CalendarBtnState extends State<CalendarBtn> {
   }
 
   final _titleStyle = const TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
-  double? bottom;
-
-  @override
-  void initState() {
-    super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        bottom = Provider.of<ChangeSettings>(context, listen: false).currentHeight! < 700 ? 10 : 20;
-      });
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      bottom: bottom,
+      bottom: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 10 : 20,
       right: 13,
       child: IconButton(
         iconSize: 25,

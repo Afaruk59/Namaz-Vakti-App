@@ -25,14 +25,21 @@ class Settings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GradientBack(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.settingsPageTitle),
-        ),
-        body: const SettingsCard(),
-      ),
-    );
+    return Provider.of<ChangeSettings>(context, listen: false).isfirst == true
+        ? GradientBack(
+            child: Scaffold(
+              appBar: AppBar(
+                title: Text(AppLocalizations.of(context)!.settingsPageTitle),
+              ),
+              body: const SettingsCard(),
+            ),
+          )
+        : Scaffold(
+            appBar: AppBar(
+              title: Text(AppLocalizations.of(context)!.settingsPageTitle),
+            ),
+            body: const SettingsCard(),
+          );
   }
 }
 
