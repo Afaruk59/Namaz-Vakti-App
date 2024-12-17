@@ -72,6 +72,7 @@
 
     "ln": "Language",
     "languageMessageBody": "It will change when the app is restarted.",
+    "otoLocal": "Location Tracking",
     "darkMode": "Dark Mode",
     "gradient": "Gradient Background",
     "themeColor": "Theme Color",
@@ -79,7 +80,7 @@
 
     "startupTitle": "Welcome.",
     "startupDescription": "Prayer times are taken from Namazvakti.com",
-    "tenbih": "An Important Cautioning About Different Prayer Times",
+    "tenbih": "Important Notice Regarding Prayer Times",
 
     "loading": "Searching",
 

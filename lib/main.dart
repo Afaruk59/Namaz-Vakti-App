@@ -58,7 +58,7 @@ void main() async {
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
-  static String version = '1.0.5';
+  static String version = '1.1.0';
 
   @override
   Widget build(BuildContext context) {
@@ -68,6 +68,7 @@ class MainApp extends StatelessWidget {
     Provider.of<ChangeSettings>(context, listen: false).loadGradFromSharedPref();
     Provider.of<ChangeSettings>(context, listen: false).loadFirstFromSharedPref();
     Provider.of<ChangeSettings>(context, listen: false).loadLanguage();
+    Provider.of<ChangeSettings>(context, listen: false).loadOtoLoc();
     Provider.of<ChangeSettings>(context).locale == const Locale('ar')
         ? HijriCalendar.setLocal('ar')
         : HijriCalendar.setLocal('en');

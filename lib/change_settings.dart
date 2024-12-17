@@ -20,6 +20,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ChangeSettings with ChangeNotifier {
   static late SharedPreferences _settings;
 
+  bool otoLocal = false;
+
   double? currentHeight;
 
   bool isDark = false;
@@ -32,20 +34,22 @@ class ChangeSettings with ChangeNotifier {
 
   bool isfirst = true;
 
-  bool isOpen = false;
-  List<bool> alarmList = [
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-  ];
-  List<int> gaps = [0, 0, 0, 0, 0, 0, 0];
+  // bool isOpen = false;
+  // List<bool> alarmList = [
+  //   false,
+  //   false,
+  //   false,
+  //   false,
+  //   false,
+  //   false,
+  //   false,
+  // ];
+  // List<int> gaps = [0, 0, 0, 0, 0, 0, 0];
 
   Locale? locale;
   String? langCode;
+
+  //HEIGHT
 
   void changeHeight(context) {
     currentHeight = MediaQuery.of(context).size.height;
@@ -286,6 +290,20 @@ class ChangeSettings with ChangeNotifier {
     cityID = value;
     cityName = name;
     cityState = state;
+  }
+
+  void toggleOtoLoc() {
+    otoLocal = !otoLocal;
+    saveOtoLoc(otoLocal);
+    notifyListeners();
+  }
+
+  void saveOtoLoc(bool val) {
+    _settings.setBool('otoLocation', val);
+  }
+
+  void loadOtoLoc() {
+    otoLocal = _settings.getBool('otoLocation') ?? false;
   }
 
   //STARTUP SETTINGS

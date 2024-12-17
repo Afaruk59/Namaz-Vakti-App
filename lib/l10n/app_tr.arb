@@ -266,6 +266,10 @@
     "@languageMessageBody":{
         "description": "Message text"
     },
+    "otoLocal": "Konum Takibi",
+    "@otoLocal":{
+        "description": "Text"
+    },
     "darkMode": "Koyu Tema",
     "@darkMode":{
         "description": "Text"

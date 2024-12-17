@@ -34,6 +34,7 @@ class LocationState extends State<Location> {
   double lat = 0;
   double long = 0;
   bool progress = false;
+  static bool first = true;
 
   double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
     const R = 6371; // Dünya'nın yarıçapı (kilometre)
@@ -227,16 +228,29 @@ class LocationState extends State<Location> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    if (Provider.of<ChangeSettings>(context, listen: false).otoLocal && first == true) {
+      searchLocation();
+    }
+  }
+
+  void searchLocation() async {
+    setState(() {
+      progress = true;
+      first = false;
+    });
+    await getCurrentLocation();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6.0),
       child: FilledButton.tonal(
         style: ElevatedButton.styleFrom(elevation: 10),
-        onPressed: () async {
-          setState(() {
-            progress = true;
-          });
-          await getCurrentLocation();
+        onPressed: () {
+          searchLocation();
         },
         child: progress == true
             ? const Row(

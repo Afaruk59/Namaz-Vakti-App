@@ -137,6 +137,18 @@ class SettingsCard extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15.0),
                   child: SwitchListTile(
+                    title: Text(AppLocalizations.of(context)!.otoLocal),
+                    value: Provider.of<ChangeSettings>(context).otoLocal,
+                    onChanged: (_) =>
+                        Provider.of<ChangeSettings>(context, listen: false).toggleOtoLoc(),
+                  ),
+                ),
+              ),
+              Card(
+                color: Theme.of(context).cardColor,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                  child: SwitchListTile(
                     title: Text(AppLocalizations.of(context)!.darkMode),
                     value: Provider.of<ChangeSettings>(context).isDark,
                     onChanged: (_) =>

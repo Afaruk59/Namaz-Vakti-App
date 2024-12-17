@@ -438,14 +438,6 @@ class PrayerTimesPage extends StatefulWidget {
 
 class PrayerTimesPageState extends State<PrayerTimesPage> {
   @override
-  void initState() {
-    super.initState();
-
-    Provider.of<TimeData>(context, listen: false).switchClock(true);
-    Provider.of<TimeData>(context, listen: false).loadPrayerTimes(DateTime.now());
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Card(
       color: Theme.of(context).cardColor,

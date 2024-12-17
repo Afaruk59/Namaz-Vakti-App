@@ -72,6 +72,7 @@
 
     "ln": "Lingua",
     "languageMessageBody": "Cambierà al riavvio dell'app.",
+    "otoLocal": "Rilevamento della posizione",
     "darkMode": "Modalità Scura",
     "gradient": "Sfondo Sfumato",
     "themeColor": "Colore del Tema",
@@ -79,7 +80,7 @@
 
     "startupTitle": "Benvenuto.",
     "startupDescription": "Gli orari di preghiera sono presi da Namazvakti.com",
-    "tenbih": "Un importante avvertimento sugli orari di preghiera differenti",
+    "tenbih": "Avviso Importante sugli Orari di Preghiera",
 
     "loading": "Ricerca in corso",
 

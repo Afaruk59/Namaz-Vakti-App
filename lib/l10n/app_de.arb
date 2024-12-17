@@ -72,6 +72,7 @@
 
     "ln": "Sprache",
     "languageMessageBody": "Änderungen werden beim Neustart der App wirksam.",
+    "otoLocal": "Standortverfolgung",
     "darkMode": "Dunkelmodus",
     "gradient": "Verlauf Hintergrund",
     "themeColor": "Themenfarbe",
@@ -79,7 +80,7 @@
 
     "startupTitle": "Willkommen.",
     "startupDescription": "Die Gebetszeiten werden von Namazvakti.com bezogen",
-    "tenbih": "Ein wichtiger Hinweis zu unterschiedlichen Gebetszeiten",
+    "tenbih": "Wichtiger Hinweis zu den Gebetszeiten",
 
     "loading": "Suche läuft",
 
