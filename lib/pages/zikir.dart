@@ -455,15 +455,19 @@ class _ZikirCardState extends State<ZikirCard> {
                                           ),
                                         ],
                                       ),
-                                      child: LinearProgressIndicator(
-                                        borderRadius: const BorderRadius.all(Radius.circular(10)),
-                                        value: _count / _target, // İlerleme yüzdesi
-                                        minHeight: 4.0, // Göstergenin yüksekliği
-                                        backgroundColor:
-                                            Theme.of(context).cardColor, // Arka plan rengi
-                                        valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context)
-                                            .cardTheme
-                                            .color!), // İlerleme çubuğu rengi
+                                      child: Directionality(
+                                        textDirection: TextDirection.ltr,
+                                        child: LinearProgressIndicator(
+                                          borderRadius: const BorderRadius.all(Radius.circular(10)),
+                                          value: _count / _target, // İlerleme yüzdesi
+                                          minHeight: 4.0, // Göstergenin yüksekliği
+                                          backgroundColor:
+                                              Theme.of(context).cardColor, // Arka plan rengi
+                                          valueColor: AlwaysStoppedAnimation<Color>(
+                                              Theme.of(context)
+                                                  .cardTheme
+                                                  .color!), // İlerleme çubuğu rengi
+                                        ),
                                       ),
                                     ),
                                   ),

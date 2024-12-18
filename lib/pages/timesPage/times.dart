@@ -25,6 +25,7 @@ import 'package:namaz_vakti_app/time_data.dart';
 import 'package:provider/provider.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
+import 'dart:ui' as ui;
 
 class Times extends StatelessWidget {
   const Times({super.key});
@@ -680,15 +681,18 @@ class _ClockState extends State<Clock> {
                                           : 17.0),
                             ),
                             Provider.of<TimeData>(context).imsak != null
-                                ? Text(
-                                    '${(Provider.of<TimeData>(context).difference.inHours).toString().padLeft(2, '0')} : ${(Provider.of<TimeData>(context).difference.inMinutes % 60).toString().padLeft(2, '0')} : ${(Provider.of<TimeData>(context).difference.inSeconds % 60).toString().padLeft(2, '0')}',
-                                    style: TextStyle(
-                                        fontSize:
-                                            Provider.of<ChangeSettings>(context).currentHeight! <
-                                                    700.0
-                                                ? 15.0
-                                                : 17.0,
-                                        fontWeight: FontWeight.bold),
+                                ? Directionality(
+                                    textDirection: ui.TextDirection.ltr,
+                                    child: Text(
+                                      '${(Provider.of<TimeData>(context).difference.inHours).toString().padLeft(2, '0')} : ${(Provider.of<TimeData>(context).difference.inMinutes % 60).toString().padLeft(2, '0')} : ${(Provider.of<TimeData>(context).difference.inSeconds % 60).toString().padLeft(2, '0')}',
+                                      style: TextStyle(
+                                          fontSize:
+                                              Provider.of<ChangeSettings>(context).currentHeight! <
+                                                      700.0
+                                                  ? 15.0
+                                                  : 17.0,
+                                          fontWeight: FontWeight.bold),
+                                    ),
                                   )
                                 : const Text('0'),
                           ],
