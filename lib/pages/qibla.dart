@@ -16,8 +16,8 @@ limitations under the License.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_compass/flutter_compass.dart';
-import 'package:namaz_vakti_app/change_settings.dart';
-import 'package:namaz_vakti_app/time_data.dart';
+import 'package:namaz_vakti_app/data/change_settings.dart';
+import 'package:namaz_vakti_app/data/time_data.dart';
 import 'package:provider/provider.dart';
 import 'package:xml/xml.dart' as xml;
 import 'package:http/http.dart' as http;

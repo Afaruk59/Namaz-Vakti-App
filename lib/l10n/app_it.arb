@@ -16,6 +16,7 @@
     "aboutTitle": "Informazioni",
     "githubTitle": "Pagina Github",
     "licenseTitle": "Licenza",
+    "searchTitle": "Ricerca della Posizione",
 
     "nav1": "Orari",
     "nav2": "Qibla",
@@ -99,6 +100,9 @@
     "wifiMessageBody2": "(L'app non funzionerà correttamente senza Internet.)",
 
     "kazaMessageTitle": "Conteggio delle preghiere perse:",
+
+    "search": "Cerca",
+    "enterLoc": "Inserisci la Posizione...",
 
     "ilmihal": "Seâdet-i Ebediyye Endless Bliss",
     "mektubat": "Mektûbat Tercemesi",

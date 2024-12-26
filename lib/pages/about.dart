@@ -16,7 +16,7 @@ limitations under the License.
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:namaz_vakti_app/change_settings.dart';
+import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:namaz_vakti_app/home_page.dart';
 import 'package:namaz_vakti_app/main.dart';
 import 'package:namaz_vakti_app/pages/startup.dart';

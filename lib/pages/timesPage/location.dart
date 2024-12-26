@@ -19,7 +19,7 @@ import 'package:csv/csv.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:namaz_vakti_app/change_settings.dart';
+import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:provider/provider.dart';
 

@@ -29,12 +29,13 @@ import 'package:namaz_vakti_app/pages/license.dart';
 import 'package:namaz_vakti_app/pages/qibla.dart';
 import 'package:namaz_vakti_app/pages/settings.dart';
 import 'package:namaz_vakti_app/pages/startup.dart';
+import 'package:namaz_vakti_app/pages/timesPage/search.dart';
 import 'package:namaz_vakti_app/pages/timesPage/times.dart';
 import 'package:namaz_vakti_app/pages/zikir.dart';
-import 'package:namaz_vakti_app/time_data.dart';
+import 'package:namaz_vakti_app/data/time_data.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
-import 'package:namaz_vakti_app/change_settings.dart';
+import 'package:namaz_vakti_app/data/change_settings.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -58,7 +59,7 @@ void main() async {
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
-  static String version = '1.1.2';
+  static String version = '1.2.0';
 
   @override
   Widget build(BuildContext context) {
@@ -108,8 +109,8 @@ class MainApp extends StatelessWidget {
         ),
         cardTheme: CardTheme(
             color: Provider.of<ChangeSettings>(context).isDark == false
-                ? Provider.of<ChangeSettings>(context).color.shade400
-                : Provider.of<ChangeSettings>(context).color.shade900,
+                ? Provider.of<ChangeSettings>(context).color.shade300
+                : Provider.of<ChangeSettings>(context).color.shade800,
             elevation: 10),
         cardColor: Provider.of<ChangeSettings>(context).isDark == false
             ? const Color.fromARGB(255, 230, 230, 230)
@@ -138,6 +139,7 @@ class MainApp extends StatelessWidget {
         '/startup': (context) => const Startup(),
         '/about': (context) => const About(),
         '/license': (context) => const License(),
+        '/search': (context) => const Search(),
       },
     );
   }

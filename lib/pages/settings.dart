@@ -18,7 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:namaz_vakti_app/home_page.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
-import 'package:namaz_vakti_app/change_settings.dart';
+import 'package:namaz_vakti_app/data/change_settings.dart';
 
 class Settings extends StatelessWidget {
   const Settings({super.key});

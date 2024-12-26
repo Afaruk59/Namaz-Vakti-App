@@ -16,6 +16,7 @@
     "aboutTitle": "О нас",
     "githubTitle": "Страница на Github",
     "licenseTitle": "Лицензия",
+    "searchTitle": "Поиск местоположения",
 
     "nav1": "Время",
     "nav2": "Кибла",
@@ -99,6 +100,9 @@
     "wifiMessageBody2": "(Приложение не будет работать правильно без интернета.)",
 
     "kazaMessageTitle": "Количество пропущенных молитв:",
+
+    "search": "Искать",
+    "enterLoc": "Введите местоположение...",
 
     "ilmihal": "Seâdet-i Ebediyye Endless Bliss",
     "mektubat": "Mektûbat Tercemesi",

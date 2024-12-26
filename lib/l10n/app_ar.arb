@@ -16,6 +16,7 @@
     "aboutTitle": "حول",
     "githubTitle": "صفحة Github",
     "licenseTitle": "الترخيص",
+    "searchTitle": "بحث الموقع",
 
     "nav1": "الأوقات",
     "nav2": "القبلة",
@@ -99,6 +100,9 @@
     "wifiMessageBody2": "(لن يعمل التطبيق بشكل صحيح بدون الإنترنت.)",
 
     "kazaMessageTitle": "عدد الصلوات الفائتة:",
+
+    "search": "ابحث",
+    "enterLoc": "أدخل الموقع...",
 
     "ilmihal": "Seâdet-i Ebediyye Endless Bliss",
     "mektubat": "Mektûbat Tercemesi",

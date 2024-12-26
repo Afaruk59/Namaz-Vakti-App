@@ -59,6 +59,10 @@
     "@licenseTitle":{
         "description": "Page title"
     },
+    "searchTitle": "Konum Arama",
+    "@searchTitle":{
+        "description": "Page title"
+    },
 
 
     "nav1": "Vakitler",
@@ -361,6 +365,16 @@
     "kazaMessageTitle": "Kaza Sayısı:",
     "@kazaMessageTitle":{
         "description": "Message text"
+    },
+
+
+    "search": "Ara",
+    "@search":{
+        "description": "Text"
+    },
+    "enterLoc": "Konumu Girin...",
+    "@enterLoc":{
+        "description": "Text"
     },
 
 

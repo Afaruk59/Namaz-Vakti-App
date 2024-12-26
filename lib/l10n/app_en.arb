@@ -16,6 +16,7 @@
     "aboutTitle": "About",
     "githubTitle": "Github Page",
     "licenseTitle": "License",
+    "searchTitle": "Location Search",
 
     "nav1": "Times",
     "nav2": "Qibla",
@@ -99,6 +100,9 @@
     "wifiMessageBody2": "(The app will not work properly without internet.)",
 
     "kazaMessageTitle": "Missed Prayer Count:",
+
+    "search": "Search",
+    "enterLoc": "Enter Location...",
 
     "ilmihal": "Seâdet-i Ebediyye Endless Bliss",
     "mektubat": "Mektûbat Tercemesi",
