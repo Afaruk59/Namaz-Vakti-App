@@ -17,6 +17,7 @@
     "githubTitle": "صفحة Github",
     "licenseTitle": "الترخيص",
     "searchTitle": "بحث الموقع",
+    "rate": "قيّم التطبيق",
 
     "nav1": "الأوقات",
     "nav2": "القبلة",
@@ -73,7 +74,7 @@
 
     "ln": "اللغة",
     "languageMessageBody": "سيتم التغيير عند إعادة تشغيل التطبيق.",
-"otoLocal": "تتبع الموقع",
+    "otoLocal": "تتبع الموقع",
     "darkMode": "الوضع الداكن",
     "gradient": "خلفية متدرجة",
     "themeColor": "لون الثيم",

@@ -423,8 +423,8 @@ class _TimesBodyState extends State<TimesBody> {
                           child: CityNameCard(),
                         ),
                         Positioned(
-                          bottom: 5,
-                          right: 0,
+                          bottom: 8,
+                          right: -5,
                           child: SearchButton(),
                         ),
                       ],

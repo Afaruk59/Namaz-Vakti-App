@@ -109,7 +109,7 @@ class MainApp extends StatelessWidget {
         ),
         cardTheme: CardTheme(
             color: Provider.of<ChangeSettings>(context).isDark == false
-                ? Provider.of<ChangeSettings>(context).color.shade300
+                ? Provider.of<ChangeSettings>(context).color.shade400
                 : Provider.of<ChangeSettings>(context).color.shade800,
             elevation: 10),
         cardColor: Provider.of<ChangeSettings>(context).isDark == false

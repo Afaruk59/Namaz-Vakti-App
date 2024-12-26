@@ -36,13 +36,13 @@ class GradientBack extends StatelessWidget {
         gradient: LinearGradient(
           colors: [
             Provider.of<ChangeSettings>(context).isDark == false
-                ? Provider.of<ChangeSettings>(context).color.shade200
-                : Provider.of<ChangeSettings>(context).color.shade900,
+                ? Provider.of<ChangeSettings>(context).color.shade300
+                : Provider.of<ChangeSettings>(context).color.shade800,
             Theme.of(context).colorScheme.surfaceContainer,
           ],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          stops: const [0.01, 0.6],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          stops: const [0.01, 0.9],
         ),
       ),
       child: child,

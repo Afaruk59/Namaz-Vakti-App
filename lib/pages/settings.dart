@@ -216,70 +216,61 @@ class LangSelector extends StatelessWidget {
         return <PopupMenuEntry<int>>[
           const PopupMenuItem<int>(
             value: 0,
-            child: Center(
-              child: Text(
-                'Türkçe',
-              ),
-            ),
+            child: LangItem(title: 'Türkçe'),
           ),
           const PopupMenuItem<int>(
             value: 1,
-            child: Center(
-              child: Text(
-                'English',
-              ),
-            ),
+            child: LangItem(title: 'English (%80)'),
           ),
           const PopupMenuItem<int>(
             value: 2,
-            child: Center(
-              child: Text(
-                'عربي',
-              ),
-            ),
+            child: LangItem(title: 'عربي (%80)'),
           ),
           const PopupMenuItem<int>(
             value: 3,
-            child: Center(
-              child: Text(
-                'Deutsch',
-              ),
-            ),
+            child: LangItem(title: 'Deutsch (%80)'),
           ),
           const PopupMenuItem<int>(
             value: 4,
-            child: Center(
-              child: Text(
-                'Español',
-              ),
-            ),
+            child: LangItem(title: 'Español (%80)'),
           ),
           const PopupMenuItem<int>(
             value: 5,
-            child: Center(
-              child: Text(
-                'Français',
-              ),
-            ),
+            child: LangItem(title: 'Français (%80)'),
           ),
           const PopupMenuItem<int>(
             value: 6,
-            child: Center(
-              child: Text(
-                'Italiano',
-              ),
-            ),
+            child: LangItem(title: 'Italiano (%80)'),
           ),
           const PopupMenuItem<int>(
             value: 7,
-            child: Center(
-              child: Text(
-                'Русский',
-              ),
-            ),
+            child: LangItem(title: 'Русский (%80)'),
           ),
         ];
       },
+    );
+  }
+}
+
+class LangItem extends StatelessWidget {
+  const LangItem({
+    super.key,
+    required this.title,
+  });
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: Theme.of(context).cardColor,
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(5.0),
+          child: Text(
+            title,
+          ),
+        ),
+      ),
     );
   }
 }
