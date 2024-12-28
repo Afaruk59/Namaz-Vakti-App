@@ -88,6 +88,11 @@ class ReviewCard extends StatelessWidget {
               horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
           child: ListTile(
             title: Text(AppLocalizations.of(context)!.rate),
+            onTap: () async {
+              if (await inAppReview.isAvailable()) {
+                inAppReview.requestReview();
+              }
+            },
             trailing: FilledButton.tonal(
               style: ElevatedButton.styleFrom(
                 elevation: 10,

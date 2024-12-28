@@ -203,6 +203,7 @@ class _TimesBodyState extends State<TimesBody> {
                   child: Column(
                     children: [
                       Expanded(
+                        flex: 5,
                         child: Card(
                           child: Center(
                             child: Stack(
@@ -381,6 +382,7 @@ class _TimesBodyState extends State<TimesBody> {
                         ),
                       ),
                       Expanded(
+                        flex: 5,
                         child: Card(
                           child: Center(
                             child: Padding(
@@ -400,16 +402,22 @@ class _TimesBodyState extends State<TimesBody> {
                           ),
                         ),
                       ),
-                      const Expanded(
-                        child: Card(
-                          child: Center(
-                            child: Padding(
-                              padding: EdgeInsets.fromLTRB(15, 5, 15, 5),
-                              child: SizedBox.expand(
-                                child: Location(),
+                      Expanded(
+                        flex: 4,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: Card(
+                                color: Theme.of(context).colorScheme.secondaryContainer,
+                                child: const Location(),
                               ),
                             ),
-                          ),
+                            Card(
+                              color: Theme.of(context).colorScheme.secondaryContainer,
+                              child: const SearchButton(),
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -421,11 +429,6 @@ class _TimesBodyState extends State<TimesBody> {
                       children: [
                         Center(
                           child: CityNameCard(),
-                        ),
-                        Positioned(
-                          bottom: 8,
-                          right: -5,
-                          child: SearchButton(),
                         ),
                       ],
                     ),
@@ -484,12 +487,11 @@ class SearchButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FilledButton.tonal(
-      style: ElevatedButton.styleFrom(
-        elevation: 10,
+    return IconButton(
+      style: IconButton.styleFrom(
         shape: const CircleBorder(),
       ),
-      child: const Icon(Icons.search),
+      icon: const Icon(Icons.search),
       onPressed: () {
         Navigator.pushNamed(context, '/search');
       },

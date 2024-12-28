@@ -245,38 +245,22 @@ class LocationState extends State<Location> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6.0),
-      child: FilledButton.tonal(
-        style: ElevatedButton.styleFrom(elevation: 10),
-        onPressed: () {
-          searchLocation();
-        },
-        child: progress == true
-            ? const Row(
+    return TextButton(
+      onPressed: () {
+        searchLocation();
+      },
+      child: progress == true
+          ? const CircularProgressIndicator()
+          : FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 5.0),
-                    child: CircularProgressIndicator(),
-                  ),
+                  const Icon(Icons.location_on),
+                  Text(AppLocalizations.of(context)!.locationButtonText),
                 ],
-              )
-            : FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.location_on, size: 22),
-                    Text(
-                      AppLocalizations.of(context)!.locationButtonText,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 15.0),
-                    ),
-                  ],
-                ),
               ),
-      ),
+            ),
     );
   }
 }
