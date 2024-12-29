@@ -110,6 +110,8 @@ class _SearchState extends State<Search> {
                             trailing: FilledButton.tonal(
                                 style: ElevatedButton.styleFrom(elevation: 10),
                                 onPressed: () {
+                                  Provider.of<ChangeSettings>(context, listen: false)
+                                      .changeOtoLoc(false);
                                   String cityId = column1Data[filteredItems[index - 1]].toString();
                                   String cityName =
                                       column2Data[filteredItems[index - 1]].toString();

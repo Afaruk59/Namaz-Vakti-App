@@ -298,6 +298,12 @@ class ChangeSettings with ChangeNotifier {
     notifyListeners();
   }
 
+  void changeOtoLoc(bool val) {
+    otoLocal = val;
+    saveOtoLoc(otoLocal);
+    notifyListeners();
+  }
+
   void saveOtoLoc(bool val) {
     _settings.setBool('otoLocation', val);
   }

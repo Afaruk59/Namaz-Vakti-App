@@ -247,6 +247,7 @@ class LocationState extends State<Location> {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: () {
+        Provider.of<ChangeSettings>(context, listen: false).changeOtoLoc(true);
         searchLocation();
       },
       child: progress == true

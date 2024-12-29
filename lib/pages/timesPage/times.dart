@@ -203,7 +203,7 @@ class _TimesBodyState extends State<TimesBody> {
                   child: Column(
                     children: [
                       Expanded(
-                        flex: 5,
+                        flex: 4,
                         child: Card(
                           child: Center(
                             child: Stack(
@@ -382,7 +382,7 @@ class _TimesBodyState extends State<TimesBody> {
                         ),
                       ),
                       Expanded(
-                        flex: 5,
+                        flex: 4,
                         child: Card(
                           child: Center(
                             child: Padding(
@@ -403,19 +403,31 @@ class _TimesBodyState extends State<TimesBody> {
                         ),
                       ),
                       Expanded(
-                        flex: 4,
+                        flex: 3,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Expanded(
                               child: Card(
                                 color: Theme.of(context).colorScheme.secondaryContainer,
-                                child: const Location(),
+                                child: const Column(
+                                  children: [
+                                    Expanded(
+                                      child: Location(),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                             Card(
                               color: Theme.of(context).colorScheme.secondaryContainer,
-                              child: const SearchButton(),
+                              child: const Column(
+                                children: [
+                                  Expanded(
+                                    child: SearchButton(),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
