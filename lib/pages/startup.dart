@@ -121,15 +121,21 @@ class StartupCard extends StatelessWidget {
               SizedBox(
                 height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 0 : 20,
               ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 50.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 50.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Expanded(
-                      child: Location(),
+                      child: Card(
+                        color: Theme.of(context).colorScheme.secondaryContainer,
+                        child: const Location(),
+                      ),
                     ),
-                    SearchButton(),
+                    Card(
+                      color: Theme.of(context).colorScheme.secondaryContainer,
+                      child: const SearchButton(),
+                    ),
                   ],
                 ),
               ),

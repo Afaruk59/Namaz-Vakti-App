@@ -96,13 +96,13 @@ class _HomePageState extends State<HomePage> {
           },
           destinations: <Widget>[
             NavigationDestination(
-              selectedIcon: const Icon(Icons.schedule),
-              icon: const Icon(Icons.schedule),
+              selectedIcon: const Icon(Icons.access_time_filled_sharp),
+              icon: const Icon(Icons.access_time),
               label: AppLocalizations.of(context)!.nav1,
             ),
             NavigationDestination(
-              selectedIcon: const Icon(Icons.navigation),
-              icon: const Icon(Icons.navigation_outlined),
+              selectedIcon: const Icon(Icons.explore),
+              icon: const Icon(Icons.explore_outlined),
               label: AppLocalizations.of(context)!.nav2,
             ),
             NavigationDestination(

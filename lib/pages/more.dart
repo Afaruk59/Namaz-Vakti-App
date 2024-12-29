@@ -50,7 +50,7 @@ class More extends StatelessWidget {
               ),
               BooksCard(
                 title: AppLocalizations.of(context)!.booksTitle,
-                icon: const Icon(Icons.library_books),
+                icon: const Icon(Icons.local_library_rounded),
                 route: '/books',
               ),
               Padding(
@@ -102,7 +102,7 @@ class ReviewCard extends StatelessWidget {
                   inAppReview.requestReview();
                 }
               },
-              child: const Icon(Icons.star),
+              child: const Icon(Icons.star_rounded),
             ),
           ),
         ),
