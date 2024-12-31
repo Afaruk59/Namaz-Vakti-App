@@ -179,10 +179,10 @@ class _TimesBodyState extends State<TimesBody> {
             .format(DateTime.now().add(Duration(days: count)));
     if (Provider.of<ChangeSettings>(context, listen: false).langCode == 'tr') {
       hicri =
-          '${HijriCalendar.fromDate(DateTime.now().add(Duration(days: count + 1))).toFormat('dd')} ${hijriList[HijriCalendar.fromDate(DateTime.now().add(const Duration(days: 1))).hMonth - 1]} ${HijriCalendar.fromDate(DateTime.now().add(const Duration(days: 1))).toFormat('yy')}';
+          '${HijriCalendar.fromDate(DateTime.now().add(Duration(days: count))).toFormat('dd')} ${hijriList[HijriCalendar.fromDate(DateTime.now()).hMonth - 1]} ${HijriCalendar.fromDate(DateTime.now()).toFormat('yy')}';
     } else {
-      hicri = HijriCalendar.fromDate(DateTime.now().add(Duration(days: count + 1)))
-          .toFormat('dd MMMM yy');
+      hicri =
+          HijriCalendar.fromDate(DateTime.now().add(Duration(days: count))).toFormat('dd MMMM yy');
     }
 
     Provider.of<TimeData>(context, listen: false).changeTime(miladi);
@@ -239,10 +239,10 @@ class _TimesBodyState extends State<TimesBody> {
                                                 .langCode ==
                                             'tr') {
                                           hicri =
-                                              '${HijriCalendar.fromDate(DateTime.now().add(Duration(days: count + 1))).toFormat('dd')} ${hijriList[HijriCalendar.fromDate(DateTime.now().add(Duration(days: count + 1))).hMonth - 1]} ${HijriCalendar.fromDate(DateTime.now().add(Duration(days: count + 1))).toFormat('yy')}';
+                                              '${HijriCalendar.fromDate(DateTime.now().add(Duration(days: count))).toFormat('dd')} ${hijriList[HijriCalendar.fromDate(DateTime.now()).hMonth - 1]} ${HijriCalendar.fromDate(DateTime.now()).toFormat('yy')}';
                                         } else {
                                           hicri = HijriCalendar.fromDate(
-                                                  DateTime.now().add(Duration(days: count + 1)))
+                                                  DateTime.now().add(Duration(days: count)))
                                               .toFormat('dd MMMM yy');
                                         }
                                       });
@@ -301,10 +301,10 @@ class _TimesBodyState extends State<TimesBody> {
                                                         .langCode ==
                                                     'tr') {
                                                   hicri =
-                                                      '${HijriCalendar.fromDate(DateTime.now().add(Duration(days: count + 1))).toFormat('dd')} ${hijriList[HijriCalendar.fromDate(DateTime.now().add(Duration(days: count + 1))).hMonth - 1]} ${HijriCalendar.fromDate(DateTime.now().add(Duration(days: count + 1))).toFormat('yy')}';
+                                                      '${HijriCalendar.fromDate(DateTime.now().add(Duration(days: count))).toFormat('dd')} ${hijriList[HijriCalendar.fromDate(DateTime.now()).hMonth - 1]} ${HijriCalendar.fromDate(DateTime.now()).toFormat('yy')}';
                                                 } else {
-                                                  hicri = HijriCalendar.fromDate(DateTime.now()
-                                                          .add(Duration(days: count + 1)))
+                                                  hicri = HijriCalendar.fromDate(
+                                                          DateTime.now().add(Duration(days: count)))
                                                       .toFormat('dd MMMM yy');
                                                 }
                                               });
@@ -356,10 +356,10 @@ class _TimesBodyState extends State<TimesBody> {
                                                         .langCode ==
                                                     'tr') {
                                                   hicri =
-                                                      '${HijriCalendar.fromDate(DateTime.now().add(Duration(days: count + 1))).toFormat('dd')} ${hijriList[HijriCalendar.fromDate(DateTime.now().add(Duration(days: count + 1))).hMonth - 1]} ${HijriCalendar.fromDate(DateTime.now().add(Duration(days: count + 1))).toFormat('yy')}';
+                                                      '${HijriCalendar.fromDate(DateTime.now().add(Duration(days: count))).toFormat('dd')} ${hijriList[HijriCalendar.fromDate(DateTime.now()).hMonth - 1]} ${HijriCalendar.fromDate(DateTime.now()).toFormat('yy')}';
                                                 } else {
-                                                  hicri = HijriCalendar.fromDate(DateTime.now()
-                                                          .add(Duration(days: count + 1)))
+                                                  hicri = HijriCalendar.fromDate(
+                                                          DateTime.now().add(Duration(days: count)))
                                                       .toFormat('dd MMMM yy');
                                                 }
                                               });
