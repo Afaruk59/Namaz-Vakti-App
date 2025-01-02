@@ -715,6 +715,9 @@ class _ZikirCardState extends State<ZikirCard> {
                                   'assets/svg/undo.svg',
                                   width: 30,
                                   height: 30,
+                                  color: Provider.of<ChangeSettings>(context).isDark == false
+                                      ? Colors.black
+                                      : Colors.white,
                                 ),
                               ),
                             ),
