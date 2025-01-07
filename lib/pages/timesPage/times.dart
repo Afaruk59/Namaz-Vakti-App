@@ -170,22 +170,28 @@ class _TimesBodyState extends State<TimesBody> {
     }
   }
 
+  void _changeDate() {
+    setState(() {
+      miladi =
+          DateFormat('dd MMMM yyyy', Provider.of<ChangeSettings>(context, listen: false).langCode)
+              .format(DateTime.now().add(Duration(days: count)));
+      if (Provider.of<ChangeSettings>(context, listen: false).langCode == 'tr') {
+        hicri =
+            '${HijriCalendar.fromDate(DateTime.now().add(Duration(days: count))).toFormat('dd')} ${hijriList[HijriCalendar.fromDate(DateTime.now().add(Duration(days: count))).hMonth - 1]} ${HijriCalendar.fromDate(DateTime.now().add(Duration(days: count))).toFormat('yy')}';
+      } else {
+        hicri = HijriCalendar.fromDate(DateTime.now().add(Duration(days: count)))
+            .toFormat('dd MMMM yy');
+      }
+    });
+
+    Provider.of<TimeData>(context, listen: false).changeTime(miladi);
+  }
+
   @override
   void initState() {
     super.initState();
     _checkWifi();
-    miladi =
-        DateFormat('dd MMMM yyyy', Provider.of<ChangeSettings>(context, listen: false).langCode)
-            .format(DateTime.now().add(Duration(days: count)));
-    if (Provider.of<ChangeSettings>(context, listen: false).langCode == 'tr') {
-      hicri =
-          '${HijriCalendar.fromDate(DateTime.now().add(Duration(days: count))).toFormat('dd')} ${hijriList[HijriCalendar.fromDate(DateTime.now().add(Duration(days: count))).hMonth - 1]} ${HijriCalendar.fromDate(DateTime.now().add(Duration(days: count))).toFormat('yy')}';
-    } else {
-      hicri =
-          HijriCalendar.fromDate(DateTime.now().add(Duration(days: count))).toFormat('dd MMMM yy');
-    }
-
-    Provider.of<TimeData>(context, listen: false).changeTime(miladi);
+    _changeDate();
   }
 
   @override
@@ -230,26 +236,10 @@ class _TimesBodyState extends State<TimesBody> {
                                           Provider.of<TimeData>(context, listen: false)
                                               .switchClock(true);
                                         }
-                                        miladi = DateFormat(
-                                                'dd MMMM yyyy',
-                                                Provider.of<ChangeSettings>(context, listen: false)
-                                                    .langCode)
-                                            .format(DateTime.now().add(Duration(days: count)));
-                                        if (Provider.of<ChangeSettings>(context, listen: false)
-                                                .langCode ==
-                                            'tr') {
-                                          hicri =
-                                              '${HijriCalendar.fromDate(DateTime.now().add(Duration(days: count))).toFormat('dd')} ${hijriList[HijriCalendar.fromDate(DateTime.now().add(Duration(days: count))).hMonth - 1]} ${HijriCalendar.fromDate(DateTime.now().add(Duration(days: count))).toFormat('yy')}';
-                                        } else {
-                                          hicri = HijriCalendar.fromDate(
-                                                  DateTime.now().add(Duration(days: count)))
-                                              .toFormat('dd MMMM yy');
-                                        }
                                       });
+                                      _changeDate();
                                       Provider.of<TimeData>(context, listen: false).loadPrayerTimes(
                                           DateTime.now().add(Duration(days: count)));
-                                      Provider.of<TimeData>(context, listen: false)
-                                          .changeTime(miladi);
                                     },
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -289,30 +279,11 @@ class _TimesBodyState extends State<TimesBody> {
                                                   Provider.of<TimeData>(context, listen: false)
                                                       .switchClock(true);
                                                 }
-                                                miladi = DateFormat(
-                                                        'dd MMMM yyyy',
-                                                        Provider.of<ChangeSettings>(context,
-                                                                listen: false)
-                                                            .langCode)
-                                                    .format(
-                                                        DateTime.now().add(Duration(days: count)));
-                                                if (Provider.of<ChangeSettings>(context,
-                                                            listen: false)
-                                                        .langCode ==
-                                                    'tr') {
-                                                  hicri =
-                                                      '${HijriCalendar.fromDate(DateTime.now().add(Duration(days: count))).toFormat('dd')} ${hijriList[HijriCalendar.fromDate(DateTime.now().add(Duration(days: count))).hMonth - 1]} ${HijriCalendar.fromDate(DateTime.now().add(Duration(days: count))).toFormat('yy')}';
-                                                } else {
-                                                  hicri = HijriCalendar.fromDate(
-                                                          DateTime.now().add(Duration(days: count)))
-                                                      .toFormat('dd MMMM yy');
-                                                }
                                               });
+                                              _changeDate();
                                               Provider.of<TimeData>(context, listen: false)
                                                   .loadPrayerTimes(
                                                       DateTime.now().add(Duration(days: count)));
-                                              Provider.of<TimeData>(context, listen: false)
-                                                  .changeTime(miladi);
                                             }
                                           },
                                           icon: const Icon(Icons.arrow_back_ios_new),
@@ -344,30 +315,11 @@ class _TimesBodyState extends State<TimesBody> {
                                                   Provider.of<TimeData>(context, listen: false)
                                                       .switchClock(true);
                                                 }
-                                                miladi = DateFormat(
-                                                        'dd MMMM yyyy',
-                                                        Provider.of<ChangeSettings>(context,
-                                                                listen: false)
-                                                            .langCode)
-                                                    .format(
-                                                        DateTime.now().add(Duration(days: count)));
-                                                if (Provider.of<ChangeSettings>(context,
-                                                            listen: false)
-                                                        .langCode ==
-                                                    'tr') {
-                                                  hicri =
-                                                      '${HijriCalendar.fromDate(DateTime.now().add(Duration(days: count))).toFormat('dd')} ${hijriList[HijriCalendar.fromDate(DateTime.now().add(Duration(days: count))).hMonth - 1]} ${HijriCalendar.fromDate(DateTime.now().add(Duration(days: count))).toFormat('yy')}';
-                                                } else {
-                                                  hicri = HijriCalendar.fromDate(
-                                                          DateTime.now().add(Duration(days: count)))
-                                                      .toFormat('dd MMMM yy');
-                                                }
                                               });
+                                              _changeDate();
                                               Provider.of<TimeData>(context, listen: false)
                                                   .loadPrayerTimes(
                                                       DateTime.now().add(Duration(days: count)));
-                                              Provider.of<TimeData>(context, listen: false)
-                                                  .changeTime(miladi);
                                             }
                                           },
                                           icon: const Icon(Icons.arrow_forward_ios),
