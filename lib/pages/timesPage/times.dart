@@ -40,7 +40,7 @@ class Times extends StatelessWidget {
         title: Text(AppLocalizations.of(context)!.timesPageTitle),
         actions: [
           Image.asset(
-            'assets/img/logoSmall.png',
+            'assets/img/logo96.png',
             height: 45,
           ),
           const SizedBox(

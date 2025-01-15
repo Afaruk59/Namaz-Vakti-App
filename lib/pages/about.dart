@@ -57,6 +57,8 @@ class AboutPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Card(
+                shape: const CircleBorder(),
+                color: Theme.of(context).cardColor,
                 child: Image.asset(
                   'assets/img/logo.png',
                   height: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 150 : 200,
