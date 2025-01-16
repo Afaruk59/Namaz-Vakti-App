@@ -18,7 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:namaz_vakti_app/home_page.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
-import 'package:namaz_vakti_app/change_settings.dart';
+import 'package:namaz_vakti_app/data/change_settings.dart';
 
 class Settings extends StatelessWidget {
   const Settings({super.key});
@@ -137,6 +137,18 @@ class SettingsCard extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15.0),
                   child: SwitchListTile(
+                    title: Text(AppLocalizations.of(context)!.otoLocal),
+                    value: Provider.of<ChangeSettings>(context).otoLocal,
+                    onChanged: (_) =>
+                        Provider.of<ChangeSettings>(context, listen: false).toggleOtoLoc(),
+                  ),
+                ),
+              ),
+              Card(
+                color: Theme.of(context).cardColor,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                  child: SwitchListTile(
                     title: Text(AppLocalizations.of(context)!.darkMode),
                     value: Provider.of<ChangeSettings>(context).isDark,
                     onChanged: (_) =>
@@ -193,7 +205,7 @@ class LangSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<int>(
-      icon: const Icon(Icons.language),
+      icon: const Icon(Icons.translate_rounded),
       elevation: 10,
       enabled: true,
       onSelected: (int result) {
@@ -204,70 +216,61 @@ class LangSelector extends StatelessWidget {
         return <PopupMenuEntry<int>>[
           const PopupMenuItem<int>(
             value: 0,
-            child: Center(
-              child: Text(
-                'Türkçe',
-              ),
-            ),
+            child: LangItem(title: 'Türkçe'),
           ),
           const PopupMenuItem<int>(
             value: 1,
-            child: Center(
-              child: Text(
-                'English',
-              ),
-            ),
+            child: LangItem(title: 'English (%80)'),
           ),
           const PopupMenuItem<int>(
             value: 2,
-            child: Center(
-              child: Text(
-                'عربي',
-              ),
-            ),
+            child: LangItem(title: 'عربي (%80)'),
           ),
           const PopupMenuItem<int>(
             value: 3,
-            child: Center(
-              child: Text(
-                'Deutsch',
-              ),
-            ),
+            child: LangItem(title: 'Deutsch (%80)'),
           ),
           const PopupMenuItem<int>(
             value: 4,
-            child: Center(
-              child: Text(
-                'Español',
-              ),
-            ),
+            child: LangItem(title: 'Español (%80)'),
           ),
           const PopupMenuItem<int>(
             value: 5,
-            child: Center(
-              child: Text(
-                'Français',
-              ),
-            ),
+            child: LangItem(title: 'Français (%80)'),
           ),
           const PopupMenuItem<int>(
             value: 6,
-            child: Center(
-              child: Text(
-                'Italiano',
-              ),
-            ),
+            child: LangItem(title: 'Italiano (%80)'),
           ),
           const PopupMenuItem<int>(
             value: 7,
-            child: Center(
-              child: Text(
-                'Русский',
-              ),
-            ),
+            child: LangItem(title: 'Русский (%80)'),
           ),
         ];
       },
+    );
+  }
+}
+
+class LangItem extends StatelessWidget {
+  const LangItem({
+    super.key,
+    required this.title,
+  });
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: Theme.of(context).cardColor,
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(5.0),
+          child: Text(
+            title,
+          ),
+        ),
+      ),
     );
   }
 }

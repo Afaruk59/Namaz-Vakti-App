@@ -20,10 +20,11 @@ import 'package:namaz_vakti_app/home_page.dart';
 import 'package:namaz_vakti_app/pages/settings.dart';
 import 'package:namaz_vakti_app/pages/timesPage/location.dart';
 import 'package:namaz_vakti_app/main.dart';
+import 'package:namaz_vakti_app/pages/timesPage/times.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
-import 'package:namaz_vakti_app/change_settings.dart';
+import 'package:namaz_vakti_app/data/change_settings.dart';
 
 class Startup extends StatelessWidget {
   const Startup({super.key});
@@ -68,10 +69,20 @@ class StartupCard extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Card(
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(40),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      spreadRadius: 1,
+                      blurRadius: 20,
+                    ),
+                  ],
+                ),
                 child: Image.asset(
                   'assets/img/logo.png',
-                  height: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 100 : 200,
+                  height: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 150 : 200,
                 ),
               ),
               Text(
@@ -120,12 +131,20 @@ class StartupCard extends StatelessWidget {
               SizedBox(
                 height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 0 : 20,
               ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 50.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 50.0),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Expanded(
-                      child: Location(),
+                      child: Card(
+                        color: Theme.of(context).colorScheme.secondaryContainer,
+                        child: const Location(),
+                      ),
+                    ),
+                    Card(
+                      color: Theme.of(context).colorScheme.secondaryContainer,
+                      child: const SearchButton(),
                     ),
                   ],
                 ),

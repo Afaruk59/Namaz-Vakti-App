@@ -16,7 +16,7 @@ limitations under the License.
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:namaz_vakti_app/change_settings.dart';
+import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as html_parser;
 import 'package:html/dom.dart' as dom;
@@ -118,7 +118,7 @@ class _CalendarBtnState extends State<CalendarBtn> {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      bottom: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 10 : 20,
+      bottom: MediaQuery.of(context).size.height < 700 ? 10 : 20,
       right: 13,
       child: IconButton(
         iconSize: 25,

@@ -16,6 +16,8 @@
     "aboutTitle": "Informazioni",
     "githubTitle": "Pagina Github",
     "licenseTitle": "Licenza",
+    "searchTitle": "Ricerca della Posizione",
+    "rate": "Valuta l'App",
 
     "nav1": "Orari",
     "nav2": "Qibla",
@@ -72,6 +74,7 @@
 
     "ln": "Lingua",
     "languageMessageBody": "Cambierà al riavvio dell'app.",
+    "otoLocal": "Rilevamento della posizione",
     "darkMode": "Modalità Scura",
     "gradient": "Sfondo Sfumato",
     "themeColor": "Colore del Tema",
@@ -79,7 +82,7 @@
 
     "startupTitle": "Benvenuto.",
     "startupDescription": "Gli orari di preghiera sono presi da Namazvakti.com",
-    "tenbih": "Un importante avvertimento sugli orari di preghiera differenti",
+    "tenbih": "Avviso Importante sugli Orari di Preghiera",
 
     "loading": "Ricerca in corso",
 
@@ -98,6 +101,9 @@
     "wifiMessageBody2": "(L'app non funzionerà correttamente senza Internet.)",
 
     "kazaMessageTitle": "Conteggio delle preghiere perse:",
+
+    "search": "Cerca",
+    "enterLoc": "Inserisci la Posizione...",
 
     "ilmihal": "Seâdet-i Ebediyye Endless Bliss",
     "mektubat": "Mektûbat Tercemesi",

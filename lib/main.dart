@@ -29,12 +29,14 @@ import 'package:namaz_vakti_app/pages/license.dart';
 import 'package:namaz_vakti_app/pages/qibla.dart';
 import 'package:namaz_vakti_app/pages/settings.dart';
 import 'package:namaz_vakti_app/pages/startup.dart';
+import 'package:namaz_vakti_app/pages/timesPage/alarms.dart';
+import 'package:namaz_vakti_app/pages/timesPage/search.dart';
 import 'package:namaz_vakti_app/pages/timesPage/times.dart';
 import 'package:namaz_vakti_app/pages/zikir.dart';
-import 'package:namaz_vakti_app/time_data.dart';
+import 'package:namaz_vakti_app/data/time_data.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
-import 'package:namaz_vakti_app/change_settings.dart';
+import 'package:namaz_vakti_app/data/change_settings.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -58,7 +60,7 @@ void main() async {
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
-  static String version = '1.0.5';
+  static String version = '1.2.2';
 
   @override
   Widget build(BuildContext context) {
@@ -68,12 +70,13 @@ class MainApp extends StatelessWidget {
     Provider.of<ChangeSettings>(context, listen: false).loadGradFromSharedPref();
     Provider.of<ChangeSettings>(context, listen: false).loadFirstFromSharedPref();
     Provider.of<ChangeSettings>(context, listen: false).loadLanguage();
+    Provider.of<ChangeSettings>(context, listen: false).loadOtoLoc();
     Provider.of<ChangeSettings>(context).locale == const Locale('ar')
         ? HijriCalendar.setLocal('ar')
         : HijriCalendar.setLocal('en');
-    //Provider.of<ChangeSettings>(context, listen: false).loadNotFromSharedPref();
-    //Provider.of<ChangeSettings>(context, listen: false).loadAlarm();
-    //Provider.of<ChangeSettings>(context, listen: false).loadGaps();
+    Provider.of<ChangeSettings>(context, listen: false).loadNotFromSharedPref();
+    Provider.of<ChangeSettings>(context, listen: false).loadAlarm();
+    Provider.of<ChangeSettings>(context, listen: false).loadGaps();
     return MaterialApp(
       supportedLocales: L10n.all,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -91,10 +94,10 @@ class MainApp extends StatelessWidget {
         applyElevationOverlayColor: true,
         appBarTheme: AppBarTheme(
           systemOverlayStyle: SystemUiOverlayStyle(
-            statusBarColor: Colors.transparent, // Durum çubuğu arka planı şeffaf
+            statusBarColor: Colors.transparent,
             statusBarIconBrightness: Provider.of<ChangeSettings>(context).isDark == false
                 ? Brightness.dark
-                : Brightness.light, // Durum çubuğu simgeleri koyu renk yap
+                : Brightness.light,
           ),
           toolbarHeight: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 40 : 50,
           titleSpacing: 30,
@@ -108,7 +111,7 @@ class MainApp extends StatelessWidget {
         cardTheme: CardTheme(
             color: Provider.of<ChangeSettings>(context).isDark == false
                 ? Provider.of<ChangeSettings>(context).color.shade400
-                : Provider.of<ChangeSettings>(context).color.shade900,
+                : Provider.of<ChangeSettings>(context).color.shade800,
             elevation: 10),
         cardColor: Provider.of<ChangeSettings>(context).isDark == false
             ? const Color.fromARGB(255, 230, 230, 230)
@@ -133,10 +136,11 @@ class MainApp extends StatelessWidget {
         '/books': (context) => const Books(),
         '/settings': (context) => const Settings(),
         '/kaza': (context) => const Kaza(),
-        // '/alarms': (context) => const Alarms(),
+        '/alarms': (context) => const Alarms(),
         '/startup': (context) => const Startup(),
         '/about': (context) => const About(),
         '/license': (context) => const License(),
+        '/search': (context) => const Search(),
       },
     );
   }

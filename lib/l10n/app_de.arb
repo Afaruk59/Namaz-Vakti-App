@@ -16,6 +16,8 @@
     "aboutTitle": "Über",
     "githubTitle": "Github-Seite",
     "licenseTitle": "Lizenz",
+    "searchTitle": "Standortsuche",
+    "rate": "Bewerten Sie die App",
 
     "nav1": "Zeiten",
     "nav2": "Qibla",
@@ -72,6 +74,7 @@
 
     "ln": "Sprache",
     "languageMessageBody": "Änderungen werden beim Neustart der App wirksam.",
+    "otoLocal": "Standortverfolgung",
     "darkMode": "Dunkelmodus",
     "gradient": "Verlauf Hintergrund",
     "themeColor": "Themenfarbe",
@@ -79,7 +82,7 @@
 
     "startupTitle": "Willkommen.",
     "startupDescription": "Die Gebetszeiten werden von Namazvakti.com bezogen",
-    "tenbih": "Ein wichtiger Hinweis zu unterschiedlichen Gebetszeiten",
+    "tenbih": "Wichtiger Hinweis zu den Gebetszeiten",
 
     "loading": "Suche läuft",
 
@@ -98,6 +101,9 @@
     "wifiMessageBody2": "(Die App funktioniert ohne Internet nicht richtig.)",
 
     "kazaMessageTitle": "Anzahl verpasster Gebete:",
+
+    "search": "Suchen",
+    "enterLoc": "Standort eingeben...",
 
     "ilmihal": "Seâdet-i Ebediyye Endless Bliss",
     "mektubat": "Mektûbat Tercemesi",

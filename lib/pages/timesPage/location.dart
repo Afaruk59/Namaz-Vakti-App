@@ -19,7 +19,7 @@ import 'package:csv/csv.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:namaz_vakti_app/change_settings.dart';
+import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:provider/provider.dart';
 
@@ -34,6 +34,7 @@ class LocationState extends State<Location> {
   double lat = 0;
   double long = 0;
   bool progress = false;
+  static bool first = true;
 
   double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
     const R = 6371; // Dünya'nın yarıçapı (kilometre)
@@ -227,42 +228,40 @@ class LocationState extends State<Location> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    if (Provider.of<ChangeSettings>(context, listen: false).otoLocal && first == true) {
+      searchLocation();
+    }
+  }
+
+  void searchLocation() async {
+    setState(() {
+      progress = true;
+      first = false;
+    });
+    await getCurrentLocation();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6.0),
-      child: FilledButton.tonal(
-        style: ElevatedButton.styleFrom(elevation: 10),
-        onPressed: () async {
-          setState(() {
-            progress = true;
-          });
-          await getCurrentLocation();
-        },
-        child: progress == true
-            ? const Row(
+    return TextButton(
+      onPressed: () {
+        Provider.of<ChangeSettings>(context, listen: false).changeOtoLoc(true);
+        searchLocation();
+      },
+      child: progress == true
+          ? const CircularProgressIndicator()
+          : FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 5.0),
-                    child: CircularProgressIndicator(),
-                  ),
+                  const Icon(Icons.location_on),
+                  Text(AppLocalizations.of(context)!.locationButtonText),
                 ],
-              )
-            : FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.location_on, size: 22),
-                    Text(
-                      AppLocalizations.of(context)!.locationButtonText,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 15.0),
-                    ),
-                  ],
-                ),
               ),
-      ),
+            ),
     );
   }
 }

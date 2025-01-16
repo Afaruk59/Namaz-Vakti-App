@@ -16,6 +16,8 @@
     "aboutTitle": "О нас",
     "githubTitle": "Страница на Github",
     "licenseTitle": "Лицензия",
+    "searchTitle": "Поиск местоположения",
+    "rate": "Оцените приложение",
 
     "nav1": "Время",
     "nav2": "Кибла",
@@ -72,6 +74,7 @@
 
     "ln": "Язык",
     "languageMessageBody": "Изменение произойдет при перезапуске приложения.",
+    "otoLocal": "Oтслеживание местоположения",
     "darkMode": "Темный режим",
     "gradient": "Градиентный фон",
     "themeColor": "Цвет темы",
@@ -79,7 +82,7 @@
 
     "startupTitle": "Добро пожаловать.",
     "startupDescription": "Время молитвы взято с Namazvakti.com",
-    "tenbih": "Важное предупреждение о различных временах молитвы",
+    "tenbih": "Важное уведомление о времени намаза",
 
     "loading": "Поиск",
 
@@ -98,6 +101,9 @@
     "wifiMessageBody2": "(Приложение не будет работать правильно без интернета.)",
 
     "kazaMessageTitle": "Количество пропущенных молитв:",
+
+    "search": "Искать",
+    "enterLoc": "Введите местоположение...",
 
     "ilmihal": "Seâdet-i Ebediyye Endless Bliss",
     "mektubat": "Mektûbat Tercemesi",

@@ -16,7 +16,8 @@ limitations under the License.
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:namaz_vakti_app/change_settings.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:provider/provider.dart';
 import 'package:vibration/vibration.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
@@ -455,15 +456,19 @@ class _ZikirCardState extends State<ZikirCard> {
                                           ),
                                         ],
                                       ),
-                                      child: LinearProgressIndicator(
-                                        borderRadius: const BorderRadius.all(Radius.circular(10)),
-                                        value: _count / _target, // İlerleme yüzdesi
-                                        minHeight: 4.0, // Göstergenin yüksekliği
-                                        backgroundColor:
-                                            Theme.of(context).cardColor, // Arka plan rengi
-                                        valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context)
-                                            .cardTheme
-                                            .color!), // İlerleme çubuğu rengi
+                                      child: Directionality(
+                                        textDirection: TextDirection.ltr,
+                                        child: LinearProgressIndicator(
+                                          borderRadius: const BorderRadius.all(Radius.circular(10)),
+                                          value: _count / _target, // İlerleme yüzdesi
+                                          minHeight: 4.0, // Göstergenin yüksekliği
+                                          backgroundColor:
+                                              Theme.of(context).cardColor, // Arka plan rengi
+                                          valueColor: AlwaysStoppedAnimation<Color>(
+                                              Theme.of(context)
+                                                  .cardTheme
+                                                  .color!), // İlerleme çubuğu rengi
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -693,6 +698,29 @@ class _ZikirCardState extends State<ZikirCard> {
                                     ),
                                   )
                                 : Container(),
+                            Positioned(
+                              top: 15,
+                              right: 20,
+                              child: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    if (_count != 0) {
+                                      _count--;
+                                    }
+                                  });
+                                  Provider.of<ChangeSettings>(context, listen: false)
+                                      .saveZikirProfile(_selectedProfile, _count, _target, _stack);
+                                },
+                                icon: SvgPicture.asset(
+                                  'assets/svg/undo.svg',
+                                  width: 30,
+                                  height: 30,
+                                  color: Provider.of<ChangeSettings>(context).isDark == false
+                                      ? Colors.black
+                                      : Colors.white,
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ),

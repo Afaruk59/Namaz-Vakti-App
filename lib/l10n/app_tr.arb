@@ -59,6 +59,14 @@
     "@licenseTitle":{
         "description": "Page title"
     },
+    "searchTitle": "Konum Arama",
+    "@searchTitle":{
+        "description": "Page title"
+    },
+    "rate": "Değerlendirin",
+    "@rate":{
+        "description": "Page title"
+    },
 
 
     "nav1": "Vakitler",
@@ -266,6 +274,10 @@
     "@languageMessageBody":{
         "description": "Message text"
     },
+    "otoLocal": "Konum Takibi",
+    "@otoLocal":{
+        "description": "Text"
+    },
     "darkMode": "Koyu Tema",
     "@darkMode":{
         "description": "Text"
@@ -357,6 +369,16 @@
     "kazaMessageTitle": "Kaza Sayısı:",
     "@kazaMessageTitle":{
         "description": "Message text"
+    },
+
+
+    "search": "Ara",
+    "@search":{
+        "description": "Text"
+    },
+    "enterLoc": "Konumu Girin...",
+    "@enterLoc":{
+        "description": "Text"
     },
 
 

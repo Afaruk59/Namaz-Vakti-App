@@ -16,8 +16,8 @@ limitations under the License.
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:namaz_vakti_app/change_settings.dart';
-import 'package:namaz_vakti_app/time_data.dart';
+import 'package:namaz_vakti_app/data/change_settings.dart';
+import 'package:namaz_vakti_app/data/time_data.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
@@ -59,7 +59,7 @@ class DetailedTimesBtn extends StatelessWidget {
     _kible = Provider.of<TimeData>(context).kible;
     _time = Provider.of<TimeData>(context).miladi;
     return Positioned(
-      bottom: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 10 : 20,
+      bottom: MediaQuery.of(context).size.height < 700 ? 10 : 20,
       left: 13,
       child: IconButton(
         iconSize: 25,

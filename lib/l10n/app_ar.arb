@@ -9,13 +9,15 @@
     "zikirPageTitle": "الذكر",
     "morePageTitle": "المزيد",
     "settingsPageTitle": "الإعدادات",
-    "datesTitle": "الأيام المقدسة",
-    "datesTitleShort": "الأيام المقدسة",
+    "datesTitle": "الأيام المباركة",
+    "datesTitleShort": "الأيام المباركة",
     "kazaTitle": "الصلوات الفائتة",
-    "booksTitle": "كتب المصادر",
+    "booksTitle": "مصادر الكتب",
     "aboutTitle": "حول",
     "githubTitle": "صفحة Github",
     "licenseTitle": "الترخيص",
+    "searchTitle": "بحث الموقع",
+    "rate": "قيّم التطبيق",
 
     "nav1": "الأوقات",
     "nav2": "القبلة",
@@ -23,7 +25,7 @@
     "nav4": "المزيد",
     "nav5": "الإعدادات",
 
-    "locationButtonText": "مزامنة",
+    "locationButtonText": "تحديد الموقع",
     "yes": "نعم",
     "leave": "مغادرة",
     "ok": "موافق",
@@ -31,7 +33,7 @@
 
     "imsak": "الفجر",
     "sabah": "الصباح",
-    "gunes": "طلوع الشمس",
+    "gunes": "الشروق",
     "ogle": "الظهر",
     "ikindi": "العصر",
     "aksam": "المغرب",
@@ -39,8 +41,8 @@
     "israk": "الإشراق",
     "kerahat": "الكراهة",
     "asrisani": "العصر الثاني",
-    "isfirar": "الإسفار",
-    "istibak": "الإشتباك",
+    "isfirar": "الإصفرار",
+    "istibak": "إشتباك النجوم",
     "isaisani": "العشاء الثاني",
     "kible": "وقت القبلة",
     "vitir": "الوتر",
@@ -72,6 +74,7 @@
 
     "ln": "اللغة",
     "languageMessageBody": "سيتم التغيير عند إعادة تشغيل التطبيق.",
+    "otoLocal": "تتبع الموقع",
     "darkMode": "الوضع الداكن",
     "gradient": "خلفية متدرجة",
     "themeColor": "لون الثيم",
@@ -79,7 +82,7 @@
 
     "startupTitle": "مرحبًا بك.",
     "startupDescription": "أوقات الصلاة مأخوذة من Namazvakti.com",
-    "tenbih": "تنبيه هام حول اختلاف أوقات الصلاة",
+    "tenbih": "تنبيه مهم بشأن أوقات الصلاة",
 
     "loading": "جارٍ البحث",
 
@@ -98,6 +101,9 @@
     "wifiMessageBody2": "(لن يعمل التطبيق بشكل صحيح بدون الإنترنت.)",
 
     "kazaMessageTitle": "عدد الصلوات الفائتة:",
+
+    "search": "ابحث",
+    "enterLoc": "أدخل الموقع...",
 
     "ilmihal": "Seâdet-i Ebediyye Endless Bliss",
     "mektubat": "Mektûbat Tercemesi",
@@ -129,3 +135,4 @@
     "menakibInfo": "Dört halîfenin ve Eshâb-ı Kirâmın bütününün büyüklüklerini, kıymetlerini menkıbeler ile çok uzun ve çok güzel anlatan bu kitâb, türkçe olup, ilk defa 1325 senesinde basılmıştır. Kitabevimiz yeniden 1998'de basdırmıştır. Bu kitâbı Seyyid Eyyûb hazretleri yazmıştır. On iki bâb dan oluşmakdadır.",
     "sevahidInfo": "Şevâhid-ün Nübüvve (Peygamberlik Müjdeleri) kitâbı, derin âlim ve büyük velî Mevlânâ Abdürrahmân Câmî hazretlerinin, “ŞEVÂHİD-ÜN NÜBÜVVE Lİ-TAKVİYET-İ EHLİL-FÜTÜVVE” adlı kitâbının tercümesidir. Muhammed aleyhisselamın peygamberliğine delîl olan alâmetler ve mu’cizelerinin beyânı hakkındadır. Kitâbda, bir mukaddime, yedi bölüm, bir hâtime vardır:"
 }
+

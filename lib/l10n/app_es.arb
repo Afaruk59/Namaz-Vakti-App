@@ -16,6 +16,8 @@
     "aboutTitle": "Acerca de",
     "githubTitle": "Página de Github",
     "licenseTitle": "Licencia",
+    "searchTitle": "Búsqueda de Ubicación",
+    "rate": "Califica la Aplicación",
 
     "nav1": "Horarios",
     "nav2": "Qibla",
@@ -72,6 +74,7 @@
 
     "ln": "Idioma",
     "languageMessageBody": "Cambiará cuando la aplicación se reinicie.",
+    "otoLocal": "Seguimiento de ubicación",
     "darkMode": "Modo Oscuro",
     "gradient": "Fondo Degradado",
     "themeColor": "Color del Tema",
@@ -79,7 +82,7 @@
 
     "startupTitle": "Bienvenido.",
     "startupDescription": "Los horarios de oración son obtenidos de Namazvakti.com",
-    "tenbih": "Una Importante Advertencia Sobre Diferentes Horarios de Oración",
+    "tenbih": "Aviso Importante sobre los Horarios de Oración",
 
     "loading": "Buscando",
 
@@ -98,6 +101,9 @@
     "wifiMessageBody2": "(La aplicación no funcionará correctamente sin Internet.)",
 
     "kazaMessageTitle": "Recuento de oraciones perdidas:",
+
+    "search": "Buscar",
+    "enterLoc": "Ingresar Ubicación...",
 
     "ilmihal": "Seâdet-i Ebediyye Endless Bliss",
     "mektubat": "Mektûbat Tercemesi",

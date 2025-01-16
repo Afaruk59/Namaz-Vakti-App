@@ -16,7 +16,8 @@ limitations under the License.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
-import 'package:namaz_vakti_app/change_settings.dart';
+import 'package:in_app_review/in_app_review.dart';
+import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:namaz_vakti_app/pages/startup.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -49,7 +50,7 @@ class More extends StatelessWidget {
               ),
               BooksCard(
                 title: AppLocalizations.of(context)!.booksTitle,
-                icon: const Icon(Icons.library_books),
+                icon: const Icon(Icons.local_library_rounded),
                 route: '/books',
               ),
               Padding(
@@ -58,12 +59,51 @@ class More extends StatelessWidget {
                         Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
                 child: const TenbihCard(),
               ),
+              ReviewCard(),
               MoreCard(
                 title: AppLocalizations.of(context)!.aboutTitle,
                 icon: const Icon(Icons.info),
                 route: '/about',
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ReviewCard extends StatelessWidget {
+  ReviewCard({super.key});
+  final InAppReview inAppReview = InAppReview.instance;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+          horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
+      child: Card(
+        color: Theme.of(context).cardColor,
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+              horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
+          child: ListTile(
+            title: Text(AppLocalizations.of(context)!.rate),
+            onTap: () async {
+              if (await inAppReview.isAvailable()) {
+                inAppReview.requestReview();
+              }
+            },
+            trailing: FilledButton.tonal(
+              style: ElevatedButton.styleFrom(
+                elevation: 10,
+              ),
+              onPressed: () async {
+                if (await inAppReview.isAvailable()) {
+                  inAppReview.requestReview();
+                }
+              },
+              child: const Icon(Icons.star_rounded),
+            ),
           ),
         ),
       ),
