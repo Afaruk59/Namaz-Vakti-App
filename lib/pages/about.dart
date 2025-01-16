@@ -56,9 +56,17 @@ class AboutPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Card(
-                shape: const CircleBorder(),
-                color: Theme.of(context).cardColor,
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(40),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.2),
+                      spreadRadius: 1,
+                      blurRadius: 20,
+                    ),
+                  ],
+                ),
                 child: Image.asset(
                   'assets/img/logo.png',
                   height: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 150 : 200,
