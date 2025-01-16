@@ -69,17 +69,7 @@ class StartupCard extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(40),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
-                      spreadRadius: 1,
-                      blurRadius: 20,
-                    ),
-                  ],
-                ),
+              Card(
                 child: Image.asset(
                   'assets/img/logo.png',
                   height: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 150 : 200,

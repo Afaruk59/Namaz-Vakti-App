@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:namaz_vakti_app/home_page.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
@@ -43,60 +44,31 @@ class Settings extends StatelessWidget {
   }
 }
 
-class SettingsCard extends StatelessWidget {
-  static Locale? preLang;
+class SettingsCard extends StatefulWidget {
   const SettingsCard({
     super.key,
   });
+
+  @override
+  State<SettingsCard> createState() => _SettingsCardState();
+}
+
+class _SettingsCardState extends State<SettingsCard> {
+  static Color pickerColor = Colors.white;
 
   Future<dynamic> colorPalette(BuildContext context) {
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(AppLocalizations.of(context)!.colorPaletteTitle),
-        content: const SizedBox(
-          height: 200,
-          child: Column(
-            children: [
-              Expanded(
-                child: Row(
-                  children: [
-                    ColorCircle(col: Colors.blueGrey),
-                    ColorCircle(col: Colors.red),
-                    ColorCircle(col: Colors.blue),
-                    ColorCircle(col: Colors.green),
-                    ColorCircle(col: Colors.yellow),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Row(
-                  children: [
-                    ColorCircle(col: Colors.amber),
-                    ColorCircle(col: Colors.grey),
-                    ColorCircle(col: Colors.indigo),
-                    ColorCircle(col: Colors.lightBlue),
-                    ColorCircle(col: Colors.lightGreen),
-                    ColorCircle(col: Colors.lime),
-                    ColorCircle(col: Colors.orange),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Row(
-                  children: [
-                    ColorCircle(col: Colors.pink),
-                    ColorCircle(col: Colors.purple),
-                    ColorCircle(col: Colors.teal),
-                    ColorCircle(col: Colors.brown),
-                    ColorCircle(col: Colors.cyan),
-                    ColorCircle(col: Colors.deepOrange),
-                    ColorCircle(col: Colors.deepPurple),
-                  ],
-                ),
-              ),
-            ],
-          ),
+        content: MaterialPicker(
+          pickerColor: pickerColor,
+          onColorChanged: (value) {
+            setState(() {
+              pickerColor = value;
+              Provider.of<ChangeSettings>(context, listen: false).changeCol(value);
+            });
+          },
         ),
         actions: <Widget>[
           TextButton(
@@ -112,7 +84,6 @@ class SettingsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    preLang = Provider.of<ChangeSettings>(context).locale;
     return Padding(
       padding: const EdgeInsets.all(5),
       child: Card(
