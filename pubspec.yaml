@@ -11,7 +11,7 @@ dependencies:
   csv: ^6.0.0
   flutter:
     sdk: flutter
-  flutter_compass: ^0.8.0
+  flutter_compass: ^0.8.1
   flutter_localization: ^0.2.2
   flutter_svg: ^2.0.16
   geolocator: ^13.0.1
