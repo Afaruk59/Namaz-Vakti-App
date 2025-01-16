@@ -29,6 +29,14 @@ class GradientBack extends StatelessWidget {
   const GradientBack({super.key, required this.child});
   final Widget child;
 
+  Color lightenColor(Color color, [double amount = 0.1]) {
+    assert(amount >= 0 && amount <= 1);
+    HSLColor hslColor = HSLColor.fromColor(color);
+    HSLColor lighterHslColor =
+        hslColor.withLightness((hslColor.lightness + amount).clamp(0.0, 1.0));
+    return lighterHslColor.toColor();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -36,8 +44,8 @@ class GradientBack extends StatelessWidget {
         gradient: LinearGradient(
           colors: [
             Provider.of<ChangeSettings>(context).isDark == false
-                ? Provider.of<ChangeSettings>(context).color.shade300
-                : Provider.of<ChangeSettings>(context).color.shade800,
+                ? lightenColor(Provider.of<ChangeSettings>(context).color, 0.05)
+                : Provider.of<ChangeSettings>(context).color,
             Theme.of(context).colorScheme.surfaceContainer,
           ],
           begin: Alignment.topLeft,

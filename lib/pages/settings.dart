@@ -54,21 +54,26 @@ class SettingsCard extends StatefulWidget {
 }
 
 class _SettingsCardState extends State<SettingsCard> {
-  static Color pickerColor = Colors.white;
+  Color pickerColor = Colors.white;
 
   Future<dynamic> colorPalette(BuildContext context) {
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(AppLocalizations.of(context)!.colorPaletteTitle),
-        content: MaterialPicker(
-          pickerColor: pickerColor,
-          onColorChanged: (value) {
-            setState(() {
-              pickerColor = value;
+        content: SingleChildScrollView(
+          child: ColorPicker(
+            enableAlpha: false,
+            labelTypes: const [],
+            pickerColor: pickerColor,
+            onColorChanged: (value) {
+              setState(() {
+                pickerColor = value;
+              });
               Provider.of<ChangeSettings>(context, listen: false).changeCol(value);
-            });
-          },
+              Provider.of<ChangeSettings>(context, listen: false).saveCol(value);
+            },
+          ),
         ),
         actions: <Widget>[
           TextButton(
@@ -146,6 +151,7 @@ class _SettingsCardState extends State<SettingsCard> {
                   child: ListTile(
                     title: Text(AppLocalizations.of(context)!.themeColor),
                     onTap: () {
+                      pickerColor = Provider.of<ChangeSettings>(context, listen: false).color;
                       colorPalette(context);
                     },
                     trailing: FilledButton.tonal(
@@ -153,6 +159,7 @@ class _SettingsCardState extends State<SettingsCard> {
                         elevation: 10,
                       ),
                       onPressed: () {
+                        pickerColor = Provider.of<ChangeSettings>(context, listen: false).color;
                         colorPalette(context);
                       },
                       child: const Icon(Icons.color_lens),

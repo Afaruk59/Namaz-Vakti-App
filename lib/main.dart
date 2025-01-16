@@ -108,14 +108,10 @@ class MainApp extends StatelessWidget {
                   ? Colors.black87
                   : Colors.white),
         ),
-        cardTheme: CardTheme(
-            color: Provider.of<ChangeSettings>(context).isDark == false
-                ? Provider.of<ChangeSettings>(context).color.shade400
-                : Provider.of<ChangeSettings>(context).color.shade800,
-            elevation: 10),
+        cardTheme: CardTheme(color: Provider.of<ChangeSettings>(context).color, elevation: 10),
         cardColor: Provider.of<ChangeSettings>(context).isDark == false
             ? const Color.fromARGB(255, 230, 230, 230)
-            : const Color.fromARGB(255, 40, 40, 40),
+            : const Color.fromARGB(255, 45, 45, 45),
         navigationBarTheme: NavigationBarThemeData(
           height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 70 : 80,
           backgroundColor: Colors.transparent,

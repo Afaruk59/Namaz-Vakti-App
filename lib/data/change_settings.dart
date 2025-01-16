@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ChangeSettings with ChangeNotifier {
@@ -25,7 +26,7 @@ class ChangeSettings with ChangeNotifier {
   double? currentHeight;
 
   bool isDark = false;
-  MaterialColor color = Colors.blueGrey;
+  Color color = Colors.blueGrey;
   bool gradient = true;
 
   static String? cityID;
@@ -184,96 +185,17 @@ class ChangeSettings with ChangeNotifier {
     _settings.setBool('darkTheme', value);
   }
 
-  void changeCol(MaterialColor col) {
+  void changeCol(Color col) {
     color = col;
     notifyListeners();
   }
 
   void loadCol() {
-    int value = _settings.getInt('color') ?? 0;
-    switch (value) {
-      case 0:
-        color = Colors.blueGrey;
-      case 1:
-        color = Colors.red;
-      case 2:
-        color = Colors.blue;
-      case 3:
-        color = Colors.green;
-      case 4:
-        color = Colors.yellow;
-      case 5:
-        color = Colors.amber;
-      case 6:
-        color = Colors.grey;
-      case 7:
-        color = Colors.indigo;
-      case 8:
-        color = Colors.lightBlue;
-      case 9:
-        color = Colors.lightGreen;
-      case 10:
-        color = Colors.lime;
-      case 11:
-        color = Colors.orange;
-      case 12:
-        color = Colors.pink;
-      case 13:
-        color = Colors.purple;
-      case 14:
-        color = Colors.teal;
-      case 15:
-        color = Colors.brown;
-      case 16:
-        color = Colors.cyan;
-      case 17:
-        color = Colors.deepOrange;
-      case 18:
-        color = Colors.deepPurple;
-    }
+    color = _settings.getString('color')?.toColor() ?? Colors.blueGrey;
   }
 
-  void saveCol(MaterialColor color) {
-    switch (color) {
-      case Colors.blueGrey:
-        _settings.setInt('color', 0);
-      case Colors.red:
-        _settings.setInt('color', 1);
-      case Colors.blue:
-        _settings.setInt('color', 2);
-      case Colors.green:
-        _settings.setInt('color', 3);
-      case Colors.yellow:
-        _settings.setInt('color', 4);
-      case Colors.amber:
-        _settings.setInt('color', 5);
-      case Colors.grey:
-        _settings.setInt('color', 6);
-      case Colors.indigo:
-        _settings.setInt('color', 7);
-      case Colors.lightBlue:
-        _settings.setInt('color', 8);
-      case Colors.lightGreen:
-        _settings.setInt('color', 9);
-      case Colors.lime:
-        _settings.setInt('color', 10);
-      case Colors.orange:
-        _settings.setInt('color', 11);
-      case Colors.pink:
-        _settings.setInt('color', 12);
-      case Colors.purple:
-        _settings.setInt('color', 13);
-      case Colors.teal:
-        _settings.setInt('color', 14);
-      case Colors.brown:
-        _settings.setInt('color', 15);
-      case Colors.cyan:
-        _settings.setInt('color', 16);
-      case Colors.deepOrange:
-        _settings.setInt('color', 17);
-      case Colors.deepPurple:
-        _settings.setInt('color', 18);
-    }
+  void saveCol(Color color) {
+    _settings.setString('color', color.toHexString());
   }
 
   //LOCATION SETTINGS
