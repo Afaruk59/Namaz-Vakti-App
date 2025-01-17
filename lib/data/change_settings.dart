@@ -208,11 +208,11 @@ class ChangeSettings with ChangeNotifier {
   }
 
   void loadCol() {
-    color = _settings.getString('color')?.toColor() ?? Colors.blueGrey[500]!;
+    color = _settings.getString('Color')?.toColor() ?? Colors.blueGrey[500]!;
   }
 
   void saveCol(Color color) {
-    _settings.setString('color', color.toHexString());
+    _settings.setString('Color', color.toHexString());
   }
 
   //LOCATION SETTINGS

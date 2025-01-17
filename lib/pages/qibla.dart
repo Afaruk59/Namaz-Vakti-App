@@ -185,10 +185,16 @@ class _QiblaCardState extends State<QiblaCard> {
                                       child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text(
-                                        Provider.of<TimeData>(context).city!,
-                                        textAlign: TextAlign.center,
-                                        style: const TextStyle(fontWeight: FontWeight.bold),
+                                      FittedBox(
+                                        fit: BoxFit.scaleDown,
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                                          child: Text(
+                                            Provider.of<TimeData>(context).city!,
+                                            textAlign: TextAlign.center,
+                                            style: const TextStyle(fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
                                       ),
                                       SizedBox(
                                         width: 60,
