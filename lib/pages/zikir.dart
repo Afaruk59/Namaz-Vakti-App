@@ -1,5 +1,5 @@
 /*
-Copyright [2024] [Afaruk59]
+Copyright [2024-2025] [Afaruk59]
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -97,11 +97,14 @@ class _ZikirCardState extends State<ZikirCard> {
                                 child: Card(
                                   shape: RoundedRectangleBorder(
                                     side: const BorderSide(
-                                      color: Colors.grey, // Kenar rengini belirleyin
-                                      width: 1.0, // Kenar kalınlığını belirleyin
+                                      color: Colors.grey,
+                                      width: 1.0,
                                     ),
                                     borderRadius: BorderRadius.circular(
-                                        10.0), // Kenarların yuvarlaklığını belirleyin
+                                      Provider.of<ChangeSettings>(context).rounded == true
+                                          ? 50
+                                          : 10,
+                                    ),
                                   ),
                                   color: Theme.of(context).cardColor,
                                   child: Column(
@@ -186,11 +189,14 @@ class _ZikirCardState extends State<ZikirCard> {
                                 child: Card(
                                   shape: RoundedRectangleBorder(
                                     side: const BorderSide(
-                                      color: Colors.grey, // Kenar rengini belirleyin
-                                      width: 1.0, // Kenar kalınlığını belirleyin
+                                      color: Colors.grey,
+                                      width: 1.0,
                                     ),
                                     borderRadius: BorderRadius.circular(
-                                        10.0), // Kenarların yuvarlaklığını belirleyin
+                                      Provider.of<ChangeSettings>(context).rounded == true
+                                          ? 50
+                                          : 10,
+                                    ),
                                   ),
                                   color: Theme.of(context).cardColor,
                                   child: Row(
@@ -211,13 +217,13 @@ class _ZikirCardState extends State<ZikirCard> {
                                                         : 10.0),
                                                 child: Card(
                                                   shape: RoundedRectangleBorder(
-                                                    side: const BorderSide(
-                                                      color:
-                                                          Colors.grey, // Kenar rengini belirleyin
-                                                      width: 1.0, // Kenar kalınlığını belirleyin
-                                                    ),
                                                     borderRadius: BorderRadius.circular(
-                                                        10.0), // Kenarların yuvarlaklığını belirleyin
+                                                      Provider.of<ChangeSettings>(context)
+                                                                  .rounded ==
+                                                              true
+                                                          ? 50
+                                                          : 10,
+                                                    ),
                                                   ),
                                                   color: Theme.of(context).cardColor,
                                                   child: Row(
@@ -442,9 +448,14 @@ class _ZikirCardState extends State<ZikirCard> {
                                   RotatedBox(
                                     quarterTurns: 3,
                                     child: Container(
+                                      clipBehavior: Clip.hardEdge,
                                       height: double.infinity,
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
+                                        borderRadius: BorderRadius.circular(
+                                          Provider.of<ChangeSettings>(context).rounded == true
+                                              ? 50
+                                              : 10,
+                                        ),
                                         boxShadow: [
                                           BoxShadow(
                                             color: Colors.black
@@ -459,7 +470,11 @@ class _ZikirCardState extends State<ZikirCard> {
                                       child: Directionality(
                                         textDirection: TextDirection.ltr,
                                         child: LinearProgressIndicator(
-                                          borderRadius: const BorderRadius.all(Radius.circular(10)),
+                                          borderRadius: BorderRadius.circular(
+                                            Provider.of<ChangeSettings>(context).rounded == true
+                                                ? 50
+                                                : 10,
+                                          ),
                                           value: _count / _target, // İlerleme yüzdesi
                                           minHeight: 4.0, // Göstergenin yüksekliği
                                           backgroundColor:
@@ -501,6 +516,12 @@ class _ZikirCardState extends State<ZikirCard> {
                               left: 20,
                               top: 15,
                               child: PopupMenuButton<String>(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                      Provider.of<ChangeSettings>(context).rounded == true
+                                          ? 50
+                                          : 10),
+                                ),
                                 icon: const Icon(Icons.my_library_books),
                                 offset: const Offset(5, 0),
                                 elevation: 10,

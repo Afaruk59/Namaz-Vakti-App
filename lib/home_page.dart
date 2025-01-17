@@ -1,5 +1,5 @@
 /*
-Copyright [2024] [Afaruk59]
+Copyright [2024-2025] [Afaruk59]
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -41,16 +41,20 @@ class GradientBack extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
+        gradient: RadialGradient(
           colors: [
             Provider.of<ChangeSettings>(context).isDark == false
                 ? lightenColor(Provider.of<ChangeSettings>(context).color, 0.05)
                 : Provider.of<ChangeSettings>(context).color,
             Theme.of(context).colorScheme.surfaceContainer,
+            Provider.of<ChangeSettings>(context).isDark == false
+                ? lightenColor(Provider.of<ChangeSettings>(context).color, 0.05)
+                : Provider.of<ChangeSettings>(context).color,
           ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          stops: const [0.01, 0.9],
+          radius: 3,
+          center: Alignment.topLeft,
+          stops: const [0.01, 0.5, 1],
+          tileMode: TileMode.mirror,
         ),
       ),
       child: child,

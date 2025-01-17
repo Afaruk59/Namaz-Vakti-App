@@ -1,5 +1,5 @@
 /*
-Copyright [2024] [Afaruk59]
+Copyright [2024-2025] [Afaruk59]
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -77,6 +77,7 @@ class MainApp extends StatelessWidget {
     Provider.of<ChangeSettings>(context, listen: false).loadNotFromSharedPref();
     Provider.of<ChangeSettings>(context, listen: false).loadAlarm();
     Provider.of<ChangeSettings>(context, listen: false).loadGaps();
+    Provider.of<ChangeSettings>(context, listen: false).loadShape();
     return MaterialApp(
       supportedLocales: L10n.all,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -108,7 +109,14 @@ class MainApp extends StatelessWidget {
                   ? Colors.black87
                   : Colors.white),
         ),
-        cardTheme: CardTheme(color: Provider.of<ChangeSettings>(context).color, elevation: 10),
+        cardTheme: CardTheme(
+          color: Provider.of<ChangeSettings>(context).color,
+          elevation: 10,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+                Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
+          ),
+        ),
         cardColor: Provider.of<ChangeSettings>(context).isDark == false
             ? const Color.fromARGB(255, 230, 230, 230)
             : const Color.fromARGB(255, 45, 45, 45),

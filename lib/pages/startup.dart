@@ -1,5 +1,5 @@
 /*
-Copyright [2024] [Afaruk59]
+Copyright [2024-2025] [Afaruk59]
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -129,7 +129,9 @@ class StartupCard extends StatelessWidget {
                     Expanded(
                       child: Card(
                         color: Theme.of(context).colorScheme.secondaryContainer,
-                        child: const Location(),
+                        child: Location(
+                          title: AppLocalizations.of(context)!.locationButtonTextonStart,
+                        ),
                       ),
                     ),
                     Card(

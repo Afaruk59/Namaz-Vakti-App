@@ -1,5 +1,5 @@
 /*
-Copyright [2024] [Afaruk59]
+Copyright [2024-2025] [Afaruk59]
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -85,10 +85,13 @@ class _ClockState extends State<Clock> {
               child: Stack(
                 children: [
                   Container(
+                    clipBehavior: Clip.hardEdge,
                     height: double.infinity,
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey, width: 1),
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(
+                        Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10,
+                      ),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withOpacity(0.25), // Gölge rengi ve opaklığı
@@ -102,7 +105,9 @@ class _ClockState extends State<Clock> {
                       value: (Provider.of<TimeData>(context).mainDifference.inSeconds -
                               Provider.of<TimeData>(context).difference.inSeconds) /
                           Provider.of<TimeData>(context).mainDifference.inSeconds,
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(
+                        Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10,
+                      ),
                       backgroundColor: Theme.of(context).cardColor,
                       valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).cardTheme.color!),
                     ),

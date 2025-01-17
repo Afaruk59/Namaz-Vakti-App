@@ -1,5 +1,5 @@
 /*
-Copyright [2024] [Afaruk59]
+Copyright [2024-2025] [Afaruk59]
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -42,14 +42,18 @@ class Times extends StatelessWidget {
           const SizedBox(
             width: 20,
           ),
-          IconButton(
-              iconSize: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 22.0 : 25.0,
-              onPressed: () {
-                Navigator.pushNamed(context, '/alarms');
-              },
-              icon: const Icon(
-                Icons.alarm,
-              )),
+          Image.asset(
+            "assets/img/logo.png",
+          ),
+          // IconButton(
+          //   iconSize: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 22.0 : 25.0,
+          //   onPressed: () {
+          //     Navigator.pushNamed(context, '/alarms');
+          //   },
+          //   icon: const Icon(
+          //     Icons.alarm,
+          //   ),
+          // ),
           const SizedBox(
             width: 20,
           ),
@@ -358,10 +362,12 @@ class _TimesBodyState extends State<TimesBody> {
                             Expanded(
                               child: Card(
                                 color: Theme.of(context).colorScheme.secondaryContainer,
-                                child: const Column(
+                                child: Column(
                                   children: [
                                     Expanded(
-                                      child: Location(),
+                                      child: Location(
+                                        title: AppLocalizations.of(context)!.locationButtonText,
+                                      ),
                                     ),
                                   ],
                                 ),

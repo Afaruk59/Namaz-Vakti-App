@@ -1,5 +1,5 @@
 /*
-Copyright [2024] [Afaruk59]
+Copyright [2024-2025] [Afaruk59]
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -209,7 +209,14 @@ class BookCard extends StatelessWidget {
                   elevation: 10,
                   scrollControlDisabledMaxHeightRatio: 0.6,
                   isScrollControlled:
-                      Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? true : false,
+                      Provider.of<ChangeSettings>(context, listen: false).currentHeight! < 700.0
+                          ? true
+                          : false,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                      Provider.of<ChangeSettings>(context, listen: false).rounded == true ? 50 : 10,
+                    ),
+                  ),
                   builder: (BuildContext context) {
                     return Card(
                       elevation: 10,
@@ -217,7 +224,8 @@ class BookCard extends StatelessWidget {
                       child: Scrollbar(
                         child: Padding(
                           padding: EdgeInsets.all(
-                              Provider.of<ChangeSettings>(context).currentHeight! < 700.0
+                              Provider.of<ChangeSettings>(context, listen: false).currentHeight! <
+                                      700.0
                                   ? 5.0
                                   : 15.0),
                           child: ListView(

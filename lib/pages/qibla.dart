@@ -1,5 +1,5 @@
 /*
-Copyright [2024] [Afaruk59]
+Copyright [2024-2025] [Afaruk59]
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -171,11 +171,14 @@ class _QiblaCardState extends State<QiblaCard> {
                                 child: Card(
                                   shape: RoundedRectangleBorder(
                                     side: const BorderSide(
-                                      color: Colors.grey, // Kenar rengini belirleyin
-                                      width: 1.0, // Kenar kalınlığını belirleyin
+                                      color: Colors.grey,
+                                      width: 1.0,
                                     ),
                                     borderRadius: BorderRadius.circular(
-                                        10.0), // Kenarların yuvarlaklığını belirleyin
+                                      Provider.of<ChangeSettings>(context).rounded == true
+                                          ? 50
+                                          : 10,
+                                    ),
                                   ),
                                   color: Theme.of(context).cardColor,
                                   child: Center(
@@ -208,11 +211,14 @@ class _QiblaCardState extends State<QiblaCard> {
                                 child: Card(
                                   shape: RoundedRectangleBorder(
                                     side: const BorderSide(
-                                      color: Colors.grey, // Kenar rengini belirleyin
-                                      width: 1.0, // Kenar kalınlığını belirleyin
+                                      color: Colors.grey,
+                                      width: 1.0,
                                     ),
                                     borderRadius: BorderRadius.circular(
-                                        10.0), // Kenarların yuvarlaklığını belirleyin
+                                      Provider.of<ChangeSettings>(context).rounded == true
+                                          ? 50
+                                          : 10,
+                                    ),
                                   ),
                                   color: Theme.of(context).cardColor,
                                   child: Center(

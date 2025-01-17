@@ -1,5 +1,5 @@
 /*
-Copyright [2024] [Afaruk59]
+Copyright [2024-2025] [Afaruk59]
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ class ChangeSettings with ChangeNotifier {
   double? currentHeight;
 
   bool isDark = false;
-  Color color = Colors.blueGrey;
+  Color color = Colors.blueGrey[500]!;
   bool gradient = true;
 
   static String? cityID;
@@ -49,6 +49,23 @@ class ChangeSettings with ChangeNotifier {
 
   Locale? locale;
   String? langCode;
+
+  bool rounded = false;
+
+  //SHAPE
+  void toggleShape() {
+    rounded = !rounded;
+    saveShape(rounded);
+    notifyListeners();
+  }
+
+  void loadShape() {
+    rounded = _settings.getBool('Shape') ?? false;
+  }
+
+  void saveShape(bool value) {
+    _settings.setBool('Shape', value);
+  }
 
   //HEIGHT
 
@@ -191,7 +208,7 @@ class ChangeSettings with ChangeNotifier {
   }
 
   void loadCol() {
-    color = _settings.getString('color')?.toColor() ?? Colors.blueGrey;
+    color = _settings.getString('color')?.toColor() ?? Colors.blueGrey[500]!;
   }
 
   void saveCol(Color color) {

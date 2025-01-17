@@ -105,6 +105,11 @@
     "search": "Искать",
     "enterLoc": "Введите местоположение...",
 
+    "locationButtonTextonStart": "Найти местоположение",
+    "layout": "Макет",
+    "rounded": "Круглый",
+    "sharp": "Острый",
+
     "ilmihal": "Seâdet-i Ebediyye Endless Bliss",
     "mektubat": "Mektûbat Tercemesi",
     "islam": "İslâm Ahlâkı",

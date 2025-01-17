@@ -1,5 +1,5 @@
 /*
-Copyright [2024] [Afaruk59]
+Copyright [2024-2025] [Afaruk59]
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,8 +16,6 @@ limitations under the License.
 
 import 'package:flutter/material.dart';
 //import 'package:flutter_background_service/flutter_background_service.dart';
-import 'package:geolocator/geolocator.dart';
-
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:namaz_vakti_app/home_page.dart';
 import 'package:provider/provider.dart';
@@ -36,56 +34,6 @@ class _AlarmsState extends State<Alarms> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Bildirimler'),
-          actions: [
-            IconButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text('Pil Tasarrufu'),
-                      content: const Row(
-                        children: [
-                          Expanded(
-                            flex: 5,
-                            child: Text(
-                                'Bildirimler hakkında sorun yaşıyorsanız uygulama ayarlarından pil tasarrufu modunu kapatmayı deneyin.'),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: Icon(
-                              Icons.battery_alert_rounded,
-                              size: 50,
-                            ),
-                          ),
-                        ],
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: const Text('Tamam'),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            Geolocator.openAppSettings();
-                          },
-                          child: const Text('Ayarlara Git'),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-              icon: const Icon(Icons.info_outline_rounded),
-              iconSize: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 22.0 : 25.0,
-            ),
-            const SizedBox(
-              width: 20,
-            ),
-          ],
         ),
         body: Padding(
           padding: const EdgeInsets.all(5),

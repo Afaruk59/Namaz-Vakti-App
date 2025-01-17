@@ -1,5 +1,5 @@
 /*
-Copyright [2024] [Afaruk59]
+Copyright [2024-2025] [Afaruk59]
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -24,7 +24,8 @@ import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:provider/provider.dart';
 
 class Location extends StatefulWidget {
-  const Location({super.key});
+  const Location({super.key, required this.title});
+  final String title;
 
   @override
   LocationState createState() => LocationState();
@@ -258,7 +259,7 @@ class LocationState extends State<Location> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Icon(Icons.location_on),
-                  Text(AppLocalizations.of(context)!.locationButtonText),
+                  Text(widget.title),
                 ],
               ),
             ),

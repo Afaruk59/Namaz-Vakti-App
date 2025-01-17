@@ -1,5 +1,5 @@
 /*
-Copyright [2024] [Afaruk59]
+Copyright [2024-2025] [Afaruk59]
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -78,6 +78,19 @@ class _SettingsCardState extends State<SettingsCard> {
         actions: <Widget>[
           TextButton(
             onPressed: () {
+              setState(() {
+                pickerColor = Colors.blueGrey[
+                    Provider.of<ChangeSettings>(context, listen: false).isDark == true
+                        ? 800
+                        : 500]!;
+              });
+              Provider.of<ChangeSettings>(context, listen: false).changeCol(pickerColor);
+              Provider.of<ChangeSettings>(context, listen: false).saveCol(pickerColor);
+            },
+            child: Text(AppLocalizations.of(context)!.retry),
+          ),
+          TextButton(
+            onPressed: () {
               Navigator.pop(context);
             },
             child: Text(AppLocalizations.of(context)!.ok),
@@ -148,8 +161,25 @@ class _SettingsCardState extends State<SettingsCard> {
                 color: Theme.of(context).cardColor,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                  child: SwitchListTile(
+                    title: Text(AppLocalizations.of(context)!.layout),
+                    subtitle: Provider.of<ChangeSettings>(context).rounded == true
+                        ? Text(AppLocalizations.of(context)!.rounded)
+                        : Text(AppLocalizations.of(context)!.sharp),
+                    value: Provider.of<ChangeSettings>(context).rounded,
+                    onChanged: (_) =>
+                        Provider.of<ChangeSettings>(context, listen: false).toggleShape(),
+                  ),
+                ),
+              ),
+              Card(
+                color: Theme.of(context).cardColor,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
                   child: ListTile(
                     title: Text(AppLocalizations.of(context)!.themeColor),
+                    subtitle: Text(
+                        Provider.of<ChangeSettings>(context, listen: false).color.toHexString()),
                     onTap: () {
                       pickerColor = Provider.of<ChangeSettings>(context, listen: false).color;
                       colorPalette(context);
@@ -183,6 +213,10 @@ class LangSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<int>(
+      shape: RoundedRectangleBorder(
+        borderRadius:
+            BorderRadius.circular(Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
+      ),
       icon: const Icon(Icons.translate_rounded),
       elevation: 10,
       enabled: true,
@@ -247,28 +281,6 @@ class LangItem extends StatelessWidget {
           child: Text(
             title,
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class ColorCircle extends StatelessWidget {
-  const ColorCircle({super.key, required this.col});
-  final MaterialColor col;
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Card(
-        shape: const CircleBorder(),
-        color: col,
-        child: TextButton(
-          child: Container(),
-          onPressed: () {
-            Provider.of<ChangeSettings>(context, listen: false).changeCol(col);
-            Provider.of<ChangeSettings>(context, listen: false).saveCol(col);
-          },
         ),
       ),
     );

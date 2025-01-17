@@ -1,5 +1,5 @@
 /*
-Copyright [2024] [Afaruk59]
+Copyright [2024-2025] [Afaruk59]
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import 'package:html/dom.dart' as dom;
 import 'package:provider/provider.dart';
 import 'package:translator/translator.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class CalendarBtn extends StatefulWidget {
   const CalendarBtn({super.key});
@@ -113,8 +112,6 @@ class _CalendarBtnState extends State<CalendarBtn> {
     }
   }
 
-  final _titleStyle = const TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
-
   @override
   Widget build(BuildContext context) {
     return Positioned(
@@ -137,6 +134,11 @@ class _CalendarBtnState extends State<CalendarBtn> {
             context: context,
             showDragHandle: true,
             scrollControlDisabledMaxHeightRatio: 0.8,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(
+                Provider.of<ChangeSettings>(context, listen: false).rounded == true ? 50 : 10,
+              ),
+            ),
             isScrollControlled:
                 Provider.of<ChangeSettings>(context, listen: false).currentHeight! < 700.0
                     ? true
@@ -166,28 +168,22 @@ class _CalendarBtnState extends State<CalendarBtn> {
                           _day!,
                         ),
                         const SizedBox(
-                          height: 20,
-                        ),
-                        Text(
-                          AppLocalizations.of(context)!.calendarTitle1,
-                          style: _titleStyle,
+                          height: 30,
+                          child: Divider(
+                            thickness: 3,
+                          ),
                         ),
                         Text(
                           _word!,
                         ),
                         const SizedBox(
-                          height: 20,
-                        ),
-                        Text(
-                          AppLocalizations.of(context)!.calendarTitle2,
-                          style: _titleStyle,
-                        ),
-                        const SizedBox(
-                          height: 20,
+                          height: 40,
                         ),
                         Container(
                           decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.all(Radius.circular(10)),
+                            borderRadius: BorderRadius.circular(
+                              Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10,
+                            ),
                             border: Border.all(
                               color: Colors.grey,
                               width: 2,

@@ -1,5 +1,5 @@
 /*
-Copyright [2024] [Afaruk59]
+Copyright [2024-2025] [Afaruk59]
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@ limitations under the License.
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:namaz_vakti_app/pages/timesPage/clock.dart';
 import 'package:namaz_vakti_app/data/time_data.dart';
 import 'package:provider/provider.dart';
@@ -46,8 +47,9 @@ class MainTimes extends StatelessWidget {
                         color: Colors.grey, // Kenar rengini belirleyin
                         width: 1.0, // Kenar kalınlığını belirleyin
                       ),
-                      borderRadius:
-                          BorderRadius.circular(10.0), // Kenarların yuvarlaklığını belirleyin
+                      borderRadius: BorderRadius.circular(
+                        Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10,
+                      ), // Kenarların yuvarlaklığını belirleyin
                     ),
                     color: Theme.of(context).cardColor,
                     child: Column(
@@ -92,8 +94,9 @@ class MainTimes extends StatelessWidget {
                         color: Colors.grey, // Kenar rengini belirleyin
                         width: 1.0, // Kenar kalınlığını belirleyin
                       ),
-                      borderRadius:
-                          BorderRadius.circular(10.0), // Kenarların yuvarlaklığını belirleyin
+                      borderRadius: BorderRadius.circular(
+                        Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10,
+                      ), // Kenarların yuvarlaklığını belirleyin
                     ),
                     color: Theme.of(context).cardColor,
                     child: Column(

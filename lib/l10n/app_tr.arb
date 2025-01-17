@@ -381,6 +381,23 @@
         "description": "Text"
     },
 
+    "locationButtonTextonStart": "Konumu Bul",
+    "@locationButtonTextonStart":{
+        "description": "Button text"
+    },
+    "layout": "Düzen",
+    "@layout":{
+        "description": "Text"
+    },
+    "rounded": "Yuvarlak",
+    "@rounded":{
+        "description": "Text"
+    },
+    "sharp": "Keskin",
+    "@sharp":{
+        "description": "Text"
+    },
+
 
     "ilmihal": "Tam İlmihâl Se`âdet-i Ebediyye",
     "@ilmihal":{

@@ -105,6 +105,11 @@
     "search": "Buscar",
     "enterLoc": "Ingresar Ubicación...",
 
+    "locationButtonTextonStart": "Encontrar ubicación",
+    "layout": "Diseño",
+    "rounded": "Redondo",
+    "sharp": "Afilado",
+
     "ilmihal": "Seâdet-i Ebediyye Endless Bliss",
     "mektubat": "Mektûbat Tercemesi",
     "islam": "İslâm Ahlâkı",
