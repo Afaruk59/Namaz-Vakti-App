@@ -720,7 +720,7 @@ class _ZikirCardState extends State<ZikirCard> {
                                   )
                                 : Container(),
                             Positioned(
-                              top: 15,
+                              top: _selectedProfile == ' ' ? 15 : 60,
                               right: 20,
                               child: IconButton(
                                 onPressed: () {

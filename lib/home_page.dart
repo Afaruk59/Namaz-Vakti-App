@@ -16,6 +16,7 @@ limitations under the License.
 
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:in_app_update/in_app_update.dart';
 import 'package:namaz_vakti_app/pages/more.dart';
 import 'package:namaz_vakti_app/pages/qibla.dart';
 import 'package:namaz_vakti_app/pages/settings.dart';
@@ -75,6 +76,32 @@ class _HomePageState extends State<HomePage> {
   Timer? timer;
   int _currentIndex = 0;
   final PageController _pageController = PageController();
+
+  @override
+  void initState() {
+    super.initState();
+    _checkForUpdate();
+  }
+
+  Future<void> _checkForUpdate() async {
+    InAppUpdate.checkForUpdate().then((info) {
+      setState(() {
+        if (info.updateAvailability == UpdateAvailability.updateAvailable) {
+          _update();
+        }
+      });
+    }).catchError((e) {
+      print(e.toString());
+    });
+  }
+
+  void _update() async {
+    print('Updating');
+    await InAppUpdate.startFlexibleUpdate();
+    InAppUpdate.completeFlexibleUpdate().then((_) {}).catchError((e) {
+      print(e.toString());
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

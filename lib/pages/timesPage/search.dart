@@ -110,8 +110,11 @@ class _SearchState extends State<Search> {
                                 labelText: AppLocalizations.of(context)!.search,
                                 hintText: AppLocalizations.of(context)!.enterLoc,
                                 prefixIcon: const Icon(Icons.search),
-                                border: const OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(
+                                      Provider.of<ChangeSettings>(context).rounded == true
+                                          ? 50
+                                          : 10),
                                 ),
                               ),
                             ),
