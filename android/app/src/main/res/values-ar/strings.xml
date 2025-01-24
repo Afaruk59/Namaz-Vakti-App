@@ -1,3 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">أوقات الصلاة</string>
+    <string name="app_name">مواقيت الصلاة</string>
+    <string name="imsak">الفجر</string>
+    <string name="gunes">الشروق</string>
+    <string name="ogle">الظهر</string>
+    <string name="ikindi">العصر</string>
+    <string name="aksam">المغرب</string>
+    <string name="yatsi">العشاء</string>
+    <string name="last_update">آخر تحديث: %1$s</string>
 </resources>

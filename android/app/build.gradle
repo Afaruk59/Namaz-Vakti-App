@@ -30,7 +30,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.example.namaz_vakti_app"
+    namespace = "com.afaruk59.namaz_vakti_app"
     compileSdk 34
     ndkVersion = flutter.ndkVersion
 

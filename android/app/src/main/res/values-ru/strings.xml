@@ -1,3 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Времена Молитвы</string>
+    <string name="app_name">Время Намаза</string>
+    <string name="imsak">Фаджр</string>
+    <string name="gunes">Восход</string>
+    <string name="ogle">Зухр</string>
+    <string name="ikindi">Аср</string>
+    <string name="aksam">Магриб</string>
+    <string name="yatsi">Иша</string>
+    <string name="last_update">Последнее обновление: %1$s</string>
 </resources>

@@ -1,3 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Gebetszeiten-App</string>
+    <string name="app_name">Gebetszeiten</string>
+    <string name="imsak">Fajr</string>
+    <string name="gunes">Sonnenaufgang</string>
+    <string name="ogle">Dhuhr</string>
+    <string name="ikindi">Asr</string>
+    <string name="aksam">Maghrib</string>
+    <string name="yatsi">Isha</string>
+    <string name="last_update">Letzte Aktualisierung: %1$s</string>
 </resources>
