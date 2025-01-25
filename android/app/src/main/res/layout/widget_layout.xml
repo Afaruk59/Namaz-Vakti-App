@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widgetLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/widget_background"
@@ -18,7 +19,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/app_name"
-            android:textColor="@color/widget_text_color"
             android:textSize="12sp"
             android:textStyle="bold"
             android:layout_column="0"
@@ -38,7 +38,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="4dp"
-                android:textColor="@color/widget_text_color_secondary"
                 android:textSize="10sp" />
 
             <ImageButton
@@ -67,11 +66,11 @@
             android:layout_weight="1"
             android:orientation="vertical">
             <TextView
+                android:id="@+id/imsakLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/imsak"
                 android:textAlignment="center"
-                android:textColor="@color/widget_text_color"
                 android:textStyle="bold"
                 android:textSize="11sp" />
             <TextView
@@ -79,7 +78,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:textColor="@color/widget_text_color"
                 android:textSize="11sp" />
         </LinearLayout>
 
@@ -90,11 +88,11 @@
             android:layout_weight="1"
             android:orientation="vertical">
             <TextView
+                android:id="@+id/gunesLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/gunes"
                 android:textAlignment="center"
-                android:textColor="@color/widget_text_color"
                 android:textStyle="bold"
                 android:textSize="11sp" />
             <TextView
@@ -102,7 +100,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:textColor="@color/widget_text_color"
                 android:textSize="11sp" />
         </LinearLayout>
 
@@ -113,11 +110,11 @@
             android:layout_weight="1"
             android:orientation="vertical">
             <TextView
+                android:id="@+id/ogleLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/ogle"
                 android:textAlignment="center"
-                android:textColor="@color/widget_text_color"
                 android:textStyle="bold"
                 android:textSize="11sp" />
             <TextView
@@ -125,7 +122,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:textColor="@color/widget_text_color"
                 android:textSize="11sp" />
         </LinearLayout>
 
@@ -136,11 +132,11 @@
             android:layout_weight="1"
             android:orientation="vertical">
             <TextView
+                android:id="@+id/ikindiLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/ikindi"
                 android:textAlignment="center"
-                android:textColor="@color/widget_text_color"
                 android:textStyle="bold"
                 android:textSize="11sp" />
             <TextView
@@ -148,7 +144,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:textColor="@color/widget_text_color"
                 android:textSize="11sp" />
         </LinearLayout>
 
@@ -159,11 +154,11 @@
             android:layout_weight="1"
             android:orientation="vertical">
             <TextView
+                android:id="@+id/aksamLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/aksam"
                 android:textAlignment="center"
-                android:textColor="@color/widget_text_color"
                 android:textStyle="bold"
                 android:textSize="11sp" />
             <TextView
@@ -171,7 +166,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:textColor="@color/widget_text_color"
                 android:textSize="11sp" />
         </LinearLayout>
 
@@ -182,11 +176,11 @@
             android:layout_weight="1"
             android:orientation="vertical">
             <TextView
+                android:id="@+id/yatsiLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/yatsi"
                 android:textAlignment="center"
-                android:textColor="@color/widget_text_color"
                 android:textStyle="bold"
                 android:textSize="11sp" />
             <TextView
@@ -194,7 +188,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:textColor="@color/widget_text_color"
                 android:textSize="11sp" />
         </LinearLayout>
     </LinearLayout>

@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.widget.RemoteViews;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -28,11 +29,13 @@ public class PrayerTimesWidget extends AppWidgetProvider {
     private static final String PREFS_NAME = "FlutterSharedPreferences";
     private static final String BASE_URL = "https://www.namazvakti.com/XML.php?cityID=";
     private static final String ACTION_REFRESH = "com.afaruk59.namaz_vakti_app.ACTION_REFRESH";
+    private static AsyncTask<Object, Void, String[]> mAsyncTask;
 
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
-        if (ACTION_REFRESH.equals(intent.getAction())) {
+        if (ACTION_REFRESH.equals(intent.getAction()) || 
+            Intent.ACTION_CONFIGURATION_CHANGED.equals(intent.getAction())) {
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new android.content.ComponentName(context, PrayerTimesWidget.class));
             onUpdate(context, appWidgetManager, appWidgetIds);
@@ -41,6 +44,10 @@ public class PrayerTimesWidget extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        if (mAsyncTask != null) {
+            mAsyncTask.cancel(true);
+        }
+        
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId);
         }
@@ -48,7 +55,6 @@ public class PrayerTimesWidget extends AppWidgetProvider {
 
     @Override
     public void onEnabled(Context context) {
-        // Widget ilk kez eklendiğinde çağrılır
         super.onEnabled(context);
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new android.content.ComponentName(context, PrayerTimesWidget.class));
@@ -57,39 +63,76 @@ public class PrayerTimesWidget extends AppWidgetProvider {
 
     @Override
     public void onDisabled(Context context) {
-        // Son widget kaldırıldığında çağrılır
         super.onDisabled(context);
+        if (mAsyncTask != null) {
+            mAsyncTask.cancel(true);
+            mAsyncTask = null;
+        }
     }
 
     private static String getFormattedDateTime(Context context) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
         Date now = new Date();
-        return context.getString(R.string.last_update, timeFormat.format(now) + " | " + dateFormat.format(now));
+        return context.getString(R.string.last_update, timeFormat.format(now));
+    }
+
+    private static void applyTheme(Context context, RemoteViews views) {
+        int nightModeFlags = context.getResources().getConfiguration().uiMode & 
+                            Configuration.UI_MODE_NIGHT_MASK;
+        boolean isDarkTheme = nightModeFlags == Configuration.UI_MODE_NIGHT_YES;
+
+        // Arka plan ve metin renklerini ayarla
+        views.setInt(R.id.widgetLayout, "setBackgroundResource", 
+            isDarkTheme ? R.drawable.widget_background_dark : R.drawable.widget_background_light);
+
+        int textColor = context.getResources().getColor(
+            isDarkTheme ? R.color.widget_text_color_dark : R.color.widget_text_color_light);
+        int textColorSecondary = context.getResources().getColor(
+            isDarkTheme ? R.color.widget_text_color_secondary_dark : R.color.widget_text_color_secondary_light);
+
+        // Ana metin renkleri
+        views.setTextColor(R.id.widgetTitle, textColor);
+        views.setTextColor(R.id.imsakTime, textColor);
+        views.setTextColor(R.id.gunesTime, textColor);
+        views.setTextColor(R.id.ogleTime, textColor);
+        views.setTextColor(R.id.ikindiTime, textColor);
+        views.setTextColor(R.id.aksamTime, textColor);
+        views.setTextColor(R.id.yatsiTime, textColor);
+
+        // Başlık renkleri
+        int[] titleIds = {
+            R.id.imsakLabel, R.id.gunesLabel, R.id.ogleLabel,
+            R.id.ikindiLabel, R.id.aksamLabel, R.id.yatsiLabel
+        };
+        for (int id : titleIds) {
+            views.setTextColor(id, textColor);
+        }
+
+        // İkincil metin rengi
+        views.setTextColor(R.id.lastUpdate, textColorSecondary);
     }
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
         try {
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
             
-            // Yenileme butonu için intent oluştur
+            // Tema ayarlarını uygula
+            applyTheme(context, views);
+            
             Intent refreshIntent = new Intent(context, PrayerTimesWidget.class);
             refreshIntent.setAction(ACTION_REFRESH);
             PendingIntent refreshPendingIntent = PendingIntent.getBroadcast(
                 context, 0, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
             views.setOnClickPendingIntent(R.id.refreshButton, refreshPendingIntent);
             
-            // Bugünün tarihini al
             Calendar calendar = Calendar.getInstance();
             final int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
-            final int currentMonth = calendar.get(Calendar.MONTH) + 1; // Ocak = 0 olduğu için +1 ekliyoruz
+            final int currentMonth = calendar.get(Calendar.MONTH) + 1;
             
-            // SharedPreferences'dan location ID ve şehir adını al
             SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
             String locationId = prefs.getString("flutter.location", "");
             String cityName = prefs.getString("flutter.name", context.getString(R.string.app_name));
             
-            // Widget başlığını şehir adı ile güncelle
             views.setTextViewText(R.id.widgetTitle, cityName);
             
             System.out.println("Location ID: " + locationId);
@@ -97,14 +140,29 @@ public class PrayerTimesWidget extends AppWidgetProvider {
             System.out.println("Current Date: " + currentDay + "/" + currentMonth);
             
             if (!locationId.isEmpty()) {
-                // API'den verileri al
-                new AsyncTask<String, Void, String[]>() {
+                views.setTextViewText(R.id.imsakTime, "...");
+                views.setTextViewText(R.id.gunesTime, "...");
+                views.setTextViewText(R.id.ogleTime, "...");
+                views.setTextViewText(R.id.ikindiTime, "...");
+                views.setTextViewText(R.id.aksamTime, "...");
+                views.setTextViewText(R.id.yatsiTime, "...");
+                views.setTextViewText(R.id.lastUpdate, context.getString(R.string.last_update, "..."));
+                appWidgetManager.updateAppWidget(appWidgetId, views);
+
+                mAsyncTask = new AsyncTask<Object, Void, String[]>() {
+                    private final Context mContext = context;
+                    private final AppWidgetManager mAppWidgetManager = appWidgetManager;
+                    private final int mAppWidgetId = appWidgetId;
+                    private final RemoteViews mViews = views;
+
                     @Override
-                    protected String[] doInBackground(String... params) {
+                    protected String[] doInBackground(Object... params) {
                         try {
                             URL url = new URL(BASE_URL + locationId);
                             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                             connection.setRequestMethod("GET");
+                            connection.setConnectTimeout(10000);
+                            connection.setReadTimeout(10000);
                             
                             BufferedReader reader = new BufferedReader(
                                 new InputStreamReader(connection.getInputStream())
@@ -117,7 +175,6 @@ public class PrayerTimesWidget extends AppWidgetProvider {
                             }
                             reader.close();
 
-                            // XML'i parse et
                             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
                             XmlPullParser parser = factory.newPullParser();
                             parser.setInput(new StringReader(response.toString()));
@@ -127,7 +184,6 @@ public class PrayerTimesWidget extends AppWidgetProvider {
                             
                             while (eventType != XmlPullParser.END_DOCUMENT) {
                                 if (eventType == XmlPullParser.START_TAG && parser.getName().equals("prayertimes")) {
-                                    // prayertimes elementinin day ve month attribute'larını kontrol et
                                     String dayStr = parser.getAttributeValue(null, "day");
                                     String monthStr = parser.getAttributeValue(null, "month");
                                     
@@ -136,7 +192,6 @@ public class PrayerTimesWidget extends AppWidgetProvider {
                                         int month = Integer.parseInt(monthStr);
                                         
                                         if (day == currentDay && month == currentMonth) {
-                                            // Bugünün verilerini bulduk
                                             parser.next();
                                             if (parser.getEventType() == XmlPullParser.TEXT) {
                                                 String text = parser.getText().trim();
@@ -164,41 +219,42 @@ public class PrayerTimesWidget extends AppWidgetProvider {
                     
                     @Override
                     protected void onPostExecute(String[] times) {
-                        if (times != null && times.length > 13) {
-                            try {
-                                // Flutter kodundaki sıralamaya göre vakitleri al
-                                String imsak = times[0];
-                                String gunes = times[2];
-                                String ogle = times[5];
-                                String ikindi = times[6];
-                                String aksam = times[9];
-                                String yatsi = times[11];
+                        if (!isCancelled()) {
+                            if (times != null && times.length > 13) {
+                                try {
+                                    String imsak = times[0];
+                                    String gunes = times[2];
+                                    String ogle = times[5];
+                                    String ikindi = times[6];
+                                    String aksam = times[9];
+                                    String yatsi = times[11];
 
-                                // Vakitleri widget'a yerleştir
-                                views.setTextViewText(R.id.imsakTime, imsak);
-                                views.setTextViewText(R.id.gunesTime, gunes);
-                                views.setTextViewText(R.id.ogleTime, ogle);
-                                views.setTextViewText(R.id.ikindiTime, ikindi);
-                                views.setTextViewText(R.id.aksamTime, aksam);
-                                views.setTextViewText(R.id.yatsiTime, yatsi);
-                                
-                                // Son güncelleme zamanını tarih ve saat olarak ayarla
-                                views.setTextViewText(R.id.lastUpdate, getFormattedDateTime(context));
-                                
-                                // Widget'ı güncelle
-                                appWidgetManager.updateAppWidget(appWidgetId, views);
-                            } catch (Exception e) {
-                                Log.e("PrayerTimesWidget", "Error parsing data", e);
-                                setDefaultTimes(context, views, appWidgetManager, appWidgetId);
+                                    mViews.setTextViewText(R.id.imsakTime, imsak);
+                                    mViews.setTextViewText(R.id.gunesTime, gunes);
+                                    mViews.setTextViewText(R.id.ogleTime, ogle);
+                                    mViews.setTextViewText(R.id.ikindiTime, ikindi);
+                                    mViews.setTextViewText(R.id.aksamTime, aksam);
+                                    mViews.setTextViewText(R.id.yatsiTime, yatsi);
+                                    
+                                    mViews.setTextViewText(R.id.lastUpdate, getFormattedDateTime(mContext));
+                                    
+                                    // Tema ayarlarını tekrar uygula
+                                    applyTheme(mContext, mViews);
+                                    
+                                    mAppWidgetManager.updateAppWidget(mAppWidgetId, mViews);
+                                } catch (Exception e) {
+                                    Log.e("PrayerTimesWidget", "Error parsing data", e);
+                                    setDefaultTimes(mContext, mViews, mAppWidgetManager, mAppWidgetId);
+                                }
+                            } else {
+                                Log.d("PrayerTimesWidget", "Invalid data format or no data received");
+                                setDefaultTimes(mContext, mViews, mAppWidgetManager, mAppWidgetId);
                             }
-                        } else {
-                            Log.d("PrayerTimesWidget", "Invalid data format or no data received");
-                            setDefaultTimes(context, views, appWidgetManager, appWidgetId);
                         }
                     }
-                }.execute();
+                };
+                mAsyncTask.execute();
             } else {
-                // Location ID bulunamadıysa varsayılan değerleri göster
                 setDefaultTimes(context, views, appWidgetManager, appWidgetId);
             }
         } catch (Exception e) {
@@ -207,20 +263,21 @@ public class PrayerTimesWidget extends AppWidgetProvider {
     }
 
     private static void setDefaultTimes(Context context, RemoteViews views, AppWidgetManager appWidgetManager, int appWidgetId) {
-        // SharedPreferences'dan şehir adını al (varsayılan değerler için de)
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         String cityName = prefs.getString("flutter.name", context.getString(R.string.app_name));
         views.setTextViewText(R.id.widgetTitle, cityName);
 
-        views.setTextViewText(R.id.imsakTime, "00:00");
-        views.setTextViewText(R.id.gunesTime, "00:00");
-        views.setTextViewText(R.id.ogleTime, "00:00");
-        views.setTextViewText(R.id.ikindiTime, "00:00");
-        views.setTextViewText(R.id.aksamTime, "00:00");
-        views.setTextViewText(R.id.yatsiTime, "00:00");
+        views.setTextViewText(R.id.imsakTime, "...");
+        views.setTextViewText(R.id.gunesTime, "...");
+        views.setTextViewText(R.id.ogleTime, "...");
+        views.setTextViewText(R.id.ikindiTime, "...");
+        views.setTextViewText(R.id.aksamTime, "...");
+        views.setTextViewText(R.id.yatsiTime, "...");
 
-        // Son güncelleme zamanını tarih ve saat olarak ayarla
         views.setTextViewText(R.id.lastUpdate, getFormattedDateTime(context));
+        
+        // Tema ayarlarını uygula
+        applyTheme(context, views);
         
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
