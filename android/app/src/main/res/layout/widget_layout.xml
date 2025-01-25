@@ -1,156 +1,201 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/widget_background"
-    android:padding="12dp">
+    android:orientation="vertical"
+    android:padding="4dp">
 
+    <!-- Üst kısım - Başlık -->
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="2"
+        android:alignmentMode="alignMargins">
+
+        <TextView
+            android:id="@+id/widgetTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textColor="@color/widget_text_color"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:layout_column="0"
+            android:layout_gravity="start|center_vertical"
+            android:layout_marginStart="8dp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_column="1"
+            android:layout_gravity="end|center_vertical">
+
+            <TextView
+                android:id="@+id/lastUpdate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="4dp"
+                android:textColor="@color/widget_text_color_secondary"
+                android:textSize="10sp" />
+
+            <ImageButton
+                android:id="@+id/refreshButton"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:background="@drawable/refresh_button_background"
+                android:src="@drawable/ic_refresh"
+                android:padding="2dp"
+                android:scaleType="fitCenter" />
+        </LinearLayout>
+    </GridLayout>
+
+    <!-- Alt kısım - Vakitler -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_marginTop="2dp"
+        android:orientation="horizontal"
+        android:weightSum="6">
 
-        <!-- Başlık -->
-        <TextView
-            android:id="@+id/widgetTitle"
-            android:layout_width="match_parent"
+        <!-- İmsak -->
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/app_name"
-            android:textAlignment="center"
-            android:textColor="@color/widget_text_color"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp"/>
-
-        <!-- Vakit Grid Layout -->
-        <GridLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:columnCount="2"
-            android:rowCount="4"
-            android:alignmentMode="alignMargins"
-            android:useDefaultMargins="true">
-
-            <!-- İmsak -->
+            android:layout_weight="1"
+            android:orientation="vertical">
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
                 android:text="@string/imsak"
+                android:textAlignment="center"
                 android:textColor="@color/widget_text_color"
-                android:textSize="14sp"/>
-
+                android:textStyle="bold"
+                android:textSize="11sp" />
             <TextView
                 android:id="@+id/imsakTime"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:textAlignment="textEnd"
+                android:textAlignment="center"
                 android:textColor="@color/widget_text_color"
-                android:textSize="14sp"/>
+                android:textSize="11sp" />
+        </LinearLayout>
 
-            <!-- Güneş -->
+        <!-- Güneş -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
                 android:text="@string/gunes"
+                android:textAlignment="center"
                 android:textColor="@color/widget_text_color"
-                android:textSize="14sp"/>
-
+                android:textStyle="bold"
+                android:textSize="11sp" />
             <TextView
                 android:id="@+id/gunesTime"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:textAlignment="textEnd"
+                android:textAlignment="center"
                 android:textColor="@color/widget_text_color"
-                android:textSize="14sp"/>
+                android:textSize="11sp" />
+        </LinearLayout>
 
-            <!-- Öğle -->
+        <!-- Öğle -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
                 android:text="@string/ogle"
+                android:textAlignment="center"
                 android:textColor="@color/widget_text_color"
-                android:textSize="14sp"/>
-
+                android:textStyle="bold"
+                android:textSize="11sp" />
             <TextView
                 android:id="@+id/ogleTime"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:textAlignment="textEnd"
+                android:textAlignment="center"
                 android:textColor="@color/widget_text_color"
-                android:textSize="14sp"/>
+                android:textSize="11sp" />
+        </LinearLayout>
 
-            <!-- İkindi -->
+        <!-- İkindi -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
                 android:text="@string/ikindi"
+                android:textAlignment="center"
                 android:textColor="@color/widget_text_color"
-                android:textSize="14sp"/>
-
+                android:textStyle="bold"
+                android:textSize="11sp" />
             <TextView
                 android:id="@+id/ikindiTime"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:textAlignment="textEnd"
+                android:textAlignment="center"
                 android:textColor="@color/widget_text_color"
-                android:textSize="14sp"/>
+                android:textSize="11sp" />
+        </LinearLayout>
 
-            <!-- Akşam -->
+        <!-- Akşam -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
                 android:text="@string/aksam"
+                android:textAlignment="center"
                 android:textColor="@color/widget_text_color"
-                android:textSize="14sp"/>
-
+                android:textStyle="bold"
+                android:textSize="11sp" />
             <TextView
                 android:id="@+id/aksamTime"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:textAlignment="textEnd"
+                android:textAlignment="center"
                 android:textColor="@color/widget_text_color"
-                android:textSize="14sp"/>
+                android:textSize="11sp" />
+        </LinearLayout>
 
-            <!-- Yatsı -->
+        <!-- Yatsı -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
                 android:text="@string/yatsi"
+                android:textAlignment="center"
                 android:textColor="@color/widget_text_color"
-                android:textSize="14sp"/>
-
+                android:textStyle="bold"
+                android:textSize="11sp" />
             <TextView
                 android:id="@+id/yatsiTime"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:textAlignment="textEnd"
+                android:textAlignment="center"
                 android:textColor="@color/widget_text_color"
-                android:textSize="14sp"/>
-
-        </GridLayout>
-
-        <!-- Son Güncelleme -->
-        <TextView
-            android:id="@+id/lastUpdate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textAlignment="center"
-            android:textColor="@color/widget_text_color_secondary"
-            android:textSize="12sp"/>
-
+                android:textSize="11sp" />
+        </LinearLayout>
     </LinearLayout>
-
-</RelativeLayout> 
+</LinearLayout> 

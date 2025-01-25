@@ -1,8 +1,10 @@
 package com.afaruk59.namaz_vakti_app;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.widget.RemoteViews;
 import java.text.SimpleDateFormat;
@@ -25,6 +27,17 @@ public class PrayerTimesWidget extends AppWidgetProvider {
 
     private static final String PREFS_NAME = "FlutterSharedPreferences";
     private static final String BASE_URL = "https://www.namazvakti.com/XML.php?cityID=";
+    private static final String ACTION_REFRESH = "com.afaruk59.namaz_vakti_app.ACTION_REFRESH";
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        super.onReceive(context, intent);
+        if (ACTION_REFRESH.equals(intent.getAction())) {
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new android.content.ComponentName(context, PrayerTimesWidget.class));
+            onUpdate(context, appWidgetManager, appWidgetIds);
+        }
+    }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -58,6 +71,13 @@ public class PrayerTimesWidget extends AppWidgetProvider {
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
         try {
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
+            
+            // Yenileme butonu için intent oluştur
+            Intent refreshIntent = new Intent(context, PrayerTimesWidget.class);
+            refreshIntent.setAction(ACTION_REFRESH);
+            PendingIntent refreshPendingIntent = PendingIntent.getBroadcast(
+                context, 0, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+            views.setOnClickPendingIntent(R.id.refreshButton, refreshPendingIntent);
             
             // Bugünün tarihini al
             Calendar calendar = Calendar.getInstance();
