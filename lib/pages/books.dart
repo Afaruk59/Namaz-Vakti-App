@@ -154,7 +154,6 @@ class Books extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 50.0),
                 child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(elevation: 10),
                   onPressed: () async {
                     final Uri url = Uri.parse('https://www.hakikatkitabevi.net/');
                     await launchUrl(url);
@@ -199,7 +198,6 @@ class BookCard extends StatelessWidget {
               Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 3.0 : 8.0),
           child: ListTile(
             leading: ElevatedButton(
-              style: ElevatedButton.styleFrom(elevation: 10, shape: const CircleBorder()),
               onPressed: () {
                 showModalBottomSheet(
                   enableDrag: true,
@@ -251,9 +249,6 @@ class BookCard extends StatelessWidget {
                   const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
             ),
             trailing: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                elevation: 10,
-              ),
               onPressed: () async {
                 final Uri url = Uri.parse(link);
                 await launchUrl(url);

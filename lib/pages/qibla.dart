@@ -89,36 +89,42 @@ class _QiblaCardState extends State<QiblaCard> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Padding(
-          padding: EdgeInsets.only(
-              top: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 0 : 20.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+        Expanded(
+          flex: 2,
+          child: Padding(
+            padding: EdgeInsets.only(
+                top: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 0 : 20.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    _buildDirectionText(),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+        Expanded(
+          flex: 5,
+          child: Stack(
             children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  _buildDirectionText(),
-                ],
+              Center(
+                child: Transform.rotate(
+                  angle: ((_direction ?? 0) * (3.14159265358979323846 / 180) * -1),
+                  child: Image.asset('assets/img/compass.png'),
+                ),
+              ),
+              Center(
+                child: Transform.rotate(
+                  angle: ((_targetDir ?? 0) * (3.14159265358979323846 / 180) * -1),
+                  child: Image.asset('assets/img/target.png'),
+                ),
               ),
             ],
           ),
-        ),
-        Stack(
-          children: [
-            Center(
-              child: Transform.rotate(
-                angle: ((_direction ?? 0) * (3.14159265358979323846 / 180) * -1),
-                child: Image.asset('assets/img/compass.png'),
-              ),
-            ),
-            Center(
-              child: Transform.rotate(
-                angle: ((_targetDir ?? 0) * (3.14159265358979323846 / 180) * -1),
-                child: Image.asset('assets/img/target.png'),
-              ),
-            ),
-          ],
         ),
       ],
     );

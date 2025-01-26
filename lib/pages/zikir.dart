@@ -148,7 +148,6 @@ class _ZikirCardState extends State<ZikirCard> {
                                                 );
                                               });
                                         },
-                                        style: ElevatedButton.styleFrom(elevation: 10),
                                         child: const Icon(Icons.restart_alt),
                                       ),
                                       Provider.of<ChangeSettings>(context, listen: false)
@@ -162,7 +161,6 @@ class _ZikirCardState extends State<ZikirCard> {
                                                       .saveVib(false);
                                                 });
                                               },
-                                              style: ElevatedButton.styleFrom(elevation: 10),
                                               child: const Icon(Icons.vibration),
                                             )
                                           : OutlinedButton(
@@ -367,9 +365,6 @@ class _ZikirCardState extends State<ZikirCard> {
                                                             _target, _stack);
                                                   });
                                                 },
-                                                style: ElevatedButton.styleFrom(
-                                                  elevation: 10,
-                                                ),
                                                 child: const Icon(Icons.add),
                                               ),
                                               FilledButton.tonal(
@@ -395,9 +390,6 @@ class _ZikirCardState extends State<ZikirCard> {
                                                     }
                                                   });
                                                 },
-                                                style: ElevatedButton.styleFrom(
-                                                  elevation: 10,
-                                                ),
                                                 child: const Icon(Icons.remove),
                                               ),
                                             ],

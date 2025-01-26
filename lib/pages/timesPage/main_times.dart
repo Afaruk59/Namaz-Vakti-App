@@ -17,8 +17,10 @@ limitations under the License.
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
+import 'package:namaz_vakti_app/pages/timesPage/calendar.dart';
 import 'package:namaz_vakti_app/pages/timesPage/clock.dart';
 import 'package:namaz_vakti_app/data/time_data.dart';
+import 'package:namaz_vakti_app/pages/timesPage/detailed_times.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
@@ -146,7 +148,17 @@ class MainTimes extends StatelessWidget {
           ),
           const Expanded(
             flex: 1,
-            child: Clock(),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 5.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(flex: 1, child: DetailedTimesBtn()),
+                  Expanded(flex: 5, child: Clock()),
+                  Expanded(flex: 1, child: CalendarBtn()),
+                ],
+              ),
+            ),
           ),
         ],
       ),

@@ -43,22 +43,51 @@ public class PrayerTimesWidget extends AppWidgetProvider {
     }
 
     @Override
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        if (mAsyncTask != null) {
-            mAsyncTask.cancel(true);
-        }
-        
-        for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId);
-        }
-    }
-
-    @Override
     public void onEnabled(Context context) {
         super.onEnabled(context);
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new android.content.ComponentName(context, PrayerTimesWidget.class));
-        onUpdate(context, appWidgetManager, appWidgetIds);
+        
+        // Widget ilk eklendiğinde hemen güncelleme yap
+        if (appWidgetIds != null && appWidgetIds.length > 0) {
+            for (int appWidgetId : appWidgetIds) {
+                RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
+                applyTheme(context, views);
+                updateAppWidget(context, appWidgetManager, appWidgetId);
+            }
+        }
+    }
+
+    @Override
+    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        // Önceki AsyncTask'i iptal et
+        if (mAsyncTask != null) {
+            mAsyncTask.cancel(true);
+            mAsyncTask = null;
+        }
+        
+        // Her widget için güncelleme yap
+        for (int appWidgetId : appWidgetIds) {
+            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
+            
+            // Yükleniyor durumunu göster
+            views.setTextViewText(R.id.imsakTime, "...");
+            views.setTextViewText(R.id.gunesTime, "...");
+            views.setTextViewText(R.id.ogleTime, "...");
+            views.setTextViewText(R.id.ikindiTime, "...");
+            views.setTextViewText(R.id.aksamTime, "...");
+            views.setTextViewText(R.id.yatsiTime, "...");
+            views.setTextViewText(R.id.lastUpdate, context.getString(R.string.last_update, "..."));
+            
+            // Tema ayarlarını uygula
+            applyTheme(context, views);
+            
+            // Widget'ı güncelle
+            appWidgetManager.updateAppWidget(appWidgetId, views);
+            
+            // Veri güncelleme işlemini başlat
+            updateAppWidget(context, appWidgetManager, appWidgetId);
+        }
     }
 
     @Override
@@ -119,6 +148,7 @@ public class PrayerTimesWidget extends AppWidgetProvider {
             // Tema ayarlarını uygula
             applyTheme(context, views);
             
+            // Yenileme butonu için intent oluştur
             Intent refreshIntent = new Intent(context, PrayerTimesWidget.class);
             refreshIntent.setAction(ACTION_REFRESH);
             PendingIntent refreshPendingIntent = PendingIntent.getBroadcast(
@@ -135,20 +165,8 @@ public class PrayerTimesWidget extends AppWidgetProvider {
             
             views.setTextViewText(R.id.widgetTitle, cityName);
             
-            System.out.println("Location ID: " + locationId);
-            System.out.println("City Name: " + cityName);
-            System.out.println("Current Date: " + currentDay + "/" + currentMonth);
-            
             if (!locationId.isEmpty()) {
-                views.setTextViewText(R.id.imsakTime, "...");
-                views.setTextViewText(R.id.gunesTime, "...");
-                views.setTextViewText(R.id.ogleTime, "...");
-                views.setTextViewText(R.id.ikindiTime, "...");
-                views.setTextViewText(R.id.aksamTime, "...");
-                views.setTextViewText(R.id.yatsiTime, "...");
-                views.setTextViewText(R.id.lastUpdate, context.getString(R.string.last_update, "..."));
-                appWidgetManager.updateAppWidget(appWidgetId, views);
-
+                // Yeni AsyncTask oluştur
                 mAsyncTask = new AsyncTask<Object, Void, String[]>() {
                     private final Context mContext = context;
                     private final AppWidgetManager mAppWidgetManager = appWidgetManager;
@@ -202,10 +220,6 @@ public class PrayerTimesWidget extends AppWidgetProvider {
                                     }
                                 }
                                 eventType = parser.next();
-                            }
-                            
-                            if (times == null) {
-                                Log.d("PrayerTimesWidget", "No data found for date: " + currentDay + "/" + currentMonth);
                             }
                             
                             return times;
@@ -273,7 +287,6 @@ public class PrayerTimesWidget extends AppWidgetProvider {
         views.setTextViewText(R.id.ikindiTime, "...");
         views.setTextViewText(R.id.aksamTime, "...");
         views.setTextViewText(R.id.yatsiTime, "...");
-
         views.setTextViewText(R.id.lastUpdate, getFormattedDateTime(context));
         
         // Tema ayarlarını uygula

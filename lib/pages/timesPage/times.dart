@@ -18,9 +18,7 @@ import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:namaz_vakti_app/pages/timesPage/calendar.dart';
 import 'package:namaz_vakti_app/pages/timesPage/city_names.dart';
-import 'package:namaz_vakti_app/pages/timesPage/detailed_times.dart';
 import 'package:namaz_vakti_app/pages/timesPage/location.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:namaz_vakti_app/pages/timesPage/main_times.dart';
@@ -72,26 +70,7 @@ class TimesBody extends StatefulWidget {
 }
 
 class _TimesBodyState extends State<TimesBody> {
-  String miladi = '';
-  String hicri = '';
-  int count = 0;
-  DateTime customDate = DateTime.now();
   static bool alertOpen = false;
-
-  List<String> hijriList = [
-    'Muharrem',
-    'Safer',
-    'Rebiülevvel',
-    'Rebiülahir',
-    'Cemayizelevvel',
-    'Cemayizelahir',
-    'Recep',
-    'Şaban',
-    'Ramazan',
-    'Şevval',
-    'Zilkade',
-    'Zilhicce'
-  ];
 
   void _checkWifi() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
@@ -155,6 +134,97 @@ class _TimesBodyState extends State<TimesBody> {
     );
   }
 
+  @override
+  void initState() {
+    super.initState();
+    _checkWifi();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding:
+          EdgeInsets.all(Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 0.0 : 5.0),
+      child: MediaQuery.of(context).orientation == Orientation.portrait
+          ? Column(
+              children: [
+                Expanded(
+                  flex: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 6 : 5,
+                  child: const Row(
+                    children: [
+                      Expanded(
+                        child: TopTimesCard(),
+                      ),
+                      Expanded(
+                        child: Card(
+                          child: Center(
+                            child: CityNameCard(),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const Expanded(flex: 11, child: BottomTimesCard()),
+              ],
+            )
+          : Row(
+              children: [
+                Expanded(
+                  flex: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 6 : 5,
+                  child: const Column(
+                    children: [
+                      Expanded(
+                        child: TopTimesCard(),
+                      ),
+                      Expanded(
+                        child: Card(
+                          child: Center(
+                            child: CityNameCard(),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const Expanded(
+                  flex: 5,
+                  child: BottomTimesCard(),
+                ),
+              ],
+            ),
+    );
+  }
+}
+
+class TopTimesCard extends StatefulWidget {
+  const TopTimesCard({super.key});
+
+  @override
+  State<TopTimesCard> createState() => _TopTimesCardState();
+}
+
+class _TopTimesCardState extends State<TopTimesCard> {
+  String miladi = '';
+  String hicri = '';
+  int count = 0;
+  DateTime customDate = DateTime.now();
+
+  List<String> hijriList = [
+    'Muharrem',
+    'Safer',
+    'Rebiülevvel',
+    'Rebiülahir',
+    'Cemayizelevvel',
+    'Cemayizelahir',
+    'Recep',
+    'Şaban',
+    'Ramazan',
+    'Şevval',
+    'Zilkade',
+    'Zilhicce'
+  ];
+
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
@@ -190,258 +260,201 @@ class _TimesBodyState extends State<TimesBody> {
   @override
   void initState() {
     super.initState();
-    _checkWifi();
     _changeDate();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding:
-          EdgeInsets.all(Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 0.0 : 5.0),
-      child: Column(
-        children: [
-          Expanded(
-            flex: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 6 : 5,
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    children: [
-                      Expanded(
-                        flex: 4,
-                        child: Card(
-                          child: Center(
-                            child: Stack(
-                              children: [
-                                Center(
-                                  child: TextButton(
-                                    style: TextButton.styleFrom(
-                                        foregroundColor:
-                                            Theme.of(context).textTheme.displayMedium!.color),
-                                    onPressed: () async {
-                                      var now = DateTime.now();
-                                      await _selectDate(context);
-                                      Provider.of<TimeData>(context, listen: false)
-                                          .switchLoading(true);
-                                      setState(() {
-                                        count = customDate
-                                            .difference(
-                                                DateTime(now.year, now.month, now.day, 00, 00))
-                                            .inDays;
-                                        if (count != 0) {
-                                          Provider.of<TimeData>(context, listen: false)
-                                              .switchClock(false);
-                                        } else {
-                                          Provider.of<TimeData>(context, listen: false)
-                                              .switchClock(true);
-                                        }
-                                      });
-                                      _changeDate();
-                                      Provider.of<TimeData>(context, listen: false).loadPrayerTimes(
-                                          DateTime.now().add(Duration(days: count)));
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                                      child: FittedBox(
-                                        fit: BoxFit.scaleDown,
-                                        child: Text(
-                                          miladi,
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 15,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        IconButton(
-                                          onPressed: () {
-                                            if (DateTime.now().add(Duration(days: count)).day !=
-                                                    1 ||
-                                                DateTime.now().add(Duration(days: count)).month !=
-                                                    1) {
-                                              Provider.of<TimeData>(context, listen: false)
-                                                  .switchLoading(true);
-                                              setState(() {
-                                                count--;
-                                                if (count != 0) {
-                                                  Provider.of<TimeData>(context, listen: false)
-                                                      .switchClock(false);
-                                                } else {
-                                                  Provider.of<TimeData>(context, listen: false)
-                                                      .switchClock(true);
-                                                }
-                                              });
-                                              _changeDate();
-                                              Provider.of<TimeData>(context, listen: false)
-                                                  .loadPrayerTimes(
-                                                      DateTime.now().add(Duration(days: count)));
-                                            }
-                                          },
-                                          icon: const Icon(Icons.arrow_back_ios_new),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        IconButton(
-                                          onPressed: () {
-                                            if (DateTime.now().add(Duration(days: count)).day !=
-                                                    31 ||
-                                                DateTime.now().add(Duration(days: count)).month !=
-                                                    12) {
-                                              Provider.of<TimeData>(context, listen: false)
-                                                  .switchLoading(true);
-                                              setState(() {
-                                                count++;
-                                                if (count != 0) {
-                                                  Provider.of<TimeData>(context, listen: false)
-                                                      .switchClock(false);
-                                                } else {
-                                                  Provider.of<TimeData>(context, listen: false)
-                                                      .switchClock(true);
-                                                }
-                                              });
-                                              _changeDate();
-                                              Provider.of<TimeData>(context, listen: false)
-                                                  .loadPrayerTimes(
-                                                      DateTime.now().add(Duration(days: count)));
-                                            }
-                                          },
-                                          icon: const Icon(Icons.arrow_forward_ios),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
+    return Column(
+      children: [
+        Expanded(
+          flex: 4,
+          child: Card(
+            child: Center(
+              child: Stack(
+                children: [
+                  Center(
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                          foregroundColor: Theme.of(context).textTheme.displayMedium!.color),
+                      onPressed: () async {
+                        var now = DateTime.now();
+                        await _selectDate(context);
+                        Provider.of<TimeData>(context, listen: false).switchLoading(true);
+                        setState(() {
+                          count = customDate
+                              .difference(DateTime(now.year, now.month, now.day, 00, 00))
+                              .inDays;
+                          if (count != 0) {
+                            Provider.of<TimeData>(context, listen: false).switchClock(false);
+                          } else {
+                            Provider.of<TimeData>(context, listen: false).switchClock(true);
+                          }
+                        });
+                        _changeDate();
+                        Provider.of<TimeData>(context, listen: false)
+                            .loadPrayerTimes(DateTime.now().add(Duration(days: count)));
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            miladi,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
                             ),
                           ),
                         ),
                       ),
-                      Expanded(
-                        flex: 4,
-                        child: Card(
-                          child: Center(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                              child: FittedBox(
-                                fit: BoxFit.scaleDown,
-                                child: Text(
-                                  textAlign: TextAlign.center,
-                                  hicri,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 15,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 3,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: Card(
-                                color: Theme.of(context).colorScheme.secondaryContainer,
-                                child: Column(
-                                  children: [
-                                    Expanded(
-                                      child: Location(
-                                        title: AppLocalizations.of(context)!.locationButtonText,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Card(
-                              color: Theme.of(context).colorScheme.secondaryContainer,
-                              child: const Column(
-                                children: [
-                                  Expanded(
-                                    child: SearchButton(),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const Expanded(
-                  child: Card(
-                    child: Stack(
-                      children: [
-                        Center(
-                          child: CityNameCard(),
-                        ),
-                      ],
                     ),
                   ),
-                ),
-              ],
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              if (DateTime.now().add(Duration(days: count)).day != 1 ||
+                                  DateTime.now().add(Duration(days: count)).month != 1) {
+                                Provider.of<TimeData>(context, listen: false).switchLoading(true);
+                                setState(() {
+                                  count--;
+                                  if (count != 0) {
+                                    Provider.of<TimeData>(context, listen: false)
+                                        .switchClock(false);
+                                  } else {
+                                    Provider.of<TimeData>(context, listen: false).switchClock(true);
+                                  }
+                                });
+                                _changeDate();
+                                Provider.of<TimeData>(context, listen: false)
+                                    .loadPrayerTimes(DateTime.now().add(Duration(days: count)));
+                              }
+                            },
+                            icon: const Icon(Icons.arrow_back_ios_new),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              if (DateTime.now().add(Duration(days: count)).day != 31 ||
+                                  DateTime.now().add(Duration(days: count)).month != 12) {
+                                Provider.of<TimeData>(context, listen: false).switchLoading(true);
+                                setState(() {
+                                  count++;
+                                  if (count != 0) {
+                                    Provider.of<TimeData>(context, listen: false)
+                                        .switchClock(false);
+                                  } else {
+                                    Provider.of<TimeData>(context, listen: false).switchClock(true);
+                                  }
+                                });
+                                _changeDate();
+                                Provider.of<TimeData>(context, listen: false)
+                                    .loadPrayerTimes(DateTime.now().add(Duration(days: count)));
+                              }
+                            },
+                            icon: const Icon(Icons.arrow_forward_ios),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
-          Expanded(
-            flex: 11,
-            child: Card(
-              child: Center(
-                child: Padding(
-                  padding: EdgeInsets.all(
-                      Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5.0 : 10.0),
-                  child: const Stack(
-                    children: [
-                      PrayerTimesPage(),
-                      DetailedTimesBtn(),
-                      CalendarBtn(),
-                    ],
+        ),
+        Expanded(
+          flex: 4,
+          child: Card(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    textAlign: TextAlign.center,
+                    hicri,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                    ),
                   ),
                 ),
               ),
             ),
           ),
-        ],
-      ),
+        ),
+        Expanded(
+          flex: 3,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Card(
+                  color: Theme.of(context).colorScheme.secondaryContainer,
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: Location(
+                          title: AppLocalizations.of(context)!.locationButtonText,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Card(
+                color: Theme.of(context).colorScheme.secondaryContainer,
+                child: const Column(
+                  children: [
+                    Expanded(
+                      child: SearchButton(),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
 
-class PrayerTimesPage extends StatefulWidget {
-  const PrayerTimesPage({super.key});
+class BottomTimesCard extends StatelessWidget {
+  const BottomTimesCard({
+    super.key,
+  });
 
-  @override
-  PrayerTimesPageState createState() => PrayerTimesPageState();
-}
-
-class PrayerTimesPageState extends State<PrayerTimesPage> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Theme.of(context).cardColor,
-      child: Provider.of<TimeData>(context).isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : const MainTimes(),
+      child: Center(
+        child: Padding(
+          padding: EdgeInsets.all(
+              Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5.0 : 10.0),
+          child: Card(
+            color: Theme.of(context).cardColor,
+            child: Provider.of<TimeData>(context).isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : const MainTimes(),
+          ),
+        ),
+      ),
     );
   }
 }

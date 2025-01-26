@@ -129,7 +129,6 @@ class _PrayCardState extends State<PrayCard> {
                       .saveKaza(widget.title, _changedVal);
                 });
               },
-              style: ElevatedButton.styleFrom(elevation: 10, shape: const CircleBorder()),
               child: const Icon(Icons.add),
             ),
             Padding(
@@ -192,7 +191,6 @@ class _PrayCardState extends State<PrayCard> {
                   }
                 });
               },
-              style: ElevatedButton.styleFrom(elevation: 10, shape: const CircleBorder()),
               child: const Icon(Icons.remove),
             ),
           ],

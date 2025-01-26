@@ -15,10 +15,8 @@ limitations under the License.
 */
 
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:namaz_vakti_app/home_page.dart';
-import 'package:namaz_vakti_app/main.dart';
 import 'package:namaz_vakti_app/pages/startup.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -56,26 +54,7 @@ class AboutPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Card(
-                child: Image.asset(
-                  'assets/img/logo.png',
-                  height: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 150 : 200,
-                ),
-              ),
-              Text(
-                AppLocalizations.of(context)!.appName,
-                style: GoogleFonts.ubuntu(
-                    fontWeight: FontWeight.bold,
-                    fontSize: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 25 : 30,
-                    color: Theme.of(context).primaryColor),
-              ),
-              Text(
-                '${MainApp.version} - by Afaruk59',
-                style: GoogleFonts.ubuntu(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                ),
-              ),
+              const AppCard(),
               SizedBox(
                 height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 10 : 40,
               ),
@@ -94,9 +73,6 @@ class AboutPage extends StatelessWidget {
                       onPressed: () {
                         Navigator.pushNamed(context, '/license');
                       },
-                      style: ElevatedButton.styleFrom(
-                        elevation: 10,
-                      ),
                       child: const Icon(
                         Icons.text_snippet_outlined,
                       ),
@@ -121,9 +97,6 @@ class AboutPage extends StatelessWidget {
                         Uri? url = Uri.parse('https://github.com/Afaruk59/Namaz-Vakti-App.git');
                         await launchUrl(url);
                       },
-                      style: ElevatedButton.styleFrom(
-                        elevation: 10,
-                      ),
                       child: const Icon(
                         Icons.webhook_outlined,
                       ),

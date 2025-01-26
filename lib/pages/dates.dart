@@ -93,9 +93,12 @@ class _DatesCardState extends State<DatesCard> {
                                 : 10.0),
                         child: Card(
                           color: Theme.of(context).cardColor,
-                          child: ListTile(
-                            title: Text(_list[index + 2]),
-                            subtitle: Text('${_list[index + 1]} | ${_list[index]}'),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: ListTile(
+                              title: Text(_list[index + 2]),
+                              subtitle: Text('${_list[index + 1]} | ${_list[index]}'),
+                            ),
                           ),
                         ),
                       );

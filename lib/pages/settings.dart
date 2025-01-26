@@ -185,9 +185,6 @@ class _SettingsCardState extends State<SettingsCard> {
                       colorPalette(context);
                     },
                     trailing: FilledButton.tonal(
-                      style: ElevatedButton.styleFrom(
-                        elevation: 10,
-                      ),
                       onPressed: () {
                         pickerColor = Provider.of<ChangeSettings>(context, listen: false).color;
                         colorPalette(context);

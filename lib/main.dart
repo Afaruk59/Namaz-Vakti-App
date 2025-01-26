@@ -16,6 +16,7 @@ limitations under the License.
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'dart:ui';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -40,11 +41,14 @@ import 'package:namaz_vakti_app/data/change_settings.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  //await initService();
-  //await requestNotificationPermission();
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-  ]);
+  final bool isTablet =
+      MediaQueryData.fromView(PlatformDispatcher.instance.views.first).size.shortestSide >= 600;
+  if (!isTablet) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+  }
+
   await ChangeSettings().createSharedPrefObject();
   ChangeSettings().loadLocalFromSharedPref();
 
@@ -60,7 +64,7 @@ void main() async {
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
-  static String version = '1.2.4';
+  static String version = '1.3.0';
 
   @override
   Widget build(BuildContext context) {
@@ -84,6 +88,28 @@ class MainApp extends StatelessWidget {
       locale: Provider.of<ChangeSettings>(context).locale,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ButtonStyle(
+            elevation: const WidgetStatePropertyAll(10),
+            shape: WidgetStatePropertyAll(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(
+                    Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
+              ),
+            ),
+          ),
+        ),
+        filledButtonTheme: FilledButtonThemeData(
+          style: ButtonStyle(
+            elevation: const WidgetStatePropertyAll(10),
+            shape: WidgetStatePropertyAll(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(
+                    Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
+              ),
+            ),
+          ),
+        ),
         scaffoldBackgroundColor: Provider.of<ChangeSettings>(context).gradient == true
             ? Colors.transparent
             : Theme.of(context).navigationBarTheme.backgroundColor,

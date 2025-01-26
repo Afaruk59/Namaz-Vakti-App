@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/app_name"
-            android:textSize="12sp"
+            android:textSize="15sp"
             android:textStyle="bold"
             android:layout_column="0"
             android:layout_gravity="start|center_vertical"
@@ -72,13 +72,13 @@
                 android:text="@string/imsak"
                 android:textAlignment="center"
                 android:textStyle="bold"
-                android:textSize="11sp" />
+                android:textSize="13sp" />
             <TextView
                 android:id="@+id/imsakTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:textSize="11sp" />
+                android:textSize="13sp" />
         </LinearLayout>
 
         <!-- Güneş -->
@@ -94,13 +94,13 @@
                 android:text="@string/gunes"
                 android:textAlignment="center"
                 android:textStyle="bold"
-                android:textSize="11sp" />
+                android:textSize="13sp" />
             <TextView
                 android:id="@+id/gunesTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:textSize="11sp" />
+                android:textSize="13sp" />
         </LinearLayout>
 
         <!-- Öğle -->
@@ -116,13 +116,13 @@
                 android:text="@string/ogle"
                 android:textAlignment="center"
                 android:textStyle="bold"
-                android:textSize="11sp" />
+                android:textSize="13sp" />
             <TextView
                 android:id="@+id/ogleTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:textSize="11sp" />
+                android:textSize="13sp" />
         </LinearLayout>
 
         <!-- İkindi -->
@@ -138,13 +138,13 @@
                 android:text="@string/ikindi"
                 android:textAlignment="center"
                 android:textStyle="bold"
-                android:textSize="11sp" />
+                android:textSize="13sp" />
             <TextView
                 android:id="@+id/ikindiTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:textSize="11sp" />
+                android:textSize="13sp" />
         </LinearLayout>
 
         <!-- Akşam -->
@@ -160,13 +160,13 @@
                 android:text="@string/aksam"
                 android:textAlignment="center"
                 android:textStyle="bold"
-                android:textSize="11sp" />
+                android:textSize="13sp" />
             <TextView
                 android:id="@+id/aksamTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:textSize="11sp" />
+                android:textSize="13sp" />
         </LinearLayout>
 
         <!-- Yatsı -->
@@ -182,13 +182,13 @@
                 android:text="@string/yatsi"
                 android:textAlignment="center"
                 android:textStyle="bold"
-                android:textSize="11sp" />
+                android:textSize="13sp" />
             <TextView
                 android:id="@+id/yatsiTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:textSize="11sp" />
+                android:textSize="13sp" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout> 

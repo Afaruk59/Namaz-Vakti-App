@@ -114,114 +114,109 @@ class _CalendarBtnState extends State<CalendarBtn> {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      bottom: MediaQuery.of(context).size.height < 700 ? 10 : 20,
-      right: 13,
-      child: IconButton(
-        iconSize: 25,
-        icon: const Icon(Icons.date_range_rounded),
-        onPressed: () async {
-          if (_ilk) {
-            await _fetchDay();
-            await _fetchWord();
-            await _fetchCalendar();
-            setState(() {
-              _ilk = false;
-            });
-          }
-          showModalBottomSheet(
-            backgroundColor: Theme.of(context).cardTheme.color,
-            context: context,
-            showDragHandle: true,
-            scrollControlDisabledMaxHeightRatio: 0.8,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(
-                Provider.of<ChangeSettings>(context, listen: false).rounded == true ? 50 : 10,
-              ),
+    return IconButton(
+      iconSize: 25,
+      icon: const Icon(Icons.date_range_rounded),
+      onPressed: () async {
+        if (_ilk) {
+          await _fetchDay();
+          await _fetchWord();
+          await _fetchCalendar();
+          setState(() {
+            _ilk = false;
+          });
+        }
+        showModalBottomSheet(
+          backgroundColor: Theme.of(context).cardTheme.color,
+          context: context,
+          showDragHandle: true,
+          scrollControlDisabledMaxHeightRatio: 0.8,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+              Provider.of<ChangeSettings>(context, listen: false).rounded == true ? 50 : 10,
             ),
-            isScrollControlled:
-                Provider.of<ChangeSettings>(context, listen: false).currentHeight! < 700.0
-                    ? true
-                    : false,
-            elevation: 10,
-            builder: (BuildContext context) {
-              return Card(
-                elevation: 10,
-                color: Theme.of(context).cardColor,
-                child: Scrollbar(
-                  child: Padding(
-                    padding: EdgeInsets.all(
-                        Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5.0 : 15.0),
-                    child: ListView(
-                      children: [
-                        Text(
-                          DateFormat(
-                            'dd MMMM yyyy',
-                            Provider.of<ChangeSettings>(context, listen: false).langCode,
-                          ).format(DateTime.now()),
-                          textAlign: TextAlign.center,
+          ),
+          isScrollControlled:
+              Provider.of<ChangeSettings>(context, listen: false).currentHeight! < 700.0
+                  ? true
+                  : false,
+          elevation: 10,
+          builder: (BuildContext context) {
+            return Card(
+              elevation: 10,
+              color: Theme.of(context).cardColor,
+              child: Scrollbar(
+                child: Padding(
+                  padding: EdgeInsets.all(
+                      Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5.0 : 15.0),
+                  child: ListView(
+                    children: [
+                      Text(
+                        DateFormat(
+                          'dd MMMM yyyy',
+                          Provider.of<ChangeSettings>(context, listen: false).langCode,
+                        ).format(DateTime.now()),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        _day!,
+                      ),
+                      const SizedBox(
+                        height: 30,
+                        child: Divider(
+                          thickness: 3,
                         ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Text(
-                          _day!,
-                        ),
-                        const SizedBox(
-                          height: 30,
-                          child: Divider(
-                            thickness: 3,
+                      ),
+                      Text(
+                        _word!,
+                      ),
+                      const SizedBox(
+                        height: 40,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(
+                            Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10,
+                          ),
+                          border: Border.all(
+                            color: Colors.grey,
+                            width: 2,
                           ),
                         ),
-                        Text(
-                          _word!,
-                        ),
-                        const SizedBox(
-                          height: 40,
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(
-                              Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10,
-                            ),
-                            border: Border.all(
-                              color: Colors.grey,
-                              width: 2,
-                            ),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: Text(
-                              _calendar!,
-                            ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Text(
+                            _calendar!,
                           ),
                         ),
-                        const SizedBox(
-                          height: 20,
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: FilledButton.tonal(
+                          onPressed: () async {
+                            final Uri url = Uri.parse('https://www.turktakvim.com/');
+                            await launchUrl(url);
+                          },
+                          child: const Text('Turktakvim.com'),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                          child: FilledButton.tonal(
-                            onPressed: () async {
-                              final Uri url = Uri.parse('https://www.turktakvim.com/');
-                              await launchUrl(url);
-                            },
-                            style: ElevatedButton.styleFrom(elevation: 10),
-                            child: const Text('Turktakvim.com'),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                    ],
                   ),
                 ),
-              );
-            },
-          );
-        },
-      ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

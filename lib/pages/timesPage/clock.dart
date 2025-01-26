@@ -77,79 +77,76 @@ class _ClockState extends State<Clock> {
             icon: const Icon(Icons.replay_outlined),
           )
         : Padding(
-            padding: Provider.of<ChangeSettings>(context).currentHeight! < 700.0
-                ? const EdgeInsets.fromLTRB(60, 0, 60, 0)
-                : const EdgeInsets.fromLTRB(60, 5, 60, 5),
-            child: SizedBox(
-              height: 55,
-              child: Stack(
-                children: [
-                  Container(
-                    clipBehavior: Clip.hardEdge,
-                    height: double.infinity,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey, width: 1),
-                      borderRadius: BorderRadius.circular(
-                        Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.25), // Gölge rengi ve opaklığı
-                          spreadRadius: 5, // Gölgenin yayılma alanı
-                          blurRadius: 10, // Gölgenin bulanıklığı
-                          offset: const Offset(0, 5), // Gölgenin yatay ve dikey kayması
-                        ),
-                      ],
+            padding: EdgeInsets.all(
+              Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 0.0 : 5.0,
+            ),
+            child: Stack(
+              children: [
+                Container(
+                  clipBehavior: Clip.hardEdge,
+                  height: double.infinity,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey, width: 1),
+                    borderRadius: BorderRadius.circular(
+                      Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10,
                     ),
-                    child: LinearProgressIndicator(
-                      value: (Provider.of<TimeData>(context).mainDifference.inSeconds -
-                              Provider.of<TimeData>(context).difference.inSeconds) /
-                          Provider.of<TimeData>(context).mainDifference.inSeconds,
-                      borderRadius: BorderRadius.circular(
-                        Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.25), // Gölge rengi ve opaklığı
+                        spreadRadius: 5, // Gölgenin yayılma alanı
+                        blurRadius: 10, // Gölgenin bulanıklığı
+                        offset: const Offset(0, 5), // Gölgenin yatay ve dikey kayması
                       ),
-                      backgroundColor: Theme.of(context).cardColor,
-                      valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).cardTheme.color!),
-                    ),
+                    ],
                   ),
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Text(
-                              _prayList[Provider.of<TimeData>(context).pray],
-                              style: TextStyle(
-                                  fontSize:
-                                      Provider.of<ChangeSettings>(context).currentHeight! < 700.0
-                                          ? 15.0
-                                          : 17.0),
-                            ),
-                            Provider.of<TimeData>(context).imsak != null
-                                ? Directionality(
-                                    textDirection: ui.TextDirection.ltr,
-                                    child: Text(
-                                      '${(Provider.of<TimeData>(context).difference.inHours).toString().padLeft(2, '0')} : ${(Provider.of<TimeData>(context).difference.inMinutes % 60).toString().padLeft(2, '0')} : ${(Provider.of<TimeData>(context).difference.inSeconds % 60).toString().padLeft(2, '0')}',
-                                      style: TextStyle(
-                                          fontSize:
-                                              Provider.of<ChangeSettings>(context).currentHeight! <
-                                                      700.0
-                                                  ? 15.0
-                                                  : 17.0,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  )
-                                : const Text('0'),
-                          ],
-                        ),
+                  child: LinearProgressIndicator(
+                    value: (Provider.of<TimeData>(context).mainDifference.inSeconds -
+                            Provider.of<TimeData>(context).difference.inSeconds) /
+                        Provider.of<TimeData>(context).mainDifference.inSeconds,
+                    borderRadius: BorderRadius.circular(
+                      Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10,
+                    ),
+                    backgroundColor: Theme.of(context).cardColor,
+                    valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).cardTheme.color!),
+                  ),
+                ),
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Text(
+                            _prayList[Provider.of<TimeData>(context).pray],
+                            style: TextStyle(
+                                fontSize:
+                                    Provider.of<ChangeSettings>(context).currentHeight! < 700.0
+                                        ? 15.0
+                                        : 17.0),
+                          ),
+                          Provider.of<TimeData>(context).imsak != null
+                              ? Directionality(
+                                  textDirection: ui.TextDirection.ltr,
+                                  child: Text(
+                                    '${(Provider.of<TimeData>(context).difference.inHours).toString().padLeft(2, '0')} : ${(Provider.of<TimeData>(context).difference.inMinutes % 60).toString().padLeft(2, '0')} : ${(Provider.of<TimeData>(context).difference.inSeconds % 60).toString().padLeft(2, '0')}',
+                                    style: TextStyle(
+                                        fontSize:
+                                            Provider.of<ChangeSettings>(context).currentHeight! <
+                                                    700.0
+                                                ? 15.0
+                                                : 17.0,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                )
+                              : const Text('0'),
+                        ],
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           );
   }

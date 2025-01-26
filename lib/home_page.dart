@@ -129,7 +129,6 @@ class _HomePageState extends State<HomePage> {
             setState(() {
               _currentIndex = index;
             });
-            // Sayfalar arası geçişi PageView ile kontrol et
             _pageController.animateToPage(index,
                 duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
           },

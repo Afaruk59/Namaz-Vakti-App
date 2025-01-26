@@ -127,7 +127,6 @@ class _SearchState extends State<Search> {
                             title: Text(column2Data[filteredItems[index - 1]]),
                             subtitle: Text(column3Data[filteredItems[index - 1]]),
                             trailing: FilledButton.tonal(
-                                style: ElevatedButton.styleFrom(elevation: 10),
                                 onPressed: () {
                                   Provider.of<ChangeSettings>(context, listen: false)
                                       .changeOtoLoc(false);

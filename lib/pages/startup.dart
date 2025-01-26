@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:namaz_vakti_app/home_page.dart';
 import 'package:namaz_vakti_app/pages/settings.dart';
@@ -66,85 +67,128 @@ class StartupCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(5),
         child: Card(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Card(
-                child: Image.asset(
-                  'assets/img/logo.png',
-                  height: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 150 : 200,
-                ),
-              ),
-              Text(
-                AppLocalizations.of(context)!.appName,
-                style: GoogleFonts.ubuntu(
-                    fontWeight: FontWeight.bold,
-                    fontSize: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 25 : 30,
-                    color: Theme.of(context).primaryColor),
-              ),
-              Text(
-                '${MainApp.version} - by Afaruk59',
-                style: GoogleFonts.ubuntu(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                ),
-              ),
-              SizedBox(
-                height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 0 : 20,
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10.0),
-                child: TimeNote(),
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10.0),
-                child: TenbihCard(),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: Card(
-                  color: Theme.of(context).cardColor,
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 40),
-                    title: const Text(
-                      'Language',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    subtitle: Text(AppLocalizations.of(context)!.lang),
-                    trailing: const LangSelector(),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 0 : 20,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                child: Row(
+          child: MediaQuery.of(context).orientation == Orientation.portrait
+              ? Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Expanded(
-                      child: Card(
-                        color: Theme.of(context).colorScheme.secondaryContainer,
-                        child: Location(
-                          title: AppLocalizations.of(context)!.locationButtonTextonStart,
-                        ),
-                      ),
+                    const AppCard(),
+                    SizedBox(
+                      height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 0 : 20,
                     ),
-                    Card(
-                      color: Theme.of(context).colorScheme.secondaryContainer,
-                      child: const SearchButton(),
+                    const StartupSecondCard(),
+                  ],
+                )
+              : const Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(child: AppCard()),
+                        Expanded(child: StartupSecondCard()),
+                      ],
                     ),
                   ],
                 ),
+        ),
+      ),
+    );
+  }
+}
+
+class StartupSecondCard extends StatelessWidget {
+  const StartupSecondCard({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10.0),
+          child: TimeNote(),
+        ),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10.0),
+          child: TenbihCard(),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: Card(
+            color: Theme.of(context).cardColor,
+            child: ListTile(
+              contentPadding: const EdgeInsets.symmetric(horizontal: 40),
+              title: const Text(
+                'Language',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              subtitle: Text(AppLocalizations.of(context)!.lang),
+              trailing: const LangSelector(),
+            ),
+          ),
+        ),
+        SizedBox.square(
+          dimension: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 0 : 20,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 50.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Card(
+                  color: Theme.of(context).colorScheme.secondaryContainer,
+                  child: Location(
+                    title: AppLocalizations.of(context)!.locationButtonTextonStart,
+                  ),
+                ),
+              ),
+              Card(
+                color: Theme.of(context).colorScheme.secondaryContainer,
+                child: const SearchButton(),
               ),
             ],
           ),
         ),
-      ),
+      ],
+    );
+  }
+}
+
+class AppCard extends StatelessWidget {
+  const AppCard({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Card(
+          child: Image.asset(
+            'assets/img/logo.png',
+            height: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 150 : 200,
+          ),
+        ),
+        Text(
+          AppLocalizations.of(context)!.appName,
+          style: GoogleFonts.ubuntu(
+              fontWeight: FontWeight.bold,
+              fontSize: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 25 : 30,
+              color: Theme.of(context).primaryColor),
+        ),
+        Text(
+          '${MainApp.version} - by Afaruk59',
+          style: GoogleFonts.ubuntu(
+            fontWeight: FontWeight.bold,
+            fontSize: 15,
+          ),
+        ),
+      ],
     );
   }
 }

@@ -94,9 +94,6 @@ class ReviewCard extends StatelessWidget {
               }
             },
             trailing: FilledButton.tonal(
-              style: ElevatedButton.styleFrom(
-                elevation: 10,
-              ),
               onPressed: () async {
                 if (await inAppReview.isAvailable()) {
                   inAppReview.requestReview();
@@ -140,7 +137,6 @@ class MoreCard extends StatelessWidget {
             },
             title: Text(title),
             trailing: FilledButton.tonal(
-              style: ElevatedButton.styleFrom(elevation: 10),
               onPressed: () {
                 Navigator.pushNamed(context, route);
               },
@@ -190,7 +186,6 @@ class BooksCard extends StatelessWidget {
             },
             title: Text(title),
             trailing: FilledButton.tonal(
-              style: ElevatedButton.styleFrom(elevation: 10),
               onPressed: () async {
                 final String code =
                     Provider.of<ChangeSettings>(context, listen: false).langCode ?? 'tr';
