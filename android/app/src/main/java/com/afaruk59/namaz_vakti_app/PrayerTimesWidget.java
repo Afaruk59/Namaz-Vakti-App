@@ -29,7 +29,7 @@ public class PrayerTimesWidget extends AppWidgetProvider {
     private static final String PREFS_NAME = "FlutterSharedPreferences";
     private static final String BASE_URL = "https://www.namazvakti.com/XML.php?cityID=";
     private static final String ACTION_REFRESH = "com.afaruk59.namaz_vakti_app.ACTION_REFRESH";
-    private static AsyncTask<Object, Void, String[]> mAsyncTask;
+    private static AsyncTask<Object, Void, WidgetData> mAsyncTask;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -154,123 +154,138 @@ public class PrayerTimesWidget extends AppWidgetProvider {
             PendingIntent refreshPendingIntent = PendingIntent.getBroadcast(
                 context, 0, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
             views.setOnClickPendingIntent(R.id.refreshButton, refreshPendingIntent);
-            
-            Calendar calendar = Calendar.getInstance();
-            final int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
-            final int currentMonth = calendar.get(Calendar.MONTH) + 1;
-            
-            SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-            String locationId = prefs.getString("flutter.location", "");
-            String cityName = prefs.getString("flutter.name", context.getString(R.string.app_name));
-            
-            views.setTextViewText(R.id.widgetTitle, cityName);
-            
-            if (!locationId.isEmpty()) {
-                // Yeni AsyncTask oluştur
-                mAsyncTask = new AsyncTask<Object, Void, String[]>() {
-                    private final Context mContext = context;
-                    private final AppWidgetManager mAppWidgetManager = appWidgetManager;
-                    private final int mAppWidgetId = appWidgetId;
-                    private final RemoteViews mViews = views;
 
-                    @Override
-                    protected String[] doInBackground(Object... params) {
-                        try {
-                            URL url = new URL(BASE_URL + locationId);
-                            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                            connection.setRequestMethod("GET");
-                            connection.setConnectTimeout(10000);
-                            connection.setReadTimeout(10000);
-                            
-                            BufferedReader reader = new BufferedReader(
-                                new InputStreamReader(connection.getInputStream())
-                            );
-                            
-                            StringBuilder response = new StringBuilder();
-                            String line;
-                            while ((line = reader.readLine()) != null) {
-                                response.append(line);
-                            }
-                            reader.close();
+            // Yükleniyor durumunu göster
+            views.setTextViewText(R.id.widgetTitle, "...");
+            views.setTextViewText(R.id.imsakTime, "...");
+            views.setTextViewText(R.id.gunesTime, "...");
+            views.setTextViewText(R.id.ogleTime, "...");
+            views.setTextViewText(R.id.ikindiTime, "...");
+            views.setTextViewText(R.id.aksamTime, "...");
+            views.setTextViewText(R.id.yatsiTime, "...");
+            views.setTextViewText(R.id.lastUpdate, context.getString(R.string.last_update, "..."));
+            
+            // Widget'ı güncelle
+            appWidgetManager.updateAppWidget(appWidgetId, views);
+            
+            // Yeni AsyncTask oluştur
+            mAsyncTask = new AsyncTask<Object, Void, WidgetData>() {
+                private final Context mContext = context;
+                private final AppWidgetManager mAppWidgetManager = appWidgetManager;
+                private final int mAppWidgetId = appWidgetId;
+                private final RemoteViews mViews = views;
 
-                            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-                            XmlPullParser parser = factory.newPullParser();
-                            parser.setInput(new StringReader(response.toString()));
+                @Override
+                protected WidgetData doInBackground(Object... params) {
+                    try {
+                        // SharedPreferences işlemleri
+                        SharedPreferences prefs = mContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+                        String locationId = prefs.getString("flutter.location", "");
+                        String cityName = prefs.getString("flutter.name", mContext.getString(R.string.app_name));
 
-                            String[] times = null;
-                            int eventType = parser.getEventType();
-                            
-                            while (eventType != XmlPullParser.END_DOCUMENT) {
-                                if (eventType == XmlPullParser.START_TAG && parser.getName().equals("prayertimes")) {
-                                    String dayStr = parser.getAttributeValue(null, "day");
-                                    String monthStr = parser.getAttributeValue(null, "month");
+                        if (locationId.isEmpty()) {
+                            return new WidgetData(cityName, null);
+                        }
+
+                        // API'den veri çekme
+                        URL url = new URL(BASE_URL + locationId);
+                        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                        connection.setRequestMethod("GET");
+                        connection.setConnectTimeout(10000);
+                        connection.setReadTimeout(10000);
+                        
+                        BufferedReader reader = new BufferedReader(
+                            new InputStreamReader(connection.getInputStream())
+                        );
+                        
+                        StringBuilder response = new StringBuilder();
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            response.append(line);
+                        }
+                        reader.close();
+
+                        // XML parse işlemi
+                        XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+                        XmlPullParser parser = factory.newPullParser();
+                        parser.setInput(new StringReader(response.toString()));
+
+                        Calendar calendar = Calendar.getInstance();
+                        final int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
+                        final int currentMonth = calendar.get(Calendar.MONTH) + 1;
+
+                        String[] times = null;
+                        int eventType = parser.getEventType();
+                        
+                        while (eventType != XmlPullParser.END_DOCUMENT) {
+                            if (eventType == XmlPullParser.START_TAG && parser.getName().equals("prayertimes")) {
+                                String dayStr = parser.getAttributeValue(null, "day");
+                                String monthStr = parser.getAttributeValue(null, "month");
+                                
+                                if (dayStr != null && monthStr != null) {
+                                    int day = Integer.parseInt(dayStr);
+                                    int month = Integer.parseInt(monthStr);
                                     
-                                    if (dayStr != null && monthStr != null) {
-                                        int day = Integer.parseInt(dayStr);
-                                        int month = Integer.parseInt(monthStr);
-                                        
-                                        if (day == currentDay && month == currentMonth) {
-                                            parser.next();
-                                            if (parser.getEventType() == XmlPullParser.TEXT) {
-                                                String text = parser.getText().trim();
-                                                times = text.split("\\s+");
-                                                break;
-                                            }
+                                    if (day == currentDay && month == currentMonth) {
+                                        parser.next();
+                                        if (parser.getEventType() == XmlPullParser.TEXT) {
+                                            String text = parser.getText().trim();
+                                            times = text.split("\\s+");
+                                            break;
                                         }
                                     }
                                 }
-                                eventType = parser.next();
                             }
-                            
-                            return times;
-                            
-                        } catch (Exception e) {
-                            Log.e("PrayerTimesWidget", "Error fetching data", e);
-                            e.printStackTrace();
-                            return null;
+                            eventType = parser.next();
                         }
+                        
+                        return new WidgetData(cityName, times);
+                        
+                    } catch (Exception e) {
+                        Log.e("PrayerTimesWidget", "Error in doInBackground", e);
+                        return null;
                     }
-                    
-                    @Override
-                    protected void onPostExecute(String[] times) {
-                        if (!isCancelled()) {
-                            if (times != null && times.length > 13) {
-                                try {
-                                    String imsak = times[0];
-                                    String gunes = times[2];
-                                    String ogle = times[5];
-                                    String ikindi = times[6];
-                                    String aksam = times[9];
-                                    String yatsi = times[11];
+                }
+                
+                @Override
+                protected void onPostExecute(WidgetData data) {
+                    if (!isCancelled() && data != null) {
+                        mViews.setTextViewText(R.id.widgetTitle, data.cityName);
+                        
+                        if (data.times != null && data.times.length > 13) {
+                            try {
+                                String imsak = data.times[0];
+                                String gunes = data.times[2];
+                                String ogle = data.times[5];
+                                String ikindi = data.times[6];
+                                String aksam = data.times[9];
+                                String yatsi = data.times[11];
 
-                                    mViews.setTextViewText(R.id.imsakTime, imsak);
-                                    mViews.setTextViewText(R.id.gunesTime, gunes);
-                                    mViews.setTextViewText(R.id.ogleTime, ogle);
-                                    mViews.setTextViewText(R.id.ikindiTime, ikindi);
-                                    mViews.setTextViewText(R.id.aksamTime, aksam);
-                                    mViews.setTextViewText(R.id.yatsiTime, yatsi);
-                                    
-                                    mViews.setTextViewText(R.id.lastUpdate, getFormattedDateTime(mContext));
-                                    
-                                    // Tema ayarlarını tekrar uygula
-                                    applyTheme(mContext, mViews);
-                                    
-                                    mAppWidgetManager.updateAppWidget(mAppWidgetId, mViews);
-                                } catch (Exception e) {
-                                    Log.e("PrayerTimesWidget", "Error parsing data", e);
-                                    setDefaultTimes(mContext, mViews, mAppWidgetManager, mAppWidgetId);
-                                }
-                            } else {
-                                Log.d("PrayerTimesWidget", "Invalid data format or no data received");
+                                mViews.setTextViewText(R.id.imsakTime, imsak);
+                                mViews.setTextViewText(R.id.gunesTime, gunes);
+                                mViews.setTextViewText(R.id.ogleTime, ogle);
+                                mViews.setTextViewText(R.id.ikindiTime, ikindi);
+                                mViews.setTextViewText(R.id.aksamTime, aksam);
+                                mViews.setTextViewText(R.id.yatsiTime, yatsi);
+                                
+                                mViews.setTextViewText(R.id.lastUpdate, getFormattedDateTime(mContext));
+                            } catch (Exception e) {
+                                Log.e("PrayerTimesWidget", "Error parsing times", e);
                                 setDefaultTimes(mContext, mViews, mAppWidgetManager, mAppWidgetId);
                             }
+                        } else {
+                            setDefaultTimes(mContext, mViews, mAppWidgetManager, mAppWidgetId);
                         }
+                    } else {
+                        setDefaultTimes(mContext, mViews, mAppWidgetManager, mAppWidgetId);
                     }
-                };
-                mAsyncTask.execute();
-            } else {
-                setDefaultTimes(context, views, appWidgetManager, appWidgetId);
-            }
+                    
+                    // Tema ayarlarını tekrar uygula
+                    applyTheme(mContext, mViews);
+                    mAppWidgetManager.updateAppWidget(mAppWidgetId, mViews);
+                }
+            };
+            mAsyncTask.execute();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -293,5 +308,15 @@ public class PrayerTimesWidget extends AppWidgetProvider {
         applyTheme(context, views);
         
         appWidgetManager.updateAppWidget(appWidgetId, views);
+    }
+
+    private static class WidgetData {
+        final String cityName;
+        final String[] times;
+
+        WidgetData(String cityName, String[] times) {
+            this.cityName = cityName;
+            this.times = times;
+        }
     }
 } 
