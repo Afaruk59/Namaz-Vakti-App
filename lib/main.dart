@@ -16,7 +16,6 @@ limitations under the License.
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'dart:ui';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -41,14 +40,6 @@ import 'package:namaz_vakti_app/data/change_settings.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final bool isTablet =
-      MediaQueryData.fromView(PlatformDispatcher.instance.views.first).size.shortestSide >= 600;
-  if (!isTablet) {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
-  }
-
   await ChangeSettings().createSharedPrefObject();
   ChangeSettings().loadLocalFromSharedPref();
 
