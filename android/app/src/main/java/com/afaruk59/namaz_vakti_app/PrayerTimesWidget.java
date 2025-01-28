@@ -148,6 +148,13 @@ public class PrayerTimesWidget extends AppWidgetProvider {
             // Tema ayarlarını uygula
             applyTheme(context, views);
             
+            // Widget'a tıklandığında uygulamayı açmak için intent
+            Intent openAppIntent = new Intent(context, MainActivity.class);
+            openAppIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            PendingIntent openAppPendingIntent = PendingIntent.getActivity(
+                context, 0, openAppIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+            views.setOnClickPendingIntent(R.id.widgetLayout, openAppPendingIntent);
+            
             // Yenileme butonu için intent oluştur
             Intent refreshIntent = new Intent(context, PrayerTimesWidget.class);
             refreshIntent.setAction(ACTION_REFRESH);
