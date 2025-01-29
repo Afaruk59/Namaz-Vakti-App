@@ -79,6 +79,16 @@ class MainApp extends StatelessWidget {
       locale: Provider.of<ChangeSettings>(context).locale,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        outlinedButtonTheme: OutlinedButtonThemeData(
+          style: ButtonStyle(
+            shape: WidgetStatePropertyAll(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(
+                    Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
+              ),
+            ),
+          ),
+        ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ButtonStyle(
             elevation: const WidgetStatePropertyAll(10),
