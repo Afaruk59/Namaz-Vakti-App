@@ -79,8 +79,20 @@ class MainApp extends StatelessWidget {
       locale: Provider.of<ChangeSettings>(context).locale,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        textButtonTheme: TextButtonThemeData(
+          style: ButtonStyle(
+            iconSize: const WidgetStatePropertyAll(22),
+            shape: WidgetStatePropertyAll(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(
+                    Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
+              ),
+            ),
+          ),
+        ),
         outlinedButtonTheme: OutlinedButtonThemeData(
           style: ButtonStyle(
+            iconSize: const WidgetStatePropertyAll(22),
             shape: WidgetStatePropertyAll(
               RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(
@@ -91,6 +103,7 @@ class MainApp extends StatelessWidget {
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ButtonStyle(
+            iconSize: const WidgetStatePropertyAll(22),
             elevation: const WidgetStatePropertyAll(10),
             shape: WidgetStatePropertyAll(
               RoundedRectangleBorder(
@@ -102,6 +115,7 @@ class MainApp extends StatelessWidget {
         ),
         filledButtonTheme: FilledButtonThemeData(
           style: ButtonStyle(
+            iconSize: const WidgetStatePropertyAll(22),
             elevation: const WidgetStatePropertyAll(10),
             shape: WidgetStatePropertyAll(
               RoundedRectangleBorder(

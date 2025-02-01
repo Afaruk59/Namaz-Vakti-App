@@ -243,7 +243,6 @@ class TenbihCard extends StatelessWidget {
             await launchUrl(url);
           },
           trailing: FilledButton.tonal(
-            style: ElevatedButton.styleFrom(elevation: 10),
             onPressed: () async {
               Uri? url;
               if (Provider.of<ChangeSettings>(context, listen: false).langCode == 'tr') {

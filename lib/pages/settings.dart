@@ -79,10 +79,7 @@ class _SettingsCardState extends State<SettingsCard> {
           TextButton(
             onPressed: () {
               setState(() {
-                pickerColor = Colors.blueGrey[
-                    Provider.of<ChangeSettings>(context, listen: false).isDark == true
-                        ? 800
-                        : 500]!;
+                pickerColor = Colors.blueGrey[500]!;
               });
               Provider.of<ChangeSettings>(context, listen: false).changeCol(pickerColor);
               Provider.of<ChangeSettings>(context, listen: false).saveCol(pickerColor);
