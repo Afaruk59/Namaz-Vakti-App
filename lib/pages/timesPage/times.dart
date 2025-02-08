@@ -467,9 +467,6 @@ class SearchButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      style: IconButton.styleFrom(
-        shape: const CircleBorder(),
-      ),
       icon: const Icon(Icons.search),
       onPressed: () {
         Navigator.pushNamed(context, '/search');

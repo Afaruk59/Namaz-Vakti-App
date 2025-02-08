@@ -55,7 +55,7 @@ void main() async {
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
-  static String version = '1.3.0';
+  static String version = '1.3.1';
 
   @override
   Widget build(BuildContext context) {
@@ -79,9 +79,20 @@ class MainApp extends StatelessWidget {
       locale: Provider.of<ChangeSettings>(context).locale,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        iconButtonTheme: IconButtonThemeData(
+          style: ButtonStyle(
+            iconSize: const WidgetStatePropertyAll(24),
+            shape: WidgetStatePropertyAll(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(
+                    Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
+              ),
+            ),
+          ),
+        ),
         textButtonTheme: TextButtonThemeData(
           style: ButtonStyle(
-            iconSize: const WidgetStatePropertyAll(22),
+            iconSize: const WidgetStatePropertyAll(24),
             shape: WidgetStatePropertyAll(
               RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(
@@ -92,7 +103,7 @@ class MainApp extends StatelessWidget {
         ),
         outlinedButtonTheme: OutlinedButtonThemeData(
           style: ButtonStyle(
-            iconSize: const WidgetStatePropertyAll(22),
+            iconSize: const WidgetStatePropertyAll(24),
             shape: WidgetStatePropertyAll(
               RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(
@@ -103,7 +114,7 @@ class MainApp extends StatelessWidget {
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ButtonStyle(
-            iconSize: const WidgetStatePropertyAll(22),
+            iconSize: const WidgetStatePropertyAll(24),
             elevation: const WidgetStatePropertyAll(10),
             shape: WidgetStatePropertyAll(
               RoundedRectangleBorder(
@@ -115,7 +126,7 @@ class MainApp extends StatelessWidget {
         ),
         filledButtonTheme: FilledButtonThemeData(
           style: ButtonStyle(
-            iconSize: const WidgetStatePropertyAll(22),
+            iconSize: const WidgetStatePropertyAll(24),
             elevation: const WidgetStatePropertyAll(10),
             shape: WidgetStatePropertyAll(
               RoundedRectangleBorder(
