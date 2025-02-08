@@ -15,13 +15,14 @@ limitations under the License.
 */
 
 import 'package:flutter/material.dart';
+import 'package:html/parser.dart';
 import 'package:intl/intl.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as html_parser;
-import 'package:html/dom.dart' as dom;
+//import 'package:html/dom.dart' as dom;
 import 'package:provider/provider.dart';
-import 'package:translator/translator.dart';
+//import 'package:translator/translator.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CalendarBtn extends StatefulWidget {
@@ -37,75 +38,92 @@ class _CalendarBtnState extends State<CalendarBtn> {
   static String? _calendar;
   static bool _ilk = true;
 
-  Future<void> _fetchDay() async {
-    final response = await http
-        .get(Uri.parse('https://www.turktakvim.com/vakitler.asp?fr=4&bg=FFFFFF&fn=000000&sz=12'));
+  // Future<void> _fetchDay() async {
+  //   final response = await http
+  //       .get(Uri.parse('https://www.turktakvim.com/vakitler.asp?fr=4&bg=FFFFFF&fn=000000&sz=12'));
 
-    if (response.statusCode == 200) {
-      // HTML sayfasını parse et
-      dom.Document document = html_parser.parse(response.body);
+  //   if (response.statusCode == 200) {
+  //     dom.Document document = html_parser.parse(response.body);
 
-      // İstediğiniz elementleri seçin (örneğin, ilk <p> elementi)
-      final element = document.querySelector('td');
+  //     final element = document.querySelector('td');
 
+  //     setState(() {
+  //       _day = element != null ? element.text : 'İçerik bulunamadı';
+  //     });
+  //   } else {
+  //     setState(() {
+  //       _day = 'İçerik alınamadı';
+  //     });
+  //   }
+
+  //   final translator = GoogleTranslator();
+  //   if (Provider.of<ChangeSettings>(context, listen: false).langCode != 'tr') {
+  //     var translation = await translator.translate(_day!,
+  //         to: Provider.of<ChangeSettings>(context, listen: false).langCode ?? 'tr');
+  //     setState(() {
+  //       _day = translation.text;
+  //     });
+  //   }
+  // }
+
+  // Future<void> _fetchWord() async {
+  //   final response = await http
+  //       .get(Uri.parse('https://www.turktakvim.com/vakitler.asp?fr=5&bg=FFFFFF&fn=000000&sz=12'));
+
+  //   if (response.statusCode == 200) {
+  //     dom.Document document = html_parser.parse(response.body);
+
+  //     final element = document.querySelector('td');
+
+  //     setState(() {
+  //       _word = element != null ? element.text : 'İçerik bulunamadı';
+  //     });
+  //   } else {
+  //     setState(() {
+  //       _word = 'İçerik alınamadı';
+  //     });
+  //   }
+  // }
+
+  Future<void> fetchWordnDay() async {
+    final url = Uri.parse('https://www.turktakvim.com/');
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final document = parse(response.body);
+        final olayElement = document.querySelector(
+            'html body div#Wrapper article#contents div div#takvimon_part2 div span#gununolayi');
+        final sozElement = document.querySelector(
+            'html body div#Wrapper article#contents div div#takvimon_part2 div span#gununsozu');
+
+        setState(() {
+          _day = olayElement?.text ?? "Günün önemi bulunamadı.";
+          _word = sozElement?.text ?? "Günün sözü bulunamadı.";
+        });
+      } else {
+        setState(() {
+          _day = "Siteye erişim başarısız.";
+          _word = "Siteye erişim başarısız.";
+        });
+      }
+    } catch (e) {
       setState(() {
-        // Elementin içeriğini al
-        _day = element != null ? element.text : 'İçerik bulunamadı';
-      });
-    } else {
-      setState(() {
-        _day = 'İçerik alınamadı';
-      });
-    }
-
-    final translator = GoogleTranslator();
-    if (Provider.of<ChangeSettings>(context, listen: false).langCode != 'tr') {
-      var translation = await translator.translate(_day!,
-          to: Provider.of<ChangeSettings>(context, listen: false).langCode ?? 'tr');
-      setState(() {
-        _day = translation.text;
-      });
-    }
-  }
-
-  Future<void> _fetchWord() async {
-    final response = await http
-        .get(Uri.parse('https://www.turktakvim.com/vakitler.asp?fr=5&bg=FFFFFF&fn=000000&sz=12'));
-
-    if (response.statusCode == 200) {
-      // HTML sayfasını parse et
-      dom.Document document = html_parser.parse(response.body);
-
-      // İstediğiniz elementleri seçin (örneğin, ilk <p> elementi)
-      final element = document.querySelector('td');
-
-      setState(() {
-        // Elementin içeriğini al
-        _word = element != null ? element.text : 'İçerik bulunamadı';
-      });
-    } else {
-      setState(() {
-        _word = 'İçerik alınamadı';
+        _day = "Hata oluştu: $e";
+        _word = "Hata oluştu: $e";
       });
     }
   }
 
   Future<void> _fetchCalendar() async {
-    const url =
-        'https://www.turktakvim.com/10/Tr/'; // İçeriğini almak istediğiniz web sayfası URL'si
+    const url = 'https://www.turktakvim.com/10/Tr/';
 
-    // Web sayfasının HTML içeriğini almak için HTTP isteği yap
     final response = await http.get(Uri.parse(url));
 
-    // HTTP isteği başarılı ise devam et
     if (response.statusCode == 200) {
-      // HTML içeriğini parse et
       var document = html_parser.parse(response.body);
 
-      // Tüm text içeriğini al
       var textContent = document.body!.text;
 
-      // Text içeriğini göster (örneğin konsola yazdır)
       setState(() {
         _calendar = textContent;
       });
@@ -119,8 +137,9 @@ class _CalendarBtnState extends State<CalendarBtn> {
       icon: const Icon(Icons.date_range_rounded),
       onPressed: () async {
         if (_ilk) {
-          await _fetchDay();
-          await _fetchWord();
+          // await _fetchDay();
+          // await _fetchWord();
+          await fetchWordnDay();
           await _fetchCalendar();
           setState(() {
             _ilk = false;
