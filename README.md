@@ -23,7 +23,7 @@ ______     ___                         __      ______     __    __
              \ \_\   \ \_\                                                          
               \/_/    \/_/                                                          
 </pre>
-
+<a href="https://play.google.com/store/apps/details?id=com.afaruk59.namaz_vakti_app&pcampaignid=web_share">PlayStore Page</a>
 <table>
   <tr>
     <td><img src="screenshots/Screenshot_1.png"/></td>
