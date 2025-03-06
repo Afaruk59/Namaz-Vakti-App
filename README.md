@@ -23,7 +23,10 @@ ______     ___                         __      ______     __    __
              \ \_\   \ \_\                                                          
               \/_/    \/_/                                                          
 </pre>
-<a href="https://play.google.com/store/apps/details?id=com.afaruk59.namaz_vakti_app&pcampaignid=web_share">PlayStore Page</a>
+<a href="https://play.google.com/store/apps/details?id=com.afaruk59.namaz_vakti_app&pcampaignid=web_share">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" style="width: 150px; height: auto;">
+</a>
+
 <table>
   <tr>
     <td><img src="screenshots/Screenshot_1.png"/></td>
