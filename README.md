@@ -26,7 +26,7 @@ ______     ___                         __      ______     __    __
 
 <p align="center">
   <a href="https://play.google.com/store/apps/details?id=com.afaruk59.namaz_vakti_app&pcampaignid=web_share">
-    <img src="https://cloud.githubusercontent.com/assets/5692567/10923351/6b688a92-8278-11e5-9973-8ffbf3c5cc52.png" alt="Get it on Google Play" width="200">
+    <img src="https://cloud.githubusercontent.com/assets/5692567/10923351/6b688a92-8278-11e5-9973-8ffbf3c5cc52.png" alt="Get it on Google Play" width="300">
   </a>
 </p>
 
