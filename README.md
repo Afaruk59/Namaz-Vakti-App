@@ -23,7 +23,12 @@ ______     ___                         __      ______     __    __
              \ \_\   \ \_\                                                          
               \/_/    \/_/                                                          
 </pre>
-[![Get it on Google Play](https://cloud.githubusercontent.com/assets/5692567/10923351/6b688a92-8278-11e5-9973-8ffbf3c5cc52.png)](https://play.google.com/store/apps/details?id=com.afaruk59.namaz_vakti_app&pcampaignid=web_share)
+
+<p align="center">
+  <a href="https://play.google.com/store/apps/details?id=com.afaruk59.namaz_vakti_app&pcampaignid=web_share">
+    <img src="https://cloud.githubusercontent.com/assets/5692567/10923351/6b688a92-8278-11e5-9973-8ffbf3c5cc52.png" alt="Get it on Google Play" width="200">
+  </a>
+</p>
 
 
 <table>
