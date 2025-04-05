@@ -34,6 +34,11 @@ class _ClockState extends State<Clock> {
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<TimeData>(context, listen: false).updateTime();
+    });
+
     Timer.periodic(const Duration(seconds: 1), (Timer t) {
       if (mounted) {
         if (DateTime.now().hour == 00 &&

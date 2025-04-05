@@ -207,6 +207,7 @@ class TopTimesCard extends StatefulWidget {
 class _TopTimesCardState extends State<TopTimesCard> {
   String miladi = '';
   String hicri = '';
+  String day = '';
   int count = 0;
   DateTime customDate = DateTime.now();
 
@@ -252,6 +253,8 @@ class _TopTimesCardState extends State<TopTimesCard> {
         hicri = HijriCalendar.fromDate(DateTime.now().add(Duration(days: count)))
             .toFormat('dd MMMM yy');
       }
+      day = DateFormat('EEEE', Provider.of<ChangeSettings>(context, listen: false).langCode)
+          .format(DateTime.now().add(Duration(days: count)));
     });
 
     Provider.of<TimeData>(context, listen: false).changeTime(miladi);
@@ -299,12 +302,24 @@ class _TopTimesCardState extends State<TopTimesCard> {
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: FittedBox(
                           fit: BoxFit.scaleDown,
-                          child: Text(
-                            miladi,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15,
-                            ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                miladi,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                ),
+                              ),
+                              Text(
+                                day,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),

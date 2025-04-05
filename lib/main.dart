@@ -55,7 +55,7 @@ void main() async {
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
-  static String version = '1.3.1';
+  static String version = '1.3.2';
 
   @override
   Widget build(BuildContext context) {
