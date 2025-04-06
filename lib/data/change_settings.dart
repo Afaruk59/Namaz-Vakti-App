@@ -60,7 +60,7 @@ class ChangeSettings with ChangeNotifier {
   }
 
   void loadShape() {
-    rounded = _settings.getBool('Shape') ?? false;
+    rounded = _settings.getBool('Shape') ?? true;
   }
 
   void saveShape(bool value) {
