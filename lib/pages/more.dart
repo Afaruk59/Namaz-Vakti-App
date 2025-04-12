@@ -34,7 +34,7 @@ class More extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(5),
         child: Card(
-          child: Column(
+          child: ListView(
             children: [
               SizedBox(
                   height: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),

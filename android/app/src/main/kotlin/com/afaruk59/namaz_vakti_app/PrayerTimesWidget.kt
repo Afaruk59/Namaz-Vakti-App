@@ -52,6 +52,8 @@ class PrayerTimesWidget : AppWidgetProvider() {
         private var backgroundThread: Thread? = null
         private val executor = Executors.newSingleThreadExecutor()
         private val handler = Handler(Looper.getMainLooper())
+        private const val MAX_RETRY_COUNT = 3
+        private const val RETRY_DELAY_MS = 2000L
 
         private fun getFormattedDateTime(context: Context): String {
             val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
@@ -376,6 +378,79 @@ class PrayerTimesWidget : AppWidgetProvider() {
                 return WidgetData(cityName, null)
             }
         }
+
+        private fun retryUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, retryCount: Int) {
+            if (retryCount >= MAX_RETRY_COUNT) {
+                Log.e("PrayerTimesWidget", "Maksimum deneme sayısına ulaşıldı")
+                return
+            }
+
+            Log.d("PrayerTimesWidget", "Veri çekme denemesi: ${retryCount + 1}/$MAX_RETRY_COUNT")
+            
+            // Önceki thread'i iptal et
+            backgroundThread?.interrupt()
+            backgroundThread = null
+
+            // Yeni bir thread başlat
+            backgroundThread = Thread {
+                try {
+                    val data = fetchWidgetData(context)
+                    
+                    // UI threadine geri dön
+                    handler.post {
+                        try {
+                            val views = RemoteViews(context.packageName, 
+                                if (appWidgetManager.getAppWidgetOptions(appWidgetId).getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT) >= 110) {
+                                    R.layout.widget_layout_large
+                                } else {
+                                    R.layout.widget_layout
+                                }
+                            )
+                            
+                            // Tema ayarlarını uygula
+                            applyTheme(context, views)
+                            
+                            // Son güncelleme zamanını ekle
+                            views.setTextViewText(R.id.lastUpdate, getFormattedDateTime(context))
+                            
+                            // Şehir adını ekle
+                            views.setTextViewText(R.id.widgetTitle, data.cityName)
+                            
+                            if (data.times != null) {
+                                // Namaz vakitlerini widget'a ekle
+                                views.setTextViewText(R.id.imsakTime, data.times[0])
+                                views.setTextViewText(R.id.gunesTime, data.times[1])
+                                views.setTextViewText(R.id.ogleTime, data.times[2])
+                                views.setTextViewText(R.id.ikindiTime, data.times[3])
+                                views.setTextViewText(R.id.aksamTime, data.times[4])
+                                views.setTextViewText(R.id.yatsiTime, data.times[5])
+                                
+                                // Widget'ı güncelle
+                                appWidgetManager.updateAppWidget(appWidgetId, views)
+                            } else {
+                                // Veriler alınamadıysa tekrar dene
+                                Log.e("PrayerTimesWidget", "Veri alınamadı, tekrar deneniyor...")
+                                handler.postDelayed({
+                                    retryUpdate(context, appWidgetManager, appWidgetId, retryCount + 1)
+                                }, RETRY_DELAY_MS)
+                            }
+                        } catch (e: Exception) {
+                            Log.e("PrayerTimesWidget", "UI güncelleme hatası: ${e.message}")
+                            handler.postDelayed({
+                                retryUpdate(context, appWidgetManager, appWidgetId, retryCount + 1)
+                            }, RETRY_DELAY_MS)
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e("PrayerTimesWidget", "Veri çekme hatası: ${e.message}")
+                    handler.postDelayed({
+                        retryUpdate(context, appWidgetManager, appWidgetId, retryCount + 1)
+                    }, RETRY_DELAY_MS)
+                }
+            }
+            
+            backgroundThread?.start()
+        }
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -460,51 +535,14 @@ class PrayerTimesWidget : AppWidgetProvider() {
         // Widget ilk eklendiğinde hemen güncelleme yap
         if (appWidgetIds != null && appWidgetIds.isNotEmpty()) {
             for (appWidgetId in appWidgetIds) {
-                updateAppWidget(context, appWidgetManager, appWidgetId)
+                // İlk güncelleme denemesini başlat
+                retryUpdate(context, appWidgetManager, appWidgetId, 0)
             }
         }
     }
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
-        // Önceki thread'i iptal et
-        backgroundThread?.interrupt()
-        backgroundThread = null
-        
-        // Her widget için güncelleme yap
         for (appWidgetId in appWidgetIds) {
-            // Widget boyutunu ölç ve uygun layout'u seç
-            val widgetInfo = appWidgetManager.getAppWidgetOptions(appWidgetId)
-            val minWidth = widgetInfo.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
-            val minHeight = widgetInfo.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT)
-            
-            Log.d("PrayerTimesWidget", "Widget size: $minWidth x $minHeight")
-            
-            // Widget genişliği ve yüksekliğine göre karar ver
-            // Genellikle 2 satır için minimum 100dp yükseklik gerekir
-            val layoutId = if (minHeight >= 110) {
-                R.layout.widget_layout_large  // Büyük widget için 2x3 düzen
-            } else {
-                R.layout.widget_layout  // Küçük widget için tek satır düzen
-            }
-            
-            val views = RemoteViews(context.packageName, layoutId)
-            
-            // Yükleniyor durumunu göster
-            views.setTextViewText(R.id.imsakTime, "...")
-            views.setTextViewText(R.id.gunesTime, "...")
-            views.setTextViewText(R.id.ogleTime, "...")
-            views.setTextViewText(R.id.ikindiTime, "...")
-            views.setTextViewText(R.id.aksamTime, "...")
-            views.setTextViewText(R.id.yatsiTime, "...")
-            views.setTextViewText(R.id.lastUpdate, context.getString(R.string.last_update, "..."))
-            
-            // Tema ayarlarını uygula
-            applyTheme(context, views)
-            
-            // Widget'ı güncelle
-            appWidgetManager.updateAppWidget(appWidgetId, views)
-            
-            // Veri güncelleme işlemini başlat
             updateAppWidget(context, appWidgetManager, appWidgetId)
         }
     }
