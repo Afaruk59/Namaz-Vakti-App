@@ -54,6 +54,9 @@ class PrayerTimesWidget : AppWidgetProvider() {
         private val handler = Handler(Looper.getMainLooper())
         private const val MAX_RETRY_COUNT = 3
         private const val RETRY_DELAY_MS = 2000L
+        private const val CACHED_TIMES_KEY = "cached_prayer_times"
+        private const val CACHED_CITY_KEY = "cached_city_name"
+        private const val CACHED_DATE_KEY = "cached_update_date"
 
         private fun getFormattedDateTime(context: Context): String {
             val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
@@ -228,55 +231,67 @@ class PrayerTimesWidget : AppWidgetProvider() {
 
             if (locationId.isEmpty()) {
                 Log.e("PrayerTimesWidget", "Location ID is empty")
-                return WidgetData(cityName, null)
+                return getCachedData(context) ?: WidgetData(cityName, null)
             }
 
             // API'den veri çekme
-            val url = URL(BASE_URL + locationId)
-            Log.d("PrayerTimesWidget", "Fetching data from URL: $url")
-            
-            val connection = url.openConnection() as HttpURLConnection
-            connection.requestMethod = "GET"
-            connection.connectTimeout = 10000
-            connection.readTimeout = 10000
-            connection.setRequestProperty("User-Agent", "Mozilla/5.0 Namaz-Vakti-App Widget")
-            
-            // Bağlantı durumunu kontrol et
-            val responseCode = connection.responseCode
-            if (responseCode != HttpURLConnection.HTTP_OK) {
-                Log.e("PrayerTimesWidget", "HTTP Error: $responseCode")
-                return WidgetData(cityName, null)
-            }
-            
-            val reader = BufferedReader(
-                InputStreamReader(connection.inputStream)
-            )
-            
-            val response = StringBuilder()
-            var line: String?
-            while (reader.readLine().also { line = it } != null) {
-                response.append(line)
-            }
-            reader.close()
+            try {
+                val url = URL(BASE_URL + locationId)
+                Log.d("PrayerTimesWidget", "Fetching data from URL: $url")
+                
+                val connection = url.openConnection() as HttpURLConnection
+                connection.requestMethod = "GET"
+                connection.connectTimeout = 15000 // 15 saniye
+                connection.readTimeout = 15000 // 15 saniye
+                connection.setRequestProperty("User-Agent", "Mozilla/5.0 Namaz-Vakti-App Widget")
+                connection.setRequestProperty("Accept", "application/xml")
+                connection.setRequestProperty("Connection", "close")
+                
+                // Bağlantı durumunu kontrol et
+                val responseCode = connection.responseCode
+                if (responseCode != HttpURLConnection.HTTP_OK) {
+                    Log.e("PrayerTimesWidget", "HTTP Error: $responseCode")
+                    return getCachedData(context) ?: WidgetData(cityName, null)
+                }
+                
+                val reader = BufferedReader(
+                    InputStreamReader(connection.inputStream, "UTF-8")
+                )
+                
+                val response = StringBuilder()
+                var line: String?
+                while (reader.readLine().also { line = it } != null) {
+                    response.append(line)
+                }
+                reader.close()
+                connection.disconnect()
 
-            val xmlResponse = response.toString()
-            if (xmlResponse.isEmpty()) {
-                Log.e("PrayerTimesWidget", "Empty XML response")
-                return WidgetData(cityName, null)
+                val xmlResponse = response.toString()
+                if (xmlResponse.isEmpty()) {
+                    Log.e("PrayerTimesWidget", "Empty XML response")
+                    return getCachedData(context) ?: WidgetData(cityName, null)
+                }
+                
+                // XML parse işlemi
+                val times = parseXmlResponse(xmlResponse)
+                if (times != null) {
+                    // Başarılı veri çekme durumunda önbelleğe kaydet
+                    cacheData(context, cityName, times)
+                    return WidgetData(cityName, times)
+                } else {
+                    Log.e("PrayerTimesWidget", "XML parsing failed")
+                    return getCachedData(context) ?: WidgetData(cityName, null)
+                }
+            } catch (e: Exception) {
+                Log.e("PrayerTimesWidget", "Network error: ${e.message}")
+                return getCachedData(context) ?: WidgetData(cityName, null)
             }
-            
-            // İlk 1000 karakteri logla (çok uzun olabilir)
-            val truncatedResponse = if (xmlResponse.length > 1000) {
-                xmlResponse.substring(0, 1000) + "... (truncated)"
-            } else {
-                xmlResponse
-            }
-            Log.d("PrayerTimesWidget", "XML Response: $truncatedResponse")
-            Log.d("PrayerTimesWidget", "XML Response length: ${xmlResponse.length} characters")
+        }
 
-            // XML parse işlemi
+        private fun parseXmlResponse(xmlResponse: String): Array<String>? {
             try {
                 val factory = XmlPullParserFactory.newInstance()
+                factory.isNamespaceAware = true
                 val parser = factory.newPullParser()
                 parser.setInput(StringReader(xmlResponse))
 
@@ -289,94 +304,96 @@ class PrayerTimesWidget : AppWidgetProvider() {
                 var times: Array<String>? = null
                 var eventType = parser.eventType
                 
-                var foundCityInfo = false
-                var foundMatchingDay = false
-                
                 while (eventType != XmlPullParser.END_DOCUMENT) {
-                    if (eventType == XmlPullParser.START_TAG) {
-                        if (parser.name == "cityinfo") {
-                            foundCityInfo = true
-                            Log.d("PrayerTimesWidget", "Found cityinfo tag")
-                        } else if (parser.name == "prayertimes") {
-                            val dayStr = parser.getAttributeValue(null, "day")
-                            val monthStr = parser.getAttributeValue(null, "month")
+                    if (eventType == XmlPullParser.START_TAG && parser.name == "prayertimes") {
+                        val dayStr = parser.getAttributeValue(null, "day")
+                        val monthStr = parser.getAttributeValue(null, "month")
+                        
+                        if (dayStr != null && monthStr != null) {
+                            val day = dayStr.toInt()
+                            val month = monthStr.toInt()
                             
-                            Log.d("PrayerTimesWidget", "Found prayertimes tag: day=$dayStr, month=$monthStr")
-                            
-                            if (dayStr != null && monthStr != null) {
-                                val day = dayStr.toInt()
-                                val month = monthStr.toInt()
+                            if (day == currentDay && month == currentMonth) {
+                                times = Array(6) { "" }
                                 
-                                if (day == currentDay && month == currentMonth) {
-                                    foundMatchingDay = true
-                                    Log.d("PrayerTimesWidget", "Found matching day and month!")
-                                    
-                                    // Önce attribute'lardan değerleri almayı deneyelim
-                                    val hasFajrAttr = parser.getAttributeValue(null, "fajr") != null
-                                    times = Array(6) { "" }
-                                    
-                                    if (hasFajrAttr) {
-                                        // Attribute'lardan oku
-                                        Log.d("PrayerTimesWidget", "Reading prayer times from attributes")
-                                        times[0] = parser.getAttributeValue(null, "fajr") ?: ""
-                                        times[1] = parser.getAttributeValue(null, "sunrise") ?: ""
-                                        times[2] = parser.getAttributeValue(null, "dhuhr") ?: ""
-                                        times[3] = parser.getAttributeValue(null, "asr") ?: ""
-                                        times[4] = parser.getAttributeValue(null, "maghrib") ?: ""
-                                        times[5] = parser.getAttributeValue(null, "isha") ?: ""
-                                        Log.d("PrayerTimesWidget", "Attribute times: ${times.joinToString(", ")}")
-                                    } else {
-                                        // İçeriğe geç ve metni oku
-                                        eventType = parser.next()
-                                        if (eventType == XmlPullParser.TEXT) {
-                                            val content = parser.text.trim()
-                                            Log.d("PrayerTimesWidget", "XML content: $content")
-                                            
-                                            if (content.isNotEmpty()) {
-                                                val prayerTimesArray = content.split(Regex("\\s+"))
-                                                Log.d("PrayerTimesWidget", "Prayer times array size: ${prayerTimesArray.size}")
-                                                Log.d("PrayerTimesWidget", "Prayer times array: ${prayerTimesArray.joinToString(", ")}")
-                                                
-                                                if (prayerTimesArray.size >= 12) {
-                                                    times[0] = prayerTimesArray.getOrNull(0) ?: "" // imsak
-                                                    times[1] = prayerTimesArray.getOrNull(2) ?: "" // güneş
-                                                    times[2] = prayerTimesArray.getOrNull(5) ?: "" // öğle
-                                                    times[3] = prayerTimesArray.getOrNull(6) ?: "" // ikindi
-                                                    times[4] = prayerTimesArray.getOrNull(9) ?: "" // akşam
-                                                    times[5] = prayerTimesArray.getOrNull(11) ?: "" // yatsı
-                                                    Log.d("PrayerTimesWidget", "Text content times: ${times.joinToString(", ")}")
-                                                } else {
-                                                    Log.e("PrayerTimesWidget", "Prayer times array too short")
-                                                }
-                                            } else {
-                                                Log.e("PrayerTimesWidget", "Empty content in prayertimes tag")
+                                val hasFajrAttr = parser.getAttributeValue(null, "fajr") != null
+                                if (hasFajrAttr) {
+                                    times[0] = parser.getAttributeValue(null, "fajr") ?: ""
+                                    times[1] = parser.getAttributeValue(null, "sunrise") ?: ""
+                                    times[2] = parser.getAttributeValue(null, "dhuhr") ?: ""
+                                    times[3] = parser.getAttributeValue(null, "asr") ?: ""
+                                    times[4] = parser.getAttributeValue(null, "maghrib") ?: ""
+                                    times[5] = parser.getAttributeValue(null, "isha") ?: ""
+                                } else {
+                                    eventType = parser.next()
+                                    if (eventType == XmlPullParser.TEXT) {
+                                        val content = parser.text.trim()
+                                        if (content.isNotEmpty()) {
+                                            val prayerTimesArray = content.split(Regex("\\s+"))
+                                            if (prayerTimesArray.size >= 12) {
+                                                times[0] = prayerTimesArray.getOrNull(0) ?: ""
+                                                times[1] = prayerTimesArray.getOrNull(2) ?: ""
+                                                times[2] = prayerTimesArray.getOrNull(5) ?: ""
+                                                times[3] = prayerTimesArray.getOrNull(6) ?: ""
+                                                times[4] = prayerTimesArray.getOrNull(9) ?: ""
+                                                times[5] = prayerTimesArray.getOrNull(11) ?: ""
                                             }
-                                        } else {
-                                            Log.e("PrayerTimesWidget", "No TEXT event after prayertimes tag, eventType: $eventType")
                                         }
                                     }
-                                    break
                                 }
+                                break
                             }
                         }
                     }
                     eventType = parser.next()
                 }
                 
-                if (!foundCityInfo) {
-                    Log.e("PrayerTimesWidget", "cityinfo tag not found in XML")
-                }
-                
-                if (!foundMatchingDay) {
-                    Log.e("PrayerTimesWidget", "No matching day found in XML")
-                }
-                
-                return WidgetData(cityName, times)
+                return if (times != null && times.any { it.isNotEmpty() }) times else null
             } catch (e: Exception) {
                 Log.e("PrayerTimesWidget", "XML parsing error: ${e.message}")
-                e.printStackTrace()
-                return WidgetData(cityName, null)
+                return null
             }
+        }
+
+        private fun cacheData(context: Context, cityName: String, times: Array<String>) {
+            val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            val editor = prefs.edit()
+            editor.putString(CACHED_CITY_KEY, cityName)
+            // Vakitleri sıralı bir şekilde kaydet
+            editor.putString("${CACHED_TIMES_KEY}_0", times[0])
+            editor.putString("${CACHED_TIMES_KEY}_1", times[1])
+            editor.putString("${CACHED_TIMES_KEY}_2", times[2])
+            editor.putString("${CACHED_TIMES_KEY}_3", times[3])
+            editor.putString("${CACHED_TIMES_KEY}_4", times[4])
+            editor.putString("${CACHED_TIMES_KEY}_5", times[5])
+            editor.putLong(CACHED_DATE_KEY, System.currentTimeMillis())
+            editor.apply()
+        }
+
+        private fun getCachedData(context: Context): WidgetData? {
+            val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            val cachedCity = prefs.getString(CACHED_CITY_KEY, null)
+            val cachedDate = prefs.getLong(CACHED_DATE_KEY, 0)
+            
+            if (cachedCity != null && cachedDate > 0) {
+                // Önbellekteki verinin 24 saatten eski olup olmadığını kontrol et
+                val currentTime = System.currentTimeMillis()
+                if (currentTime - cachedDate <= 24 * 60 * 60 * 1000) {
+                    // Vakitleri sıralı bir şekilde oku
+                    val times = Array(6) { index ->
+                        prefs.getString("${CACHED_TIMES_KEY}_$index", "") ?: ""
+                    }
+                    
+                    // Tüm vakitlerin boş olup olmadığını kontrol et
+                    if (times.any { it.isNotEmpty() }) {
+                        Log.d("PrayerTimesWidget", "Using cached data")
+                        return WidgetData(cachedCity, times)
+                    }
+                } else {
+                    Log.d("PrayerTimesWidget", "Cached data is too old")
+                }
+            }
+            return null
         }
 
         private fun retryUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, retryCount: Int) {
