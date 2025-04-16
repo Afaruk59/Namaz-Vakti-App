@@ -57,6 +57,7 @@ class PrayerTimesWidget : AppWidgetProvider() {
         private const val CACHED_TIMES_KEY = "cached_prayer_times"
         private const val CACHED_CITY_KEY = "cached_city_name"
         private const val CACHED_DATE_KEY = "cached_update_date"
+        private const val CACHED_LAST_UPDATE_KEY = "cached_last_update"
 
         private fun getFormattedDateTime(context: Context): String {
             val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
@@ -138,7 +139,7 @@ class PrayerTimesWidget : AppWidgetProvider() {
                 // Yenileme butonu için intent oluştur
                 val refreshIntent = Intent(context, PrayerTimesWidget::class.java)
                 refreshIntent.action = ACTION_REFRESH
-                refreshIntent.putExtra("timestamp", System.currentTimeMillis()) // Yeni bir intent oluşturulduğundan emin olmak için
+                refreshIntent.putExtra("timestamp", System.currentTimeMillis())
                 val refreshPendingIntent = PendingIntent.getBroadcast(
                     context, appWidgetId, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
                 views.setOnClickPendingIntent(R.id.refreshButton, refreshPendingIntent)
@@ -165,7 +166,7 @@ class PrayerTimesWidget : AppWidgetProvider() {
                         handler.post {
                             try {
                                 // Son güncelleme zamanını ekle
-                                views.setTextViewText(R.id.lastUpdate, getFormattedDateTime(context))
+                                views.setTextViewText(R.id.lastUpdate, data.lastUpdate ?: getFormattedDateTime(context))
                                 
                                 // Şehir adını ekle
                                 views.setTextViewText(R.id.widgetTitle, data.cityName)
@@ -367,6 +368,8 @@ class PrayerTimesWidget : AppWidgetProvider() {
             editor.putString("${CACHED_TIMES_KEY}_4", times[4])
             editor.putString("${CACHED_TIMES_KEY}_5", times[5])
             editor.putLong(CACHED_DATE_KEY, System.currentTimeMillis())
+            // Son güncelleme zamanını kaydet
+            editor.putString(CACHED_LAST_UPDATE_KEY, getFormattedDateTime(context))
             editor.apply()
         }
 
@@ -374,8 +377,9 @@ class PrayerTimesWidget : AppWidgetProvider() {
             val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
             val cachedCity = prefs.getString(CACHED_CITY_KEY, null)
             val cachedDate = prefs.getLong(CACHED_DATE_KEY, 0)
+            val cachedLastUpdate = prefs.getString(CACHED_LAST_UPDATE_KEY, null)
             
-            if (cachedCity != null && cachedDate > 0) {
+            if (cachedCity != null && cachedDate > 0 && cachedLastUpdate != null) {
                 // Önbellekteki verinin 24 saatten eski olup olmadığını kontrol et
                 val currentTime = System.currentTimeMillis()
                 if (currentTime - cachedDate <= 24 * 60 * 60 * 1000) {
@@ -387,7 +391,7 @@ class PrayerTimesWidget : AppWidgetProvider() {
                     // Tüm vakitlerin boş olup olmadığını kontrol et
                     if (times.any { it.isNotEmpty() }) {
                         Log.d("PrayerTimesWidget", "Using cached data")
-                        return WidgetData(cachedCity, times)
+                        return WidgetData(cachedCity, times, cachedLastUpdate)
                     }
                 } else {
                     Log.d("PrayerTimesWidget", "Cached data is too old")
@@ -585,7 +589,8 @@ class PrayerTimesWidget : AppWidgetProvider() {
 
     private data class WidgetData(
         val cityName: String,
-        val times: Array<String>?
+        val times: Array<String>?,
+        val lastUpdate: String? = null
     ) {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -598,6 +603,7 @@ class PrayerTimesWidget : AppWidgetProvider() {
                 if (other.times == null) return false
                 if (!times.contentEquals(other.times)) return false
             } else if (other.times != null) return false
+            if (lastUpdate != other.lastUpdate) return false
 
             return true
         }
@@ -605,6 +611,7 @@ class PrayerTimesWidget : AppWidgetProvider() {
         override fun hashCode(): Int {
             var result = cityName.hashCode()
             result = 31 * result + (times?.contentHashCode() ?: 0)
+            result = 31 * result + (lastUpdate?.hashCode() ?: 0)
             return result
         }
     }
