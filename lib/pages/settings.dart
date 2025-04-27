@@ -64,6 +64,7 @@ class _SettingsCardState extends State<SettingsCard> {
         content: SingleChildScrollView(
           child: ColorPicker(
             enableAlpha: false,
+            hexInputBar: true,
             labelTypes: const [],
             pickerColor: pickerColor,
             onColorChanged: (value) {
