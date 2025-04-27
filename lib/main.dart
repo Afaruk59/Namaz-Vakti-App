@@ -149,6 +149,16 @@ class MainApp extends StatelessWidget {
         return null;
       },
       theme: ThemeData(
+        segmentedButtonTheme: SegmentedButtonThemeData(
+          style: ButtonStyle(
+            shape: WidgetStatePropertyAll(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(
+                    Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
+              ),
+            ),
+          ),
+        ),
         iconButtonTheme: IconButtonThemeData(
           style: ButtonStyle(
             iconSize: const WidgetStatePropertyAll(24),

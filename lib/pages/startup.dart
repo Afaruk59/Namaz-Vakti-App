@@ -158,36 +158,67 @@ class StartupSecondCard extends StatelessWidget {
   }
 }
 
-class AppCard extends StatelessWidget {
+class AppCard extends StatefulWidget {
   const AppCard({
     super.key,
   });
 
   @override
+  State<AppCard> createState() => _AppCardState();
+}
+
+class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 2000),
+      vsync: this,
+    );
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.linear,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Card(
-          child: Image.asset(
-            'assets/img/logo.png',
-            height: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 150 : 200,
+    return FadeTransition(
+      opacity: _animation,
+      child: Column(
+        children: [
+          Card(
+            child: Image.asset(
+              'assets/img/logo.png',
+              height: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 150 : 200,
+            ),
           ),
-        ),
-        Text(
-          AppLocalizations.of(context)!.appName,
-          style: GoogleFonts.ubuntu(
+          Text(
+            AppLocalizations.of(context)!.appName,
+            style: GoogleFonts.ubuntu(
+                fontWeight: FontWeight.bold,
+                fontSize: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 25 : 30,
+                color: Theme.of(context).primaryColor),
+          ),
+          Text(
+            '${MainApp.version} - by Afaruk59',
+            style: GoogleFonts.ubuntu(
               fontWeight: FontWeight.bold,
-              fontSize: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 25 : 30,
-              color: Theme.of(context).primaryColor),
-        ),
-        Text(
-          '${MainApp.version} - by Afaruk59',
-          style: GoogleFonts.ubuntu(
-            fontWeight: FontWeight.bold,
-            fontSize: 15,
+              fontSize: 15,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

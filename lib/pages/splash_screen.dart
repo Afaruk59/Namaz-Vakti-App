@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:namaz_vakti_app/home_page.dart';
 import 'package:namaz_vakti_app/main.dart';
-import 'package:namaz_vakti_app/data/change_settings.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
+import 'package:provider/provider.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -70,7 +70,6 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   Widget build(BuildContext context) {
     return GradientBack(
       child: Scaffold(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -94,15 +93,17 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                         style: GoogleFonts.ubuntu(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
-                          color: Theme.of(context).primaryColor,
+                          color: Provider.of<ChangeSettings>(context).isDark
+                              ? Theme.of(context).primaryColorLight
+                              : Theme.of(context).primaryColor,
                         ),
                       ),
                       const SizedBox(height: 8),
                       Text(
                         '${MainApp.version} - by Afaruk59',
                         style: GoogleFonts.ubuntu(
+                          fontWeight: FontWeight.bold,
                           fontSize: 16,
-                          color: Theme.of(context).colorScheme.secondary,
                         ),
                       ),
                     ],

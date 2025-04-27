@@ -17,6 +17,7 @@ limitations under the License.
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:ui';
 
 class ChangeSettings with ChangeNotifier {
   static late SharedPreferences _settings;
@@ -26,6 +27,7 @@ class ChangeSettings with ChangeNotifier {
   double? currentHeight;
 
   bool isDark = false;
+  int themeIndex = 0;
   Color color = Colors.blueGrey[500]!;
   bool gradient = true;
 
@@ -68,16 +70,18 @@ class ChangeSettings with ChangeNotifier {
   }
 
   //HEIGHT
-
   void changeHeight(context) {
     currentHeight = MediaQuery.of(context).size.height;
   }
 
   //LANGUAGE
-
   void loadLanguage() {
-    locale = Locale(_settings.getString('lang') ?? 'tr');
-    langCode = _settings.getString('lang') ?? 'tr';
+    String defaultLang = PlatformDispatcher.instance.locale.languageCode;
+    if (!['tr', 'en', 'ar', 'de', 'es', 'fr', 'it', 'ru'].contains(defaultLang)) {
+      defaultLang = 'en';
+    }
+    locale = Locale(_settings.getString('lang') ?? defaultLang);
+    langCode = _settings.getString('lang') ?? defaultLang;
   }
 
   void saveLanguage(int val) {
@@ -119,7 +123,6 @@ class ChangeSettings with ChangeNotifier {
   }
 
   //ALARMS & NOTIFICATIONS
-
   void loadGaps() {
     for (int i = 0; i < 7; i++) {
       gaps[i] = _settings.getInt('${i}gap') ?? 0;
@@ -169,7 +172,6 @@ class ChangeSettings with ChangeNotifier {
   }
 
   //THEME SETTINGS
-
   void toggleGrad() {
     gradient = !gradient;
     saveGradtoSharedPref(gradient);
@@ -184,9 +186,20 @@ class ChangeSettings with ChangeNotifier {
     _settings.setBool('gradient', value);
   }
 
-  void toggleTheme() {
-    isDark = !isDark;
-    saveThemetoSharedPref(isDark);
+  void toggleTheme(int index) {
+    themeIndex = index;
+    switch (index) {
+      case 0:
+        isDark = PlatformDispatcher.instance.platformBrightness == Brightness.dark;
+        break;
+      case 1:
+        isDark = true;
+        break;
+      case 2:
+        isDark = false;
+        break;
+    }
+    saveThemetoSharedPref(themeIndex);
     notifyListeners();
   }
 
@@ -195,11 +208,22 @@ class ChangeSettings with ChangeNotifier {
   }
 
   void loadThemeFromSharedPref() {
-    isDark = _settings.getBool('darkTheme') ?? false;
+    themeIndex = _settings.getInt('themeIndex') ?? 0;
+    switch (themeIndex) {
+      case 0:
+        isDark = PlatformDispatcher.instance.platformBrightness == Brightness.dark;
+        break;
+      case 1:
+        isDark = true;
+        break;
+      case 2:
+        isDark = false;
+        break;
+    }
   }
 
-  void saveThemetoSharedPref(bool value) {
-    _settings.setBool('darkTheme', value);
+  void saveThemetoSharedPref(int index) {
+    _settings.setInt('themeIndex', index);
   }
 
   void changeCol(Color col) {

@@ -134,11 +134,29 @@ class _SettingsCardState extends State<SettingsCard> {
                 color: Theme.of(context).cardColor,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                  child: SwitchListTile(
-                    title: Text(AppLocalizations.of(context)!.darkMode),
-                    value: Provider.of<ChangeSettings>(context).isDark,
-                    onChanged: (_) =>
-                        Provider.of<ChangeSettings>(context, listen: false).toggleTheme(),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: SegmentedButton(
+                      segments: const [
+                        ButtonSegment(
+                          value: 0,
+                          icon: Icon(Icons.phone_android_rounded),
+                        ),
+                        ButtonSegment(
+                          value: 1,
+                          icon: Icon(Icons.dark_mode_rounded),
+                        ),
+                        ButtonSegment(
+                          value: 2,
+                          icon: Icon(Icons.light_mode_rounded),
+                        ),
+                      ],
+                      selected: {Provider.of<ChangeSettings>(context).themeIndex},
+                      onSelectionChanged: (Set<int> selected) {
+                        Provider.of<ChangeSettings>(context, listen: false)
+                            .toggleTheme(selected.first);
+                      },
+                    ),
                   ),
                 ),
               ),
