@@ -70,7 +70,6 @@ class MainApp extends StatelessWidget {
     Provider.of<ChangeSettings>(context).locale == const Locale('ar')
         ? HijriCalendar.setLocal('ar')
         : HijriCalendar.setLocal('en');
-    Provider.of<ChangeSettings>(context, listen: false).loadNotFromSharedPref();
     Provider.of<ChangeSettings>(context, listen: false).loadAlarm();
     Provider.of<ChangeSettings>(context, listen: false).loadGaps();
     Provider.of<ChangeSettings>(context, listen: false).loadShape();

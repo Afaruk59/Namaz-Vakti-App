@@ -122,7 +122,7 @@ class ChangeSettings with ChangeNotifier {
     notifyListeners();
   }
 
-  //ALARMS & NOTIFICATIONS
+  //ALARMS
   void loadGaps() {
     for (int i = 0; i < 7; i++) {
       gaps[i] = _settings.getInt('${i}gap') ?? 0;
@@ -135,40 +135,16 @@ class ChangeSettings with ChangeNotifier {
     notifyListeners();
   }
 
-  void falseAll() {
-    for (int i = 0; i < 7; i++) {
-      alarmList[i] = false;
-      _settings.setBool('$i', false);
-    }
-    notifyListeners();
-  }
-
   void toggleAlarm(int index) {
-    if (_settings.getBool('notification') ?? false) {
-      alarmList[index] = !alarmList[index];
-      _settings.setBool('$index', alarmList[index]);
-      notifyListeners();
-    }
+    alarmList[index] = !alarmList[index];
+    _settings.setBool('$index', alarmList[index]);
+    notifyListeners();
   }
 
   void loadAlarm() {
     for (int i = 0; i < 7; i++) {
       alarmList[i] = _settings.getBool('$i') ?? false;
     }
-  }
-
-  void toggleNot() {
-    isOpen = !isOpen;
-    saveNottoSharedPref(isOpen);
-    notifyListeners();
-  }
-
-  void loadNotFromSharedPref() {
-    isOpen = _settings.getBool('notification') ?? false;
-  }
-
-  void saveNottoSharedPref(bool value) {
-    _settings.setBool('notification', value);
   }
 
   //THEME SETTINGS
