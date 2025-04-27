@@ -37,6 +37,7 @@ import 'package:namaz_vakti_app/data/time_data.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
+import 'package:namaz_vakti_app/pages/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -78,6 +79,75 @@ class MainApp extends StatelessWidget {
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       locale: Provider.of<ChangeSettings>(context).locale,
       debugShowCheckedModeBanner: false,
+      initialRoute: Provider.of<ChangeSettings>(context, listen: false).isfirst == true
+          ? '/startup'
+          : '/splash',
+      onGenerateRoute: (settings) {
+        Widget? page;
+
+        switch (settings.name) {
+          case '/splash':
+            page = const SplashScreen();
+            break;
+          case '/':
+            page = ChangeNotifierProvider<TimeData>(
+              create: (context) => TimeData(),
+              child: const HomePage(),
+            );
+            break;
+          case '/times':
+            page = const Times();
+            break;
+          case '/qibla':
+            page = const Qibla();
+            break;
+          case '/zikir':
+            page = const Zikir();
+            break;
+          case '/dates':
+            page = const Dates();
+            break;
+          case '/books':
+            page = const Books();
+            break;
+          case '/settings':
+            page = const Settings();
+            break;
+          case '/kaza':
+            page = const Kaza();
+            break;
+          case '/alarms':
+            page = const Alarms();
+            break;
+          case '/startup':
+            page = const Startup();
+            break;
+          case '/about':
+            page = const About();
+            break;
+          case '/license':
+            page = const License();
+            break;
+          case '/search':
+            page = const Search();
+            break;
+        }
+
+        if (page != null) {
+          return PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) => page!,
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              const begin = Offset(1.0, 0.0);
+              const end = Offset.zero;
+              const curve = Curves.fastEaseInToSlowEaseOut;
+              var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+              var offsetAnimation = animation.drive(tween);
+              return SlideTransition(position: offsetAnimation, child: child);
+            },
+          );
+        }
+        return null;
+      },
       theme: ThemeData(
         iconButtonTheme: IconButtonThemeData(
           style: ButtonStyle(
@@ -178,26 +248,6 @@ class MainApp extends StatelessWidget {
           labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
         ),
       ),
-      initialRoute:
-          Provider.of<ChangeSettings>(context, listen: false).isfirst == true ? '/startup' : '/',
-      routes: {
-        '/': (context) => ChangeNotifierProvider<TimeData>(
-              create: (context) => TimeData(),
-              child: const HomePage(),
-            ),
-        '/times': (context) => const Times(),
-        '/qibla': (context) => const Qibla(),
-        '/zikir': (context) => const Zikir(),
-        '/dates': (context) => const Dates(),
-        '/books': (context) => const Books(),
-        '/settings': (context) => const Settings(),
-        '/kaza': (context) => const Kaza(),
-        '/alarms': (context) => const Alarms(),
-        '/startup': (context) => const Startup(),
-        '/about': (context) => const About(),
-        '/license': (context) => const License(),
-        '/search': (context) => const Search(),
-      },
     );
   }
 }
