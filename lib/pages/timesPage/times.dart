@@ -18,6 +18,7 @@ import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:namaz_vakti_app/components/scaffold_layout.dart';
 import 'package:namaz_vakti_app/pages/timesPage/city_names.dart';
 import 'package:namaz_vakti_app/pages/timesPage/location.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
@@ -32,31 +33,29 @@ class Times extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.timesPageTitle),
-        actions: [
-          const SizedBox(
-            width: 20,
+    return ScaffoldLayout(
+      title: AppLocalizations.of(context)!.timesPageTitle,
+      actions: [
+        const SizedBox(
+          width: 20,
+        ),
+        //Image.asset(
+        //  "assets/img/logo.png",
+        //),
+        IconButton(
+          iconSize: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 22.0 : 25.0,
+          onPressed: () {
+            Navigator.pushNamed(context, '/alarms');
+          },
+          icon: const Icon(
+            Icons.alarm,
           ),
-          //Image.asset(
-          //  "assets/img/logo.png",
-          //),
-          IconButton(
-            iconSize: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 22.0 : 25.0,
-            onPressed: () {
-              Navigator.pushNamed(context, '/alarms');
-            },
-            icon: const Icon(
-              Icons.alarm,
-            ),
-          ),
-          const SizedBox(
-            width: 20,
-          ),
-        ],
-      ),
+        ),
+        const SizedBox(
+          width: 20,
+        ),
+      ],
+      gradient: false,
       body: const TimesBody(),
     );
   }

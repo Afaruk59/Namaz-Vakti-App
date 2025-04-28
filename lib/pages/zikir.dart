@@ -17,6 +17,7 @@ limitations under the License.
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:namaz_vakti_app/components/scaffold_layout.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:provider/provider.dart';
 import 'package:vibration/vibration.dart';
@@ -27,12 +28,11 @@ class Zikir extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.zikirPageTitle),
-      ),
+    return ScaffoldLayout(
+      title: AppLocalizations.of(context)!.zikirPageTitle,
+      actions: const [],
       body: const ZikirCard(),
+      gradient: false,
     );
   }
 }

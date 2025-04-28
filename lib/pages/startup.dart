@@ -15,14 +15,14 @@ limitations under the License.
 */
 
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:namaz_vakti_app/home_page.dart';
-import 'package:namaz_vakti_app/pages/settings.dart';
+import 'package:namaz_vakti_app/components/app_card.dart';
+import 'package:namaz_vakti_app/components/gradient_background.dart';
+import 'package:namaz_vakti_app/components/lang_selector.dart';
+import 'package:namaz_vakti_app/components/tenbih_card.dart';
+import 'package:namaz_vakti_app/components/time_note.dart';
 import 'package:namaz_vakti_app/pages/timesPage/location.dart';
-import 'package:namaz_vakti_app/main.dart';
 import 'package:namaz_vakti_app/pages/timesPage/times.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 
@@ -31,7 +31,7 @@ class Startup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GradientBack(
+    return GradientBackground(
       child: PopScope(
         canPop: false,
         child: Scaffold(
@@ -112,23 +112,9 @@ class StartupSecondCard extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 10.0),
           child: TenbihCard(),
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-          child: Card(
-            color: Theme.of(context).cardColor,
-            child: ListTile(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 40),
-              title: const Text(
-                'Language',
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              subtitle: Text(AppLocalizations.of(context)!.lang),
-              trailing: const LangSelector(),
-            ),
-          ),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10.0),
+          child: LangSelector(),
         ),
         SizedBox.square(
           dimension: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 0 : 20,
@@ -154,140 +140,6 @@ class StartupSecondCard extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class AppCard extends StatefulWidget {
-  const AppCard({
-    super.key,
-  });
-
-  @override
-  State<AppCard> createState() => _AppCardState();
-}
-
-class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _animation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 2000),
-      vsync: this,
-    );
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.linear,
-    );
-    _controller.forward();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FadeTransition(
-      opacity: _animation,
-      child: Column(
-        children: [
-          Card(
-            child: Image.asset(
-              'assets/img/logo.png',
-              height: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 150 : 200,
-            ),
-          ),
-          Text(
-            AppLocalizations.of(context)!.appName,
-            style: GoogleFonts.ubuntu(
-                fontWeight: FontWeight.bold,
-                fontSize: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 25 : 30,
-                color: Theme.of(context).primaryColor),
-          ),
-          Text(
-            '${MainApp.version} - by Afaruk59',
-            style: GoogleFonts.ubuntu(
-              fontWeight: FontWeight.bold,
-              fontSize: 15,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class TimeNote extends StatelessWidget {
-  const TimeNote({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      color: Theme.of(context).cardColor,
-      child: ListTile(
-        title: Text(
-          AppLocalizations.of(context)!.startupDescription,
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 15),
-        ),
-      ),
-    );
-  }
-}
-
-class TenbihCard extends StatelessWidget {
-  const TenbihCard({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      color: Theme.of(context).cardColor,
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-            horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
-        child: ListTile(
-          title: Text(
-            AppLocalizations.of(context)!.tenbih,
-            style: const TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          onTap: () async {
-            Uri? url;
-            if (Provider.of<ChangeSettings>(context, listen: false).langCode == 'tr') {
-              url = Uri.parse('https://www.turktakvim.com/index.php?link=html/muhim_tenbih.html');
-            } else {
-              url = Uri.parse(
-                  'https://www.turktakvim.com/index.php?link=html/en/Important_Cautions.html');
-            }
-            await launchUrl(url);
-          },
-          trailing: FilledButton.tonal(
-            onPressed: () async {
-              Uri? url;
-              if (Provider.of<ChangeSettings>(context, listen: false).langCode == 'tr') {
-                url = Uri.parse('https://www.turktakvim.com/index.php?link=html/muhim_tenbih.html');
-              } else {
-                url = Uri.parse(
-                    'https://www.turktakvim.com/index.php?link=html/en/Important_Cautions.html');
-              }
-              await launchUrl(url);
-            },
-            child: const Icon(Icons.search),
-          ),
-        ),
-      ),
     );
   }
 }

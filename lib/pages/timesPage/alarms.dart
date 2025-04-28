@@ -15,8 +15,8 @@ limitations under the License.
 */
 
 import 'package:flutter/material.dart';
+import 'package:namaz_vakti_app/components/scaffold_layout.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
-import 'package:namaz_vakti_app/home_page.dart';
 import 'package:provider/provider.dart';
 
 class Alarms extends StatefulWidget {
@@ -29,50 +29,57 @@ class Alarms extends StatefulWidget {
 class _AlarmsState extends State<Alarms> {
   @override
   Widget build(BuildContext context) {
-    return GradientBack(
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Bildirimler'),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(5),
-          child: Card(
-            child: Padding(
-              padding: EdgeInsets.all(
-                  Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5.0 : 15.0),
-              child: ListView(
-                children: const [
-                  AlarmSwitch(
-                    title: 'İmsak Alarmı',
-                    index: 0,
-                  ),
-                  AlarmSwitch(
-                    title: 'Sabah Alarmı',
-                    index: 1,
-                  ),
-                  AlarmSwitch(
-                    title: 'Güneş Alarmı',
-                    index: 2,
-                  ),
-                  AlarmSwitch(
-                    title: 'Öğle Alarmı',
-                    index: 3,
-                  ),
-                  AlarmSwitch(
-                    title: 'İkindi Alarmı',
-                    index: 4,
-                  ),
-                  AlarmSwitch(
-                    title: 'Akşam Alarmı',
-                    index: 5,
-                  ),
-                  AlarmSwitch(
-                    title: 'Yatsı Alarmı',
-                    index: 6,
-                  ),
-                ],
+    return const ScaffoldLayout(
+      title: 'Bildirimler',
+      actions: [],
+      gradient: true,
+      body: AlarmsBody(),
+    );
+  }
+}
+
+class AlarmsBody extends StatelessWidget {
+  const AlarmsBody({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(5),
+      child: Card(
+        child: Padding(
+          padding: EdgeInsets.all(
+              Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5.0 : 15.0),
+          child: ListView(
+            children: const [
+              AlarmSwitch(
+                title: 'İmsak Alarmı',
+                index: 0,
               ),
-            ),
+              AlarmSwitch(
+                title: 'Sabah Alarmı',
+                index: 1,
+              ),
+              AlarmSwitch(
+                title: 'Güneş Alarmı',
+                index: 2,
+              ),
+              AlarmSwitch(
+                title: 'Öğle Alarmı',
+                index: 3,
+              ),
+              AlarmSwitch(
+                title: 'İkindi Alarmı',
+                index: 4,
+              ),
+              AlarmSwitch(
+                title: 'Akşam Alarmı',
+                index: 5,
+              ),
+              AlarmSwitch(
+                title: 'Yatsı Alarmı',
+                index: 6,
+              ),
+            ],
           ),
         ),
       ),

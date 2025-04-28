@@ -17,8 +17,9 @@ limitations under the License.
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:in_app_review/in_app_review.dart';
+import 'package:namaz_vakti_app/components/scaffold_layout.dart';
+import 'package:namaz_vakti_app/components/tenbih_card.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
-import 'package:namaz_vakti_app/pages/startup.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -27,10 +28,10 @@ class More extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.morePageTitle),
-      ),
+    return ScaffoldLayout(
+      title: AppLocalizations.of(context)!.morePageTitle,
+      actions: const [],
+      gradient: false,
       body: Padding(
         padding: const EdgeInsets.all(5),
         child: Card(

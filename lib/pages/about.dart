@@ -15,9 +15,10 @@ limitations under the License.
 */
 
 import 'package:flutter/material.dart';
+import 'package:namaz_vakti_app/components/app_card.dart';
+import 'package:namaz_vakti_app/components/scaffold_layout.dart';
+import 'package:namaz_vakti_app/components/time_note.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
-import 'package:namaz_vakti_app/home_page.dart';
-import 'package:namaz_vakti_app/pages/startup.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
@@ -27,13 +28,11 @@ class About extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GradientBack(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.aboutTitle),
-        ),
-        body: const AboutPage(),
-      ),
+    return ScaffoldLayout(
+      title: AppLocalizations.of(context)!.aboutTitle,
+      actions: const [],
+      gradient: true,
+      body: const AboutPage(),
     );
   }
 }

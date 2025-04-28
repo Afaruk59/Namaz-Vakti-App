@@ -16,7 +16,7 @@ limitations under the License.
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:namaz_vakti_app/home_page.dart';
+import 'package:namaz_vakti_app/components/scaffold_layout.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
@@ -26,14 +26,11 @@ class Kaza extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GradientBack(
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.kazaTitle),
-        ),
-        body: const KazaCard(),
-      ),
+    return ScaffoldLayout(
+      title: AppLocalizations.of(context)!.kazaTitle,
+      actions: const [],
+      gradient: true,
+      body: const KazaCard(),
     );
   }
 }

@@ -18,8 +18,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as html_parser;
 import 'package:html/dom.dart' as dom;
+import 'package:namaz_vakti_app/components/scaffold_layout.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
-import 'package:namaz_vakti_app/home_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:provider/provider.dart';
 
@@ -28,15 +28,13 @@ class Dates extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GradientBack(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(Provider.of<ChangeSettings>(context).currentHeight! < 700.0
-              ? AppLocalizations.of(context)!.datesTitleShort
-              : AppLocalizations.of(context)!.datesTitle),
-        ),
-        body: const DatesCard(),
-      ),
+    return ScaffoldLayout(
+      title: Provider.of<ChangeSettings>(context).currentHeight! < 700.0
+          ? AppLocalizations.of(context)!.datesTitleShort
+          : AppLocalizations.of(context)!.datesTitle,
+      actions: const [],
+      gradient: true,
+      body: const DatesCard(),
     );
   }
 }

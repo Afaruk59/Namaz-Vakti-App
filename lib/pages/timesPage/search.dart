@@ -17,8 +17,8 @@ limitations under the License.
 import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:namaz_vakti_app/components/gradient_background.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
-import 'package:namaz_vakti_app/home_page.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
@@ -83,7 +83,7 @@ class _SearchState extends State<Search> {
 
   @override
   Widget build(BuildContext context) {
-    return GradientBack(
+    return GradientBackground(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(

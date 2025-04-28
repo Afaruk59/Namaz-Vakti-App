@@ -17,51 +17,13 @@ limitations under the License.
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:in_app_update/in_app_update.dart';
+import 'package:namaz_vakti_app/components/gradient_background.dart';
 import 'package:namaz_vakti_app/pages/more.dart';
 import 'package:namaz_vakti_app/pages/qibla.dart';
 import 'package:namaz_vakti_app/pages/settings.dart';
 import 'package:namaz_vakti_app/pages/timesPage/times.dart';
 import 'package:namaz_vakti_app/pages/zikir.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
-import 'package:provider/provider.dart';
-import 'package:namaz_vakti_app/data/change_settings.dart';
-
-class GradientBack extends StatelessWidget {
-  const GradientBack({super.key, required this.child});
-  final Widget child;
-
-  Color lightenColor(Color color, [double amount = 0.1]) {
-    assert(amount >= 0 && amount <= 1);
-    HSLColor hslColor = HSLColor.fromColor(color);
-    HSLColor lighterHslColor =
-        hslColor.withLightness((hslColor.lightness + amount).clamp(0.0, 1.0));
-    return lighterHslColor.toColor();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: RadialGradient(
-          colors: [
-            Provider.of<ChangeSettings>(context).isDark == false
-                ? lightenColor(Provider.of<ChangeSettings>(context).color, 0.05)
-                : Provider.of<ChangeSettings>(context).color,
-            Theme.of(context).colorScheme.surfaceContainer,
-            Provider.of<ChangeSettings>(context).isDark == false
-                ? lightenColor(Provider.of<ChangeSettings>(context).color, 0.05)
-                : Provider.of<ChangeSettings>(context).color,
-          ],
-          radius: 3,
-          center: Alignment.topLeft,
-          stops: const [0.01, 0.5, 1],
-          tileMode: TileMode.mirror,
-        ),
-      ),
-      child: child,
-    );
-  }
-}
 
 class HomePage extends StatefulWidget {
   const HomePage({
@@ -105,7 +67,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return GradientBack(
+    return GradientBackground(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         body: PageView(

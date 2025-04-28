@@ -16,6 +16,7 @@ limitations under the License.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_compass/flutter_compass.dart';
+import 'package:namaz_vakti_app/components/scaffold_layout.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:namaz_vakti_app/data/time_data.dart';
 import 'package:provider/provider.dart';
@@ -28,10 +29,10 @@ class Qibla extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.qiblaPageTitle),
-      ),
+    return ScaffoldLayout(
+      title: AppLocalizations.of(context)!.qiblaPageTitle,
+      actions: const [],
+      gradient: false,
       body: const QiblaCard(),
     );
   }

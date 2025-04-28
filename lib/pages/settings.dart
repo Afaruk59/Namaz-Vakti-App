@@ -16,7 +16,8 @@ limitations under the License.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:namaz_vakti_app/home_page.dart';
+import 'package:namaz_vakti_app/components/lang_selector.dart';
+import 'package:namaz_vakti_app/components/scaffold_layout.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
@@ -27,18 +28,16 @@ class Settings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider.of<ChangeSettings>(context, listen: false).isfirst == true
-        ? GradientBack(
-            child: Scaffold(
-              appBar: AppBar(
-                title: Text(AppLocalizations.of(context)!.settingsPageTitle),
-              ),
-              body: const SettingsCard(),
-            ),
+        ? ScaffoldLayout(
+            title: AppLocalizations.of(context)!.settingsPageTitle,
+            actions: const [],
+            gradient: true,
+            body: const SettingsCard(),
           )
-        : Scaffold(
-            appBar: AppBar(
-              title: Text(AppLocalizations.of(context)!.settingsPageTitle),
-            ),
+        : ScaffoldLayout(
+            title: AppLocalizations.of(context)!.settingsPageTitle,
+            actions: const [],
+            gradient: false,
             body: const SettingsCard(),
           );
   }
@@ -108,17 +107,7 @@ class _SettingsCardState extends State<SettingsCard> {
               Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5.0 : 15.0),
           child: ListView(
             children: [
-              Card(
-                color: Theme.of(context).cardColor,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                  child: ListTile(
-                    title: Text(AppLocalizations.of(context)!.ln),
-                    subtitle: Text(AppLocalizations.of(context)!.lang),
-                    trailing: const LangSelector(),
-                  ),
-                ),
-              ),
+              const LangSelector(),
               Card(
                 color: Theme.of(context).cardColor,
                 child: Padding(
@@ -141,17 +130,18 @@ class _SettingsCardState extends State<SettingsCard> {
                       segments: const [
                         ButtonSegment(
                           value: 0,
-                          icon: Icon(Icons.phone_android_rounded),
+                          icon: Icon(Icons.phone_android_rounded, size: 24),
                         ),
                         ButtonSegment(
                           value: 1,
-                          icon: Icon(Icons.dark_mode_rounded),
+                          icon: Icon(Icons.dark_mode_rounded, size: 24),
                         ),
                         ButtonSegment(
                           value: 2,
-                          icon: Icon(Icons.light_mode_rounded),
+                          icon: Icon(Icons.light_mode_rounded, size: 24),
                         ),
                       ],
+                      emptySelectionAllowed: false,
                       selected: {Provider.of<ChangeSettings>(context).themeIndex},
                       onSelectionChanged: (Set<int> selected) {
                         Provider.of<ChangeSettings>(context, listen: false)
@@ -211,88 +201,6 @@ class _SettingsCardState extends State<SettingsCard> {
                 ),
               ),
             ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class LangSelector extends StatelessWidget {
-  const LangSelector({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return PopupMenuButton<int>(
-      shape: RoundedRectangleBorder(
-        borderRadius:
-            BorderRadius.circular(Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
-      ),
-      icon: const Icon(Icons.translate_rounded),
-      elevation: 10,
-      enabled: true,
-      onSelected: (int result) {
-        Provider.of<ChangeSettings>(context, listen: false).saveLanguage(result);
-      },
-      color: Theme.of(context).cardTheme.color!,
-      itemBuilder: (context) {
-        return <PopupMenuEntry<int>>[
-          const PopupMenuItem<int>(
-            value: 0,
-            child: LangItem(title: 'Türkçe'),
-          ),
-          const PopupMenuItem<int>(
-            value: 1,
-            child: LangItem(title: 'English (%80)'),
-          ),
-          const PopupMenuItem<int>(
-            value: 2,
-            child: LangItem(title: 'عربي (%80)'),
-          ),
-          const PopupMenuItem<int>(
-            value: 3,
-            child: LangItem(title: 'Deutsch (%80)'),
-          ),
-          const PopupMenuItem<int>(
-            value: 4,
-            child: LangItem(title: 'Español (%80)'),
-          ),
-          const PopupMenuItem<int>(
-            value: 5,
-            child: LangItem(title: 'Français (%80)'),
-          ),
-          const PopupMenuItem<int>(
-            value: 6,
-            child: LangItem(title: 'Italiano (%80)'),
-          ),
-          const PopupMenuItem<int>(
-            value: 7,
-            child: LangItem(title: 'Русский (%80)'),
-          ),
-        ];
-      },
-    );
-  }
-}
-
-class LangItem extends StatelessWidget {
-  const LangItem({
-    super.key,
-    required this.title,
-  });
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      color: Theme.of(context).cardColor,
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(5.0),
-          child: Text(
-            title,
           ),
         ),
       ),
