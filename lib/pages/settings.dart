@@ -15,12 +15,14 @@ limitations under the License.
 */
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:namaz_vakti_app/components/lang_selector.dart';
 import 'package:namaz_vakti_app/components/scaffold_layout.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
+import 'dart:io' show Platform;
 
 class Settings extends StatelessWidget {
   const Settings({super.key});
@@ -97,6 +99,19 @@ class _SettingsCardState extends State<SettingsCard> {
     );
   }
 
+  // Bildirimleri etkinleştir/devre dışı bırak
+  void _toggleNotificationService(bool enable) async {
+    if (!Platform.isAndroid) return;
+
+    const platform = MethodChannel('com.afaruk59.namaz_vakti_app/notifications');
+    try {
+      final methodName = enable ? 'startNotificationService' : 'stopNotificationService';
+      await platform.invokeMethod(methodName);
+    } on PlatformException catch (e) {
+      debugPrint('Failed to toggle notification service: ${e.message}');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -120,6 +135,39 @@ class _SettingsCardState extends State<SettingsCard> {
                   ),
                 ),
               ),
+
+              // Bildirim ayarları
+              if (Platform.isAndroid)
+                Card(
+                  color: Theme.of(context).cardColor,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                    child: Column(
+                      children: [
+                        ListTile(
+                          title: const Text('Bildirim Ayarları'),
+                          subtitle:
+                              const Text('Namaz vakitleri için bildirim ayarlarını düzenleyin'),
+                          trailing: const Icon(Icons.arrow_forward_ios),
+                          onTap: () => Navigator.pushNamed(context, '/alarms'),
+                        ),
+                        SwitchListTile(
+                          title: const Text('Bildirimleri Etkinleştir'),
+                          subtitle:
+                              const Text('Namaz vakti bildirimlerini etkinleştir/devre dışı bırak'),
+                          value: Provider.of<ChangeSettings>(context).notificationsEnabled,
+                          onChanged: (value) {
+                            Provider.of<ChangeSettings>(context, listen: false)
+                                .toggleNotifications(value);
+                            // Android bildirim servisini başlat veya durdur
+                            _toggleNotificationService(value);
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
               Card(
                 color: Theme.of(context).cardColor,
                 child: Padding(

@@ -39,17 +39,8 @@ class Times extends StatelessWidget {
         const SizedBox(
           width: 20,
         ),
-        //Image.asset(
-        //  "assets/img/logo.png",
-        //),
-        IconButton(
-          iconSize: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 22.0 : 25.0,
-          onPressed: () {
-            Navigator.pushNamed(context, '/alarms');
-          },
-          icon: const Icon(
-            Icons.alarm,
-          ),
+        Image.asset(
+          "assets/img/logo.png",
         ),
         const SizedBox(
           width: 20,

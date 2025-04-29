@@ -23,16 +23,19 @@ import android.os.Bundle
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
+import android.util.Log
 
 class MainActivity : FlutterActivity() {
     companion object {
-        private const val CHANNEL = "com.afaruk59.namaz_vakti_app/widget"
+        private const val WIDGET_CHANNEL = "com.afaruk59.namaz_vakti_app/widget"
+        private const val NOTIFICATION_CHANNEL = "com.afaruk59.namaz_vakti_app/notifications"
     }
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL)
+        // Widget güncellemesi için MethodChannel
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, WIDGET_CHANNEL)
             .setMethodCallHandler { call, result ->
                 if (call.method == "updateWidget") {
                     updateWidget()
@@ -41,6 +44,27 @@ class MainActivity : FlutterActivity() {
                     result.notImplemented()
                 }
             }
+            
+        // Bildirim servisi için MethodChannel
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, NOTIFICATION_CHANNEL)
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "startNotificationService" -> {
+                        PrayerNotificationService.startService(context)
+                        result.success(true)
+                    }
+                    "stopNotificationService" -> {
+                        PrayerNotificationService.stopService(context)
+                        result.success(true)
+                    }
+                    else -> {
+                        result.notImplemented()
+                    }
+                }
+            }
+        
+        // Uygulama başladığında bildirimleri kontrol et ve servisini başlat
+        PrayerNotificationService.startService(context)
     }
 
     private fun updateWidget() {

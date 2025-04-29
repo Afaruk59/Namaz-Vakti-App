@@ -38,9 +38,14 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:namaz_vakti_app/pages/splash_screen.dart';
+import 'dart:io' show Platform;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  if (Platform.isAndroid) {
+    setupPrayerNotifications();
+  }
+
   await ChangeSettings().createSharedPrefObject();
   ChangeSettings().loadLocalFromSharedPref();
 
@@ -52,6 +57,17 @@ void main() async {
       ),
     );
   });
+}
+
+// Android tarafında bildirim servisi ayarları
+void setupPrayerNotifications() async {
+  const platform = MethodChannel('com.afaruk59.namaz_vakti_app/notifications');
+  try {
+    debugPrint("Starting notification service");
+    await platform.invokeMethod('startNotificationService');
+  } on PlatformException catch (e) {
+    debugPrint('Failed to start notification service: ${e.message}');
+  }
 }
 
 class MainApp extends StatelessWidget {
@@ -73,6 +89,7 @@ class MainApp extends StatelessWidget {
     Provider.of<ChangeSettings>(context, listen: false).loadAlarm();
     Provider.of<ChangeSettings>(context, listen: false).loadGaps();
     Provider.of<ChangeSettings>(context, listen: false).loadShape();
+    Provider.of<ChangeSettings>(context, listen: false).loadNotifications();
     return MaterialApp(
       supportedLocales: L10n.all,
       localizationsDelegates: AppLocalizations.localizationsDelegates,

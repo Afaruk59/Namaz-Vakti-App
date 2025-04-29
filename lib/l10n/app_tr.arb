@@ -10,6 +10,26 @@
         "description": "Application Name"
     },
 
+    "notifications": "Bildirimler",
+    "@notifications":{
+        "description": "Notifications section title"
+    },
+    "notificationSettings": "Bildirim Ayarları",
+    "@notificationSettings":{
+        "description": "Notification settings title"
+    },
+    "notificationSettingsDesc": "Namaz vakitleri için bildirim ayarlarını düzenleyin",
+    "@notificationSettingsDesc":{
+        "description": "Description for notification settings"
+    },
+    "enableNotifications": "Bildirimleri Etkinleştir",
+    "@enableNotifications":{
+        "description": "Enable notifications switch title"
+    },
+    "enableNotificationsDesc": "Namaz vakti bildirimlerini etkinleştir/devre dışı bırak",
+    "@enableNotificationsDesc":{
+        "description": "Description for enable notifications switch"
+    },
 
     "timesPageTitle": "Vakitler",
     "@timesPageTitle":{

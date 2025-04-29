@@ -54,6 +54,8 @@ class ChangeSettings with ChangeNotifier {
 
   bool rounded = false;
 
+  bool notificationsEnabled = false;
+
   //SHAPE
   void toggleShape() {
     rounded = !rounded;
@@ -311,5 +313,16 @@ class ChangeSettings with ChangeNotifier {
 
   String loadSelectedProfile() {
     return _settings.getString('selectedProfile') ?? ' ';
+  }
+
+  //NOTIFICATIONS
+  void toggleNotifications(bool value) {
+    notificationsEnabled = value;
+    _settings.setBool('notificationsEnabled', value);
+    notifyListeners();
+  }
+
+  void loadNotifications() {
+    notificationsEnabled = _settings.getBool('notificationsEnabled') ?? false;
   }
 }
