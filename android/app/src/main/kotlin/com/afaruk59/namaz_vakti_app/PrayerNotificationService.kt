@@ -443,14 +443,49 @@ class PrayerNotificationService : Service() {
                     PendingIntent.FLAG_IMMUTABLE
                 )
             }
+
+        val remoteViews = RemoteViews(packageName, R.layout.notification_layout)
         
-        return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-            .setContentTitle("Namaz Vakti")
-            .setContentText("Namaz vakti bildirimleri aktif")
+        // Konum adını set et
+        val cityName = prefs.getString("flutter.name", "") ?: ""
+        remoteViews.setTextViewText(R.id.location_text, cityName)
+        Log.d(TAG, "Setting city name in notification: $cityName")
+        
+        // Namaz vakitlerini set et
+        if (prayerTimes != null) {
+            Log.d(TAG, "Setting prayer times in notification: ${prayerTimes!!.joinToString()}")
+            try {
+                remoteViews.setTextViewText(R.id.imsak_time, prayerTimes!![0])   // İmsak
+                remoteViews.setTextViewText(R.id.gunes_time, prayerTimes!![2])   // Güneş
+                remoteViews.setTextViewText(R.id.ogle_time, prayerTimes!![3])    // Öğle
+                remoteViews.setTextViewText(R.id.ikindi_time, prayerTimes!![4])  // İkindi
+                remoteViews.setTextViewText(R.id.aksam_time, prayerTimes!![5])   // Akşam
+                remoteViews.setTextViewText(R.id.yatsi_time, prayerTimes!![6])   // Yatsı
+            } catch (e: Exception) {
+                Log.e(TAG, "Error setting prayer times in notification: ${e.message}")
+            }
+        } else {
+            Log.d(TAG, "Prayer times are null, fetching new data...")
+            fetchPrayerTimesData()
+        }
+        
+        // Bildirim oluştur ve güncelle
+        val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
+            .setContent(remoteViews)
+            .setCustomContentView(remoteViews)
+            .setCustomBigContentView(remoteViews)
             .setContentIntent(pendingIntent)
             .setSilent(true)
+            .setOngoing(true)
+            .setPriority(NotificationCompat.PRIORITY_MIN)
             .build()
+
+        // Notification Manager'ı al ve bildirimi güncelle
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.notify(FOREGROUND_NOTIFICATION_ID, notification)
+        
+        return notification
     }
     
     private fun sendPrayerNotification(prayerIndex: Int) {
@@ -503,4 +538,4 @@ class BootCompleteReceiver : BroadcastReceiver() {
             PrayerNotificationService.startService(context)
         }
     }
-} 
+}

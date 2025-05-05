@@ -125,6 +125,16 @@ class ChangeSettings with ChangeNotifier {
   }
 
   //ALARMS
+  void toggleNotifications(bool value) {
+    notificationsEnabled = value;
+    _settings.setBool('notificationsEnabled', value);
+    notifyListeners();
+  }
+
+  void loadNotifications() {
+    notificationsEnabled = _settings.getBool('notificationsEnabled') ?? false;
+  }
+
   void loadGaps() {
     for (int i = 0; i < 7; i++) {
       gaps[i] = _settings.getInt('${i}gap') ?? 0;
@@ -313,16 +323,5 @@ class ChangeSettings with ChangeNotifier {
 
   String loadSelectedProfile() {
     return _settings.getString('selectedProfile') ?? ' ';
-  }
-
-  //NOTIFICATIONS
-  void toggleNotifications(bool value) {
-    notificationsEnabled = value;
-    _settings.setBool('notificationsEnabled', value);
-    notifyListeners();
-  }
-
-  void loadNotifications() {
-    notificationsEnabled = _settings.getBool('notificationsEnabled') ?? false;
   }
 }
