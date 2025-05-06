@@ -50,8 +50,17 @@ class MainActivity : FlutterActivity() {
             .setMethodCallHandler { call, result ->
                 when (call.method) {
                     "startNotificationService" -> {
-                        PrayerNotificationService.startService(context)
-                        result.success(true)
+                        // Bildirim ayarını kontrol et
+                        val prefs = context.getSharedPreferences("FlutterSharedPreferences", MODE_PRIVATE)
+                        val isNotificationsEnabled = prefs.getBoolean("flutter.notifications", false)
+                        
+                        if (isNotificationsEnabled) {
+                            PrayerNotificationService.startService(context)
+                            result.success(true)
+                        } else {
+                            PrayerNotificationService.stopService(context)
+                            result.success(false)
+                        }
                     }
                     "stopNotificationService" -> {
                         PrayerNotificationService.stopService(context)
@@ -62,9 +71,6 @@ class MainActivity : FlutterActivity() {
                     }
                 }
             }
-        
-        // Uygulama başladığında bildirimleri kontrol et ve servisini başlat
-        PrayerNotificationService.startService(context)
     }
 
     private fun updateWidget() {
@@ -77,4 +83,4 @@ class MainActivity : FlutterActivity() {
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds)
         sendBroadcast(intent)
     }
-} 
+}

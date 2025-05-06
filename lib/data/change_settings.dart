@@ -127,12 +127,12 @@ class ChangeSettings with ChangeNotifier {
   //ALARMS
   void toggleNotifications(bool value) {
     notificationsEnabled = value;
-    _settings.setBool('notificationsEnabled', value);
+    _settings.setBool('notifications', value);
     notifyListeners();
   }
 
   void loadNotifications() {
-    notificationsEnabled = _settings.getBool('notificationsEnabled') ?? false;
+    notificationsEnabled = _settings.getBool('notifications') ?? false;
   }
 
   void loadGaps() {

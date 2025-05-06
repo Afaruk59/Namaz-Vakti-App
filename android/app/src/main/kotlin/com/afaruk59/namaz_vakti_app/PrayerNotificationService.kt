@@ -584,9 +584,8 @@ class BootCompleteReceiver : BroadcastReceiver() {
             
             // SharedPreferences'den bildirim ayarını kontrol et
             val prefs = context.getSharedPreferences("FlutterSharedPreferences", Context.MODE_PRIVATE)
-            val isNotificationsEnabled = prefs.getBoolean("flutter.notificationsEnabled", false)
+            val isNotificationsEnabled = prefs.getBoolean("flutter.notifications", false)
             
-            // Eğer bildirimler aktifse servisi başlat
             if (isNotificationsEnabled) {
                 Log.d("BootCompleteReceiver", "Notifications are enabled, starting service")
                 PrayerNotificationService.startService(context)
