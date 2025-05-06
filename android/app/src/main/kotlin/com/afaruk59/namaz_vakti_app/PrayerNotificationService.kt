@@ -514,7 +514,7 @@ class PrayerNotificationService : Service() {
         
         // Bildirim oluştur ve güncelle
         val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-            .setSmallIcon(R.mipmap.ic_launcher)
+            .setSmallIcon(R.drawable.calendar)
             .setContent(remoteViews)
             .setCustomContentView(remoteViews)
             .setCustomBigContentView(remoteViews)
@@ -553,7 +553,7 @@ class PrayerNotificationService : Service() {
         val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setContentTitle("$prayerName Vakti")
             .setContentText("$cityName için $prayerName vakti geldi.")
-            .setSmallIcon(R.mipmap.ic_launcher)
+            .setSmallIcon(R.drawable.alarm)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setContentIntent(pendingIntent)

@@ -145,38 +145,41 @@ class AlarmSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Theme.of(context).cardColor,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15.0),
-        child: Column(
-          children: [
-            SwitchListTile(
-              title: Text(
-                title,
-              ),
-              value: Provider.of<ChangeSettings>(context).alarmList[index],
-              onChanged: (val) async {
-                Provider.of<ChangeSettings>(context, listen: false).toggleAlarm(index);
-              },
-            ),
-            Provider.of<ChangeSettings>(context).alarmList[index] == true
-                ? Slider(
-                    value: Provider.of<ChangeSettings>(context).gaps[index].toDouble(),
-                    min: -60,
-                    max: 60,
-                    divisions: 24,
-                    secondaryTrackValue: 0,
-                    label: '${Provider.of<ChangeSettings>(context).gaps[index].toString()} dk',
-                    onChanged: (value) {
-                      Provider.of<ChangeSettings>(context, listen: false)
-                          .saveGap(index, value.toInt());
+    return Provider.of<ChangeSettings>(context).notificationsEnabled
+        ? Card(
+            color: Theme.of(context).cardColor,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              child: Column(
+                children: [
+                  SwitchListTile(
+                    title: Text(
+                      title,
+                    ),
+                    value: Provider.of<ChangeSettings>(context).alarmList[index],
+                    onChanged: (val) async {
+                      Provider.of<ChangeSettings>(context, listen: false).toggleAlarm(index);
                     },
-                  )
-                : Container(),
-          ],
-        ),
-      ),
-    );
+                  ),
+                  Provider.of<ChangeSettings>(context).alarmList[index] == true
+                      ? Slider(
+                          value: Provider.of<ChangeSettings>(context).gaps[index].toDouble(),
+                          min: -60,
+                          max: 60,
+                          divisions: 24,
+                          secondaryTrackValue: 0,
+                          label:
+                              '${Provider.of<ChangeSettings>(context).gaps[index].toString()} dk',
+                          onChanged: (value) {
+                            Provider.of<ChangeSettings>(context, listen: false)
+                                .saveGap(index, value.toInt());
+                          },
+                        )
+                      : Container(),
+                ],
+              ),
+            ),
+          )
+        : Container();
   }
 }

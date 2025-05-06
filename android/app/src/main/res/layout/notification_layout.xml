@@ -12,7 +12,7 @@
         android:textStyle="bold"
         android:textSize="14sp"
         android:layout_marginBottom="4dp"
-        android:layout_marginLeft="4dp"
+        android:layout_marginLeft="10dp"
         android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"/>
 
     <LinearLayout
