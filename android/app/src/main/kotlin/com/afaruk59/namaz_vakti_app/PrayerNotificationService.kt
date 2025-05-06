@@ -103,6 +103,9 @@ class PrayerNotificationService : Service() {
         
         when (intent?.action) {
             ACTION_START_SERVICE -> {
+                // Önce mevcut vakitleri yükle
+                loadPrayerTimes()
+                // Foreground servisi başlat
                 startForeground(FOREGROUND_NOTIFICATION_ID, createForegroundNotification())
                 startPrayerTimeChecker()
             }
@@ -114,6 +117,48 @@ class PrayerNotificationService : Service() {
         
         return START_STICKY
     }
+
+    private fun loadPrayerTimes() {
+        val calendar = Calendar.getInstance()
+        val currentDay = calendar.get(Calendar.DAY_OF_MONTH)
+        val currentMonth = calendar.get(Calendar.MONTH) + 1
+
+        // SharedPreferences'den kaydedilmiş vakitleri yükle
+        val savedTimesStr = prefs.getString("flutter.prayerTimes", null)
+        val savedDay = prefs.getInt("flutter.prayerTimesDay", -1)
+        val savedMonth = prefs.getInt("flutter.prayerTimesMonth", -1)
+
+        if (savedTimesStr != null && savedDay == currentDay && savedMonth == currentMonth) {
+            try {
+                prayerTimes = savedTimesStr.split(",").toTypedArray()
+                Log.d(TAG, "Loaded saved prayer times: ${prayerTimes?.joinToString()}")
+            } catch (e: Exception) {
+                Log.e(TAG, "Error loading saved prayer times: ${e.message}")
+            }
+        }
+    }
+
+    private fun savePrayerTimes() {
+        if (prayerTimes != null) {
+            val calendar = Calendar.getInstance()
+            val editor = prefs.edit()
+            editor.putString("flutter.prayerTimes", prayerTimes!!.joinToString(","))
+            editor.putInt("flutter.prayerTimesDay", calendar.get(Calendar.DAY_OF_MONTH))
+            editor.putInt("flutter.prayerTimesMonth", calendar.get(Calendar.MONTH) + 1)
+            editor.apply()
+            Log.d(TAG, "Saved prayer times: ${prayerTimes!!.joinToString()}")
+        }
+    }
+
+    private fun updateForegroundNotification() {
+        try {
+            val notification = createForegroundNotification()
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.notify(FOREGROUND_NOTIFICATION_ID, notification)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error updating foreground notification: ${e.message}")
+        }
+    }
     
     private fun startPrayerTimeChecker() {
         Log.d(TAG, "Starting prayer time checker")
@@ -121,16 +166,7 @@ class PrayerNotificationService : Service() {
         // İlk veri çekme işlemi
         fetchPrayerTimesData()
         
-        // Her dakika namaz vakitlerini kontrol et
-        executor.scheduleAtFixedRate({
-            try {
-                checkPrayerTimes()
-            } catch (e: Exception) {
-                Log.e(TAG, "Error checking prayer times: ${e.message}")
-            }
-        }, CHECK_INTERVAL_MINUTES, CHECK_INTERVAL_MINUTES, TimeUnit.MINUTES)
-        
-        // Her saat başı vakitleri yenile
+        // Saatlik güncelleme zamanlaması
         try {
             val initialDelay = getMinutesToNextHour()
             Log.d(TAG, "Scheduling hourly updates to start in $initialDelay minutes")
@@ -145,11 +181,16 @@ class PrayerNotificationService : Service() {
             }, initialDelay, 60, TimeUnit.MINUTES)
         } catch (e: Exception) {
             Log.e(TAG, "Error scheduling hourly updates: ${e.message}")
-            // Eğer zamanlayıcı oluşturulamazsa, en azından 30 dakikada bir çalıştır
-            executor.scheduleAtFixedRate({
-                fetchPrayerTimesData()
-            }, 30, 30, TimeUnit.MINUTES)
         }
+
+        // Dakikalık namaz vakti kontrolü - sadece bir kez zamanlama yapılıyor
+        executor.scheduleAtFixedRate({
+            try {
+                checkPrayerTimes()
+            } catch (e: Exception) {
+                Log.e(TAG, "Error checking prayer times: ${e.message}")
+            }
+        }, 0, CHECK_INTERVAL_MINUTES, TimeUnit.MINUTES)
     }
     
     // Bir sonraki saat başına kaç dakika kaldığını hesapla
@@ -340,6 +381,8 @@ class PrayerNotificationService : Service() {
                 lastFetchTime = System.currentTimeMillis()
                 
                 Log.d(TAG, "Prayer times fetched: ${prayerTimes?.joinToString()}")
+                savePrayerTimes()
+                updateForegroundNotification()
             } catch (e: Exception) {
                 Log.e(TAG, "Network error: ${e.message}")
             }
@@ -471,7 +514,7 @@ class PrayerNotificationService : Service() {
         
         // Bildirim oluştur ve güncelle
         val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_notification)
+            .setSmallIcon(R.mipmap.ic_launcher)
             .setContent(remoteViews)
             .setCustomContentView(remoteViews)
             .setCustomBigContentView(remoteViews)
@@ -479,6 +522,9 @@ class PrayerNotificationService : Service() {
             .setSilent(true)
             .setOngoing(true)
             .setPriority(NotificationCompat.PRIORITY_MIN)
+            .setVisibility(NotificationCompat.VISIBILITY_SECRET) // Kilit ekranında gizle
+            .setShowWhen(false) // Zaman göstergesini gizle
+            .setOnlyAlertOnce(true)
             .build()
 
         // Notification Manager'ı al ve bildirimi güncelle
@@ -507,7 +553,7 @@ class PrayerNotificationService : Service() {
         val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setContentTitle("$prayerName Vakti")
             .setContentText("$cityName için $prayerName vakti geldi.")
-            .setSmallIcon(R.drawable.ic_notification)
+            .setSmallIcon(R.mipmap.ic_launcher)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setContentIntent(pendingIntent)
@@ -534,8 +580,19 @@ class PrayerNotificationService : Service() {
 class BootCompleteReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
-            Log.d("BootCompleteReceiver", "Boot completed, starting prayer notification service")
-            PrayerNotificationService.startService(context)
+            Log.d("BootCompleteReceiver", "Boot completed, checking notification settings")
+            
+            // SharedPreferences'den bildirim ayarını kontrol et
+            val prefs = context.getSharedPreferences("FlutterSharedPreferences", Context.MODE_PRIVATE)
+            val isNotificationsEnabled = prefs.getBoolean("flutter.notificationsEnabled", false)
+            
+            // Eğer bildirimler aktifse servisi başlat
+            if (isNotificationsEnabled) {
+                Log.d("BootCompleteReceiver", "Notifications are enabled, starting service")
+                PrayerNotificationService.startService(context)
+            } else {
+                Log.d("BootCompleteReceiver", "Notifications are disabled, not starting service")
+            }
         }
     }
 }
