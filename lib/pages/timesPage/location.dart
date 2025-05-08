@@ -145,7 +145,7 @@ class LocationState extends State<Location> {
       }
     }
 
-    if (permission == LocationPermission.deniedForever) {
+    if (permission == LocationPermission.deniedForever && mounted) {
       return showDialog(
         barrierDismissible: false,
         useRootNavigator: serviceEnabled,
@@ -222,10 +222,12 @@ class LocationState extends State<Location> {
     String stateName = column3Data[index].toString();
 
     ChangeSettings().saveLocaltoSharedPref(cityId, cityName, stateName);
-    Provider.of<ChangeSettings>(context, listen: false).isfirst == true
-        ? Navigator.pop(context)
-        : Navigator.popAndPushNamed(context, '/');
-    Provider.of<ChangeSettings>(context, listen: false).saveFirsttoSharedPref(false);
+    if (mounted) {
+      Provider.of<ChangeSettings>(context, listen: false).isfirst == true
+          ? Navigator.pop(context)
+          : Navigator.popAndPushNamed(context, '/');
+      Provider.of<ChangeSettings>(context, listen: false).saveFirsttoSharedPref(false);
+    }
   }
 
   @override

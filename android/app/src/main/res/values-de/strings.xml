@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Gebetszeiten</string>
-    <string name="imsak">Fajr</string>
+    <string name="imsak">Fadschr</string>
+    <string name="sabah">Morgen</string>
     <string name="gunes">Sonnenaufgang</string>
-    <string name="ogle">Dhuhr</string>
+    <string name="ogle">Zuhr</string>
     <string name="ikindi">Asr</string>
     <string name="aksam">Maghrib</string>
-    <string name="yatsi">Isha</string>
+    <string name="yatsi">Ischa</string>
     <string name="last_update">Letzte Aktualisierung: %1$s</string>
+    
+    <!-- Benachrichtigungstexte -->
+    <string name="notification_channel_name">Gebetszeiten-Benachrichtigungen</string>
+    <string name="notification_channel_desc">Zeigt Benachrichtigungen zu Gebetszeiten an</string>
+    <string name="prayer_time_notification_title">%1$s Zeit</string>
+    <string name="prayer_time_notification_text">Es ist %2$s Zeit für %1$s.</string>
 </resources>

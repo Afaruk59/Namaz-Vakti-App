@@ -511,5 +511,54 @@
     "sevahidInfo": "Şevâhid-ün Nübüvve (Peygamberlik Müjdeleri) kitâbı, derin âlim ve büyük velî Mevlânâ Abdürrahmân Câmî hazretlerinin, “ŞEVÂHİD-ÜN NÜBÜVVE Lİ-TAKVİYET-İ EHLİL-FÜTÜVVE” adlı kitâbının tercümesidir. Muhammed aleyhisselamın peygamberliğine delîl olan alâmetler ve mu’cizelerinin beyânı hakkındadır. Kitâbda, bir mukaddime, yedi bölüm, bir hâtime vardır:",
     "@sevahidInfo":{
         "description": "Text"
+    },
+    "notificationsPageTitle": "Bildirimler",
+    "@notificationsPageTitle":{
+        "description": "Page title"
+    },
+    "enableNotifications": "Bildirimleri Etkinleştir",
+    "@enableNotifications":{
+        "description": "Switch title"
+    },
+    "notificationsSubtitle": "Namaz vakti bildirimlerini etkinleştir/devre dışı bırak",
+    "@notificationsSubtitle":{
+        "description": "Switch subtitle"
+    },
+    "imsakAlarm": "İmsak Alarmı",
+    "@imsakAlarm":{
+        "description": "Alarm switch title"
+    },
+    "morningAlarm": "Sabah Alarmı",
+    "@morningAlarm":{
+        "description": "Alarm switch title"
+    },
+    "sunriseAlarm": "Güneş Alarmı",
+    "@sunriseAlarm":{
+        "description": "Alarm switch title"
+    },
+    "noonAlarm": "Öğle Alarmı",
+    "@noonAlarm":{
+        "description": "Alarm switch title"
+    },
+    "afternoonAlarm": "İkindi Alarmı",
+    "@afternoonAlarm":{
+        "description": "Alarm switch title"
+    },
+    "sunsetAlarm": "Akşam Alarmı",
+    "@sunsetAlarm":{
+        "description": "Alarm switch title"
+    },
+    "nightAlarm": "Yatsı Alarmı",
+    "@nightAlarm":{
+        "description": "Alarm switch title"
+    },
+    "minuteAbbreviation": "dk",
+    "@minuteAbbreviation":{
+        "description": "Minute abbreviation"
+    },
+
+    "calendarListTitle": "Takvimler",
+    "@calendarListTitle":{
+        "description": "Calendar list title"
     }
 }

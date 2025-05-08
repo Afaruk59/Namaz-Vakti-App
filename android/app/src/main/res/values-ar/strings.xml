@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">مواقيت الصلاة</string>
+    <string name="app_name">أوقات الصلاة</string>
     <string name="imsak">الفجر</string>
+    <string name="sabah">الصباح</string>
     <string name="gunes">الشروق</string>
     <string name="ogle">الظهر</string>
     <string name="ikindi">العصر</string>
     <string name="aksam">المغرب</string>
     <string name="yatsi">العشاء</string>
     <string name="last_update">آخر تحديث: %1$s</string>
+    
+    <!-- نصوص الإشعارات -->
+    <string name="notification_channel_name">إشعارات أوقات الصلاة</string>
+    <string name="notification_channel_desc">يعرض إشعارات في أوقات الصلاة</string>
+    <string name="prayer_time_notification_title">وقت %1$s</string>
+    <string name="prayer_time_notification_text">حان وقت %2$s في %1$s.</string>
 </resources>

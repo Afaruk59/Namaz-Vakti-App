@@ -2,10 +2,17 @@
 <resources>
     <string name="app_name">Horarios de Oración</string>
     <string name="imsak">Fajr</string>
+    <string name="sabah">Mañana</string>
     <string name="gunes">Amanecer</string>
     <string name="ogle">Dhuhr</string>
     <string name="ikindi">Asr</string>
     <string name="aksam">Maghrib</string>
     <string name="yatsi">Isha</string>
     <string name="last_update">Última actualización: %1$s</string>
+    
+    <!-- Textos de notificación -->
+    <string name="notification_channel_name">Notificaciones de Horarios de Oración</string>
+    <string name="notification_channel_desc">Muestra notificaciones en los horarios de oración</string>
+    <string name="prayer_time_notification_title">Hora de %1$s</string>
+    <string name="prayer_time_notification_text">Es hora de %2$s para %1$s.</string>
 </resources>

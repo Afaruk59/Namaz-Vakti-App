@@ -21,7 +21,11 @@ import 'package:html/dom.dart' as dom;
 import 'package:namaz_vakti_app/components/scaffold_layout.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:device_calendar/device_calendar.dart';
+import 'package:timezone/timezone.dart' as tz;
+import 'package:url_launcher/url_launcher.dart';
 
 class Dates extends StatelessWidget {
   const Dates({super.key});
@@ -48,6 +52,7 @@ class DatesCard extends StatefulWidget {
 
 class _DatesCardState extends State<DatesCard> {
   static List<String> _list = [];
+  final DeviceCalendarPlugin _deviceCalendarPlugin = DeviceCalendarPlugin();
   @override
   initState() {
     super.initState();
@@ -96,6 +101,195 @@ class _DatesCardState extends State<DatesCard> {
                             child: ListTile(
                               title: Text(_list[index + 2]),
                               subtitle: Text('${_list[index + 1]} | ${_list[index]}'),
+                              trailing: FilledButton.tonal(
+                                  onPressed: () async {
+                                    try {
+                                      // 1. İzin iste
+                                      var permissionStatus =
+                                          await Permission.calendarFullAccess.status;
+                                      if (!permissionStatus.isGranted) {
+                                        permissionStatus =
+                                            await Permission.calendarFullAccess.request();
+                                        if (!permissionStatus.isGranted) {
+                                          if (context.mounted) {
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              const SnackBar(
+                                                content: Text('Takvim izni verilmedi'),
+                                              ),
+                                            );
+                                          }
+                                          return;
+                                        }
+                                      }
+
+                                      // 2. Takvimleri al
+                                      var calendarsResult =
+                                          await _deviceCalendarPlugin.retrieveCalendars();
+                                      debugPrint(
+                                          'Takvimler: ${calendarsResult.data?.map((c) => "${c.id}: ${c.name}").join(", ")}');
+                                      var calendars = calendarsResult.data;
+
+                                      if (calendars == null || calendars.isEmpty) {
+                                        if (context.mounted) {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(
+                                              content: Text('Takvim bulunamadı'),
+                                            ),
+                                          );
+                                        }
+                                        return;
+                                      }
+
+                                      // Kullanıcıya takvim seçme imkanı ver
+                                      String? selectedCalendarId;
+
+                                      if (calendars.length > 1 && context.mounted) {
+                                        // Dialog ile takvim seçtir
+                                        await showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: Text(
+                                                  AppLocalizations.of(context)!.calendarListTitle),
+                                              content: SizedBox(
+                                                width: double.maxFinite,
+                                                height: 300,
+                                                child: ListView.builder(
+                                                  shrinkWrap: true,
+                                                  itemCount: calendars.length,
+                                                  itemBuilder: (context, index) {
+                                                    final calendarName =
+                                                        calendars[index].name ?? 'İsimsiz Takvim';
+                                                    return ListTile(
+                                                      title: Text(calendarName),
+                                                      onTap: () {
+                                                        setState(() {
+                                                          selectedCalendarId = calendars[index].id;
+                                                        });
+                                                        Navigator.of(context).pop();
+                                                      },
+                                                    );
+                                                  },
+                                                ),
+                                              ),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child: Text(AppLocalizations.of(context)!.leave),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      } else {
+                                        // Tek takvim varsa direkt seç
+                                        selectedCalendarId = calendars.first.id;
+                                      }
+
+                                      // Eğer kullanıcı takvim seçmeden çıktıysa işlemi sonlandır
+                                      if (selectedCalendarId == null) {
+                                        return;
+                                      }
+
+                                      // Seçilen takvimi kullan
+                                      final calendar = calendars.firstWhere(
+                                        (cal) => cal.id == selectedCalendarId,
+                                        orElse: () => calendars.first,
+                                      );
+
+                                      debugPrint(
+                                          'Seçilen Takvim: ${calendar.name} (${calendar.id})');
+
+                                      // 3. Etkinlik oluştur
+                                      // Tarih formatını kontrol et ve düzelt
+                                      final originalDate = _list[index];
+                                      debugPrint('Orijinal tarih: $originalDate');
+
+                                      // Tarih formatını doğrula ve düzelt
+                                      DateTime eventDate;
+                                      try {
+                                        final parts = originalDate.split('-');
+                                        if (parts.length == 3) {
+                                          // Gün-Ay-Yıl formatı (örn: 01-05-2024)
+                                          final day = int.parse(parts[0]);
+                                          final month = int.parse(parts[1]);
+                                          final year = int.parse(parts[2]);
+                                          eventDate = DateTime(year, month, day);
+                                          debugPrint(
+                                              'Oluşturulan tarih: ${eventDate.toIso8601String()}');
+                                        } else {
+                                          // Farklı format dene
+                                          eventDate = DateTime.parse(originalDate);
+                                        }
+                                      } catch (e) {
+                                        debugPrint('Tarih parse hatası: $e');
+                                        // Bugünün tarihini kullan
+                                        eventDate = DateTime.now();
+                                      }
+
+                                      debugPrint('Event date: $eventDate');
+
+                                      // Başlangıç ve bitiş saatlerini ayarla
+                                      final startDate = DateTime(eventDate.year, eventDate.month,
+                                          eventDate.day, 0, 0, 0 // Günün başlangıcı
+                                          );
+
+                                      final endDate = DateTime(eventDate.year, eventDate.month,
+                                          eventDate.day, 23, 59, 59 // Günün sonu
+                                          );
+
+                                      final event = Event(
+                                        calendar.id,
+                                        title: _list[index + 2],
+                                        description: '${_list[index + 1]} | ${_list[index]}',
+                                        start: TZDateTime.from(startDate, tz.local),
+                                        end: TZDateTime.from(endDate, tz.local),
+                                        allDay: true, // Tüm gün etkinlik olarak işaretle
+                                      );
+
+                                      // 4. Etkinliği kaydet
+                                      final result =
+                                          await _deviceCalendarPlugin.createOrUpdateEvent(event);
+
+                                      debugPrint(
+                                          'Sonuç: ${result?.isSuccess}, ID: ${result?.data}');
+
+                                      if (context.mounted) {
+                                        if (result?.isSuccess == true) {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(
+                                              content: Text('${_list[index + 2]} takvime eklendi'),
+                                              action: SnackBarAction(
+                                                label: 'Takvimi Aç',
+                                                onPressed: () {
+                                                  openCalendarIntent(eventDate);
+                                                },
+                                              ),
+                                            ),
+                                          );
+                                        } else {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                  'Takvime eklenemedi: ${result?.errors.map((e) => e.errorMessage).join(", ") ?? "Bilinmeyen hata"}'),
+                                            ),
+                                          );
+                                        }
+                                      }
+                                    } catch (e) {
+                                      debugPrint('Genel hata: $e');
+                                      if (context.mounted) {
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            content: Text('Bir hata oluştu: $e'),
+                                          ),
+                                        );
+                                      }
+                                    }
+                                  },
+                                  child: const Icon(Icons.edit_calendar_rounded)),
                             ),
                           ),
                         ),
@@ -106,5 +300,72 @@ class _DatesCardState extends State<DatesCard> {
         ),
       ),
     );
+  }
+
+  Future<void> openCalendarIntent(DateTime date) async {
+    try {
+      debugPrint('Takvim açılıyor: ${date.toIso8601String()}');
+
+      // Etkinlik ID'sini logla
+      final result = await _deviceCalendarPlugin.retrieveEvents(
+        null, // tüm takvimleri kontrol et
+        RetrieveEventsParams(
+          startDate: date.subtract(const Duration(days: 1)),
+          endDate: date.add(const Duration(days: 1)),
+        ),
+      );
+
+      if (result.data != null) {
+        for (var event in result.data!) {
+          debugPrint('Bulunan etkinlik: ${event.title} - ${event.start} - ${event.eventId}');
+        }
+      }
+
+      // Android için takvim uygulamasını açma
+      if (Theme.of(context).platform == TargetPlatform.android) {
+        // Önce takvimin kendisini açma URI'sı
+        final calendarDayUri = Uri.parse(
+          'content://com.android.calendar/time/${date.millisecondsSinceEpoch}',
+        );
+
+        // Alternatif URI - Google Takvim'in özel URI formatı
+        final googleCalendarUri = Uri.parse(
+          'content://com.android.calendar/time/${date.millisecondsSinceEpoch}',
+        );
+
+        debugPrint('Android takvim URL: $calendarDayUri');
+
+        if (await canLaunchUrl(calendarDayUri)) {
+          await launchUrl(calendarDayUri, mode: LaunchMode.externalApplication);
+        } else if (await canLaunchUrl(googleCalendarUri)) {
+          await launchUrl(googleCalendarUri, mode: LaunchMode.externalApplication);
+        } else {
+          // Alternatif yöntem dene - web tarayıcıda takvimi aç
+          final fallbackUrl = Uri.parse(
+              'https://calendar.google.com/calendar/u/0/r/day/${date.year}/${date.month}/${date.day}');
+          debugPrint('Alternatif URL: $fallbackUrl');
+          if (await canLaunchUrl(fallbackUrl)) {
+            await launchUrl(fallbackUrl, mode: LaunchMode.externalApplication);
+          }
+        }
+      } else {
+        // iOS için takvim uygulamasını açma
+        final url = Uri.parse('calshow:${date.millisecondsSinceEpoch}');
+        debugPrint('iOS takvim URL: $url');
+        if (await canLaunchUrl(url)) {
+          await launchUrl(url, mode: LaunchMode.externalApplication);
+        }
+      }
+    } catch (e) {
+      debugPrint('Takvim açılırken hata: $e');
+      // Hata olursa kullanıcıya bildir
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Takvim açılamadı: $e'),
+          ),
+        );
+      }
+    }
   }
 }

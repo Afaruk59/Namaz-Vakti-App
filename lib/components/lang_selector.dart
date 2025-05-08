@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 import 'package:flutter/material.dart';
+import 'package:namaz_vakti_app/components/scaffold_layout.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
@@ -31,88 +32,61 @@ class LangSelector extends StatelessWidget {
         child: ListTile(
           title: Text(AppLocalizations.of(context)!.ln),
           subtitle: Text(AppLocalizations.of(context)!.lang),
-          trailing: const LangSelectorButton(),
+          trailing: const Icon(Icons.translate_rounded),
+          onTap: () {
+            Navigator.pushNamed(context, '/lang');
+          },
         ),
       ),
     );
   }
 }
 
-class LangSelectorButton extends StatelessWidget {
-  const LangSelectorButton({
-    super.key,
-  });
+class LangPage extends StatelessWidget {
+  const LangPage({super.key});
+  static const List<String> langs = [
+    'Türkçe',
+    'English (%80)',
+    'عربي (%80)',
+    'Deutsch (%80)',
+    'Español (%80)',
+    'Français (%80)',
+    'Italiano (%80)',
+    'Русский (%80)',
+  ];
 
   @override
   Widget build(BuildContext context) {
-    return PopupMenuButton<int>(
-      shape: RoundedRectangleBorder(
-        borderRadius:
-            BorderRadius.circular(Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
-      ),
-      icon: const Icon(Icons.translate_rounded),
-      elevation: 10,
-      enabled: true,
-      onSelected: (int result) {
-        Provider.of<ChangeSettings>(context, listen: false).saveLanguage(result);
-      },
-      color: Theme.of(context).cardTheme.color!,
-      itemBuilder: (context) {
-        return <PopupMenuEntry<int>>[
-          const PopupMenuItem<int>(
-            value: 0,
-            child: LangItem(title: 'Türkçe'),
-          ),
-          const PopupMenuItem<int>(
-            value: 1,
-            child: LangItem(title: 'English (%80)'),
-          ),
-          const PopupMenuItem<int>(
-            value: 2,
-            child: LangItem(title: 'عربي (%80)'),
-          ),
-          const PopupMenuItem<int>(
-            value: 3,
-            child: LangItem(title: 'Deutsch (%80)'),
-          ),
-          const PopupMenuItem<int>(
-            value: 4,
-            child: LangItem(title: 'Español (%80)'),
-          ),
-          const PopupMenuItem<int>(
-            value: 5,
-            child: LangItem(title: 'Français (%80)'),
-          ),
-          const PopupMenuItem<int>(
-            value: 6,
-            child: LangItem(title: 'Italiano (%80)'),
-          ),
-          const PopupMenuItem<int>(
-            value: 7,
-            child: LangItem(title: 'Русский (%80)'),
-          ),
-        ];
-      },
-    );
-  }
-}
-
-class LangItem extends StatelessWidget {
-  const LangItem({
-    super.key,
-    required this.title,
-  });
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      color: Theme.of(context).cardColor,
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(5.0),
-          child: Text(
-            title,
+    return ScaffoldLayout(
+      title: AppLocalizations.of(context)!.ln,
+      actions: const [],
+      gradient: true,
+      body: Padding(
+        padding: const EdgeInsets.all(5),
+        child: Card(
+          child: Padding(
+            padding: EdgeInsets.all(
+                Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5.0 : 15.0),
+            child: ListView.builder(
+              itemCount: langs.length,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                  child: Card(
+                    color: Theme.of(context).cardColor,
+                    child: TextButton(
+                      onPressed: () {
+                        Provider.of<ChangeSettings>(context, listen: false).saveLanguage(index);
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        langs[index],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
         ),
       ),

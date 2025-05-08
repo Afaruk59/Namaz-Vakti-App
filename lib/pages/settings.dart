@@ -183,9 +183,11 @@ class _SettingsCardState extends State<SettingsCard> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15.0),
                   child: ListTile(
+                    leading: CircleAvatar(
+                      radius: 18,
+                      backgroundColor: Provider.of<ChangeSettings>(context, listen: false).color,
+                    ),
                     title: Text(AppLocalizations.of(context)!.themeColor),
-                    subtitle: Text(
-                        Provider.of<ChangeSettings>(context, listen: false).color.toHexString()),
                     onTap: () {
                       pickerColor = Provider.of<ChangeSettings>(context, listen: false).color;
                       colorPalette(context);

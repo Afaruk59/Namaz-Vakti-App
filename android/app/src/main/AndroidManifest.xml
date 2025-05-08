@@ -11,6 +11,12 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.CONNECTIVITY_ACTION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <uses-permission android:name="android.permission.READ_CALENDAR"/>
+    <uses-permission android:name="android.permission.WRITE_CALENDAR"/>
+
 
 
     <application
@@ -66,7 +72,13 @@
         <service
             android:name=".PrayerNotificationService"
             android:exported="false"
-            android:enabled="true" />
+            android:foregroundServiceType="specialUse"
+            android:enabled="true">
+            <!-- Android 14 için özel kullanım gerekçesi -->
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Religious prayer notification timing with persistent UI" />
+        </service>
         
         <!-- Cihaz başlangıcında bildirimleri başlatmak için -->
         <receiver

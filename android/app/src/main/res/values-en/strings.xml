@@ -2,10 +2,17 @@
 <resources>
     <string name="app_name">Prayer Times</string>
     <string name="imsak">Fajr</string>
+    <string name="sabah">Morning</string>
     <string name="gunes">Sunrise</string>
     <string name="ogle">Dhuhr</string>
     <string name="ikindi">Asr</string>
     <string name="aksam">Maghrib</string>
     <string name="yatsi">Isha</string>
     <string name="last_update">Last update: %1$s</string>
+    
+    <!-- Notification texts -->
+    <string name="notification_channel_name">Prayer Time Notifications</string>
+    <string name="notification_channel_desc">Shows notifications at prayer times</string>
+    <string name="prayer_time_notification_title">%1$s Time</string>
+    <string name="prayer_time_notification_text">It\'s %2$s time for %1$s.</string>
 </resources> 

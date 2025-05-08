@@ -21,6 +21,7 @@ import 'package:provider/provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:io' show Platform;
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class Alarms extends StatefulWidget {
   const Alarms({super.key});
@@ -32,11 +33,11 @@ class Alarms extends StatefulWidget {
 class _AlarmsState extends State<Alarms> {
   @override
   Widget build(BuildContext context) {
-    return const ScaffoldLayout(
-      title: 'Bildirimler',
+    return ScaffoldLayout(
+      title: AppLocalizations.of(context)!.notificationsPageTitle,
       actions: [],
       gradient: true,
-      body: AlarmsBody(),
+      body: const AlarmsBody(),
     );
   }
 }
@@ -87,8 +88,8 @@ class _AlarmsBodyState extends State<AlarmsBody> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15.0),
                   child: SwitchListTile(
-                    title: const Text('Bildirimleri Etkinleştir'),
-                    subtitle: const Text('Namaz vakti bildirimlerini etkinleştir/devre dışı bırak'),
+                    title: Text(AppLocalizations.of(context)!.enableNotifications),
+                    subtitle: Text(AppLocalizations.of(context)!.notificationsSubtitle),
                     value: Provider.of<ChangeSettings>(context).notificationsEnabled,
                     onChanged: (value) {
                       Provider.of<ChangeSettings>(context, listen: false)
@@ -98,32 +99,32 @@ class _AlarmsBodyState extends State<AlarmsBody> {
                   ),
                 ),
               ),
-              const AlarmSwitch(
-                title: 'İmsak Alarmı',
+              AlarmSwitch(
+                title: AppLocalizations.of(context)!.imsakAlarm,
                 index: 0,
               ),
-              const AlarmSwitch(
-                title: 'Sabah Alarmı',
+              AlarmSwitch(
+                title: AppLocalizations.of(context)!.morningAlarm,
                 index: 1,
               ),
-              const AlarmSwitch(
-                title: 'Güneş Alarmı',
+              AlarmSwitch(
+                title: AppLocalizations.of(context)!.sunriseAlarm,
                 index: 2,
               ),
-              const AlarmSwitch(
-                title: 'Öğle Alarmı',
+              AlarmSwitch(
+                title: AppLocalizations.of(context)!.noonAlarm,
                 index: 3,
               ),
-              const AlarmSwitch(
-                title: 'İkindi Alarmı',
+              AlarmSwitch(
+                title: AppLocalizations.of(context)!.afternoonAlarm,
                 index: 4,
               ),
-              const AlarmSwitch(
-                title: 'Akşam Alarmı',
+              AlarmSwitch(
+                title: AppLocalizations.of(context)!.sunsetAlarm,
                 index: 5,
               ),
-              const AlarmSwitch(
-                title: 'Yatsı Alarmı',
+              AlarmSwitch(
+                title: AppLocalizations.of(context)!.nightAlarm,
                 index: 6,
               ),
             ],
@@ -169,7 +170,7 @@ class AlarmSwitch extends StatelessWidget {
                           divisions: 24,
                           secondaryTrackValue: 0,
                           label:
-                              '${Provider.of<ChangeSettings>(context).gaps[index].toString()} dk',
+                              '${Provider.of<ChangeSettings>(context).gaps[index].toString()} ${AppLocalizations.of(context)!.minuteAbbreviation}',
                           onChanged: (value) {
                             Provider.of<ChangeSettings>(context, listen: false)
                                 .saveGap(index, value.toInt());

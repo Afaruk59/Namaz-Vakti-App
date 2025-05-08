@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="2dp">
+    android:padding="1dp">
 
     <TextView
         android:id="@+id/location_text"
@@ -11,8 +11,10 @@
         android:layout_height="wrap_content"
         android:textStyle="bold"
         android:textSize="14sp"
-        android:layout_marginBottom="4dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="2dp"
+        android:layout_marginLeft="2dp"
+        android:singleLine="true"
+        android:ellipsize="end"
         android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"/>
 
     <LinearLayout
@@ -32,13 +34,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/imsak"
-                android:textSize="12sp"
+                android:textSize="11sp"
+                android:singleLine="true"
+                android:ellipsize="end"
+                
                 android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"/>
             <TextView
                 android:id="@+id/imsak_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
+                android:singleLine="true"
                 android:textAppearance="@android:style/TextAppearance.Material.Notification"/>
         </LinearLayout>
 
@@ -53,13 +59,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/gunes"
-                android:textSize="12sp"
+                android:textSize="11sp"
+                android:singleLine="true"
+                android:ellipsize="end"
+                
                 android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"/>
             <TextView
                 android:id="@+id/gunes_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
+                android:singleLine="true"
                 android:textAppearance="@android:style/TextAppearance.Material.Notification"/>
         </LinearLayout>
 
@@ -74,13 +84,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/ogle"
-                android:textSize="12sp"
+                android:textSize="11sp"
+                android:singleLine="true"
+                android:ellipsize="end"
+                
                 android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"/>
             <TextView
                 android:id="@+id/ogle_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
+                android:singleLine="true"
                 android:textAppearance="@android:style/TextAppearance.Material.Notification"/>
         </LinearLayout>
 
@@ -95,13 +109,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/ikindi"
-                android:textSize="12sp"
+                android:textSize="11sp"
+                android:singleLine="true"
+                android:ellipsize="end"
+                
                 android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"/>
             <TextView
                 android:id="@+id/ikindi_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
+                android:singleLine="true"
                 android:textAppearance="@android:style/TextAppearance.Material.Notification"/>
         </LinearLayout>
 
@@ -116,13 +134,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/aksam"
-                android:textSize="12sp"
+                android:textSize="11sp"
+                android:singleLine="true"
+                android:ellipsize="end"
+                
                 android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"/>
             <TextView
                 android:id="@+id/aksam_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
+                android:singleLine="true"
                 android:textAppearance="@android:style/TextAppearance.Material.Notification"/>
         </LinearLayout>
 
@@ -137,13 +159,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/yatsi"
-                android:textSize="12sp"
+                android:textSize="11sp"
+                android:singleLine="true"
+                android:ellipsize="end"
+                
                 android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"/>
             <TextView
                 android:id="@+id/yatsi_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
+                android:singleLine="true"
                 android:textAppearance="@android:style/TextAppearance.Material.Notification"/>
         </LinearLayout>
     </LinearLayout>

@@ -19,6 +19,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:namaz_vakti_app/components/lang_selector.dart';
 import 'package:namaz_vakti_app/pages/about.dart';
 import 'package:namaz_vakti_app/pages/kaza.dart';
 import 'package:namaz_vakti_app/l10n/l10n.dart';
@@ -39,12 +40,24 @@ import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:namaz_vakti_app/pages/splash_screen.dart';
 import 'dart:io' show Platform;
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   if (Platform.isAndroid) {
-    setupPrayerNotifications();
+    const platform = MethodChannel('com.afaruk59.namaz_vakti_app/notifications');
+    try {
+      debugPrint("Starting notification service");
+      await platform.invokeMethod('startNotificationService');
+    } on PlatformException catch (e) {
+      debugPrint('Failed to start notification service: ${e.message}');
+    }
   }
+  tz.initializeTimeZones();
+  tz.setLocalLocation(tz.getLocation(DateTime.now().timeZoneOffset.inHours >= 3
+      ? 'Europe/Istanbul'
+      : 'UTC')); // Basit örnekleme ile lokal saat dilimi
 
   await ChangeSettings().createSharedPrefObject();
   ChangeSettings().loadLocalFromSharedPref();
@@ -59,20 +72,9 @@ void main() async {
   });
 }
 
-// Android tarafında bildirim servisi ayarları
-void setupPrayerNotifications() async {
-  const platform = MethodChannel('com.afaruk59.namaz_vakti_app/notifications');
-  try {
-    debugPrint("Starting notification service");
-    await platform.invokeMethod('startNotificationService');
-  } on PlatformException catch (e) {
-    debugPrint('Failed to start notification service: ${e.message}');
-  }
-}
-
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
-  static String version = '1.3.3';
+  static String version = '1.4.0';
 
   @override
   Widget build(BuildContext context) {
@@ -146,6 +148,9 @@ class MainApp extends StatelessWidget {
             break;
           case '/search':
             page = const Search();
+            break;
+          case '/lang':
+            page = const LangPage();
             break;
         }
 

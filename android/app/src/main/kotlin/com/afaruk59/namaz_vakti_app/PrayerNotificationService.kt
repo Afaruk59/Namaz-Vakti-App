@@ -45,6 +45,11 @@ import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 import java.security.cert.X509Certificate
+import android.net.ConnectivityManager
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
+import android.os.Handler
+import android.os.Looper
 
 class PrayerNotificationService : Service() {
     companion object {
@@ -62,15 +67,54 @@ class PrayerNotificationService : Service() {
         
         // Bildirimlerin adları
         private val PRAYER_NAMES = arrayOf(
-            "İmsak", "Sabah", "Güneş", "Öğle", "İkindi", "Akşam", "Yatsı"
+            R.string.imsak,R.string.sabah, R.string.gunes, R.string.ogle, R.string.ikindi, R.string.aksam, R.string.yatsi
         )
         
         fun startService(context: Context) {
             val intent = Intent(context, PrayerNotificationService::class.java)
             intent.action = ACTION_START_SERVICE
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            
+            // Android 14 (API 34) ve üzeri için özel izin kontrolü
+            if (VERSION.SDK_INT >= 34) {
+                // API 34+ (Android 14+) için izinleri kontrol et
+                try {
+                    context.startForegroundService(intent)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Failed to start foreground service on Android 14+: ${e.message}")
+                    
+                    // Servis başlatma başarısız olursa bildirim göster
+                    try {
+                        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                        
+                        // Bildirim kanalını oluştur (eğer yoksa)
+                        if (VERSION.SDK_INT >= VERSION_CODES.O) {
+                            val channel = NotificationChannel(
+                                "service_error_channel",
+                                "Servis Hatası",
+                                NotificationManager.IMPORTANCE_HIGH
+                            )
+                            notificationManager.createNotificationChannel(channel)
+                        }
+                        
+                        // Bildirim oluştur
+                        val notification = NotificationCompat.Builder(context, "service_error_channel")
+                            .setContentTitle("Namaz Vakti Bildirimleri Çalışmıyor")
+                            .setContentText("Uygulama ayarlarından 'Arka plan izinleri'ni etkinleştirin.")
+                            .setSmallIcon(R.drawable.calendar)
+                            .setPriority(NotificationCompat.PRIORITY_HIGH)
+                            .build()
+                        
+                        // Bildirimi göster
+                        notificationManager.notify(999, notification)
+                    } catch (e2: Exception) {
+                        Log.e(TAG, "Failed to show error notification: ${e2.message}")
+                    }
+                }
+            } else if (VERSION.SDK_INT >= VERSION_CODES.O) {
+                // Android 8-13 için standart foreground servis başlatma
                 context.startForegroundService(intent)
             } else {
+                // Android 7 ve altı için normal servis başlatma
                 context.startService(intent)
             }
         }
@@ -87,6 +131,7 @@ class PrayerNotificationService : Service() {
     private var currentDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
     private var prayerTimes: Array<String>? = null
     private var lastFetchTime: Long = 0
+    private var lastNotificationTimes = mutableMapOf<Int, Long>() // Her vakit için son bildirim zamanını takip et
     
     override fun onCreate() {
         super.onCreate()
@@ -103,14 +148,27 @@ class PrayerNotificationService : Service() {
         
         when (intent?.action) {
             ACTION_START_SERVICE -> {
-                // Önce mevcut vakitleri yükle
-                loadPrayerTimes()
-                // Foreground servisi başlat
-                startForeground(FOREGROUND_NOTIFICATION_ID, createForegroundNotification())
-                startPrayerTimeChecker()
+                try {
+                    // Önce mevcut vakitleri yükle
+                    loadPrayerTimes()
+                    
+                    // Foreground servisi başlat
+                    Log.d(TAG, "Starting foreground service")
+                    startForeground(FOREGROUND_NOTIFICATION_ID, createForegroundNotification())
+                    
+                    // Namaz vakti kontrolü başlat
+                    startPrayerTimeChecker()
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error starting foreground service: ${e.message}")
+                    stopSelf()
+                }
             }
             ACTION_STOP_SERVICE -> {
-                stopForeground(STOP_FOREGROUND_REMOVE)
+                if (VERSION.SDK_INT >= VERSION_CODES.N) {
+                    stopForeground(STOP_FOREGROUND_REMOVE)
+                } else {
+                    stopForeground(true)
+                }
                 stopSelf()
             }
         }
@@ -210,12 +268,18 @@ class PrayerNotificationService : Service() {
         val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
         val currentMinute = calendar.get(Calendar.MINUTE)
         val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
+        val currentTime = System.currentTimeMillis()
         
         // Gün değiştiyse yeni vakitleri çek
         if (dayOfMonth != currentDay) {
             currentDay = dayOfMonth
             fetchPrayerTimesData()
             return
+        }
+        
+        // Son veri çekme zamanından bu yana 2 saat geçtiyse ve internet bağlantısı varsa yeni veri çek
+        if (currentTime - lastFetchTime > 2 * 60 * 60 * 1000) {
+            fetchPrayerTimesData()
         }
         
         if (prayerTimes == null) {
@@ -230,6 +294,10 @@ class PrayerNotificationService : Service() {
                 // Alarm açık mı kontrol et
                 val isAlarmEnabled = prefs.getBoolean("flutter.$i", false)
                 if (!isAlarmEnabled) continue
+                
+                // Son bildirimden bu yana en az 1 dakika geçti mi kontrol et
+                val lastNotificationTime = lastNotificationTimes[i] ?: 0L
+                if (currentTime - lastNotificationTime < 60 * 1000) continue
                 
                 // Vakit zaman farkı - SharedPreferences'den Long değerini güvenli bir şekilde alma
                 var timeOffset = 0
@@ -303,6 +371,8 @@ class PrayerNotificationService : Service() {
                     // Bildirim gönder
                     Log.d(TAG, "It's time for prayer $i: ${PRAYER_NAMES[i]}")
                     sendPrayerNotification(i)
+                    // Son bildirim zamanını güncelle
+                    lastNotificationTimes[i] = currentTime
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Error processing prayer time for index $i: ${e.message}")
@@ -324,6 +394,16 @@ class PrayerNotificationService : Service() {
                 
                 val url = URL(BASE_URL + locationId)
                 Log.d(TAG, "Fetching data from URL: $url")
+                
+                // İnternet bağlantısını kontrol et
+                val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                val networkInfo = connectivityManager.activeNetworkInfo
+                if (networkInfo == null || !networkInfo.isConnected) {
+                    Log.e(TAG, "No internet connection available")
+                    // İnternet bağlantısı yoksa, son kaydedilmiş vakitleri kullan
+                    loadPrayerTimes()
+                    return@Thread
+                }
                 
                 // SSL hatalarını geçici olarak görmezden gel
                 if (url.protocol.toLowerCase() == "https") {
@@ -377,14 +457,22 @@ class PrayerNotificationService : Service() {
                 }
                 
                 // XML parse işlemi
-                prayerTimes = parseXmlResponse(xmlResponse)
-                lastFetchTime = System.currentTimeMillis()
-                
-                Log.d(TAG, "Prayer times fetched: ${prayerTimes?.joinToString()}")
-                savePrayerTimes()
-                updateForegroundNotification()
+                val newPrayerTimes = parseXmlResponse(xmlResponse)
+                if (newPrayerTimes != null) {
+                    prayerTimes = newPrayerTimes
+                    lastFetchTime = System.currentTimeMillis()
+                    Log.d(TAG, "Prayer times fetched: ${prayerTimes?.joinToString()}")
+                    savePrayerTimes()
+                    updateForegroundNotification()
+                } else {
+                    Log.e(TAG, "Failed to parse prayer times")
+                    // Parse başarısız olursa, son kaydedilmiş vakitleri kullan
+                    loadPrayerTimes()
+                }
             } catch (e: Exception) {
                 Log.e(TAG, "Network error: ${e.message}")
+                // Hata durumunda son kaydedilmiş vakitleri kullan
+                loadPrayerTimes()
             }
         }.start()
     }
@@ -460,8 +548,8 @@ class PrayerNotificationService : Service() {
     
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "Namaz Vakti Bildirimleri"
-            val descriptionText = "Namaz vakitlerinde bildirim gösterir"
+            val name = getString(R.string.notification_channel_name)
+            val descriptionText = getString(R.string.notification_channel_desc)
             val importance = NotificationManager.IMPORTANCE_HIGH
             val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID, name, importance).apply {
                 description = descriptionText
@@ -540,7 +628,16 @@ class PrayerNotificationService : Service() {
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         
         val cityName = prefs.getString("flutter.name", "") ?: ""
-        val prayerName = PRAYER_NAMES[prayerIndex]
+        val prayerName = when (prayerIndex) {
+            0 -> getString(R.string.imsak)
+            1 -> getString(R.string.imsak) // Sabah - using imsak string
+            2 -> getString(R.string.gunes)
+            3 -> getString(R.string.ogle)
+            4 -> getString(R.string.ikindi)
+            5 -> getString(R.string.aksam)
+            6 -> getString(R.string.yatsi)
+            else -> getString(R.string.imsak)
+        }
         
         // Bildirimi tıklayınca açılacak intent
         val intent = Intent(this, MainActivity::class.java)
@@ -549,10 +646,14 @@ class PrayerNotificationService : Service() {
             this, 0, intent, PendingIntent.FLAG_IMMUTABLE
         )
         
+        // Bildirim başlığı ve metni için string kaynaklarını kullan
+        val notificationTitle = getString(R.string.prayer_time_notification_title, prayerName)
+        val notificationText = getString(R.string.prayer_time_notification_text, cityName, prayerName)
+        
         // Bildirim oluştur
         val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-            .setContentTitle("$prayerName Vakti")
-            .setContentText("$cityName için $prayerName vakti geldi.")
+            .setContentTitle(notificationTitle)
+            .setContentText(notificationText)
             .setSmallIcon(R.drawable.alarm)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(NotificationCompat.CATEGORY_ALARM)
@@ -588,7 +689,27 @@ class BootCompleteReceiver : BroadcastReceiver() {
             
             if (isNotificationsEnabled) {
                 Log.d("BootCompleteReceiver", "Notifications are enabled, starting service")
-                PrayerNotificationService.startService(context)
+                
+                // Android 14+ için servis doğrudan başlatmak yerine gecikmeli başlat
+                if (VERSION.SDK_INT >= 34) {
+                    try {
+                        Log.d("BootCompleteReceiver", "Using delayed start for Android 14+")
+                        
+                        // Handler ile gecikmeli başlatma
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            try {
+                                PrayerNotificationService.startService(context)
+                            } catch (e: Exception) {
+                                Log.e("BootCompleteReceiver", "Delayed start failed: ${e.message}")
+                            }
+                        }, 10000) // 10 saniye gecikme
+                    } catch (e: Exception) {
+                        Log.e("BootCompleteReceiver", "Failed to schedule delayed start: ${e.message}")
+                    }
+                } else {
+                    // Android 13 ve altı için normal başlatma
+                    PrayerNotificationService.startService(context)
+                }
             } else {
                 Log.d("BootCompleteReceiver", "Notifications are disabled, not starting service")
             }
