@@ -155,7 +155,7 @@ class ChangeSettings with ChangeNotifier {
 
   void loadAlarm() {
     for (int i = 0; i < 7; i++) {
-      alarmList[i] = _settings.getBool('$i') ?? true;
+      alarmList[i] = _settings.getBool('$i') ?? false;
     }
   }
 

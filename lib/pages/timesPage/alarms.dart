@@ -17,6 +17,7 @@ limitations under the License.
 import 'package:flutter/material.dart';
 import 'package:namaz_vakti_app/components/scaffold_layout.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
+import 'package:namaz_vakti_app/services/permission_service.dart';
 import 'package:provider/provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:io' show Platform;
@@ -35,7 +36,7 @@ class _AlarmsState extends State<Alarms> {
   Widget build(BuildContext context) {
     return ScaffoldLayout(
       title: AppLocalizations.of(context)!.notificationsPageTitle,
-      actions: [],
+      actions: const [],
       gradient: true,
       body: const AlarmsBody(),
     );
@@ -49,7 +50,49 @@ class AlarmsBody extends StatefulWidget {
   State<AlarmsBody> createState() => _AlarmsBodyState();
 }
 
-class _AlarmsBodyState extends State<AlarmsBody> {
+class _AlarmsBodyState extends State<AlarmsBody> with WidgetsBindingObserver {
+  final PermissionService _permissionService = PermissionService();
+  bool _batteryOptimizationDisabled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _checkBatteryOptimization();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _checkBatteryOptimization();
+    }
+  }
+
+  Future<void> _checkBatteryOptimization() async {
+    final batteryStatus = await _permissionService.checkBatteryOptimization();
+
+    if (mounted) {
+      setState(() {
+        _batteryOptimizationDisabled = batteryStatus;
+      });
+    }
+  }
+
+  Future<void> _requestBatteryOptimization() async {
+    final disabled = await _permissionService.requestBatteryOptimization();
+    if (mounted) {
+      setState(() {
+        _batteryOptimizationDisabled = disabled;
+      });
+    }
+  }
+
   void _toggleNotificationService(bool enable) async {
     if (!Platform.isAndroid) return;
 
@@ -83,6 +126,25 @@ class _AlarmsBodyState extends State<AlarmsBody> {
               Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5.0 : 15.0),
           child: ListView(
             children: [
+              if (!_batteryOptimizationDisabled && Platform.isAndroid)
+                Card(
+                  color: Theme.of(context).colorScheme.errorContainer,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                    child: ListTile(
+                      title: Text(
+                        "Pil Optimizasyonunu Devre Dışı Bırak",
+                        style: TextStyle(color: Theme.of(context).colorScheme.onErrorContainer),
+                      ),
+                      subtitle: Text(
+                        "Bildirim servislerinin düzgün çalışması için pil optimizasyonunu devre dışı bırakın.",
+                        style: TextStyle(color: Theme.of(context).colorScheme.onErrorContainer),
+                      ),
+                      trailing: const Icon(Icons.arrow_forward_ios),
+                      onTap: _requestBatteryOptimization,
+                    ),
+                  ),
+                ),
               Card(
                 color: Theme.of(context).cardColor,
                 child: Padding(
