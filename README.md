@@ -60,26 +60,59 @@ This project is licensed under Apache License 2.0. For details, check the [LICEN
 
 Developer: [Afaruk59](https://github.com/afaruk59)
 
-## Images
+## 📱Images
 
-<table>
-  <tr>
-    <td><img src="screenshots/1.png"/></td>
-    <td><img src="screenshots/2.png"/></td>
-  </tr>
-  <tr>
-    <td>⬇️</td>
-  </tr>
-  <tr>
-    <td><img src="screenshots/3.png"/></td>
-    <td><img src="screenshots/4.png"/></td>
-  </tr>
-  <tr>
-    <td>⬇️</td>
-  </tr>
-  <tr>
-    <td><img src="screenshots/5.png"/></td>
-    <td>➡️</td>
-    <td><img src="screenshots/6.png"/></td>
-  </tr>
-</table>
+<div align="center">
+  <table>
+    <tr>
+      <td align="center">
+        <img src="screenshots/1.png" width="200"/>
+        <br/>
+        <sub>Ana Ekran</sub>
+      </td>
+      <td align="center">
+        <img src="screenshots/2.png" width="200"/>
+        <br/>
+        <sub>Namaz Vakitleri</sub>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" align="center">
+        <br/>
+        <img src="https://raw.githubusercontent.com/emojis/arrow-down.png" width="30"/>
+        <br/>
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <img src="screenshots/3.png" width="200"/>
+        <br/>
+        <sub>Kıble Pusulası</sub>
+      </td>
+      <td align="center">
+        <img src="screenshots/4.png" width="200"/>
+        <br/>
+        <sub>Ayarlar</sub>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" align="center">
+        <br/>
+        <img src="https://raw.githubusercontent.com/emojis/arrow-down.png" width="30"/>
+        <br/>
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <img src="screenshots/5.png" width="200"/>
+        <br/>
+        <sub>Bildirimler</sub>
+      </td>
+      <td align="center">
+        <img src="screenshots/6.png" width="200"/>
+        <br/>
+        <sub>Kaynaklar</sub>
+      </td>
+    </tr>
+  </table>
+</div>
