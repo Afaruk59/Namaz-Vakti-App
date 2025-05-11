@@ -60,13 +60,11 @@ This project is licensed under Apache License 2.0. For details, check the [LICEN
 
 Developer: [Afaruk59](https://github.com/afaruk59)
 
-## Images
+## Development Process
 
 <table border="0">
   <tr>
-    <td><img src="screenshots/1.png"/></td>
     <td><img src="screenshots/2.png"/></td>
-    <td><img src="screenshots/3.png"/></td>
     <td><img src="screenshots/4.png"/></td>
     <td><img src="screenshots/5.png"/></td>
     <td><img src="screenshots/6.png"/></td>
