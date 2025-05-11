@@ -17,7 +17,6 @@ limitations under the License.
 import 'package:flutter/material.dart';
 import 'package:namaz_vakti_app/components/scaffold_layout.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
-import 'package:namaz_vakti_app/services/permission_service.dart';
 import 'package:provider/provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:io' show Platform;
@@ -51,7 +50,7 @@ class AlarmsBody extends StatefulWidget {
 }
 
 class _AlarmsBodyState extends State<AlarmsBody> with WidgetsBindingObserver {
-  final PermissionService _permissionService = PermissionService();
+  final BatteryPermissionService _permissionService = BatteryPermissionService();
   bool _batteryOptimizationDisabled = false;
 
   @override
@@ -244,5 +243,24 @@ class AlarmSwitch extends StatelessWidget {
             ),
           )
         : Container();
+  }
+}
+
+class BatteryPermissionService {
+  static final BatteryPermissionService _instance = BatteryPermissionService._internal();
+  factory BatteryPermissionService() => _instance;
+  BatteryPermissionService._internal();
+
+  Future<bool> requestBatteryOptimization() async {
+    // Doğrudan pil optimizasyonu iznini iste, açıklama dialogu gösterme
+    final status = await Permission.ignoreBatteryOptimizations.request();
+    return status.isGranted;
+  }
+
+  Future<bool> checkBatteryOptimization() async {
+    if (await Permission.ignoreBatteryOptimizations.status.isGranted) {
+      return true;
+    }
+    return false;
   }
 }
