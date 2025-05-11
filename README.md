@@ -60,57 +60,15 @@ This project is licensed under Apache License 2.0. For details, check the [LICEN
 
 Developer: [Afaruk59](https://github.com/afaruk59)
 
-## 📱Images
+## Images
 
-<div align="center">
-  <table>
-    <tr>
-      <td align="center">
-        <img src="screenshots/1.png"/>
-        <br/>
-      </td>
-      <td align="center">
-        <img src="screenshots/2.png"/>
-        <br/>
-      </td>
-    </tr>
-    <tr>
-      <td colspan="2" align="center">
-        <br/>
-        ⬇️
-        <br/>
-      </td>
-    </tr>
-    <tr>
-      <td align="center">
-        <img src="screenshots/3.png"/>
-        <br/>
-      </td>
-      <td align="center">
-        <img src="screenshots/4.png"/>
-        <br/>
-      </td>
-    </tr>
-    <tr>
-      <td colspan="2" align="center">
-        <br/>
-        ⬇️
-        <br/>
-      </td>
-    </tr>
-    <tr>
-      <td align="center">
-        <img src="screenshots/5.png"/>
-        <br/>
-      </td>
-      <td align="center">
-      ➡️
-      <br/>
-      </td>
-      <td align="center">
-        <img src="screenshots/6.png"/>
-        <br/>
-      </td>
-    </tr>
-  </table>
-</div>
+<table border="0">
+  <tr>
+    <td><img src="screenshots/1.png"/></td>
+    <td><img src="screenshots/2.png"/></td>
+    <td><img src="screenshots/3.png"/></td>
+    <td><img src="screenshots/4.png"/></td>
+    <td><img src="screenshots/5.png"/></td>
+    <td><img src="screenshots/6.png"/></td>
+  </tr>
+</table>
