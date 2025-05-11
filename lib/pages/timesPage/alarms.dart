@@ -131,6 +131,7 @@ class _AlarmsBodyState extends State<AlarmsBody> with WidgetsBindingObserver {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 15.0),
                     child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 5.0),
                       title: Text(
                         "Pil Optimizasyonunu Devre Dışı Bırak",
                         style: TextStyle(color: Theme.of(context).colorScheme.onErrorContainer),

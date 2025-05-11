@@ -1,102 +1,85 @@
-<pre>
-______     ___                         __      ______     __    __                 
-/\  _  \  /'___\                       /\ \    /\  ___\  /'_ `\ /\ \                
-\ \ \L\ \/\ \__/   __     _ __   __  __\ \ \/'\\ \ \__/ /\ \L\ \\ \/      ____      
- \ \  __ \ \ ,__\/'__`\  /\`'__\/\ \/\ \\ \ , < \ \___``\ \___, \\/      /',__\     
-  \ \ \/\ \ \ \_/\ \L\.\_\ \ \/ \ \ \_\ \\ \ \\`\\/\ \L\ \/__,/\ \      /\__, `\    
-   \ \_\ \_\ \_\\ \__/.\_\\ \_\  \ \____/ \ \_\ \_\ \____/    \ \_\     \/\____/    
-    \/_/\/_/\/_/ \/__/\/_/ \/_/   \/___/   \/_/\/_/\/___/      \/_/      \/___/     
- ____                                        ______                                 
-/\  _`\                                     /\__  _\__                              
-\ \ \L\ \_ __    __     __  __     __   _ __\/_/\ \/\_\    ___ ___      __    ____  
- \ \ ,__/\`'__\/'__`\  /\ \/\ \  /'__`\/\`'__\ \ \ \/\ \ /' __` __`\  /'__`\ /',__\ 
-  \ \ \/\ \ \//\ \L\.\_\ \ \_\ \/\  __/\ \ \/   \ \ \ \ \/\ \/\ \/\ \/\  __//\__, `\
-   \ \_\ \ \_\\ \__/.\_\\/`____ \ \____\\ \_\    \ \_\ \_\ \_\ \_\ \_\ \____\/\____/
-    \/_/  \/_/ \/__/\/_/ `/___/> \/____/ \/_/     \/_/\/_/\/_/\/_/\/_/\/____/\/___/ 
- ______                     /\___/                                                  
-/\  _  \                    \/__/                                                   
-\ \ \L\ \  _____   _____                                                            
- \ \  __ \/\ '__`\/\ '__`\                                                          
-  \ \ \/\ \ \ \L\ \ \ \L\ \                                                         
-   \ \_\ \_\ \ ,__/\ \ ,__/                                                         
-    \/_/\/_/\ \ \/  \ \ \/                                                          
-             \ \_\   \ \_\                                                          
-              \/_/    \/_/                                                          
-</pre>
-
-<p align="center">
-  <a href="https://play.google.com/store/apps/details?id=com.afaruk59.namaz_vakti_app&pcampaignid=web_share">
-    <img src="https://cloud.githubusercontent.com/assets/5692567/10923351/6b688a92-8278-11e5-9973-8ffbf3c5cc52.png" alt="Get it on Google Play" width="300">
-  </a>
-</p>
-
-
-<table>
-  <tr>
-    <td><img src="screenshots/Screenshot_1.png"/></td>
-    <td><img src="screenshots/Screenshot_2.png"/></td>
-    <td><img src="screenshots/Screenshot_3.png"/></td>
-  </tr>
-</table>
-
 # Namaz Vakti App
 
-Namaz Vakti App, tüm Müslümanlar için geliştirilmiş, namaz vakitlerini, kıble yönünü gösteren ve daha birçok İslami özelliğe sahip kapsamlı bir mobil uygulamadır.
+Prayer Times App is a comprehensive mobile application developed for all Muslims, displaying prayer times, qibla direction, and many other Islamic features.
 
-## Özellikler
+## Features
 
-- **Namaz Vakitleri:** İmsak, Sabah, Güneş, Öğle, İkindi, Akşam ve Yatsı vakitlerini gösterir
-- **Kıble Pusulası:** Bulunduğunuz yerden kıble yönünü gösterir
-- **Zikir Sayacı:** Zikir çekmenize yardımcı olur ve kayıt altında tutar
-- **Namaz Bildirimleri:** Tüm namaz vakitleri için bildirim seçenekleri
-- **Mübarek Günler ve Geceler:** İslami takvimde önemli günlerin takibi
-- **Kaza Takibi:** Kaza namazlarınızı takip edebilme özelliği
-- **Kaynak Kitaplar:** İslami kaynak kitapların içeriklerine erişim
-- **Çoklu Dil Desteği:** Türkçe, İngilizce ve diğer dil seçenekleri
-- **Konum Tabanlı Bilgiler:** Bulunduğunuz yere göre namaz vakitlerini otomatik güncelleme
-- **Karanlık Mod:** Göz yorgunluğunu azaltan karanlık tema seçeneği
-- **Kişiselleştirme:** Tema rengi, gradient arka plan ve yuvarlak/keskin köşe tercihleri
+- **Prayer Times:** Shows Fajr, Morning, Tulu, Zuhr, Asr, Maghrib, and Isha times
+- **Prayer Compass:** Displays the qibla direction from your location
+- **Dhikr Counter:** Helps you keep track of your dhikr and saves records
+- **Prayer Notifications:** Notification options for all prayer times
+- **Holy Days and Nights:** Tracking of important days in the Islamic calendar
+- **Missed Prayers Tracking:** Feature to track your missed prayers
+- **Sourcebooks:** Access to Islamic reference book contents
+- **Multiple Language Support:** Turkish, English, and other language options
+- **Location-Based Information:** Automatic prayer time updates based on your location
+- **Dark Mode:** Dark theme option to reduce eye strain
+- **Customization:** Theme color, gradient background, and round/sharp corner preferences
 
-## Kurulum
+## Installation
 
-Uygulamayı Google Play Store'dan indirebilirsiniz:
+You can download the app from Google Play Store:
 
 <a href="https://play.google.com/store/apps/details?id=com.afaruk59.namaz_vakti_app&pcampaignid=web_share">
   <img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" alt="Get it on Google Play" width="200">
 </a>
 
-## Geliştirme
+## Development
 
-Bu uygulama Flutter framework'ü kullanılarak geliştirilmiştir. Geliştirmeye katkıda bulunmak için:
+This application was developed using the Flutter framework. To contribute to development:
 
 ```bash
-# Repo'yu klonlayın
+# Clone the repository
 git clone https://github.com/afaruk59/Namaz-Vakti-App.git
 
-# Bağımlılıkları yükleyin
+# Install dependencies
 flutter pub get
 
-# Uygulamayı çalıştırın
+# Run the application
 flutter run
 ```
 
-## Kullanılan Teknolojiler
+## Technologies Used
 
 - Flutter
 - Dart
-- Provider (Durum Yönetimi)
-- Shared Preferences (Yerel Depolama)
-- Flutter Compass (Pusula)
-- Connectivity Plus (İnternet Bağlantısı Kontrolü)
-- Intl ve Flutter Localization (Çoklu Dil Desteği)
-- Permission Handler (İzin Yönetimi)
+- Provider (State Management)
+- Shared Preferences (Local Storage)
+- Flutter Compass
+- Connectivity Plus (Internet Connection Check)
+- Intl and Flutter Localization (Multiple Language Support)
+- Permission Handler
 - Google Fonts
 - Timezone
 
-## Lisans
+## License
 
-Bu proje Apache License 2.0 altında lisanslanmıştır. Detaylar için [LICENSE](LICENSE) dosyasına bakınız.
+This project is licensed under Apache License 2.0. For details, check the [LICENSE](LICENSE) file.
 
-## İletişim
+## Contact
 
-Geliştirici: [Afaruk59](https://github.com/afaruk59)
+Developer: [Afaruk59](https://github.com/afaruk59)
+
+## Images
+
+<table>
+  <tr>
+    <td><img src="screenshots/1.png"/></td>
+    <td><img src="screenshots/2.png"/></td>
+  </tr>
+  <tr>
+    <td>⬇️</td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/3.png"/></td>
+    <td><img src="screenshots/4.png"/></td>
+  </tr>
+  <tr>
+    <td>⬇️</td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/5.png"/></td>
+    <td>➡️</td>
+    <td><img src="screenshots/6.png"/></td>
+  </tr>
+</table>
