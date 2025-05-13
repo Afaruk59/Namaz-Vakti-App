@@ -152,6 +152,16 @@
     "nightAlarm": "منبه العشاء",
     "minuteAbbreviation": "د",
 
-    "calendarListTitle": "التقويمات"
+    "calendarListTitle": "التقويمات",
+
+    "disableBatteryOptimization": "تعطيل تحسين البطارية",
+    "batteryOptimizationSubtitle": "لتعمل الإشعارات بشكل صحيح، يرجى تعطيل تحسين البطارية.",
+
+    "selectCalendarTitle": "اختر التقويم",
+    "calendarPermissionDenied": "إذن التقويم مرفوض",
+    "calendarNotFound": "لا يوجد تقويمات",
+    "calendarAddSuccess": "{eventName} أضيف إلى التقويم",
+    "calendarAddError": "فشل إضافة إلى التقويم: {errorMessage}",
+    "generalError": "حدث خطأ: {errorMessage}"
 }
 

@@ -152,5 +152,15 @@
     "nightAlarm": "Alarme de la Isha",
     "minuteAbbreviation": "min",
 
-    "calendarListTitle": "Calendriers"
+    "calendarListTitle": "Calendriers",
+
+    "disableBatteryOptimization": "Désactiver l'optimisation de la batterie",
+    "batteryOptimizationSubtitle": "Pour que les notifications fonctionnent correctement, veuillez désactiver l'optimisation de la batterie.",
+
+    "selectCalendarTitle": "Sélectionner le calendrier",
+    "calendarPermissionDenied": "Permission de calendrier refusée",
+    "calendarNotFound": "Aucun calendrier trouvé",
+    "calendarAddSuccess": "{eventName} ajouté au calendrier",
+    "calendarAddError": "Erreur lors de l'ajout au calendrier: {errorMessage}",
+    "generalError": "Erreur: {errorMessage}"
 }

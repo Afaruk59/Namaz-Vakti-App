@@ -152,5 +152,15 @@
     "nightAlarm": "Будильник Иша",
     "minuteAbbreviation": "мин",
 
-    "calendarListTitle": "Календари"
+    "calendarListTitle": "Календари",
+
+    "disableBatteryOptimization": "Отключить оптимизацию батареи",
+    "batteryOptimizationSubtitle": "Для правильной работы уведомлений, пожалуйста отключите оптимизацию батареи.",
+
+    "selectCalendarTitle": "Выберите календарь",
+    "calendarPermissionDenied": "Разрешение на календарь отклонено",
+    "calendarNotFound": "Календарь не найден",
+    "calendarAddSuccess": "{eventName} добавлен в календарь",
+    "calendarAddError": "Ошибка при добавлении в календарь: {errorMessage}",
+    "generalError": "Ошибка: {errorMessage}"
 }

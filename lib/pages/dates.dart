@@ -103,7 +103,6 @@ class _DatesCardState extends State<DatesCard> {
                               trailing: FilledButton.tonal(
                                   onPressed: () async {
                                     try {
-                                      // 1. İzin iste
                                       var permissionStatus =
                                           await Permission.calendarFullAccess.status;
                                       if (!permissionStatus.isGranted) {
@@ -112,8 +111,9 @@ class _DatesCardState extends State<DatesCard> {
                                         if (!permissionStatus.isGranted) {
                                           if (context.mounted) {
                                             ScaffoldMessenger.of(context).showSnackBar(
-                                              const SnackBar(
-                                                content: Text('Takvim izni verilmedi'),
+                                              SnackBar(
+                                                content: Text(AppLocalizations.of(context)!
+                                                    .calendarPermissionDenied),
                                               ),
                                             );
                                           }
@@ -121,7 +121,6 @@ class _DatesCardState extends State<DatesCard> {
                                         }
                                       }
 
-                                      // 2. Takvimleri al
                                       var calendarsResult =
                                           await _deviceCalendarPlugin.retrieveCalendars();
                                       debugPrint(
@@ -131,24 +130,24 @@ class _DatesCardState extends State<DatesCard> {
                                       if (calendars == null || calendars.isEmpty) {
                                         if (context.mounted) {
                                           ScaffoldMessenger.of(context).showSnackBar(
-                                            const SnackBar(
-                                              content: Text('Takvim bulunamadı'),
+                                            SnackBar(
+                                              content: Text(
+                                                  AppLocalizations.of(context)!.calendarNotFound),
                                             ),
                                           );
                                         }
                                         return;
                                       }
 
-                                      // Kullanıcıya takvim seçme imkanı ver
                                       String? selectedCalendarId;
 
                                       if (calendars.length > 1 && context.mounted) {
-                                        // Dialog ile takvim seçtir
                                         await showDialog(
                                           context: context,
                                           builder: (BuildContext context) {
                                             return AlertDialog(
-                                              title: const Text('Takvim Seçin'),
+                                              title: Text(AppLocalizations.of(context)!
+                                                  .selectCalendarTitle),
                                               content: SizedBox(
                                                 width: double.maxFinite,
                                                 height: 300,
@@ -172,23 +171,20 @@ class _DatesCardState extends State<DatesCard> {
                                                   onPressed: () {
                                                     Navigator.of(context).pop();
                                                   },
-                                                  child: const Text('İptal'),
+                                                  child: Text(AppLocalizations.of(context)!.leave),
                                                 ),
                                               ],
                                             );
                                           },
                                         );
                                       } else {
-                                        // Tek takvim varsa direkt seç
                                         selectedCalendarId = calendars.first.id;
                                       }
 
-                                      // Eğer kullanıcı takvim seçmeden çıktıysa işlemi sonlandır
                                       if (selectedCalendarId == null) {
                                         return;
                                       }
 
-                                      // Seçilen takvimi kullan
                                       final calendar = calendars.firstWhere(
                                         (cal) => cal.id == selectedCalendarId,
                                         orElse: () => calendars.first,
@@ -197,17 +193,13 @@ class _DatesCardState extends State<DatesCard> {
                                       debugPrint(
                                           'Seçilen Takvim: ${calendar.name} (${calendar.id})');
 
-                                      // 3. Etkinlik oluştur
-                                      // Tarih formatını kontrol et ve düzelt
                                       final originalDate = _list[index];
                                       debugPrint('Orijinal tarih: $originalDate');
 
-                                      // Tarih formatını doğrula ve düzelt
                                       DateTime eventDate;
                                       try {
                                         final parts = originalDate.split('-');
                                         if (parts.length == 3) {
-                                          // Gün-Ay-Yıl formatı (örn: 01-05-2024)
                                           final day = int.parse(parts[0]);
                                           final month = int.parse(parts[1]);
                                           final year = int.parse(parts[2]);
@@ -215,25 +207,20 @@ class _DatesCardState extends State<DatesCard> {
                                           debugPrint(
                                               'Oluşturulan tarih: ${eventDate.toIso8601String()}');
                                         } else {
-                                          // Farklı format dene
                                           eventDate = DateTime.parse(originalDate);
                                         }
                                       } catch (e) {
                                         debugPrint('Tarih parse hatası: $e');
-                                        // Bugünün tarihini kullan
                                         eventDate = DateTime.now();
                                       }
 
                                       debugPrint('Event date: $eventDate');
 
-                                      // Başlangıç ve bitiş saatlerini ayarla
-                                      final startDate = DateTime(eventDate.year, eventDate.month,
-                                          eventDate.day, 0, 0, 0 // Günün başlangıcı
-                                          );
+                                      final startDate = DateTime(
+                                          eventDate.year, eventDate.month, eventDate.day, 0, 0, 0);
 
                                       final endDate = DateTime(eventDate.year, eventDate.month,
-                                          eventDate.day, 23, 59, 59 // Günün sonu
-                                          );
+                                          eventDate.day, 23, 59, 59);
 
                                       final event = Event(
                                         calendar.id,
@@ -241,10 +228,9 @@ class _DatesCardState extends State<DatesCard> {
                                         description: '${_list[index + 1]} | ${_list[index]}',
                                         start: TZDateTime.from(startDate, tz.local),
                                         end: TZDateTime.from(endDate, tz.local),
-                                        allDay: true, // Tüm gün etkinlik olarak işaretle
+                                        allDay: true,
                                       );
 
-                                      // 4. Etkinliği kaydet
                                       final result =
                                           await _deviceCalendarPlugin.createOrUpdateEvent(event);
 
@@ -255,14 +241,18 @@ class _DatesCardState extends State<DatesCard> {
                                         if (result?.isSuccess == true) {
                                           ScaffoldMessenger.of(context).showSnackBar(
                                             SnackBar(
-                                              content: Text('${_list[index + 2]} takvime eklendi'),
+                                              content: Text(AppLocalizations.of(context)!
+                                                  .calendarAddSuccess(_list[index + 2])),
                                             ),
                                           );
                                         } else {
                                           ScaffoldMessenger.of(context).showSnackBar(
                                             SnackBar(
-                                              content: Text(
-                                                  'Takvime eklenemedi: ${result?.errors.map((e) => e.errorMessage).join(", ") ?? "Bilinmeyen hata"}'),
+                                              content: Text(AppLocalizations.of(context)!
+                                                  .calendarAddError(result?.errors
+                                                          .map((e) => e.errorMessage)
+                                                          .join(", ") ??
+                                                      "Bilinmeyen hata")),
                                             ),
                                           );
                                         }
@@ -272,7 +262,8 @@ class _DatesCardState extends State<DatesCard> {
                                       if (context.mounted) {
                                         ScaffoldMessenger.of(context).showSnackBar(
                                           SnackBar(
-                                            content: Text('Bir hata oluştu: $e'),
+                                            content: Text(AppLocalizations.of(context)!
+                                                .generalError(e.toString())),
                                           ),
                                         );
                                       }

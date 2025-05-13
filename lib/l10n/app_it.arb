@@ -152,5 +152,15 @@
     "nightAlarm": "Sveglia Isha",
     "minuteAbbreviation": "min",
 
-    "calendarListTitle": "Calendari"
+    "calendarListTitle": "Calendari",
+
+    "disableBatteryOptimization": "Disabilita l'ottimizzazione della batteria",
+    "batteryOptimizationSubtitle": "Perché le notifiche funzionino correttamente, disabilita l'ottimizzazione della batteria.",
+
+    "selectCalendarTitle": "Seleziona il calendario",
+    "calendarPermissionDenied": "Permesso del calendario negato",
+    "calendarNotFound": "Nessun calendario trovato",
+    "calendarAddSuccess": "{eventName} aggiunto al calendario",
+    "calendarAddError": "Errore nell'aggiunta al calendario: {errorMessage}",
+    "generalError": "Errore: {errorMessage}"
 }

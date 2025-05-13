@@ -50,6 +50,7 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.os.Handler
 import android.os.Looper
+import android.media.AudioAttributes
 
 class PrayerNotificationService : Service() {
     companion object {
@@ -132,6 +133,7 @@ class PrayerNotificationService : Service() {
     private var prayerTimes: Array<String>? = null
     private var lastFetchTime: Long = 0
     private var lastNotificationTimes = mutableMapOf<Int, Long>() // Her vakit için son bildirim zamanını takip et
+    private var isDataFetchInProgress = false
     
     override fun onCreate() {
         super.onCreate()
@@ -173,7 +175,8 @@ class PrayerNotificationService : Service() {
             }
         }
         
-        return START_STICKY
+        // START_STICKY yerine daha güvenilir bir değer döndürelim
+        return START_REDELIVER_INTENT
     }
 
     private fun loadPrayerTimes() {
@@ -221,46 +224,81 @@ class PrayerNotificationService : Service() {
     private fun startPrayerTimeChecker() {
         Log.d(TAG, "Starting prayer time checker")
         
-        // İlk veri çekme işlemi
-        fetchPrayerTimesData()
+        // İlk veri çekme işlemi (eğer gerekiyorsa)
+        if (prayerTimes == null) {
+            Log.d(TAG, "Initial prayer times fetch")
+            fetchPrayerTimesData()
+        }
         
-        // Saatlik güncelleme zamanlaması
         try {
-            val initialDelay = getMinutesToNextHour()
-            Log.d(TAG, "Scheduling hourly updates to start in $initialDelay minutes")
+            // Saatlik güncelleme zamanlaması - sadece saat başında veri yenileme yapacak
+            // ve sadece son çekilme zamanı kontrolü yapılacak (checkPrayerTimes içinde)
+            
+            // Dakikalık namaz vakti kontrolü - her dakika başında çalışacak şekilde
+            val initialDelayForPrayerCheck = getSecondsToNextMinute()
+            Log.d(TAG, "Scheduling prayer time check to start in $initialDelayForPrayerCheck seconds")
             
             executor.scheduleAtFixedRate({
                 try {
-                    Log.d(TAG, "Hourly prayer times update")
-                    fetchPrayerTimesData()
+                    Log.d(TAG, "Minute-based prayer time check started")
+                    checkPrayerTimes()
                 } catch (e: Exception) {
-                    Log.e(TAG, "Error refreshing prayer times: ${e.message}")
+                    Log.e(TAG, "Error checking prayer times: ${e.message}")
+                    e.printStackTrace()
                 }
-            }, initialDelay, 60, TimeUnit.MINUTES)
+            }, initialDelayForPrayerCheck, 60, TimeUnit.SECONDS)
+            
+            // Ayrıca hemen bir kontrol yapalım (ilk başlatma için)
+            Handler(Looper.getMainLooper()).postDelayed({
+                try {
+                    Log.d(TAG, "Initial prayer time check")
+                    checkPrayerTimes()
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error in initial prayer time check: ${e.message}")
+                }
+            }, 5000) // 5 saniye sonra
         } catch (e: Exception) {
-            Log.e(TAG, "Error scheduling hourly updates: ${e.message}")
+            Log.e(TAG, "Error scheduling prayer time checks: ${e.message}")
+            e.printStackTrace()
         }
-
-        // Dakikalık namaz vakti kontrolü - sadece bir kez zamanlama yapılıyor
-        executor.scheduleAtFixedRate({
-            try {
-                checkPrayerTimes()
-            } catch (e: Exception) {
-                Log.e(TAG, "Error checking prayer times: ${e.message}")
-            }
-        }, 0, CHECK_INTERVAL_MINUTES, TimeUnit.MINUTES)
     }
     
     // Bir sonraki saat başına kaç dakika kaldığını hesapla
     private fun getMinutesToNextHour(): Long {
         val calendar = Calendar.getInstance()
         val minutes = calendar.get(Calendar.MINUTE)
+        val seconds = calendar.get(Calendar.SECOND)
         
-        // Saat başına kalan dakika (saniyeler dikkate alınmadı)
-        // En az 1 dakika bekleyecek şekilde ayarla
-        val minutesUntilNextHour = if (minutes >= 59) 1 else (60 - minutes)
-        Log.d(TAG, "Minutes until next hour: $minutesUntilNextHour")
+        // Saat başına kalan dakika ve saniye
+        var minutesUntilNextHour = 60 - minutes
+        
+        // Eğer şu an tam bir saat başında isek (0 dakika) ve saniye de 0 ise,
+        // zaten saat başındayız demektir, 60 dakika bekleyelim
+        if (minutes == 0 && seconds == 0) {
+            minutesUntilNextHour = 60
+        }
+        
+        Log.d(TAG, "Minutes until next hour: $minutesUntilNextHour (current minutes: $minutes, seconds: $seconds)")
         return minutesUntilNextHour.toLong()
+    }
+    
+    // Bir sonraki dakikaya kaç saniye kaldığını hesapla
+    private fun getSecondsToNextMinute(): Long {
+        val calendar = Calendar.getInstance()
+        val seconds = calendar.get(Calendar.SECOND)
+        val milliseconds = calendar.get(Calendar.MILLISECOND)
+        
+        // Bir sonraki dakikaya kalan süre (milisaniye hassasiyeti ile)
+        var secondsUntilNextMinute = 60 - seconds
+        
+        // Eğer şu an tam bir dakika başında isek (0 saniye) ve milisaniye de 0 ise,
+        // zaten dakika başındayız demektir, 60 saniye bekleyelim
+        if (seconds == 0 && milliseconds == 0) {
+            secondsUntilNextMinute = 60
+        }
+        
+        Log.d(TAG, "Seconds until next minute: $secondsUntilNextMinute (current seconds: $seconds, ms: $milliseconds)")
+        return secondsUntilNextMinute.toLong()
     }
     
     private fun checkPrayerTimes() {
@@ -270,34 +308,50 @@ class PrayerNotificationService : Service() {
         val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
         val currentTime = System.currentTimeMillis()
         
+        Log.d(TAG, "Checking prayer times - Current time: $currentHour:$currentMinute")
+        
         // Gün değiştiyse yeni vakitleri çek
         if (dayOfMonth != currentDay) {
             currentDay = dayOfMonth
-            fetchPrayerTimesData()
+            Log.d(TAG, "Day changed: $currentDay, fetching new prayer times")
+            fetchPrayerTimesData(isDayChange = true)
             return
         }
         
         // Son veri çekme zamanından bu yana 2 saat geçtiyse ve internet bağlantısı varsa yeni veri çek
-        if (currentTime - lastFetchTime > 2 * 60 * 60 * 1000) {
-            fetchPrayerTimesData()
+        // Ancak sadece saat başlarında kontrol et (dakika 0 ise)
+        if (currentMinute == 0 && currentTime - lastFetchTime > 2 * 60 * 60 * 1000) {
+            Log.d(TAG, "Data refresh timeout reached, fetching new prayer times")
+            fetchPrayerTimesData(isTimeoutRefresh = true)
+            return
         }
         
         if (prayerTimes == null) {
-            Log.d(TAG, "Prayer times not available, fetching...")
-            fetchPrayerTimesData()
+            Log.e(TAG, "Prayer times not available, fetching...")
+            fetchPrayerTimesData(isRecoveryFetch = true)
             return
         }
+        
+        Log.d(TAG, "Current prayer times: ${prayerTimes!!.joinToString()}")
         
         // Tüm vakitleri kontrol et
         for (i in 0 until 7) {
             try {
                 // Alarm açık mı kontrol et
                 val isAlarmEnabled = prefs.getBoolean("flutter.$i", false)
-                if (!isAlarmEnabled) continue
+                if (!isAlarmEnabled) {
+                    Log.d(TAG, "Prayer $i alarm is disabled, skipping")
+                    continue
+                }
+                
+                Log.d(TAG, "Checking prayer $i - Alarm is enabled")
                 
                 // Son bildirimden bu yana en az 1 dakika geçti mi kontrol et
                 val lastNotificationTime = lastNotificationTimes[i] ?: 0L
-                if (currentTime - lastNotificationTime < 60 * 1000) continue
+                if (currentTime - lastNotificationTime < 60 * 1000) {
+                    Log.d(TAG, "Prayer $i notification was recently sent, skipping")
+                    continue
+                }
                 
                 // Vakit zaman farkı - SharedPreferences'den Long değerini güvenli bir şekilde alma
                 var timeOffset = 0
@@ -335,7 +389,7 @@ class PrayerNotificationService : Service() {
                 // İlgili vakit için saati kontrol et (İmsak, Güneş, Öğle, İkindi, Akşam, Yatsı)
                 val timeIndex = when(i) {
                     0 -> 0  // İmsak
-                    1 -> 1  // Sabah (İmsak ile aynı)
+                    1 -> 1  // Sabah (Güneş'in doğuş vakti olarak Sabah vakti, Güneş vakti için)
                     2 -> 2  // Güneş
                     3 -> 3  // Öğle
                     4 -> 4  // İkindi
@@ -344,13 +398,22 @@ class PrayerNotificationService : Service() {
                     else -> continue
                 }
                 
-                if (timeIndex >= prayerTimes!!.size) continue
+                if (timeIndex >= prayerTimes!!.size) {
+                    Log.e(TAG, "Time index $timeIndex is out of bounds for prayer times array with size ${prayerTimes!!.size}")
+                    continue
+                }
                 
                 val prayerTime = prayerTimes!![timeIndex]
-                if (prayerTime.isEmpty()) continue
+                if (prayerTime.isEmpty()) {
+                    Log.e(TAG, "Prayer time for index $timeIndex is empty")
+                    continue
+                }
                 
                 val timeParts = prayerTime.split(":")
-                if (timeParts.size != 2) continue
+                if (timeParts.size != 2) {
+                    Log.e(TAG, "Invalid prayer time format for index $timeIndex: $prayerTime")
+                    continue
+                }
                 
                 val prayerHour = timeParts[0].toInt()
                 val prayerMinute = timeParts[1].toInt()
@@ -369,10 +432,11 @@ class PrayerNotificationService : Service() {
                 // Şu anki dakika ile kontrol edilecek dakika aynı mı?
                 if (currentHour == adjustedHour && currentMinute == adjustedMinute) {
                     // Bildirim gönder
-                    Log.d(TAG, "It's time for prayer $i: ${PRAYER_NAMES[i]}")
+                    Log.d(TAG, "It's time for prayer $i: ${prayerName(i)}")
                     sendPrayerNotification(i)
                     // Son bildirim zamanını güncelle
                     lastNotificationTimes[i] = currentTime
+                    Log.d(TAG, "Updated last notification time for prayer $i")
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Error processing prayer time for index $i: ${e.message}")
@@ -381,14 +445,57 @@ class PrayerNotificationService : Service() {
         }
     }
     
-    private fun fetchPrayerTimesData() {
-        Log.d(TAG, "Fetching prayer times data")
+    // Namaz vakti adını döndüren yardımcı fonksiyon
+    private fun prayerName(index: Int): String {
+        return getString(
+            when (index) {
+                0 -> R.string.imsak
+                1 -> R.string.sabah
+                2 -> R.string.gunes
+                3 -> R.string.ogle
+                4 -> R.string.ikindi
+                5 -> R.string.aksam
+                6 -> R.string.yatsi
+                else -> R.string.imsak
+            }
+        )
+    }
+    
+    private fun fetchPrayerTimesData(
+        isDayChange: Boolean = false,
+        isTimeoutRefresh: Boolean = false,
+        isRecoveryFetch: Boolean = false
+    ) {
+        // Çağrılma sebebini logla
+        val reason = when {
+            isDayChange -> "day change"
+            isTimeoutRefresh -> "timeout refresh"
+            isRecoveryFetch -> "recovery fetch (prayer times null)"
+            else -> "initial fetch"
+        }
+        Log.d(TAG, "Fetching prayer times data (reason: $reason)")
+        
+        // Veri çekme işlemi devam ediyorsa tekrar çekme
+        if (isDataFetchInProgress) {
+            Log.d(TAG, "Data fetch already in progress, skipping")
+            return
+        }
+        
+        // Son veri çekme zamanından bu yana en az 5 dakika geçmiş olmalı (acil durumlar hariç)
+        val currentTime = System.currentTimeMillis()
+        if (!isDayChange && !isRecoveryFetch && currentTime - lastFetchTime < 5 * 60 * 1000) {
+            Log.d(TAG, "Last fetch was less than 5 minutes ago, skipping (last fetch: ${(currentTime - lastFetchTime) / 1000} seconds ago)")
+            return
+        }
+        
+        isDataFetchInProgress = true
         
         Thread {
             try {
                 val locationId = prefs.getString("flutter.location", "") ?: ""
                 if (locationId.isEmpty()) {
                     Log.e(TAG, "Location ID is empty")
+                    isDataFetchInProgress = false
                     return@Thread
                 }
                 
@@ -402,6 +509,7 @@ class PrayerNotificationService : Service() {
                     Log.e(TAG, "No internet connection available")
                     // İnternet bağlantısı yoksa, son kaydedilmiş vakitleri kullan
                     loadPrayerTimes()
+                    isDataFetchInProgress = false
                     return@Thread
                 }
                 
@@ -435,6 +543,7 @@ class PrayerNotificationService : Service() {
                 val responseCode = connection.responseCode
                 if (responseCode != HttpURLConnection.HTTP_OK) {
                     Log.e(TAG, "HTTP Error: $responseCode")
+                    isDataFetchInProgress = false
                     return@Thread
                 }
                 
@@ -453,17 +562,25 @@ class PrayerNotificationService : Service() {
                 val xmlResponse = response.toString()
                 if (xmlResponse.isEmpty()) {
                     Log.e(TAG, "Empty XML response")
+                    isDataFetchInProgress = false
                     return@Thread
                 }
                 
                 // XML parse işlemi
                 val newPrayerTimes = parseXmlResponse(xmlResponse)
                 if (newPrayerTimes != null) {
-                    prayerTimes = newPrayerTimes
-                    lastFetchTime = System.currentTimeMillis()
-                    Log.d(TAG, "Prayer times fetched: ${prayerTimes?.joinToString()}")
-                    savePrayerTimes()
-                    updateForegroundNotification()
+                    // Mevcut zamanlardan farklı mı kontrol et
+                    val hasChanged = prayerTimes == null || !prayerTimes!!.contentEquals(newPrayerTimes)
+                    
+                    if (hasChanged) {
+                        prayerTimes = newPrayerTimes
+                        lastFetchTime = System.currentTimeMillis()
+                        Log.d(TAG, "New prayer times fetched: ${prayerTimes?.joinToString()}")
+                        savePrayerTimes()
+                        updateForegroundNotification()
+                    } else {
+                        Log.d(TAG, "Fetched prayer times are the same as current, no update needed")
+                    }
                 } else {
                     Log.e(TAG, "Failed to parse prayer times")
                     // Parse başarısız olursa, son kaydedilmiş vakitleri kullan
@@ -473,6 +590,8 @@ class PrayerNotificationService : Service() {
                 Log.e(TAG, "Network error: ${e.message}")
                 // Hata durumunda son kaydedilmiş vakitleri kullan
                 loadPrayerTimes()
+            } finally {
+                isDataFetchInProgress = false
             }
         }.start()
     }
@@ -558,11 +677,22 @@ class PrayerNotificationService : Service() {
             // Bildirim kanalı özelliklerini ayarla
             channel.enableVibration(true)
             channel.enableLights(true)
+            channel.setShowBadge(true)
+            channel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+            
+            // Bildirim ses ayarı (varsayılan ses)
+            channel.setSound(android.provider.Settings.System.DEFAULT_NOTIFICATION_URI, 
+                             AudioAttributes.Builder()
+                                 .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                                 .build())
             
             // Bildirim kanalını sisteme kaydet
             val notificationManager: NotificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
+            
+            Log.d(TAG, "Notification channel created with importance: $importance")
         }
     }
     
@@ -596,7 +726,7 @@ class PrayerNotificationService : Service() {
                 Log.e(TAG, "Error setting prayer times in notification: ${e.message}")
             }
         } else {
-            Log.d(TAG, "Prayer times are null, fetching new data...")
+            Log.d(TAG, "Prayer times are null in notification, fetching new data...")
             fetchPrayerTimesData()
         }
         
@@ -630,7 +760,7 @@ class PrayerNotificationService : Service() {
         val cityName = prefs.getString("flutter.name", "") ?: ""
         val prayerName = when (prayerIndex) {
             0 -> getString(R.string.imsak)
-            1 -> getString(R.string.imsak) // Sabah - using imsak string
+            1 -> getString(R.string.sabah) // Sabah namaz vakti için
             2 -> getString(R.string.gunes)
             3 -> getString(R.string.ogle)
             4 -> getString(R.string.ikindi)
@@ -643,12 +773,14 @@ class PrayerNotificationService : Service() {
         val intent = Intent(this, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         val pendingIntent = PendingIntent.getActivity(
-            this, 0, intent, PendingIntent.FLAG_IMMUTABLE
+            this, prayerIndex, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
         
         // Bildirim başlığı ve metni için string kaynaklarını kullan
         val notificationTitle = getString(R.string.prayer_time_notification_title, prayerName)
         val notificationText = getString(R.string.prayer_time_notification_text, cityName, prayerName)
+        
+        Log.d(TAG, "Creating notification with title: $notificationTitle and text: $notificationText")
         
         // Bildirim oluştur
         val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
@@ -660,10 +792,17 @@ class PrayerNotificationService : Service() {
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
             .setVibrate(longArrayOf(1000, 1000, 1000, 1000, 1000))
+            .setDefaults(NotificationCompat.DEFAULT_ALL) // Ses, titreşim ve LED için varsayılan ayarları ekle
             .build()
         
         // Bildirimi göster
-        notificationManager.notify(PRAYER_NOTIFICATION_ID_START + prayerIndex, notification)
+        try {
+            notificationManager.notify(PRAYER_NOTIFICATION_ID_START + prayerIndex, notification)
+            Log.d(TAG, "Notification sent successfully for prayer $prayerIndex")
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to send notification for prayer $prayerIndex: ${e.message}")
+            e.printStackTrace()
+        }
     }
     
     override fun onBind(intent: Intent?): IBinder? {

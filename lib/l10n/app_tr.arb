@@ -560,5 +560,57 @@
     "calendarListTitle": "Takvimler",
     "@calendarListTitle":{
         "description": "Calendar list title"
+    },
+
+    "disableBatteryOptimization": "Pil Optimizasyonunu Devre Dışı Bırak",
+    "@disableBatteryOptimization":{
+        "description": "Battery optimization disable text"
+    },
+    "batteryOptimizationSubtitle": "Bildirim servislerinin düzgün çalışması için pil optimizasyonunu devre dışı bırakın.",
+    "@batteryOptimizationSubtitle":{
+        "description": "Battery optimization subtitle text"
+    },
+    
+    "selectCalendarTitle": "Takvim Seçin",
+    "@selectCalendarTitle":{
+        "description": "Calendar selection dialog title"
+    },
+    "calendarPermissionDenied": "Takvim izni verilmedi",
+    "@calendarPermissionDenied":{
+        "description": "Calendar permission denied message"
+    },
+    "calendarNotFound": "Takvim bulunamadı",
+    "@calendarNotFound":{
+        "description": "No calendars found message"
+    },
+    "calendarAddSuccess": "{eventName} takvime eklendi",
+    "@calendarAddSuccess":{
+        "description": "Calendar add success message",
+        "placeholders": {
+            "eventName": {
+                "type": "String",
+                "example": "Ramazan Bayramı"
+            }
+        }
+    },
+    "calendarAddError": "Takvime eklenemedi: {errorMessage}",
+    "@calendarAddError":{
+        "description": "Calendar add error message",
+        "placeholders": {
+            "errorMessage": {
+                "type": "String",
+                "example": "İzin hatası"
+            }
+        }
+    },
+    "generalError": "Bir hata oluştu: {errorMessage}",
+    "@generalError":{
+        "description": "General error message",
+        "placeholders": {
+            "errorMessage": {
+                "type": "String",
+                "example": "Bilinmeyen hata"
+            }
+        }
     }
 }

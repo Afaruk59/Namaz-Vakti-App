@@ -152,5 +152,15 @@
     "nightAlarm": "Isha Alarm",
     "minuteAbbreviation": "min",
 
-    "calendarListTitle": "Calendars"
+    "calendarListTitle": "Calendars",
+
+    "disableBatteryOptimization": "Disable Battery Optimization",
+    "batteryOptimizationSubtitle": "Disable battery optimization for notifications to work properly.",
+    
+    "selectCalendarTitle": "Select Calendar",
+    "calendarPermissionDenied": "Calendar permission denied",
+    "calendarNotFound": "No calendars found",
+    "calendarAddSuccess": "{eventName} added to calendar",
+    "calendarAddError": "Failed to add to calendar: {errorMessage}",
+    "generalError": "An error occurred: {errorMessage}"
 }

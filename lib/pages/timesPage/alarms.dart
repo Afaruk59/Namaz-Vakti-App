@@ -131,13 +131,13 @@ class _AlarmsBodyState extends State<AlarmsBody> with WidgetsBindingObserver {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 15.0),
                     child: ListTile(
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 5.0),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 18.0),
                       title: Text(
-                        "Pil Optimizasyonunu Devre Dışı Bırak",
+                        AppLocalizations.of(context)!.disableBatteryOptimization,
                         style: TextStyle(color: Theme.of(context).colorScheme.onErrorContainer),
                       ),
                       subtitle: Text(
-                        "Bildirim servislerinin düzgün çalışması için pil optimizasyonunu devre dışı bırakın.",
+                        AppLocalizations.of(context)!.batteryOptimizationSubtitle,
                         style: TextStyle(color: Theme.of(context).colorScheme.onErrorContainer),
                       ),
                       trailing: const Icon(Icons.arrow_forward_ios),
