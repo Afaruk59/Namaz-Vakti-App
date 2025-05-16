@@ -60,13 +60,13 @@ class PrayerNotificationService : Service() {
         private const val PRAYER_NOTIFICATION_ID_START = 100
         private const val ACTION_START_SERVICE = "com.afaruk59.namaz_vakti_app.ACTION_START_SERVICE"
         private const val ACTION_STOP_SERVICE = "com.afaruk59.namaz_vakti_app.ACTION_STOP_SERVICE"
+        private const val ACTION_PRAYER_TIME = "com.afaruk59.namaz_vakti_app.ACTION_PRAYER_TIME"
+        private const val ACTION_CHECK_ALARMS = "com.afaruk59.namaz_vakti_app.ACTION_CHECK_ALARMS"
+        private const val ACTION_UPDATE_TIMES = "com.afaruk59.namaz_vakti_app.ACTION_UPDATE_TIMES"
         private const val PREFS_NAME = "FlutterSharedPreferences"
         private const val BASE_URL = "http://www.namazvakti.com/XML.php?cityID="
-        
-        // Namaz vakitlerini kontrol etme aralığı (dakika)
-        private const val CHECK_INTERVAL_MINUTES = 1L
-        
-        // Bildirimlerin adları
+        private const val ALARM_CHECK_INTERVAL = 60 * 1000L
+        private const val TIME_UPDATE_INTERVAL = 60 * 60 * 1000L
         private val PRAYER_NAMES = arrayOf(
             R.string.imsak,R.string.sabah, R.string.gunes, R.string.ogle, R.string.ikindi, R.string.aksam, R.string.yatsi
         )
@@ -75,48 +75,43 @@ class PrayerNotificationService : Service() {
             val intent = Intent(context, PrayerNotificationService::class.java)
             intent.action = ACTION_START_SERVICE
             
-            // Android 14 (API 34) ve üzeri için özel izin kontrolü
             if (VERSION.SDK_INT >= 34) {
-                // API 34+ (Android 14+) için izinleri kontrol et
                 try {
                     context.startForegroundService(intent)
                 } catch (e: Exception) {
                     Log.e(TAG, "Failed to start foreground service on Android 14+: ${e.message}")
-                    
-                    // Servis başlatma başarısız olursa bildirim göster
-                    try {
-                        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                        
-                        // Bildirim kanalını oluştur (eğer yoksa)
-                        if (VERSION.SDK_INT >= VERSION_CODES.O) {
-                            val channel = NotificationChannel(
-                                "service_error_channel",
-                                "Servis Hatası",
-                                NotificationManager.IMPORTANCE_HIGH
-                            )
-                            notificationManager.createNotificationChannel(channel)
-                        }
-                        
-                        // Bildirim oluştur
-                        val notification = NotificationCompat.Builder(context, "service_error_channel")
-                            .setContentTitle("Namaz Vakti Bildirimleri Çalışmıyor")
-                            .setContentText("Uygulama ayarlarından 'Arka plan izinleri'ni etkinleştirin.")
-                            .setSmallIcon(R.drawable.calendar)
-                            .setPriority(NotificationCompat.PRIORITY_HIGH)
-                            .build()
-                        
-                        // Bildirimi göster
-                        notificationManager.notify(999, notification)
-                    } catch (e2: Exception) {
-                        Log.e(TAG, "Failed to show error notification: ${e2.message}")
-                    }
+                    showErrorNotification(context)
                 }
             } else if (VERSION.SDK_INT >= VERSION_CODES.O) {
-                // Android 8-13 için standart foreground servis başlatma
                 context.startForegroundService(intent)
             } else {
-                // Android 7 ve altı için normal servis başlatma
                 context.startService(intent)
+            }
+        }
+        
+        private fun showErrorNotification(context: Context) {
+            try {
+                val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                
+                if (VERSION.SDK_INT >= VERSION_CODES.O) {
+                    val channel = NotificationChannel(
+                        "service_error_channel",
+                        "Servis Hatası",
+                        NotificationManager.IMPORTANCE_HIGH
+                    )
+                    notificationManager.createNotificationChannel(channel)
+                }
+                
+                val notification = NotificationCompat.Builder(context, "service_error_channel")
+                    .setContentTitle("Namaz Vakti Bildirimleri Çalışmıyor")
+                    .setContentText("Uygulama ayarlarından 'Arka plan izinleri'ni etkinleştirin.")
+                    .setSmallIcon(R.drawable.calendar)
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .build()
+                
+                notificationManager.notify(999, notification)
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to show error notification: ${e.message}")
             }
         }
         
@@ -127,21 +122,22 @@ class PrayerNotificationService : Service() {
         }
     }
     
-    private val executor = Executors.newSingleThreadScheduledExecutor()
     private lateinit var prefs: SharedPreferences
     private var currentDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
     private var prayerTimes: Array<String>? = null
     private var lastFetchTime: Long = 0
-    private var lastNotificationTimes = mutableMapOf<Int, Long>() // Her vakit için son bildirim zamanını takip et
     private var isDataFetchInProgress = false
+    private lateinit var alarmManager: AlarmManager
+    private var lastAlarmCheckTime: Long = 0
+    private var lastTimeUpdateTime: Long = 0
     
     override fun onCreate() {
         super.onCreate()
         Log.d(TAG, "Service created")
         
         prefs = applicationContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         
-        // Bildirim kanalı oluştur
         createNotificationChannel()
     }
     
@@ -151,21 +147,18 @@ class PrayerNotificationService : Service() {
         when (intent?.action) {
             ACTION_START_SERVICE -> {
                 try {
-                    // Önce mevcut vakitleri yükle
                     loadPrayerTimes()
-                    
-                    // Foreground servisi başlat
-                    Log.d(TAG, "Starting foreground service")
                     startForeground(FOREGROUND_NOTIFICATION_ID, createForegroundNotification())
-                    
-                    // Namaz vakti kontrolü başlat
-                    startPrayerTimeChecker()
+                    schedulePrayerAlarms()
+                    schedulePeriodicChecks()
                 } catch (e: Exception) {
                     Log.e(TAG, "Error starting foreground service: ${e.message}")
                     stopSelf()
                 }
             }
             ACTION_STOP_SERVICE -> {
+                cancelAllAlarms()
+                cancelPeriodicChecks()
                 if (VERSION.SDK_INT >= VERSION_CODES.N) {
                     stopForeground(STOP_FOREGROUND_REMOVE)
                 } else {
@@ -173,18 +166,270 @@ class PrayerNotificationService : Service() {
                 }
                 stopSelf()
             }
+            ACTION_PRAYER_TIME -> {
+                val prayerIndex = intent.getIntExtra("prayer_index", -1)
+                if (prayerIndex != -1) {
+                    sendPrayerNotification(prayerIndex)
+                }
+            }
+            ACTION_CHECK_ALARMS -> {
+                checkAndUpdateAlarms()
+            }
+            ACTION_UPDATE_TIMES -> {
+                fetchPrayerTimesData(isTimeoutRefresh = true)
+            }
         }
         
-        // START_STICKY yerine daha güvenilir bir değer döndürelim
         return START_REDELIVER_INTENT
     }
-
+    
+    private fun schedulePeriodicChecks() {
+        val alarmCheckIntent = Intent(this, PrayerNotificationService::class.java).apply {
+            action = ACTION_CHECK_ALARMS
+        }
+        val alarmCheckPendingIntent = PendingIntent.getService(
+            this,
+            1000,
+            alarmCheckIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        
+        val timeUpdateIntent = Intent(this, PrayerNotificationService::class.java).apply {
+            action = ACTION_UPDATE_TIMES
+        }
+        val timeUpdatePendingIntent = PendingIntent.getService(
+            this,
+            2000,
+            timeUpdateIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        
+        if (VERSION.SDK_INT >= VERSION_CODES.M) {
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                System.currentTimeMillis() + ALARM_CHECK_INTERVAL,
+                alarmCheckPendingIntent
+            )
+        } else {
+            alarmManager.setExact(
+                AlarmManager.RTC_WAKEUP,
+                System.currentTimeMillis() + ALARM_CHECK_INTERVAL,
+                alarmCheckPendingIntent
+            )
+        }
+        
+        if (VERSION.SDK_INT >= VERSION_CODES.M) {
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                System.currentTimeMillis() + TIME_UPDATE_INTERVAL,
+                timeUpdatePendingIntent
+            )
+        } else {
+            alarmManager.setExact(
+                AlarmManager.RTC_WAKEUP,
+                System.currentTimeMillis() + TIME_UPDATE_INTERVAL,
+                timeUpdatePendingIntent
+            )
+        }
+        
+        Log.d(TAG, "Scheduled periodic checks")
+    }
+    
+    private fun cancelPeriodicChecks() {
+        val alarmCheckIntent = Intent(this, PrayerNotificationService::class.java).apply {
+            action = ACTION_CHECK_ALARMS
+        }
+        val timeUpdateIntent = Intent(this, PrayerNotificationService::class.java).apply {
+            action = ACTION_UPDATE_TIMES
+        }
+        
+        val alarmCheckPendingIntent = PendingIntent.getService(
+            this,
+            1000,
+            alarmCheckIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val timeUpdatePendingIntent = PendingIntent.getService(
+            this,
+            2000,
+            timeUpdateIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        
+        alarmManager.cancel(alarmCheckPendingIntent)
+        alarmManager.cancel(timeUpdatePendingIntent)
+        
+        Log.d(TAG, "Cancelled periodic checks")
+    }
+    
+    private fun checkAndUpdateAlarms() {
+        val currentTime = System.currentTimeMillis()
+        
+        if (currentTime - lastAlarmCheckTime >= ALARM_CHECK_INTERVAL) {
+            lastAlarmCheckTime = currentTime
+            schedulePrayerAlarms()
+            
+            val nextCheckIntent = Intent(this, PrayerNotificationService::class.java).apply {
+                action = ACTION_CHECK_ALARMS
+            }
+            val nextCheckPendingIntent = PendingIntent.getService(
+                this,
+                1000,
+                nextCheckIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            
+            if (VERSION.SDK_INT >= VERSION_CODES.M) {
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    currentTime + ALARM_CHECK_INTERVAL,
+                    nextCheckPendingIntent
+                )
+            } else {
+                alarmManager.setExact(
+                    AlarmManager.RTC_WAKEUP,
+                    currentTime + ALARM_CHECK_INTERVAL,
+                    nextCheckPendingIntent
+                )
+            }
+        }
+    }
+    
+    private fun schedulePrayerAlarms() {
+        if (prayerTimes == null) {
+            Log.e(TAG, "Prayer times not available, fetching...")
+            fetchPrayerTimesData(isRecoveryFetch = true)
+            return
+        }
+        
+        cancelAllAlarms()
+        
+        val calendar = Calendar.getInstance()
+        val currentDay = calendar.get(Calendar.DAY_OF_MONTH)
+        
+        for (i in 0 until 7) {
+            try {
+                val isAlarmEnabled = prefs.getBoolean("flutter.$i", false)
+                if (!isAlarmEnabled) {
+                    Log.d(TAG, "Prayer $i alarm is disabled, skipping")
+                    continue
+                }
+                
+                scheduleAlarmForToday(i)
+            } catch (e: Exception) {
+                Log.e(TAG, "Error scheduling alarm for prayer $i: ${e.message}")
+            }
+        }
+    }
+    
+    private fun scheduleAlarmForToday(prayerIndex: Int) {
+        try {
+            val timeIndex = when(prayerIndex) {
+                0 -> 0
+                1 -> 1
+                2 -> 2
+                3 -> 3
+                4 -> 4
+                5 -> 5
+                6 -> 6
+                else -> return
+            }
+            
+            if (prayerTimes == null || timeIndex >= prayerTimes!!.size) {
+                Log.e(TAG, "Invalid prayer time index: $timeIndex")
+                return
+            }
+            
+            val prayerTime = prayerTimes!![timeIndex]
+            if (prayerTime.isEmpty()) {
+                Log.e(TAG, "Empty prayer time for index $timeIndex")
+                return
+            }
+            
+            val timeParts = prayerTime.split(":")
+            if (timeParts.size != 2) {
+                Log.e(TAG, "Invalid prayer time format: $prayerTime")
+                return
+            }
+            
+            val prayerHour = timeParts[0].toInt()
+            val prayerMinute = timeParts[1].toInt()
+            
+            var timeOffset = 0
+            try {
+                val prefKey = "flutter.${prayerIndex}gap"
+                timeOffset = prefs.getLong(prefKey, 0).toInt()
+            } catch (e: Exception) {
+                Log.e(TAG, "Error getting time offset: ${e.message}")
+            }
+            
+            val alarmTime = Calendar.getInstance().apply {
+                set(Calendar.HOUR_OF_DAY, prayerHour)
+                set(Calendar.MINUTE, prayerMinute)
+                set(Calendar.SECOND, 0)
+                set(Calendar.MILLISECOND, 0)
+                add(Calendar.MINUTE, timeOffset)
+            }
+            
+            if (alarmTime.timeInMillis <= System.currentTimeMillis()) {
+                Log.d(TAG, "Prayer time $prayerIndex has already passed for today")
+                return
+            }
+            
+            val intent = Intent(this, PrayerNotificationService::class.java).apply {
+                action = ACTION_PRAYER_TIME
+                putExtra("prayer_index", prayerIndex)
+            }
+            
+            val pendingIntent = PendingIntent.getService(
+                this,
+                prayerIndex,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            
+            if (VERSION.SDK_INT >= VERSION_CODES.M) {
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    alarmTime.timeInMillis,
+                    pendingIntent
+                )
+            } else {
+                alarmManager.setExact(
+                    AlarmManager.RTC_WAKEUP,
+                    alarmTime.timeInMillis,
+                    pendingIntent
+                )
+            }
+            
+            Log.d(TAG, "Scheduled alarm for prayer $prayerIndex at ${alarmTime.time}")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error scheduling alarm for today: ${e.message}")
+        }
+    }
+    
+    private fun cancelAllAlarms() {
+        for (i in 0 until 7) {
+            val intent = Intent(this, PrayerNotificationService::class.java).apply {
+                action = ACTION_PRAYER_TIME
+                putExtra("prayer_index", i)
+            }
+            val pendingIntent = PendingIntent.getService(
+                this,
+                i,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            alarmManager.cancel(pendingIntent)
+        }
+        Log.d(TAG, "Cancelled all prayer alarms")
+    }
+    
     private fun loadPrayerTimes() {
         val calendar = Calendar.getInstance()
         val currentDay = calendar.get(Calendar.DAY_OF_MONTH)
         val currentMonth = calendar.get(Calendar.MONTH) + 1
 
-        // SharedPreferences'den kaydedilmiş vakitleri yükle
         val savedTimesStr = prefs.getString("flutter.prayerTimes", null)
         val savedDay = prefs.getInt("flutter.prayerTimesDay", -1)
         val savedMonth = prefs.getInt("flutter.prayerTimesMonth", -1)
@@ -221,252 +466,11 @@ class PrayerNotificationService : Service() {
         }
     }
     
-    private fun startPrayerTimeChecker() {
-        Log.d(TAG, "Starting prayer time checker")
-        
-        // İlk veri çekme işlemi (eğer gerekiyorsa)
-        if (prayerTimes == null) {
-            Log.d(TAG, "Initial prayer times fetch")
-            fetchPrayerTimesData()
-        }
-        
-        try {
-            // Saatlik güncelleme zamanlaması - sadece saat başında veri yenileme yapacak
-            // ve sadece son çekilme zamanı kontrolü yapılacak (checkPrayerTimes içinde)
-            
-            // Dakikalık namaz vakti kontrolü - her dakika başında çalışacak şekilde
-            val initialDelayForPrayerCheck = getSecondsToNextMinute()
-            Log.d(TAG, "Scheduling prayer time check to start in $initialDelayForPrayerCheck seconds")
-            
-            executor.scheduleAtFixedRate({
-                try {
-                    Log.d(TAG, "Minute-based prayer time check started")
-                    checkPrayerTimes()
-                } catch (e: Exception) {
-                    Log.e(TAG, "Error checking prayer times: ${e.message}")
-                    e.printStackTrace()
-                }
-            }, initialDelayForPrayerCheck, 60, TimeUnit.SECONDS)
-            
-            // Ayrıca hemen bir kontrol yapalım (ilk başlatma için)
-            Handler(Looper.getMainLooper()).postDelayed({
-                try {
-                    Log.d(TAG, "Initial prayer time check")
-                    checkPrayerTimes()
-                } catch (e: Exception) {
-                    Log.e(TAG, "Error in initial prayer time check: ${e.message}")
-                }
-            }, 5000) // 5 saniye sonra
-        } catch (e: Exception) {
-            Log.e(TAG, "Error scheduling prayer time checks: ${e.message}")
-            e.printStackTrace()
-        }
-    }
-    
-    // Bir sonraki saat başına kaç dakika kaldığını hesapla
-    private fun getMinutesToNextHour(): Long {
-        val calendar = Calendar.getInstance()
-        val minutes = calendar.get(Calendar.MINUTE)
-        val seconds = calendar.get(Calendar.SECOND)
-        
-        // Saat başına kalan dakika ve saniye
-        var minutesUntilNextHour = 60 - minutes
-        
-        // Eğer şu an tam bir saat başında isek (0 dakika) ve saniye de 0 ise,
-        // zaten saat başındayız demektir, 60 dakika bekleyelim
-        if (minutes == 0 && seconds == 0) {
-            minutesUntilNextHour = 60
-        }
-        
-        Log.d(TAG, "Minutes until next hour: $minutesUntilNextHour (current minutes: $minutes, seconds: $seconds)")
-        return minutesUntilNextHour.toLong()
-    }
-    
-    // Bir sonraki dakikaya kaç saniye kaldığını hesapla
-    private fun getSecondsToNextMinute(): Long {
-        val calendar = Calendar.getInstance()
-        val seconds = calendar.get(Calendar.SECOND)
-        val milliseconds = calendar.get(Calendar.MILLISECOND)
-        
-        // Bir sonraki dakikaya kalan süre (milisaniye hassasiyeti ile)
-        var secondsUntilNextMinute = 60 - seconds
-        
-        // Eğer şu an tam bir dakika başında isek (0 saniye) ve milisaniye de 0 ise,
-        // zaten dakika başındayız demektir, 60 saniye bekleyelim
-        if (seconds == 0 && milliseconds == 0) {
-            secondsUntilNextMinute = 60
-        }
-        
-        Log.d(TAG, "Seconds until next minute: $secondsUntilNextMinute (current seconds: $seconds, ms: $milliseconds)")
-        return secondsUntilNextMinute.toLong()
-    }
-    
-    private fun checkPrayerTimes() {
-        val calendar = Calendar.getInstance()
-        val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
-        val currentMinute = calendar.get(Calendar.MINUTE)
-        val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
-        val currentTime = System.currentTimeMillis()
-        
-        Log.d(TAG, "Checking prayer times - Current time: $currentHour:$currentMinute")
-        
-        // Gün değiştiyse yeni vakitleri çek
-        if (dayOfMonth != currentDay) {
-            currentDay = dayOfMonth
-            Log.d(TAG, "Day changed: $currentDay, fetching new prayer times")
-            fetchPrayerTimesData(isDayChange = true)
-            return
-        }
-        
-        // Son veri çekme zamanından bu yana 2 saat geçtiyse ve internet bağlantısı varsa yeni veri çek
-        // Ancak sadece saat başlarında kontrol et (dakika 0 ise)
-        if (currentMinute == 0 && currentTime - lastFetchTime > 2 * 60 * 60 * 1000) {
-            Log.d(TAG, "Data refresh timeout reached, fetching new prayer times")
-            fetchPrayerTimesData(isTimeoutRefresh = true)
-            return
-        }
-        
-        if (prayerTimes == null) {
-            Log.e(TAG, "Prayer times not available, fetching...")
-            fetchPrayerTimesData(isRecoveryFetch = true)
-            return
-        }
-        
-        Log.d(TAG, "Current prayer times: ${prayerTimes!!.joinToString()}")
-        
-        // Tüm vakitleri kontrol et
-        for (i in 0 until 7) {
-            try {
-                // Alarm açık mı kontrol et
-                val isAlarmEnabled = prefs.getBoolean("flutter.$i", false)
-                if (!isAlarmEnabled) {
-                    Log.d(TAG, "Prayer $i alarm is disabled, skipping")
-                    continue
-                }
-                
-                Log.d(TAG, "Checking prayer $i - Alarm is enabled")
-                
-                // Son bildirimden bu yana en az 1 dakika geçti mi kontrol et
-                val lastNotificationTime = lastNotificationTimes[i] ?: 0L
-                if (currentTime - lastNotificationTime < 60 * 1000) {
-                    Log.d(TAG, "Prayer $i notification was recently sent, skipping")
-                    continue
-                }
-                
-                // Vakit zaman farkı - SharedPreferences'den Long değerini güvenli bir şekilde alma
-                var timeOffset = 0
-                try {
-                    val prefKey = "flutter.${i}gap"
-                    
-                    // Doğrudan Long olarak almayı dene
-                    try {
-                        timeOffset = prefs.getLong(prefKey, 0).toInt()
-                        Log.d(TAG, "Retrieved time offset as Long: $timeOffset")
-                    } catch (e: ClassCastException) {
-                        // Long olarak alınamıyorsa, Int olarak dene
-                        try {
-                            timeOffset = prefs.getInt(prefKey, 0)
-                            Log.d(TAG, "Retrieved time offset as Int: $timeOffset")
-                        } catch (e2: ClassCastException) {
-                            // Int olarak da alınamıyorsa, String olarak dene
-                            try {
-                                val strValue = prefs.getString(prefKey, "0")
-                                timeOffset = strValue?.toIntOrNull() ?: 0
-                                Log.d(TAG, "Retrieved time offset as String: $timeOffset")
-                            } catch (e3: Exception) {
-                                Log.e(TAG, "Could not retrieve time offset in any format: ${e3.message}")
-                                timeOffset = 0
-                            }
-                        }
-                    }
-                    
-                    Log.d(TAG, "Final time offset for prayer $i: $timeOffset")
-                } catch (e: Exception) {
-                    Log.e(TAG, "Error getting time offset for prayer $i: ${e.message}")
-                    timeOffset = 0
-                }
-                
-                // İlgili vakit için saati kontrol et (İmsak, Güneş, Öğle, İkindi, Akşam, Yatsı)
-                val timeIndex = when(i) {
-                    0 -> 0  // İmsak
-                    1 -> 1  // Sabah (Güneş'in doğuş vakti olarak Sabah vakti, Güneş vakti için)
-                    2 -> 2  // Güneş
-                    3 -> 3  // Öğle
-                    4 -> 4  // İkindi
-                    5 -> 5  // Akşam
-                    6 -> 6  // Yatsı
-                    else -> continue
-                }
-                
-                if (timeIndex >= prayerTimes!!.size) {
-                    Log.e(TAG, "Time index $timeIndex is out of bounds for prayer times array with size ${prayerTimes!!.size}")
-                    continue
-                }
-                
-                val prayerTime = prayerTimes!![timeIndex]
-                if (prayerTime.isEmpty()) {
-                    Log.e(TAG, "Prayer time for index $timeIndex is empty")
-                    continue
-                }
-                
-                val timeParts = prayerTime.split(":")
-                if (timeParts.size != 2) {
-                    Log.e(TAG, "Invalid prayer time format for index $timeIndex: $prayerTime")
-                    continue
-                }
-                
-                val prayerHour = timeParts[0].toInt()
-                val prayerMinute = timeParts[1].toInt()
-                
-                // Zaman farkını hesapla
-                val adjustedTime = Calendar.getInstance()
-                adjustedTime.set(Calendar.HOUR_OF_DAY, prayerHour)
-                adjustedTime.set(Calendar.MINUTE, prayerMinute)
-                adjustedTime.add(Calendar.MINUTE, timeOffset)
-                
-                val adjustedHour = adjustedTime.get(Calendar.HOUR_OF_DAY)
-                val adjustedMinute = adjustedTime.get(Calendar.MINUTE)
-                
-                Log.d(TAG, "Prayer $i: Current time ${currentHour}:${currentMinute}, Prayer time ${adjustedHour}:${adjustedMinute}")
-                
-                // Şu anki dakika ile kontrol edilecek dakika aynı mı?
-                if (currentHour == adjustedHour && currentMinute == adjustedMinute) {
-                    // Bildirim gönder
-                    Log.d(TAG, "It's time for prayer $i: ${prayerName(i)}")
-                    sendPrayerNotification(i)
-                    // Son bildirim zamanını güncelle
-                    lastNotificationTimes[i] = currentTime
-                    Log.d(TAG, "Updated last notification time for prayer $i")
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, "Error processing prayer time for index $i: ${e.message}")
-                e.printStackTrace()
-            }
-        }
-    }
-    
-    // Namaz vakti adını döndüren yardımcı fonksiyon
-    private fun prayerName(index: Int): String {
-        return getString(
-            when (index) {
-                0 -> R.string.imsak
-                1 -> R.string.sabah
-                2 -> R.string.gunes
-                3 -> R.string.ogle
-                4 -> R.string.ikindi
-                5 -> R.string.aksam
-                6 -> R.string.yatsi
-                else -> R.string.imsak
-            }
-        )
-    }
-    
     private fun fetchPrayerTimesData(
         isDayChange: Boolean = false,
         isTimeoutRefresh: Boolean = false,
         isRecoveryFetch: Boolean = false
     ) {
-        // Çağrılma sebebini logla
         val reason = when {
             isDayChange -> "day change"
             isTimeoutRefresh -> "timeout refresh"
@@ -475,13 +479,11 @@ class PrayerNotificationService : Service() {
         }
         Log.d(TAG, "Fetching prayer times data (reason: $reason)")
         
-        // Veri çekme işlemi devam ediyorsa tekrar çekme
         if (isDataFetchInProgress) {
             Log.d(TAG, "Data fetch already in progress, skipping")
             return
         }
         
-        // Son veri çekme zamanından bu yana en az 5 dakika geçmiş olmalı (acil durumlar hariç)
         val currentTime = System.currentTimeMillis()
         if (!isDayChange && !isRecoveryFetch && currentTime - lastFetchTime < 5 * 60 * 1000) {
             Log.d(TAG, "Last fetch was less than 5 minutes ago, skipping (last fetch: ${(currentTime - lastFetchTime) / 1000} seconds ago)")
@@ -502,18 +504,15 @@ class PrayerNotificationService : Service() {
                 val url = URL(BASE_URL + locationId)
                 Log.d(TAG, "Fetching data from URL: $url")
                 
-                // İnternet bağlantısını kontrol et
                 val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
                 val networkInfo = connectivityManager.activeNetworkInfo
                 if (networkInfo == null || !networkInfo.isConnected) {
                     Log.e(TAG, "No internet connection available")
-                    // İnternet bağlantısı yoksa, son kaydedilmiş vakitleri kullan
                     loadPrayerTimes()
                     isDataFetchInProgress = false
                     return@Thread
                 }
                 
-                // SSL hatalarını geçici olarak görmezden gel
                 if (url.protocol.toLowerCase() == "https") {
                     try {
                         val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
@@ -533,13 +532,12 @@ class PrayerNotificationService : Service() {
                 
                 val connection = url.openConnection() as HttpURLConnection
                 connection.requestMethod = "GET"
-                connection.connectTimeout = 15000 // 15 saniye
-                connection.readTimeout = 15000 // 15 saniye
+                connection.connectTimeout = 15000
+                connection.readTimeout = 15000
                 connection.setRequestProperty("User-Agent", "Mozilla/5.0 Namaz-Vakti-App Notifications")
                 connection.setRequestProperty("Accept", "application/xml")
                 connection.setRequestProperty("Connection", "close")
                 
-                // Bağlantı durumunu kontrol et
                 val responseCode = connection.responseCode
                 if (responseCode != HttpURLConnection.HTTP_OK) {
                     Log.e(TAG, "HTTP Error: $responseCode")
@@ -566,10 +564,8 @@ class PrayerNotificationService : Service() {
                     return@Thread
                 }
                 
-                // XML parse işlemi
                 val newPrayerTimes = parseXmlResponse(xmlResponse)
                 if (newPrayerTimes != null) {
-                    // Mevcut zamanlardan farklı mı kontrol et
                     val hasChanged = prayerTimes == null || !prayerTimes!!.contentEquals(newPrayerTimes)
                     
                     if (hasChanged) {
@@ -583,12 +579,10 @@ class PrayerNotificationService : Service() {
                     }
                 } else {
                     Log.e(TAG, "Failed to parse prayer times")
-                    // Parse başarısız olursa, son kaydedilmiş vakitleri kullan
                     loadPrayerTimes()
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Network error: ${e.message}")
-                // Hata durumunda son kaydedilmiş vakitleri kullan
                 loadPrayerTimes()
             } finally {
                 isDataFetchInProgress = false
@@ -622,17 +616,17 @@ class PrayerNotificationService : Service() {
                         val month = monthStr.toInt()
                         
                         if (day == currentDay && month == currentMonth) {
-                            times = Array(7) { "" } // 7 vakit için dizi oluştur
+                            times = Array(7) { "" }
                             
                             val hasFajrAttr = parser.getAttributeValue(null, "fajr") != null
                             if (hasFajrAttr) {
-                                times[0] = parser.getAttributeValue(null, "fajr") ?: "" // İmsak
-                                times[1] = parser.getAttributeValue(null, "sunrise") ?: "" // Sabah
-                                times[2] = parser.getAttributeValue(null, "sunrise") ?: "" // Güneş
-                                times[3] = parser.getAttributeValue(null, "dhuhr") ?: "" // Öğle
-                                times[4] = parser.getAttributeValue(null, "asr") ?: "" // İkindi
-                                times[5] = parser.getAttributeValue(null, "maghrib") ?: "" // Akşam
-                                times[6] = parser.getAttributeValue(null, "isha") ?: "" // Yatsı
+                                times[0] = parser.getAttributeValue(null, "fajr") ?: ""
+                                times[1] = parser.getAttributeValue(null, "sunrise") ?: ""
+                                times[2] = parser.getAttributeValue(null, "sunrise") ?: ""
+                                times[3] = parser.getAttributeValue(null, "dhuhr") ?: ""
+                                times[4] = parser.getAttributeValue(null, "asr") ?: ""
+                                times[5] = parser.getAttributeValue(null, "maghrib") ?: ""
+                                times[6] = parser.getAttributeValue(null, "isha") ?: ""
                             } else {
                                 eventType = parser.next()
                                 if (eventType == XmlPullParser.TEXT) {
@@ -640,13 +634,13 @@ class PrayerNotificationService : Service() {
                                     if (content.isNotEmpty()) {
                                         val prayerTimesArray = content.split(Regex("\\s+"))
                                         if (prayerTimesArray.size >= 12) {
-                                            times[0] = prayerTimesArray.getOrNull(0) ?: "" // İmsak
-                                            times[1] = prayerTimesArray.getOrNull(1) ?: "" // Sabah
-                                            times[2] = prayerTimesArray.getOrNull(2) ?: "" // Güneş
-                                            times[3] = prayerTimesArray.getOrNull(5) ?: "" // Öğle
-                                            times[4] = prayerTimesArray.getOrNull(6) ?: "" // İkindi
-                                            times[5] = prayerTimesArray.getOrNull(9) ?: "" // Akşam
-                                            times[6] = prayerTimesArray.getOrNull(11) ?: "" // Yatsı
+                                            times[0] = prayerTimesArray.getOrNull(0) ?: ""
+                                            times[1] = prayerTimesArray.getOrNull(1) ?: ""
+                                            times[2] = prayerTimesArray.getOrNull(2) ?: ""
+                                            times[3] = prayerTimesArray.getOrNull(5) ?: ""
+                                            times[4] = prayerTimesArray.getOrNull(6) ?: ""
+                                            times[5] = prayerTimesArray.getOrNull(9) ?: ""
+                                            times[6] = prayerTimesArray.getOrNull(11) ?: ""
                                         }
                                     }
                                 }
@@ -674,20 +668,17 @@ class PrayerNotificationService : Service() {
                 description = descriptionText
             }
             
-            // Bildirim kanalı özelliklerini ayarla
             channel.enableVibration(true)
             channel.enableLights(true)
             channel.setShowBadge(true)
             channel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
             
-            // Bildirim ses ayarı (varsayılan ses)
             channel.setSound(android.provider.Settings.System.DEFAULT_NOTIFICATION_URI, 
                              AudioAttributes.Builder()
                                  .setUsage(AudioAttributes.USAGE_NOTIFICATION)
                                  .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                                  .build())
             
-            // Bildirim kanalını sisteme kaydet
             val notificationManager: NotificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
@@ -707,21 +698,19 @@ class PrayerNotificationService : Service() {
 
         val remoteViews = RemoteViews(packageName, R.layout.notification_layout)
         
-        // Konum adını set et
         val cityName = prefs.getString("flutter.name", "") ?: ""
         remoteViews.setTextViewText(R.id.location_text, cityName)
         Log.d(TAG, "Setting city name in notification: $cityName")
         
-        // Namaz vakitlerini set et
         if (prayerTimes != null) {
             Log.d(TAG, "Setting prayer times in notification: ${prayerTimes!!.joinToString()}")
             try {
-                remoteViews.setTextViewText(R.id.imsak_time, prayerTimes!![0])   // İmsak
-                remoteViews.setTextViewText(R.id.gunes_time, prayerTimes!![2])   // Güneş
-                remoteViews.setTextViewText(R.id.ogle_time, prayerTimes!![3])    // Öğle
-                remoteViews.setTextViewText(R.id.ikindi_time, prayerTimes!![4])  // İkindi
-                remoteViews.setTextViewText(R.id.aksam_time, prayerTimes!![5])   // Akşam
-                remoteViews.setTextViewText(R.id.yatsi_time, prayerTimes!![6])   // Yatsı
+                remoteViews.setTextViewText(R.id.imsak_time, prayerTimes!![0])
+                remoteViews.setTextViewText(R.id.gunes_time, prayerTimes!![2])
+                remoteViews.setTextViewText(R.id.ogle_time, prayerTimes!![3])
+                remoteViews.setTextViewText(R.id.ikindi_time, prayerTimes!![4])
+                remoteViews.setTextViewText(R.id.aksam_time, prayerTimes!![5])
+                remoteViews.setTextViewText(R.id.yatsi_time, prayerTimes!![6])
             } catch (e: Exception) {
                 Log.e(TAG, "Error setting prayer times in notification: ${e.message}")
             }
@@ -730,7 +719,6 @@ class PrayerNotificationService : Service() {
             fetchPrayerTimesData()
         }
         
-        // Bildirim oluştur ve güncelle
         val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.drawable.calendar)
             .setContent(remoteViews)
@@ -740,12 +728,11 @@ class PrayerNotificationService : Service() {
             .setSilent(true)
             .setOngoing(true)
             .setPriority(NotificationCompat.PRIORITY_MIN)
-            .setVisibility(NotificationCompat.VISIBILITY_SECRET) // Kilit ekranında gizle
-            .setShowWhen(false) // Zaman göstergesini gizle
+            .setVisibility(NotificationCompat.VISIBILITY_SECRET)
+            .setShowWhen(false)
             .setOnlyAlertOnce(true)
             .build()
 
-        // Notification Manager'ı al ve bildirimi güncelle
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(FOREGROUND_NOTIFICATION_ID, notification)
         
@@ -760,7 +747,7 @@ class PrayerNotificationService : Service() {
         val cityName = prefs.getString("flutter.name", "") ?: ""
         val prayerName = when (prayerIndex) {
             0 -> getString(R.string.imsak)
-            1 -> getString(R.string.sabah) // Sabah namaz vakti için
+            1 -> getString(R.string.sabah)
             2 -> getString(R.string.gunes)
             3 -> getString(R.string.ogle)
             4 -> getString(R.string.ikindi)
@@ -769,20 +756,17 @@ class PrayerNotificationService : Service() {
             else -> getString(R.string.imsak)
         }
         
-        // Bildirimi tıklayınca açılacak intent
         val intent = Intent(this, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         val pendingIntent = PendingIntent.getActivity(
             this, prayerIndex, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
         
-        // Bildirim başlığı ve metni için string kaynaklarını kullan
         val notificationTitle = getString(R.string.prayer_time_notification_title, prayerName)
         val notificationText = getString(R.string.prayer_time_notification_text, cityName, prayerName)
         
         Log.d(TAG, "Creating notification with title: $notificationTitle and text: $notificationText")
         
-        // Bildirim oluştur
         val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setContentTitle(notificationTitle)
             .setContentText(notificationText)
@@ -792,10 +776,9 @@ class PrayerNotificationService : Service() {
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
             .setVibrate(longArrayOf(1000, 1000, 1000, 1000, 1000))
-            .setDefaults(NotificationCompat.DEFAULT_ALL) // Ses, titreşim ve LED için varsayılan ayarları ekle
+            .setDefaults(NotificationCompat.DEFAULT_ALL)
             .build()
         
-        // Bildirimi göster
         try {
             notificationManager.notify(PRAYER_NOTIFICATION_ID_START + prayerIndex, notification)
             Log.d(TAG, "Notification sent successfully for prayer $prayerIndex")
@@ -811,42 +794,36 @@ class PrayerNotificationService : Service() {
     
     override fun onDestroy() {
         Log.d(TAG, "Service destroyed")
-        executor.shutdown()
         super.onDestroy()
     }
 }
 
-// Uygulama boot'ta başlatma receiver'ı
 class BootCompleteReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
             Log.d("BootCompleteReceiver", "Boot completed, checking notification settings")
             
-            // SharedPreferences'den bildirim ayarını kontrol et
             val prefs = context.getSharedPreferences("FlutterSharedPreferences", Context.MODE_PRIVATE)
             val isNotificationsEnabled = prefs.getBoolean("flutter.notifications", false)
             
             if (isNotificationsEnabled) {
                 Log.d("BootCompleteReceiver", "Notifications are enabled, starting service")
                 
-                // Android 14+ için servis doğrudan başlatmak yerine gecikmeli başlat
                 if (VERSION.SDK_INT >= 34) {
                     try {
                         Log.d("BootCompleteReceiver", "Using delayed start for Android 14+")
                         
-                        // Handler ile gecikmeli başlatma
                         Handler(Looper.getMainLooper()).postDelayed({
                             try {
                                 PrayerNotificationService.startService(context)
                             } catch (e: Exception) {
                                 Log.e("BootCompleteReceiver", "Delayed start failed: ${e.message}")
                             }
-                        }, 10000) // 10 saniye gecikme
+                        }, 10000)
                     } catch (e: Exception) {
                         Log.e("BootCompleteReceiver", "Failed to schedule delayed start: ${e.message}")
                     }
                 } else {
-                    // Android 13 ve altı için normal başlatma
                     PrayerNotificationService.startService(context)
                 }
             } else {
