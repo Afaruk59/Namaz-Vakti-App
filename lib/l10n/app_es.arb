@@ -162,5 +162,13 @@
     "calendarNotFound": "No se encontraron calendarios",
     "calendarAddSuccess": "{eventName} agregado al calendario",
     "calendarAddError": "Error al agregar al calendario: {errorMessage}",
-    "generalError": "Error: {errorMessage}"
+    "generalError": "Error: {errorMessage}",
+    "lockScreen": "Horarios de oración en la pantalla de bloqueo",
+    "@lockScreen": {
+        "description": "Configuración para mostrar los horarios de oración en la pantalla de bloqueo"
+    },
+    "lockScreenDesc": "Permite mostrar los horarios de oración en la pantalla de bloqueo",
+    "@lockScreenDesc": {
+        "description": "Descripción de la configuración de horarios de oración en la pantalla de bloqueo"
+    }
 }

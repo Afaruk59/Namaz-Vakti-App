@@ -162,5 +162,13 @@
     "calendarNotFound": "Aucun calendrier trouvé",
     "calendarAddSuccess": "{eventName} ajouté au calendrier",
     "calendarAddError": "Erreur lors de l'ajout au calendrier: {errorMessage}",
-    "generalError": "Erreur: {errorMessage}"
+    "generalError": "Erreur: {errorMessage}",
+    "lockScreen": "Heures de prière sur l'écran de verrouillage",
+    "@lockScreen": {
+        "description": "Paramètre pour afficher les heures de prière sur l'écran de verrouillage"
+    },
+    "lockScreenDesc": "Permet d'afficher les heures de prière sur l'écran de verrouillage",
+    "@lockScreenDesc": {
+        "description": "Description du paramètre d'affichage des heures de prière sur l'écran de verrouillage"
+    }
 }

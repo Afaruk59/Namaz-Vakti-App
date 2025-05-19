@@ -11,8 +11,10 @@
     <string name="last_update">Letzte Aktualisierung: %1$s</string>
     
     <!-- Benachrichtigungstexte -->
-    <string name="notification_channel_name">Gebetszeiten-Benachrichtigungen</string>
-    <string name="notification_channel_desc">Zeigt Benachrichtigungen zu Gebetszeiten an</string>
+    <string name="notification_channel_name">Gebetszeit Benachrichtigungen</string>
+    <string name="notification_channel_desc">Zeigt Benachrichtigungen für Gebetszeiten an</string>
     <string name="prayer_time_notification_title">%1$s Zeit</string>
     <string name="prayer_time_notification_text">Es ist %2$s Zeit für %1$s.</string>
+    <string name="time_before">Noch %3$d Minuten bis zum %2$s Gebet für %1$s</string>
+    <string name="time_after">%3$d Minuten nach dem %2$s Gebet für %1$s</string>
 </resources>

@@ -162,5 +162,13 @@
     "calendarNotFound": "Keine Kalender gefunden",
     "calendarAddSuccess": "{eventName} zum Kalender hinzugefügt",
     "calendarAddError": "Fehler beim Hinzufügen zum Kalender: {errorMessage}",
-    "generalError": "Fehler: {errorMessage}"
+    "generalError": "Fehler: {errorMessage}",
+    "lockScreen": "Gebetszeiten auf Sperrbildschirm",
+    "@lockScreen": {
+        "description": "Einstellung für die Anzeige der Gebetszeiten auf dem Sperrbildschirm"
+    },
+    "lockScreenDesc": "Ermöglicht die Anzeige der Gebetszeiten auf dem Sperrbildschirm",
+    "@lockScreenDesc": {
+        "description": "Beschreibung der Sperrbildschirm-Gebetszeiten-Einstellung"
+    }
 }

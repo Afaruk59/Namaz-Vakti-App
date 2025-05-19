@@ -612,5 +612,13 @@
                 "example": "Bilinmeyen hata"
             }
         }
+    },
+    "lockScreen": "Kilit Ekranında Vakitler",
+    "@lockScreen": {
+        "description": "Kilit ekranında vakitlerin gösterilmesi ayarı"
+    },
+    "lockScreenDesc": "Kilit ekranında namaz vakitlerinin gösterilmesini sağlar",
+    "@lockScreenDesc": {
+        "description": "Kilit ekranında vakitlerin gösterilmesi ayarının açıklaması"
     }
 }

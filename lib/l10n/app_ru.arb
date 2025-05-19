@@ -162,5 +162,14 @@
     "calendarNotFound": "Календарь не найден",
     "calendarAddSuccess": "{eventName} добавлен в календарь",
     "calendarAddError": "Ошибка при добавлении в календарь: {errorMessage}",
-    "generalError": "Ошибка: {errorMessage}"
+    "generalError": "Ошибка: {errorMessage}",
+
+    "lockScreen": "Время намаза на экране блокировки",
+    "@lockScreen": {
+        "description": "Настройка отображения времени намаза на экране блокировки"
+    },
+    "lockScreenDesc": "Позволяет отображать время намаза на экране блокировки",
+    "@lockScreenDesc": {
+        "description": "Описание настройки отображения времени намаза на экране блокировки"
+    }
 }

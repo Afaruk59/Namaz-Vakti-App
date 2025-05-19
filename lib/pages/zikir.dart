@@ -651,7 +651,7 @@ class _ZikirCardState extends State<ZikirCard> {
                                         );
                                       });
                                 },
-                                icon: const Icon(Icons.edit),
+                                icon: const Icon(Icons.add_to_photos_rounded),
                               ),
                             ),
                             _selectedProfile != ' '

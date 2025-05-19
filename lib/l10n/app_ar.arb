@@ -162,6 +162,15 @@
     "calendarNotFound": "لا يوجد تقويمات",
     "calendarAddSuccess": "{eventName} أضيف إلى التقويم",
     "calendarAddError": "فشل إضافة إلى التقويم: {errorMessage}",
-    "generalError": "حدث خطأ: {errorMessage}"
+    "generalError": "حدث خطأ: {errorMessage}",
+
+    "lockScreen": "أوقات الصلاة على شاشة القفل",
+    "@lockScreen": {
+        "description": "إعداد لعرض أوقات الصلاة على شاشة القفل"
+    },
+    "lockScreenDesc": "يتيح عرض أوقات الصلاة على شاشة القفل",
+    "@lockScreenDesc": {
+        "description": "وصف إعداد عرض أوقات الصلاة على شاشة القفل"
+    }
 }
 

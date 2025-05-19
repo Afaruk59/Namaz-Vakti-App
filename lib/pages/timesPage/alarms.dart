@@ -161,6 +161,20 @@ class _AlarmsBodyState extends State<AlarmsBody> with WidgetsBindingObserver {
                   ),
                 ),
               ),
+              Card(
+                color: Theme.of(context).cardColor,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                  child: SwitchListTile(
+                    title: Text(AppLocalizations.of(context)!.lockScreen),
+                    subtitle: Text(AppLocalizations.of(context)!.lockScreenDesc),
+                    value: Provider.of<ChangeSettings>(context).lockScreenEnabled,
+                    onChanged: (value) {
+                      Provider.of<ChangeSettings>(context, listen: false).toggleLockScreen(value);
+                    },
+                  ),
+                ),
+              ),
               AlarmSwitch(
                 title: AppLocalizations.of(context)!.imsakAlarm,
                 index: 0,

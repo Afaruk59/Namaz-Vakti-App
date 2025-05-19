@@ -55,6 +55,7 @@ class ChangeSettings with ChangeNotifier {
   bool rounded = false;
 
   bool notificationsEnabled = false;
+  bool lockScreenEnabled = false;
 
   //SHAPE
   void toggleShape() {
@@ -131,8 +132,15 @@ class ChangeSettings with ChangeNotifier {
     notifyListeners();
   }
 
+  void toggleLockScreen(bool value) {
+    lockScreenEnabled = value;
+    _settings.setBool('lockScreen', value);
+    notifyListeners();
+  }
+
   void loadNotifications() {
     notificationsEnabled = _settings.getBool('notifications') ?? false;
+    lockScreenEnabled = _settings.getBool('lockScreen') ?? false;
   }
 
   void loadGaps() {

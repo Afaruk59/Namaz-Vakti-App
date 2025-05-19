@@ -11,8 +11,10 @@
     <string name="last_update">Dernière mise à jour: %1$s</string>
     
     <!-- Textes de notification -->
-    <string name="notification_channel_name">Notifications des Heures de Prière</string>
-    <string name="notification_channel_desc">Affiche des notifications aux heures de prière</string>
+    <string name="notification_channel_name">Notifications des heures de prière</string>
+    <string name="notification_channel_desc">Affiche les notifications pour les heures de prière</string>
     <string name="prayer_time_notification_title">Heure de %1$s</string>
     <string name="prayer_time_notification_text">C\'est l\'heure de %2$s pour %1$s.</string>
+    <string name="time_before">Plus que %3$d minutes avant la prière de %2$s pour %1$s</string>
+    <string name="time_after">%3$d minutes après la prière de %2$s pour %1$s</string>
 </resources>

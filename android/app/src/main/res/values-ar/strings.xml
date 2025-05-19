@@ -11,8 +11,10 @@
     <string name="last_update">آخر تحديث: %1$s</string>
     
     <!-- نصوص الإشعارات -->
-    <string name="notification_channel_name">إشعارات أوقات الصلاة</string>
-    <string name="notification_channel_desc">يعرض إشعارات في أوقات الصلاة</string>
+    <string name="notification_channel_name">إشعارات مواقيت الصلاة</string>
+    <string name="notification_channel_desc">يعرض إشعارات لمواقيت الصلاة</string>
     <string name="prayer_time_notification_title">وقت %1$s</string>
     <string name="prayer_time_notification_text">حان وقت %2$s في %1$s.</string>
+    <string name="time_before">متبقي %3$d دقيقة حتى صلاة %2$s في %1$s</string>
+    <string name="time_after">%3$d دقيقة بعد صلاة %2$s في %1$s</string>
 </resources>

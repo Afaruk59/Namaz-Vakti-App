@@ -162,5 +162,7 @@
     "calendarNotFound": "Nessun calendario trovato",
     "calendarAddSuccess": "{eventName} aggiunto al calendario",
     "calendarAddError": "Errore nell'aggiunta al calendario: {errorMessage}",
-    "generalError": "Errore: {errorMessage}"
+    "generalError": "Errore: {errorMessage}",
+    "lockScreen": "Orari di preghiera sulla schermata di blocco",
+    "lockScreenDesc": "Consente di mostrare gli orari di preghiera sulla schermata di blocco"
 }

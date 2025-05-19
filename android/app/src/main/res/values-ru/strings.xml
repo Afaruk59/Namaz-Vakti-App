@@ -11,8 +11,10 @@
     <string name="last_update">Последнее обновление: %1$s</string>
     
     <!-- Тексты уведомлений -->
-    <string name="notification_channel_name">Уведомления о Времени Намаза</string>
-    <string name="notification_channel_desc">Показывает уведомления о времени намаза</string>
+    <string name="notification_channel_name">Уведомления о времени молитвы</string>
+    <string name="notification_channel_desc">Показывает уведомления о времени молитвы</string>
     <string name="prayer_time_notification_title">Время %1$s</string>
     <string name="prayer_time_notification_text">Наступило время %2$s для %1$s.</string>
+    <string name="time_before">Осталось %3$d минут до намаза %2$s в %1$s</string>
+    <string name="time_after">%3$d минут после намаза %2$s в %1$s</string>
 </resources>

@@ -162,5 +162,13 @@
     "calendarNotFound": "No calendars found",
     "calendarAddSuccess": "{eventName} added to calendar",
     "calendarAddError": "Failed to add to calendar: {errorMessage}",
-    "generalError": "An error occurred: {errorMessage}"
+    "generalError": "An error occurred: {errorMessage}",
+    "lockScreen": "Prayer Times on Lock Screen",
+    "@lockScreen": {
+        "description": "Setting for showing prayer times on lock screen"
+    },
+    "lockScreenDesc": "Enables showing prayer times on the lock screen",
+    "@lockScreenDesc": {
+        "description": "Description of the lock screen prayer times setting"
+    }
 }

@@ -130,6 +130,7 @@ class PrayerNotificationService : Service() {
     private lateinit var alarmManager: AlarmManager
     private var lastAlarmCheckTime: Long = 0
     private var lastTimeUpdateTime: Long = 0
+    private var lastLocationId: String = ""
     
     override fun onCreate() {
         super.onCreate()
@@ -137,6 +138,7 @@ class PrayerNotificationService : Service() {
         
         prefs = applicationContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        lastLocationId = prefs.getString("flutter.location", "") ?: ""
         
         createNotificationChannel()
     }
@@ -267,6 +269,17 @@ class PrayerNotificationService : Service() {
         
         if (currentTime - lastAlarmCheckTime >= ALARM_CHECK_INTERVAL) {
             lastAlarmCheckTime = currentTime
+            
+            val currentLocationId = prefs.getString("flutter.location", "") ?: ""
+            if (currentLocationId != lastLocationId) {
+                Log.d(TAG, "Location changed from $lastLocationId to $currentLocationId, fetching new prayer times")
+                lastLocationId = currentLocationId
+                fetchPrayerTimesData(isLocationChange = true)
+            }
+
+            // Bildirim görünürlüğünü güncelle
+            updateForegroundNotification()
+            
             schedulePrayerAlarms()
             
             val nextCheckIntent = Intent(this, PrayerNotificationService::class.java).apply {
@@ -469,12 +482,14 @@ class PrayerNotificationService : Service() {
     private fun fetchPrayerTimesData(
         isDayChange: Boolean = false,
         isTimeoutRefresh: Boolean = false,
-        isRecoveryFetch: Boolean = false
+        isRecoveryFetch: Boolean = false,
+        isLocationChange: Boolean = false
     ) {
         val reason = when {
             isDayChange -> "day change"
             isTimeoutRefresh -> "timeout refresh"
             isRecoveryFetch -> "recovery fetch (prayer times null)"
+            isLocationChange -> "location change"
             else -> "initial fetch"
         }
         Log.d(TAG, "Fetching prayer times data (reason: $reason)")
@@ -485,7 +500,7 @@ class PrayerNotificationService : Service() {
         }
         
         val currentTime = System.currentTimeMillis()
-        if (!isDayChange && !isRecoveryFetch && currentTime - lastFetchTime < 5 * 60 * 1000) {
+        if (!isDayChange && !isRecoveryFetch && !isLocationChange && currentTime - lastFetchTime < 5 * 60 * 1000) {
             Log.d(TAG, "Last fetch was less than 5 minutes ago, skipping (last fetch: ${(currentTime - lastFetchTime) / 1000} seconds ago)")
             return
         }
@@ -574,6 +589,10 @@ class PrayerNotificationService : Service() {
                         Log.d(TAG, "New prayer times fetched: ${prayerTimes?.joinToString()}")
                         savePrayerTimes()
                         updateForegroundNotification()
+                        
+                        if (isLocationChange) {
+                            schedulePrayerAlarms()
+                        }
                     } else {
                         Log.d(TAG, "Fetched prayer times are the same as current, no update needed")
                     }
@@ -718,6 +737,13 @@ class PrayerNotificationService : Service() {
             Log.d(TAG, "Prayer times are null in notification, fetching new data...")
             fetchPrayerTimesData()
         }
+
+        val isLockScreenEnabled = prefs.getBoolean("flutter.lockScreen", false)
+        val visibility = if (isLockScreenEnabled) {
+            NotificationCompat.VISIBILITY_PUBLIC
+        } else {
+            NotificationCompat.VISIBILITY_SECRET
+        }
         
         val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.drawable.calendar)
@@ -728,7 +754,7 @@ class PrayerNotificationService : Service() {
             .setSilent(true)
             .setOngoing(true)
             .setPriority(NotificationCompat.PRIORITY_MIN)
-            .setVisibility(NotificationCompat.VISIBILITY_SECRET)
+            .setVisibility(visibility)
             .setShowWhen(false)
             .setOnlyAlertOnce(true)
             .build()
@@ -763,7 +789,23 @@ class PrayerNotificationService : Service() {
         )
         
         val notificationTitle = getString(R.string.prayer_time_notification_title, prayerName)
-        val notificationText = getString(R.string.prayer_time_notification_text, cityName, prayerName)
+        
+        var notificationText = getString(R.string.prayer_time_notification_text, cityName, prayerName)
+        
+        try {
+            val timeOffset = prefs.getLong("flutter.${prayerIndex}gap", 0)
+            if (timeOffset != 0L) {
+                val timeOffsetMinutes = timeOffset.toInt()
+                val absTimeOffset = Math.abs(timeOffsetMinutes)
+                notificationText = if (timeOffsetMinutes > 0) {
+                    getString(R.string.time_after, cityName, prayerName, absTimeOffset)
+                } else {
+                    getString(R.string.time_before, cityName, prayerName, absTimeOffset)
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error getting time offset: ${e.message}")
+        }
         
         Log.d(TAG, "Creating notification with title: $notificationTitle and text: $notificationText")
         

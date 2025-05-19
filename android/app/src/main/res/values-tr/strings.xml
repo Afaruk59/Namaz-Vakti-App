@@ -15,4 +15,6 @@
     <string name="notification_channel_desc">Namaz vakitlerinde bildirim gösterir</string>
     <string name="prayer_time_notification_title">%1$s Vakti</string>
     <string name="prayer_time_notification_text">%1$s için %2$s vakti geldi.</string>
+    <string name="time_before">%1$s için %2$s namazına %3$d dakika var</string>
+    <string name="time_after">%1$s için %2$s namazından %3$d dakika sonrası</string>
 </resources>
