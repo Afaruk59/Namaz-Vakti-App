@@ -172,7 +172,7 @@ class LocationState extends State<Location> {
     if (permission == LocationPermission.always || permission == LocationPermission.whileInUse) {
       Position position =
           // ignore: deprecated_member_use
-          await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
+          await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
       lat = position.latitude;
       long = position.longitude;
 
