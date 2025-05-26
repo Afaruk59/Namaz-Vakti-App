@@ -15,6 +15,6 @@
     <string name="notification_channel_desc">Zeigt Benachrichtigungen für Gebetszeiten an</string>
     <string name="prayer_time_notification_title">%1$s Zeit</string>
     <string name="prayer_time_notification_text">Es ist %2$s Zeit für %1$s.</string>
-    <string name="time_before">Noch %3$d Minuten bis zum %2$s Gebet für %1$s</string>
-    <string name="time_after">%3$d Minuten nach dem %2$s Gebet für %1$s</string>
+    <string name="time_before">Noch %3$d Minuten bis zur %2$s Zeit für %1$s</string>
+    <string name="time_after">%3$d Minuten nach der %2$s Zeit für %1$s</string>
 </resources>

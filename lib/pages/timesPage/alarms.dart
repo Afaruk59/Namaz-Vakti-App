@@ -131,7 +131,7 @@ class _AlarmsBodyState extends State<AlarmsBody> with WidgetsBindingObserver {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 15.0),
                     child: ListTile(
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 18.0),
+                      leading: const Icon(Icons.battery_alert_rounded),
                       title: Text(
                         AppLocalizations.of(context)!.disableBatteryOptimization,
                         style: TextStyle(color: Theme.of(context).colorScheme.onErrorContainer),

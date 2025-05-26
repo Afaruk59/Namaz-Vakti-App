@@ -15,4 +15,6 @@
     <string name="notification_channel_desc">Mostra notifiche agli orari di preghiera</string>
     <string name="prayer_time_notification_title">Ora di %1$s</string>
     <string name="prayer_time_notification_text">È ora di %2$s per %1$s.</string>
+    <string name="time_before">Mancano %3$d minuti all\'ora di %2$s per %1$s</string>
+    <string name="time_after">%3$d minuti dopo l\'ora di %2$s per %1$s</string>
 </resources>

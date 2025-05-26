@@ -15,6 +15,6 @@
     <string name="notification_channel_desc">Shows notifications for prayer times</string>
     <string name="prayer_time_notification_title">%1$s Time</string>
     <string name="prayer_time_notification_text">It\'s %2$s time for %1$s.</string>
-    <string name="time_before">%3$d minutes until %2$s prayer for %1$s</string>
-    <string name="time_after">%3$d minutes after %2$s prayer for %1$s</string>
+    <string name="time_before">%3$d minutes until %2$s time for %1$s</string>
+    <string name="time_after">%3$d minutes after %2$s time for %1$s</string>
 </resources> 

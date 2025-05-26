@@ -15,6 +15,6 @@
     <string name="notification_channel_desc">Показывает уведомления о времени молитвы</string>
     <string name="prayer_time_notification_title">Время %1$s</string>
     <string name="prayer_time_notification_text">Наступило время %2$s для %1$s.</string>
-    <string name="time_before">Осталось %3$d минут до намаза %2$s в %1$s</string>
-    <string name="time_after">%3$d минут после намаза %2$s в %1$s</string>
+    <string name="time_before">Осталось %3$d минут до времени %2$s в %1$s</string>
+    <string name="time_after">%3$d минут после времени %2$s в %1$s</string>
 </resources>

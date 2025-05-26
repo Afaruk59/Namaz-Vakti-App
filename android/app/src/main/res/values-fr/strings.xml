@@ -15,6 +15,6 @@
     <string name="notification_channel_desc">Affiche les notifications pour les heures de prière</string>
     <string name="prayer_time_notification_title">Heure de %1$s</string>
     <string name="prayer_time_notification_text">C\'est l\'heure de %2$s pour %1$s.</string>
-    <string name="time_before">Plus que %3$d minutes avant la prière de %2$s pour %1$s</string>
-    <string name="time_after">%3$d minutes après la prière de %2$s pour %1$s</string>
+    <string name="time_before">Plus que %3$d minutes avant l\'heure de %2$s pour %1$s</string>
+    <string name="time_after">%3$d minutes après l\'heure de %2$s pour %1$s</string>
 </resources>
