@@ -129,8 +129,8 @@ class PrayerNotificationService : Service() {
     private var isDataFetchInProgress = false
     private lateinit var alarmManager: AlarmManager
     private var lastAlarmCheckTime: Long = 0
-    private var lastTimeUpdateTime: Long = 0
     private var lastLocationId: String = ""
+    private var lastCheckedDay: Int = -1
     
     override fun onCreate() {
         super.onCreate()
@@ -139,6 +139,7 @@ class PrayerNotificationService : Service() {
         prefs = applicationContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         lastLocationId = prefs.getString("flutter.location", "") ?: ""
+        lastCheckedDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
         
         createNotificationChannel()
     }
@@ -149,9 +150,13 @@ class PrayerNotificationService : Service() {
         when (intent?.action) {
             ACTION_START_SERVICE -> {
                 try {
+                    // Önce eski kaydedilmiş vakitleri yükle
                     loadPrayerTimes()
                     startForeground(FOREGROUND_NOTIFICATION_ID, createForegroundNotification())
-                    schedulePrayerAlarms()
+                    
+                    // İnternet varsa yeni veri çekmeye çalış
+                    checkAndFetchInitialData()
+                    
                     schedulePeriodicChecks()
                 } catch (e: Exception) {
                     Log.e(TAG, "Error starting foreground service: ${e.message}")
@@ -177,12 +182,30 @@ class PrayerNotificationService : Service() {
             ACTION_CHECK_ALARMS -> {
                 checkAndUpdateAlarms()
             }
-            ACTION_UPDATE_TIMES -> {
-                fetchPrayerTimesData(isTimeoutRefresh = true)
-            }
         }
         
         return START_REDELIVER_INTENT
+    }
+    
+    private fun checkAndFetchInitialData() {
+        Log.d(TAG, "Checking internet connection for initial data fetch")
+        
+        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo = connectivityManager.activeNetworkInfo
+        
+        if (networkInfo != null && networkInfo.isConnected) {
+            Log.d(TAG, "Internet connection available, fetching fresh prayer times")
+            fetchPrayerTimesData(isInitialFetch = true)
+        } else {
+            Log.d(TAG, "No internet connection, using saved prayer times")
+            if (prayerTimes == null) {
+                Log.w(TAG, "No saved prayer times available and no internet connection")
+            } else {
+                Log.d(TAG, "Using saved prayer times: ${prayerTimes?.joinToString()}")
+            }
+            // İnternet yokken de mevcut vakitlere göre alarmları kur
+            schedulePrayerAlarms()
+        }
     }
     
     private fun schedulePeriodicChecks() {
@@ -196,16 +219,6 @@ class PrayerNotificationService : Service() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         
-        val timeUpdateIntent = Intent(this, PrayerNotificationService::class.java).apply {
-            action = ACTION_UPDATE_TIMES
-        }
-        val timeUpdatePendingIntent = PendingIntent.getService(
-            this,
-            2000,
-            timeUpdateIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-        
         if (VERSION.SDK_INT >= VERSION_CODES.M) {
             alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
@@ -217,20 +230,6 @@ class PrayerNotificationService : Service() {
                 AlarmManager.RTC_WAKEUP,
                 System.currentTimeMillis() + ALARM_CHECK_INTERVAL,
                 alarmCheckPendingIntent
-            )
-        }
-        
-        if (VERSION.SDK_INT >= VERSION_CODES.M) {
-            alarmManager.setExactAndAllowWhileIdle(
-                AlarmManager.RTC_WAKEUP,
-                System.currentTimeMillis() + TIME_UPDATE_INTERVAL,
-                timeUpdatePendingIntent
-            )
-        } else {
-            alarmManager.setExact(
-                AlarmManager.RTC_WAKEUP,
-                System.currentTimeMillis() + TIME_UPDATE_INTERVAL,
-                timeUpdatePendingIntent
             )
         }
         
@@ -241,9 +240,6 @@ class PrayerNotificationService : Service() {
         val alarmCheckIntent = Intent(this, PrayerNotificationService::class.java).apply {
             action = ACTION_CHECK_ALARMS
         }
-        val timeUpdateIntent = Intent(this, PrayerNotificationService::class.java).apply {
-            action = ACTION_UPDATE_TIMES
-        }
         
         val alarmCheckPendingIntent = PendingIntent.getService(
             this,
@@ -251,15 +247,8 @@ class PrayerNotificationService : Service() {
             alarmCheckIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
-        val timeUpdatePendingIntent = PendingIntent.getService(
-            this,
-            2000,
-            timeUpdateIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
         
         alarmManager.cancel(alarmCheckPendingIntent)
-        alarmManager.cancel(timeUpdatePendingIntent)
         
         Log.d(TAG, "Cancelled periodic checks")
     }
@@ -270,15 +259,26 @@ class PrayerNotificationService : Service() {
         if (currentTime - lastAlarmCheckTime >= ALARM_CHECK_INTERVAL) {
             lastAlarmCheckTime = currentTime
             
+            // Gün değişikliği kontrolü
+            val currentDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+            val isDayChanged = currentDay != lastCheckedDay
+            
+            // Konum değişikliği kontrolü
             val currentLocationId = prefs.getString("flutter.location", "") ?: ""
-            if (currentLocationId != lastLocationId) {
+            val isLocationChanged = currentLocationId != lastLocationId
+            
+            if (isDayChanged) {
+                Log.d(TAG, "Day changed from $lastCheckedDay to $currentDay, fetching new prayer times")
+                lastCheckedDay = currentDay
+                fetchPrayerTimesData(isDayChange = true)
+            } else if (isLocationChanged) {
                 Log.d(TAG, "Location changed from $lastLocationId to $currentLocationId, fetching new prayer times")
                 lastLocationId = currentLocationId
                 fetchPrayerTimesData(isLocationChange = true)
+            } else {
+                // Sadece değişiklik yoksa bildirim görünürlüğünü güncelle
+                updateForegroundNotification()
             }
-
-            // Bildirim görünürlüğünü güncelle
-            updateForegroundNotification()
             
             schedulePrayerAlarms()
             
@@ -481,16 +481,16 @@ class PrayerNotificationService : Service() {
     
     private fun fetchPrayerTimesData(
         isDayChange: Boolean = false,
-        isTimeoutRefresh: Boolean = false,
         isRecoveryFetch: Boolean = false,
-        isLocationChange: Boolean = false
+        isLocationChange: Boolean = false,
+        isInitialFetch: Boolean = false
     ) {
         val reason = when {
             isDayChange -> "day change"
-            isTimeoutRefresh -> "timeout refresh"
             isRecoveryFetch -> "recovery fetch (prayer times null)"
             isLocationChange -> "location change"
-            else -> "initial fetch"
+            isInitialFetch -> "initial fetch with internet"
+            else -> "unknown"
         }
         Log.d(TAG, "Fetching prayer times data (reason: $reason)")
         
@@ -500,7 +500,7 @@ class PrayerNotificationService : Service() {
         }
         
         val currentTime = System.currentTimeMillis()
-        if (!isDayChange && !isRecoveryFetch && !isLocationChange && currentTime - lastFetchTime < 5 * 60 * 1000) {
+        if (!isDayChange && !isRecoveryFetch && !isLocationChange && !isInitialFetch && currentTime - lastFetchTime < 5 * 60 * 1000) {
             Log.d(TAG, "Last fetch was less than 5 minutes ago, skipping (last fetch: ${(currentTime - lastFetchTime) / 1000} seconds ago)")
             return
         }
@@ -588,11 +588,14 @@ class PrayerNotificationService : Service() {
                         lastFetchTime = System.currentTimeMillis()
                         Log.d(TAG, "New prayer times fetched: ${prayerTimes?.joinToString()}")
                         savePrayerTimes()
-                        updateForegroundNotification()
                         
-                        if (isLocationChange) {
-                            schedulePrayerAlarms()
+                        // Main thread'de bildirim güncelleme
+                        Handler(Looper.getMainLooper()).post {
+                            updateForegroundNotification()
                         }
+                        
+                        // Yeni veriler geldiğinde alarmları güncelle
+                        schedulePrayerAlarms()
                     } else {
                         Log.d(TAG, "Fetched prayer times are the same as current, no update needed")
                     }
