@@ -51,11 +51,17 @@ import android.os.Build.VERSION_CODES
 import android.os.Handler
 import android.os.Looper
 import android.media.AudioAttributes
+import android.media.AudioManager
+import android.media.RingtoneManager
+import android.net.Uri
 
 class PrayerNotificationService : Service() {
     companion object {
         private const val TAG = "PrayerNotificationService"
         private const val NOTIFICATION_CHANNEL_ID = "prayer_notification_channel"
+        private const val NOTIFICATION_CHANNEL_ID_SOUND_0 = "prayer_notification_channel_sound_0"
+        private const val NOTIFICATION_CHANNEL_ID_SOUND_1 = "prayer_notification_channel_sound_1"
+        private const val NOTIFICATION_CHANNEL_ID_SOUND_2 = "prayer_notification_channel_sound_2"
         private const val FOREGROUND_NOTIFICATION_ID = 1
         private const val PRAYER_NOTIFICATION_ID_START = 100
         private const val ACTION_START_SERVICE = "com.afaruk59.namaz_vakti_app.ACTION_START_SERVICE"
@@ -141,7 +147,7 @@ class PrayerNotificationService : Service() {
         lastLocationId = prefs.getString("flutter.location", "") ?: ""
         lastCheckedDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
         
-        createNotificationChannel()
+        createNotificationChannels()
     }
     
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -156,6 +162,9 @@ class PrayerNotificationService : Service() {
                     
                     // İnternet varsa yeni veri çekmeye çalış
                     checkAndFetchInitialData()
+                    
+                    // Vakit alarmlarını kur (mevcut verilerle)
+                    schedulePrayerAlarms()
                     
                     schedulePeriodicChecks()
                 } catch (e: Exception) {
@@ -591,11 +600,11 @@ class PrayerNotificationService : Service() {
                         
                         // Main thread'de bildirim güncelleme
                         Handler(Looper.getMainLooper()).post {
-                            updateForegroundNotification()
+                        updateForegroundNotification()
                         }
                         
                         // Yeni veriler geldiğinde alarmları güncelle
-                        schedulePrayerAlarms()
+                            schedulePrayerAlarms()
                     } else {
                         Log.d(TAG, "Fetched prayer times are the same as current, no update needed")
                     }
@@ -681,31 +690,112 @@ class PrayerNotificationService : Service() {
         }
     }
     
-    private fun createNotificationChannel() {
+    private fun createNotificationChannels() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = getString(R.string.notification_channel_name)
-            val descriptionText = getString(R.string.notification_channel_desc)
-            val importance = NotificationManager.IMPORTANCE_HIGH
-            val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID, name, importance).apply {
-                description = descriptionText
-            }
-            
-            channel.enableVibration(true)
-            channel.enableLights(true)
-            channel.setShowBadge(true)
-            channel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
-            
-            channel.setSound(android.provider.Settings.System.DEFAULT_NOTIFICATION_URI, 
-                             AudioAttributes.Builder()
-                                 .setUsage(AudioAttributes.USAGE_NOTIFICATION)
-                                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                                 .build())
-            
             val notificationManager: NotificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
             
-            Log.d(TAG, "Notification channel created with importance: $importance")
+            // Foreground service için ana channel
+            val mainChannel = NotificationChannel(
+                NOTIFICATION_CHANNEL_ID,
+                getString(R.string.notification_channel_name),
+                NotificationManager.IMPORTANCE_LOW
+            ).apply {
+                description = getString(R.string.notification_channel_desc)
+                enableVibration(false)
+                setSound(null, null)
+            }
+            notificationManager.createNotificationChannel(mainChannel)
+            
+            // Bildirim sesi için channel
+            val soundChannel0 = NotificationChannel(
+                NOTIFICATION_CHANNEL_ID_SOUND_0,
+                "Namaz Vakti - Bildirim Sesi",
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = "Namaz vakti bildirimleri - Bildirim sesi"
+                enableVibration(true)
+                enableLights(true)
+                setShowBadge(true)
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+                setSound(
+                    RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
+                    AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .build()
+                )
+            }
+            notificationManager.createNotificationChannel(soundChannel0)
+            
+            // Alarm sesi için channel
+            val soundChannel1 = NotificationChannel(
+                NOTIFICATION_CHANNEL_ID_SOUND_1,
+                "Namaz Vakti - Alarm Sesi",
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = "Namaz vakti bildirimleri - Alarm sesi"
+                enableVibration(true)
+                enableLights(true)
+                setShowBadge(true)
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+                setSound(
+                    RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM),
+                    AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .build()
+                )
+            }
+            notificationManager.createNotificationChannel(soundChannel1)
+            
+            // Ezan sesi için channel
+            val soundChannel2 = NotificationChannel(
+                NOTIFICATION_CHANNEL_ID_SOUND_2,
+                "Namaz Vakti - Ezan Sesi",
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = "Namaz vakti bildirimleri - Ezan sesi"
+                enableVibration(true)
+                enableLights(true)
+                setShowBadge(true)
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+                setSound(
+                    Uri.parse("android.resource://" + packageName + "/" + R.raw.ezan),
+                    AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .build()
+                )
+            }
+            notificationManager.createNotificationChannel(soundChannel2)
+            
+            Log.d(TAG, "All notification channels created")
+        }
+    }
+    
+    private fun getNotificationChannelId(): String {
+        val soundPreference = try {
+            // Flutter bazen Long olarak kaydediyor, önce Long olarak dene
+            prefs.getLong("flutter.notificationSound", 0).toInt()
+        } catch (e: Exception) {
+            try {
+                // Long olarak okunamadıysa Int olarak dene
+                prefs.getInt("flutter.notificationSound", 0)
+            } catch (e2: Exception) {
+                // Her ikisi de başarısızsa varsayılan değer
+                Log.e(TAG, "Error reading sound preference: ${e.message}, ${e2.message}")
+                0
+            }
+        }
+        
+        Log.d(TAG, "Sound preference: $soundPreference")
+        
+        return when (soundPreference) {
+            0 -> NOTIFICATION_CHANNEL_ID_SOUND_0
+            1 -> NOTIFICATION_CHANNEL_ID_SOUND_1  
+            2 -> NOTIFICATION_CHANNEL_ID_SOUND_2
+            else -> NOTIFICATION_CHANNEL_ID_SOUND_0
         }
     }
     
@@ -812,7 +902,11 @@ class PrayerNotificationService : Service() {
         
         Log.d(TAG, "Creating notification with title: $notificationTitle and text: $notificationText")
         
-        val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+        // Ses tercihine göre doğru channel'ı seç
+        val channelId = getNotificationChannelId()
+        Log.d(TAG, "Using notification channel: $channelId")
+        
+        val notification = NotificationCompat.Builder(this, channelId)
             .setContentTitle(notificationTitle)
             .setContentText(notificationText)
             .setSmallIcon(R.drawable.alarm)
@@ -821,15 +915,56 @@ class PrayerNotificationService : Service() {
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
             .setVibrate(longArrayOf(1000, 1000, 1000, 1000, 1000))
-            .setDefaults(NotificationCompat.DEFAULT_ALL)
             .build()
         
         try {
             notificationManager.notify(PRAYER_NOTIFICATION_ID_START + prayerIndex, notification)
-            Log.d(TAG, "Notification sent successfully for prayer $prayerIndex")
+            Log.d(TAG, "Notification sent successfully for prayer $prayerIndex with channel $channelId")
         } catch (e: Exception) {
             Log.e(TAG, "Failed to send notification for prayer $prayerIndex: ${e.message}")
             e.printStackTrace()
+        }
+    }
+    
+    private fun getNotificationSoundUri(): Uri? {
+        return try {
+            // SharedPreferences'ten ses tercihi oku (0: bildirim sesi, 1: alarm sesi, 2: ezan sesi)
+            val soundPreference = try {
+                // Flutter bazen Long olarak kaydediyor, önce Long olarak dene
+                prefs.getLong("flutter.notificationSound", 0).toInt()
+            } catch (e: Exception) {
+                try {
+                    // Long olarak okunamadıysa Int olarak dene
+                    prefs.getInt("flutter.notificationSound", 0)
+                } catch (e2: Exception) {
+                    // Her ikisi de başarısızsa varsayılan değer
+                    Log.e(TAG, "Error reading sound preference in getNotificationSoundUri: ${e.message}, ${e2.message}")
+                    0
+                }
+            }
+            
+            when (soundPreference) {
+                0 -> {
+                    // Default bildirim sesi
+                    RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+                }
+                1 -> {
+                    // Default alarm sesi
+                    RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+                }
+                2 -> {
+                    // Ezan sesi (raw klasöründen)
+                    Uri.parse("android.resource://" + packageName + "/" + R.raw.ezan)
+                }
+                else -> {
+                    // Varsayılan olarak bildirim sesi
+                    RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error getting notification sound: ${e.message}")
+            // Hata durumunda varsayılan bildirim sesi
+            RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         }
     }
     

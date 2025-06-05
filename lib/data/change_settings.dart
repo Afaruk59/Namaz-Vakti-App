@@ -57,6 +57,8 @@ class ChangeSettings with ChangeNotifier {
   bool notificationsEnabled = false;
   bool lockScreenEnabled = false;
 
+  int voiceIndex = 0;
+
   //SHAPE
   void toggleShape() {
     rounded = !rounded;
@@ -138,9 +140,17 @@ class ChangeSettings with ChangeNotifier {
     notifyListeners();
   }
 
+  void toggleVoice(int index) {
+    voiceIndex = index;
+    _settings.setInt('notificationSound', index);
+    print(_settings.getInt('notificationSound'));
+    notifyListeners();
+  }
+
   void loadNotifications() {
     notificationsEnabled = _settings.getBool('notifications') ?? false;
     lockScreenEnabled = _settings.getBool('lockScreen') ?? false;
+    voiceIndex = _settings.getInt('notificationSound') ?? 0;
   }
 
   void loadGaps() {
