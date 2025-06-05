@@ -170,5 +170,21 @@
     "lockScreenDesc": "Permet d'afficher les heures de prière sur l'écran de verrouillage",
     "@lockScreenDesc": {
         "description": "Description du paramètre d'affichage des heures de prière sur l'écran de verrouillage"
+    },
+    "notificationSoundTitle": "Son de Notification de Prière",
+    "@notificationSoundTitle": {
+        "description": "Titre du paramètre de son de notification"
+    },
+    "defaultNotificationSound": "Son de Notification par Défaut",
+    "@defaultNotificationSound": {
+        "description": "Option de son de notification par défaut"
+    },
+    "defaultAlarmSound": "Son d'Alarme par Défaut",
+    "@defaultAlarmSound": {
+        "description": "Option de son d'alarme par défaut"
+    },
+    "ezanSound": "Son de l'Adhan",
+    "@ezanSound": {
+        "description": "Option de son de l'Adhan"
     }
 }

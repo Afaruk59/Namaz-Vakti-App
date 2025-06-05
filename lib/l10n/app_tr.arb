@@ -620,5 +620,21 @@
     "lockScreenDesc": "Kilit ekranında namaz vakitlerinin gösterilmesini sağlar",
     "@lockScreenDesc": {
         "description": "Kilit ekranında vakitlerin gösterilmesi ayarının açıklaması"
+    },
+    "notificationSoundTitle": "Vakit Bildirim Sesi",
+    "@notificationSoundTitle": {
+        "description": "Bildirim sesi ayarlama başlığı"
+    },
+    "defaultNotificationSound": "Varsayılan Bildirim Sesi",
+    "@defaultNotificationSound": {
+        "description": "Varsayılan bildirim sesi seçeneği"
+    },
+    "defaultAlarmSound": "Varsayılan Alarm Sesi",
+    "@defaultAlarmSound": {
+        "description": "Varsayılan alarm sesi seçeneği"
+    },
+    "ezanSound": "Ezan Sesi",
+    "@ezanSound": {
+        "description": "Ezan sesi seçeneği"
     }
 }

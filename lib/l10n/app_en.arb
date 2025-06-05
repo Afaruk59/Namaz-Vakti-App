@@ -170,5 +170,21 @@
     "lockScreenDesc": "Enables showing prayer times on the lock screen",
     "@lockScreenDesc": {
         "description": "Description of the lock screen prayer times setting"
+    },
+    "notificationSoundTitle": "Prayer Notification Sound",
+    "@notificationSoundTitle": {
+        "description": "Notification sound setting title"
+    },
+    "defaultNotificationSound": "Default Notification Sound",
+    "@defaultNotificationSound": {
+        "description": "Default notification sound option"
+    },
+    "defaultAlarmSound": "Default Alarm Sound",
+    "@defaultAlarmSound": {
+        "description": "Default alarm sound option"
+    },
+    "ezanSound": "Adhan Sound",
+    "@ezanSound": {
+        "description": "Adhan sound option"
     }
 }

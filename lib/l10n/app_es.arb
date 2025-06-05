@@ -170,5 +170,21 @@
     "lockScreenDesc": "Permite mostrar los horarios de oración en la pantalla de bloqueo",
     "@lockScreenDesc": {
         "description": "Descripción de la configuración de horarios de oración en la pantalla de bloqueo"
+    },
+    "notificationSoundTitle": "Sonido de Notificación de Oración",
+    "@notificationSoundTitle": {
+        "description": "Título de configuración de sonido de notificación"
+    },
+    "defaultNotificationSound": "Sonido de Notificación Predeterminado",
+    "@defaultNotificationSound": {
+        "description": "Opción de sonido de notificación predeterminado"
+    },
+    "defaultAlarmSound": "Sonido de Alarma Predeterminado",
+    "@defaultAlarmSound": {
+        "description": "Opción de sonido de alarma predeterminado"
+    },
+    "ezanSound": "Sonido del Adhan",
+    "@ezanSound": {
+        "description": "Opción de sonido del Adhan"
     }
 }

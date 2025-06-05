@@ -205,13 +205,13 @@ class _AlarmsBodyState extends State<AlarmsBody> with WidgetsBindingObserver {
                       child: Column(
                         children: [
                           ListTile(
-                            title: Text("Vakit Bildirim Sesi"),
+                            title: Text(AppLocalizations.of(context)!.notificationSoundTitle),
                             subtitle: Text(
                               Provider.of<ChangeSettings>(context).voiceIndex == 0
-                                  ? "Varsayılan Bildirim Sesi"
+                                  ? AppLocalizations.of(context)!.defaultNotificationSound
                                   : Provider.of<ChangeSettings>(context).voiceIndex == 1
-                                      ? "Varsayılan Alarm Sesi"
-                                      : "Ezan Sesi",
+                                      ? AppLocalizations.of(context)!.defaultAlarmSound
+                                      : AppLocalizations.of(context)!.ezanSound,
                             ),
                           ),
                           SegmentedButton(

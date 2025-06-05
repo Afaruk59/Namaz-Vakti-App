@@ -164,5 +164,21 @@
     "calendarAddError": "Errore nell'aggiunta al calendario: {errorMessage}",
     "generalError": "Errore: {errorMessage}",
     "lockScreen": "Orari di preghiera sulla schermata di blocco",
-    "lockScreenDesc": "Consente di mostrare gli orari di preghiera sulla schermata di blocco"
+    "lockScreenDesc": "Consente di mostrare gli orari di preghiera sulla schermata di blocco",
+    "notificationSoundTitle": "Suono di Notifica di Preghiera",
+    "@notificationSoundTitle": {
+        "description": "Titolo dell'impostazione del suono di notifica"
+    },
+    "defaultNotificationSound": "Suono di Notifica Predefinito",
+    "@defaultNotificationSound": {
+        "description": "Opzione del suono di notifica predefinito"
+    },
+    "defaultAlarmSound": "Suono di Allarme Predefinito",
+    "@defaultAlarmSound": {
+        "description": "Opzione del suono di allarme predefinito"
+    },
+    "ezanSound": "Suono dell'Adhan",
+    "@ezanSound": {
+        "description": "Opzione del suono dell'Adhan"
+    }
 }

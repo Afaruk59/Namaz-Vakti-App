@@ -171,5 +171,21 @@
     "lockScreenDesc": "Позволяет отображать время намаза на экране блокировки",
     "@lockScreenDesc": {
         "description": "Описание настройки отображения времени намаза на экране блокировки"
+    },
+    "notificationSoundTitle": "Звук Уведомления о Молитве",
+    "@notificationSoundTitle": {
+        "description": "Заголовок настройки звука уведомления"
+    },
+    "defaultNotificationSound": "Стандартный Звук Уведомления",
+    "@defaultNotificationSound": {
+        "description": "Опция стандартного звука уведомления"
+    },
+    "defaultAlarmSound": "Стандартный Звук Будильника",
+    "@defaultAlarmSound": {
+        "description": "Опция стандартного звука будильника"
+    },
+    "ezanSound": "Звук Азана",
+    "@ezanSound": {
+        "description": "Опция звука азана"
     }
 }

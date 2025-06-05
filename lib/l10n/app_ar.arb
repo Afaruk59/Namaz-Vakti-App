@@ -171,6 +171,22 @@
     "lockScreenDesc": "يتيح عرض أوقات الصلاة على شاشة القفل",
     "@lockScreenDesc": {
         "description": "وصف إعداد عرض أوقات الصلاة على شاشة القفل"
+    },
+    "notificationSoundTitle": "صوت إشعار أوقات الصلاة",
+    "@notificationSoundTitle": {
+        "description": "عنوان إعداد صوت الإشعار"
+    },
+    "defaultNotificationSound": "صوت الإشعار الافتراضي",
+    "@defaultNotificationSound": {
+        "description": "خيار صوت الإشعار الافتراضي"
+    },
+    "defaultAlarmSound": "صوت المنبه الافتراضي",
+    "@defaultAlarmSound": {
+        "description": "خيار صوت المنبه الافتراضي"
+    },
+    "ezanSound": "صوت الأذان",
+    "@ezanSound": {
+        "description": "خيار صوت الأذان"
     }
 }
 

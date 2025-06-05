@@ -170,5 +170,21 @@
     "lockScreenDesc": "Ermöglicht die Anzeige der Gebetszeiten auf dem Sperrbildschirm",
     "@lockScreenDesc": {
         "description": "Beschreibung der Sperrbildschirm-Gebetszeiten-Einstellung"
+    },
+    "notificationSoundTitle": "Gebetszeit-Benachrichtigungston",
+    "@notificationSoundTitle": {
+        "description": "Titel der Benachrichtigungston-Einstellung"
+    },
+    "defaultNotificationSound": "Standard-Benachrichtigungston",
+    "@defaultNotificationSound": {
+        "description": "Standard-Benachrichtigungston-Option"
+    },
+    "defaultAlarmSound": "Standard-Alarmton",
+    "@defaultAlarmSound": {
+        "description": "Standard-Alarmton-Option"
+    },
+    "ezanSound": "Gebetsruf-Ton",
+    "@ezanSound": {
+        "description": "Gebetsruf-Ton-Option"
     }
 }
