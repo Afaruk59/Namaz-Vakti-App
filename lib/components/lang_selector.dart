@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 import 'package:flutter/material.dart';
-import 'package:namaz_vakti_app/components/scaffold_layout.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
@@ -34,7 +33,19 @@ class LangSelector extends StatelessWidget {
           subtitle: Text(AppLocalizations.of(context)!.lang),
           trailing: const Icon(Icons.translate_rounded),
           onTap: () {
-            Navigator.pushNamed(context, '/lang');
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text(AppLocalizations.of(context)!.ln),
+                  content: SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.6,
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    child: const LangPage(),
+                  ),
+                );
+              },
+            );
           },
         ),
       ),
@@ -44,6 +55,32 @@ class LangSelector extends StatelessWidget {
 
 class LangPage extends StatelessWidget {
   const LangPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(5),
+        child: Card(
+          child: Padding(
+            padding: EdgeInsets.all(
+                Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5.0 : 15.0),
+            child: ListView.builder(
+              itemCount: 7,
+              itemBuilder: (context, index) {
+                return LangItem(index: index);
+              },
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class LangItem extends StatelessWidget {
+  const LangItem({super.key, required this.index});
+  final int index;
   static const List<String> langs = [
     'Türkçe',
     'English (%80)',
@@ -57,38 +94,14 @@ class LangPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldLayout(
-      title: AppLocalizations.of(context)!.ln,
-      actions: const [],
-      gradient: true,
-      body: Padding(
-        padding: const EdgeInsets.all(5),
-        child: Card(
-          child: Padding(
-            padding: EdgeInsets.all(
-                Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5.0 : 15.0),
-            child: ListView.builder(
-              itemCount: langs.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                  child: Card(
-                    color: Theme.of(context).cardColor,
-                    child: TextButton(
-                      onPressed: () {
-                        Provider.of<ChangeSettings>(context, listen: false).saveLanguage(index);
-                        Navigator.pop(context);
-                      },
-                      child: Text(
-                        langs[index],
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-        ),
+    return Card(
+      color: Theme.of(context).cardColor,
+      child: ListTile(
+        title: Text(langs[index]),
+        onTap: () {
+          Provider.of<ChangeSettings>(context, listen: false).saveLanguage(index);
+          Navigator.pop(context);
+        },
       ),
     );
   }

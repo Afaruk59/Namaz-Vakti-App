@@ -170,6 +170,13 @@ class MainApp extends StatelessWidget {
         return null;
       },
       theme: ThemeData(
+        snackBarTheme: SnackBarThemeData(
+          elevation: 10,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+                Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
+          ),
+        ),
         segmentedButtonTheme: SegmentedButtonThemeData(
           style: ButtonStyle(
             shape: WidgetStatePropertyAll(

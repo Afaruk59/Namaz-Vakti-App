@@ -186,5 +186,9 @@
     "ezanSound": "Adhan Sound",
     "@ezanSound": {
         "description": "Adhan sound option"
+    },
+    "imsakSunriseNotificationInfo": "Default notification sound will be played for Fajr and Sunrise times.",
+    "@imsakSunriseNotificationInfo": {
+        "description": "Info about default notification sound being played for Fajr and Sunrise times instead of Adhan"
     }
 }

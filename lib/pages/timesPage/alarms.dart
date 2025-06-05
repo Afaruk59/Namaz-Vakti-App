@@ -183,7 +183,6 @@ class _AlarmsBodyState extends State<AlarmsBody> with WidgetsBindingObserver {
                     padding: const EdgeInsets.symmetric(horizontal: 15.0),
                     child: SwitchListTile(
                       title: Text(AppLocalizations.of(context)!.lockScreen),
-                      subtitle: Text(AppLocalizations.of(context)!.lockScreenDesc),
                       value: Provider.of<ChangeSettings>(context).lockScreenEnabled,
                       onChanged: (value) {
                         Provider.of<ChangeSettings>(context, listen: false).toggleLockScreen(value);
@@ -242,6 +241,14 @@ class _AlarmsBodyState extends State<AlarmsBody> with WidgetsBindingObserver {
                             onSelectionChanged: (Set<int> selected) {
                               Provider.of<ChangeSettings>(context, listen: false)
                                   .toggleVoice(selected.first);
+                              if (selected.first == 2) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                        AppLocalizations.of(context)!.imsakSunriseNotificationInfo),
+                                  ),
+                                );
+                              }
                             },
                           ),
                         ],

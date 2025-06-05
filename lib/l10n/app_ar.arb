@@ -187,6 +187,10 @@
     "ezanSound": "صوت الأذان",
     "@ezanSound": {
         "description": "خيار صوت الأذان"
+    },
+    "imsakSunriseNotificationInfo": "سيتم تشغيل صوت الإشعار الافتراضي في وقت الإمساك والشروق.",
+    "@imsakSunriseNotificationInfo": {
+        "description": "معلومات حول تشغيل صوت الإشعار الافتراضي في وقت الإمساك والشروق بدلاً من الأذان"
     }
 }
 

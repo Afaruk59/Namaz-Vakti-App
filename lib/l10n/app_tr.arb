@@ -636,5 +636,9 @@
     "ezanSound": "Ezan Sesi",
     "@ezanSound": {
         "description": "Ezan sesi seçeneği"
+    },
+    "imsakSunriseNotificationInfo": "İmsak ve Güneş vakitlerinde varsayılan bildirim sesi çalınır.",
+    "@imsakSunriseNotificationInfo": {
+        "description": "İmsak ve güneş vakitlerinde ezan sesi yerine varsayılan bildirim sesi çalınacağına dair bilgi"
     }
 }

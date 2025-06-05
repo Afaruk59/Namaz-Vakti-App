@@ -186,5 +186,9 @@
     "ezanSound": "Gebetsruf-Ton",
     "@ezanSound": {
         "description": "Gebetsruf-Ton-Option"
+    },
+    "imsakSunriseNotificationInfo": "Standardbenachrichtigungston wird zur Fajr- und Sonnenaufgangszeit abgespielt.",
+    "@imsakSunriseNotificationInfo": {
+        "description": "Info über Standardbenachrichtigungston für Fajr- und Sonnenaufgangszeiten anstelle des Gebetsrufs"
     }
 }

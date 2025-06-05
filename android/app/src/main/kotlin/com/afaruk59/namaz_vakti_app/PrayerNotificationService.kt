@@ -62,6 +62,16 @@ class PrayerNotificationService : Service() {
         private const val NOTIFICATION_CHANNEL_ID_SOUND_0 = "prayer_notification_channel_sound_0"
         private const val NOTIFICATION_CHANNEL_ID_SOUND_1 = "prayer_notification_channel_sound_1"
         private const val NOTIFICATION_CHANNEL_ID_SOUND_2 = "prayer_notification_channel_sound_2"
+        
+        // Ezan sesi için her vakit ayrı channel
+        private const val NOTIFICATION_CHANNEL_ID_EZAN_IMSAK = "prayer_notification_channel_ezan_imsak"
+        private const val NOTIFICATION_CHANNEL_ID_EZAN_SABAH = "prayer_notification_channel_ezan_sabah"
+        private const val NOTIFICATION_CHANNEL_ID_EZAN_GUNES = "prayer_notification_channel_ezan_gunes"
+        private const val NOTIFICATION_CHANNEL_ID_EZAN_OGLE = "prayer_notification_channel_ezan_ogle"
+        private const val NOTIFICATION_CHANNEL_ID_EZAN_IKINDI = "prayer_notification_channel_ezan_ikindi"
+        private const val NOTIFICATION_CHANNEL_ID_EZAN_AKSAM = "prayer_notification_channel_ezan_aksam"
+        private const val NOTIFICATION_CHANNEL_ID_EZAN_YATSI = "prayer_notification_channel_ezan_yatsi"
+        
         private const val FOREGROUND_NOTIFICATION_ID = 1
         private const val PRAYER_NOTIFICATION_ID_START = 100
         private const val ACTION_START_SERVICE = "com.afaruk59.namaz_vakti_app.ACTION_START_SERVICE"
@@ -749,32 +759,168 @@ class PrayerNotificationService : Service() {
             }
             notificationManager.createNotificationChannel(soundChannel1)
             
-            // Ezan sesi için channel
-            val soundChannel2 = NotificationChannel(
-                NOTIFICATION_CHANNEL_ID_SOUND_2,
-                "Namaz Vakti - Ezan Sesi",
+            // Ezan sesi channel'ları - Her vakit için ayrı
+            createEzanChannels(notificationManager)
+            
+            Log.d(TAG, "All notification channels created")
+        }
+    }
+    
+    private fun createEzanChannels(notificationManager: NotificationManager) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            
+            // İmsak - Normal bildirim sesi
+            val imsakChannel = NotificationChannel(
+                NOTIFICATION_CHANNEL_ID_EZAN_IMSAK,
+                "Namaz Vakti - İmsak",
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
-                description = "Namaz vakti bildirimleri - Ezan sesi"
+                description = "İmsak vakti bildirimleri"
                 enableVibration(true)
                 enableLights(true)
                 setShowBadge(true)
                 lockscreenVisibility = Notification.VISIBILITY_PUBLIC
                 setSound(
-                    Uri.parse("android.resource://" + packageName + "/" + R.raw.ezan),
+                    RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
                     AudioAttributes.Builder()
                         .setUsage(AudioAttributes.USAGE_ALARM)
                         .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                         .build()
                 )
             }
-            notificationManager.createNotificationChannel(soundChannel2)
+            notificationManager.createNotificationChannel(imsakChannel)
             
-            Log.d(TAG, "All notification channels created")
+            // Sabah - Sabah ezanı
+            val sabahChannel = NotificationChannel(
+                NOTIFICATION_CHANNEL_ID_EZAN_SABAH,
+                "Namaz Vakti - Sabah Ezanı",
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = "Sabah vakti bildirimleri - Sabah ezanı"
+                enableVibration(true)
+                enableLights(true)
+                setShowBadge(true)
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+                setSound(
+                    Uri.parse("android.resource://" + packageName + "/" + R.raw.sabah),
+                    AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .build()
+                )
+            }
+            notificationManager.createNotificationChannel(sabahChannel)
+            
+            // Güneş - Normal bildirim sesi
+            val gunesChannel = NotificationChannel(
+                NOTIFICATION_CHANNEL_ID_EZAN_GUNES,
+                "Namaz Vakti - Güneş",
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = "Güneş vakti bildirimleri"
+                enableVibration(true)
+                enableLights(true)
+                setShowBadge(true)
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+                setSound(
+                    RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
+                    AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .build()
+                )
+            }
+            notificationManager.createNotificationChannel(gunesChannel)
+            
+            // Öğle - Öğle ezanı
+            val ogleChannel = NotificationChannel(
+                NOTIFICATION_CHANNEL_ID_EZAN_OGLE,
+                "Namaz Vakti - Öğle Ezanı",
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = "Öğle vakti bildirimleri - Öğle ezanı"
+                enableVibration(true)
+                enableLights(true)
+                setShowBadge(true)
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+                setSound(
+                    Uri.parse("android.resource://" + packageName + "/" + R.raw.ogle),
+                    AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .build()
+                )
+            }
+            notificationManager.createNotificationChannel(ogleChannel)
+            
+            // İkindi - İkindi ezanı
+            val ikindiChannel = NotificationChannel(
+                NOTIFICATION_CHANNEL_ID_EZAN_IKINDI,
+                "Namaz Vakti - İkindi Ezanı",
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = "İkindi vakti bildirimleri - İkindi ezanı"
+                enableVibration(true)
+                enableLights(true)
+                setShowBadge(true)
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+                setSound(
+                    Uri.parse("android.resource://" + packageName + "/" + R.raw.ikindi),
+                    AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .build()
+                )
+            }
+            notificationManager.createNotificationChannel(ikindiChannel)
+            
+            // Akşam - Akşam ezanı
+            val aksamChannel = NotificationChannel(
+                NOTIFICATION_CHANNEL_ID_EZAN_AKSAM,
+                "Namaz Vakti - Akşam Ezanı",
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = "Akşam vakti bildirimleri - Akşam ezanı"
+                enableVibration(true)
+                enableLights(true)
+                setShowBadge(true)
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+                setSound(
+                    Uri.parse("android.resource://" + packageName + "/" + R.raw.aksam),
+                    AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .build()
+                )
+            }
+            notificationManager.createNotificationChannel(aksamChannel)
+            
+            // Yatsı - Yatsı ezanı
+            val yatsiChannel = NotificationChannel(
+                NOTIFICATION_CHANNEL_ID_EZAN_YATSI,
+                "Namaz Vakti - Yatsı Ezanı",
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = "Yatsı vakti bildirimleri - Yatsı ezanı"
+                enableVibration(true)
+                enableLights(true)
+                setShowBadge(true)
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+                setSound(
+                    Uri.parse("android.resource://" + packageName + "/" + R.raw.yatsi),
+                    AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .build()
+                )
+            }
+            notificationManager.createNotificationChannel(yatsiChannel)
+            
+            Log.d(TAG, "Ezan channels created for all prayer times")
         }
     }
     
-    private fun getNotificationChannelId(): String {
+    private fun getNotificationChannelId(prayerIndex: Int = -1): String {
         val soundPreference = try {
             // Flutter bazen Long olarak kaydediyor, önce Long olarak dene
             prefs.getLong("flutter.notificationSound", 0).toInt()
@@ -789,13 +935,25 @@ class PrayerNotificationService : Service() {
             }
         }
         
-        Log.d(TAG, "Sound preference: $soundPreference")
+        Log.d(TAG, "Sound preference: $soundPreference, Prayer index: $prayerIndex")
         
         return when (soundPreference) {
-            0 -> NOTIFICATION_CHANNEL_ID_SOUND_0
-            1 -> NOTIFICATION_CHANNEL_ID_SOUND_1  
-            2 -> NOTIFICATION_CHANNEL_ID_SOUND_2
-            else -> NOTIFICATION_CHANNEL_ID_SOUND_0
+            0 -> NOTIFICATION_CHANNEL_ID_SOUND_0 // Bildirim sesi
+            1 -> NOTIFICATION_CHANNEL_ID_SOUND_1 // Alarm sesi
+            2 -> {
+                // Ezan sesi - Vakit indeksine göre channel seç
+                when (prayerIndex) {
+                    0 -> NOTIFICATION_CHANNEL_ID_EZAN_IMSAK    // İmsak - Normal ses
+                    1 -> NOTIFICATION_CHANNEL_ID_EZAN_SABAH    // Sabah - Sabah ezanı
+                    2 -> NOTIFICATION_CHANNEL_ID_EZAN_GUNES    // Güneş - Normal ses  
+                    3 -> NOTIFICATION_CHANNEL_ID_EZAN_OGLE     // Öğle - Öğle ezanı
+                    4 -> NOTIFICATION_CHANNEL_ID_EZAN_IKINDI   // İkindi - İkindi ezanı
+                    5 -> NOTIFICATION_CHANNEL_ID_EZAN_AKSAM    // Akşam - Akşam ezanı
+                    6 -> NOTIFICATION_CHANNEL_ID_EZAN_YATSI    // Yatsı - Yatsı ezanı
+                    else -> NOTIFICATION_CHANNEL_ID_EZAN_SABAH // Varsayılan
+                }
+            }
+            else -> NOTIFICATION_CHANNEL_ID_SOUND_0 // Varsayılan
         }
     }
     
@@ -903,7 +1061,7 @@ class PrayerNotificationService : Service() {
         Log.d(TAG, "Creating notification with title: $notificationTitle and text: $notificationText")
         
         // Ses tercihine göre doğru channel'ı seç
-        val channelId = getNotificationChannelId()
+        val channelId = getNotificationChannelId(prayerIndex)
         Log.d(TAG, "Using notification channel: $channelId")
         
         val notification = NotificationCompat.Builder(this, channelId)
@@ -923,48 +1081,6 @@ class PrayerNotificationService : Service() {
         } catch (e: Exception) {
             Log.e(TAG, "Failed to send notification for prayer $prayerIndex: ${e.message}")
             e.printStackTrace()
-        }
-    }
-    
-    private fun getNotificationSoundUri(): Uri? {
-        return try {
-            // SharedPreferences'ten ses tercihi oku (0: bildirim sesi, 1: alarm sesi, 2: ezan sesi)
-            val soundPreference = try {
-                // Flutter bazen Long olarak kaydediyor, önce Long olarak dene
-                prefs.getLong("flutter.notificationSound", 0).toInt()
-            } catch (e: Exception) {
-                try {
-                    // Long olarak okunamadıysa Int olarak dene
-                    prefs.getInt("flutter.notificationSound", 0)
-                } catch (e2: Exception) {
-                    // Her ikisi de başarısızsa varsayılan değer
-                    Log.e(TAG, "Error reading sound preference in getNotificationSoundUri: ${e.message}, ${e2.message}")
-                    0
-                }
-            }
-            
-            when (soundPreference) {
-                0 -> {
-                    // Default bildirim sesi
-                    RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-                }
-                1 -> {
-                    // Default alarm sesi
-                    RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-                }
-                2 -> {
-                    // Ezan sesi (raw klasöründen)
-                    Uri.parse("android.resource://" + packageName + "/" + R.raw.ezan)
-                }
-                else -> {
-                    // Varsayılan olarak bildirim sesi
-                    RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-                }
-            }
-        } catch (e: Exception) {
-            Log.e(TAG, "Error getting notification sound: ${e.message}")
-            // Hata durumunda varsayılan bildirim sesi
-            RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         }
     }
     
