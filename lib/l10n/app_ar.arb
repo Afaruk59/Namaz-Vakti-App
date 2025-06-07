@@ -191,6 +191,35 @@
     "imsakSunriseNotificationInfo": "سيتم تشغيل صوت الإشعار الافتراضي في وقت الإمساك والشروق.",
     "@imsakSunriseNotificationInfo": {
         "description": "معلومات حول تشغيل صوت الإشعار الافتراضي في وقت الإمساك والشروق بدلاً من الأذان"
+    },
+
+    "on": "مفتوح",
+    "@on":{
+        "description": "عنوان المفتاح المفتوح"
+    },
+    "off": "مغلق",
+    "@off":{
+        "description": "عنوان المفتاح المغلق"
+    },
+    "gapSliderTitle": "فجوة الوقت",
+    "@gapSliderTitle":{
+        "description": "عنوان شريط تمرير الفجوة"
+    },
+    "enableAllAlarms": "تفعيل الكل",
+    "@enableAllAlarms":{
+        "description": "عنوان زر تفعيل جميع المنبهات"
+    },
+    "disableAllAlarms": "إلغاء تفعيل الكل",
+    "@disableAllAlarms":{
+        "description": "عنوان زر إلغاء تفعيل جميع المنبهات"
+    },
+    "allAlarmsEnabled": "تم تفعيل جميع المنبهات.",
+    "@allAlarmsEnabled":{
+        "description": "رسالة تفعيل جميع المنبهات"
+    },
+    "allAlarmsDisabled": "تم إلغاء تفعيل جميع المنبهات.",
+    "@allAlarmsDisabled":{
+        "description": "رسالة إلغاء تفعيل جميع المنبهات"
     }
 }
 

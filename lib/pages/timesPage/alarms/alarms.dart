@@ -15,9 +15,10 @@ limitations under the License.
 */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:namaz_vakti_app/components/scaffold_layout.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
+import 'package:namaz_vakti_app/pages/timesPage/alarms/alarm_card.dart';
+import 'package:namaz_vakti_app/pages/timesPage/alarms/battery_permission_service.dart';
 import 'package:provider/provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:io' show Platform;
@@ -191,72 +192,6 @@ class _AlarmsBodyState extends State<AlarmsBody> with WidgetsBindingObserver {
                   ),
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal:
-                        Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
-                child: Card(
-                  color: Theme.of(context).cardColor,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Column(
-                        children: [
-                          ListTile(
-                            title: Text(AppLocalizations.of(context)!.notificationSoundTitle),
-                            subtitle: Text(
-                              Provider.of<ChangeSettings>(context).voiceIndex == 0
-                                  ? AppLocalizations.of(context)!.defaultNotificationSound
-                                  : Provider.of<ChangeSettings>(context).voiceIndex == 1
-                                      ? AppLocalizations.of(context)!.defaultAlarmSound
-                                      : AppLocalizations.of(context)!.ezanSound,
-                            ),
-                          ),
-                          SegmentedButton(
-                            segments: [
-                              const ButtonSegment(
-                                value: 0,
-                                icon: Icon(Icons.notifications_active_rounded, size: 24),
-                              ),
-                              const ButtonSegment(
-                                value: 1,
-                                icon: Icon(Icons.alarm_rounded, size: 24),
-                              ),
-                              ButtonSegment(
-                                value: 2,
-                                icon: SvgPicture.asset(
-                                  'assets/svg/voice_selection.svg',
-                                  width: 24,
-                                  height: 24,
-                                  colorFilter: ColorFilter.mode(
-                                    Theme.of(context).buttonTheme.colorScheme!.primary,
-                                    BlendMode.srcIn,
-                                  ),
-                                ),
-                              ),
-                            ],
-                            emptySelectionAllowed: false,
-                            selected: {Provider.of<ChangeSettings>(context).voiceIndex},
-                            onSelectionChanged: (Set<int> selected) {
-                              Provider.of<ChangeSettings>(context, listen: false)
-                                  .toggleVoice(selected.first);
-                              if (selected.first == 2) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                        AppLocalizations.of(context)!.imsakSunriseNotificationInfo),
-                                  ),
-                                );
-                              }
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
               Provider.of<ChangeSettings>(context).notificationsEnabled
                   ? const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 50),
@@ -266,31 +201,88 @@ class _AlarmsBodyState extends State<AlarmsBody> with WidgetsBindingObserver {
                       ),
                     )
                   : const SizedBox(),
-              AlarmSwitch(
+              Provider.of<ChangeSettings>(context).notificationsEnabled
+                  ? Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0
+                              ? 5
+                              : 20.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: FilledButton.tonal(
+                                style: FilledButton.styleFrom(
+                                    backgroundColor:
+                                        Theme.of(context).colorScheme.primaryContainer),
+                                onPressed: () {
+                                  Provider.of<ChangeSettings>(context, listen: false)
+                                      .enableAllAlarms();
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(AppLocalizations.of(context)!.allAlarmsEnabled),
+                                    ),
+                                  );
+                                },
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(Icons.add_rounded),
+                                    Text(AppLocalizations.of(context)!.enableAllAlarms),
+                                  ],
+                                )),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: FilledButton.tonal(
+                                style: FilledButton.styleFrom(
+                                    backgroundColor: Theme.of(context).colorScheme.errorContainer),
+                                onPressed: () {
+                                  Provider.of<ChangeSettings>(context, listen: false)
+                                      .disableAllAlarms();
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content:
+                                          Text(AppLocalizations.of(context)!.allAlarmsDisabled),
+                                    ),
+                                  );
+                                },
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(Icons.delete_forever_rounded),
+                                    Text(AppLocalizations.of(context)!.disableAllAlarms),
+                                  ],
+                                )),
+                          ),
+                        ],
+                      ),
+                    )
+                  : const SizedBox(),
+              AlarmCard(
                 title: AppLocalizations.of(context)!.imsakAlarm,
                 index: 0,
               ),
-              AlarmSwitch(
+              AlarmCard(
                 title: AppLocalizations.of(context)!.morningAlarm,
                 index: 1,
               ),
-              AlarmSwitch(
+              AlarmCard(
                 title: AppLocalizations.of(context)!.sunriseAlarm,
                 index: 2,
               ),
-              AlarmSwitch(
+              AlarmCard(
                 title: AppLocalizations.of(context)!.noonAlarm,
                 index: 3,
               ),
-              AlarmSwitch(
+              AlarmCard(
                 title: AppLocalizations.of(context)!.afternoonAlarm,
                 index: 4,
               ),
-              AlarmSwitch(
+              AlarmCard(
                 title: AppLocalizations.of(context)!.sunsetAlarm,
                 index: 5,
               ),
-              AlarmSwitch(
+              AlarmCard(
                 title: AppLocalizations.of(context)!.nightAlarm,
                 index: 6,
               ),
@@ -299,78 +291,5 @@ class _AlarmsBodyState extends State<AlarmsBody> with WidgetsBindingObserver {
         ),
       ),
     );
-  }
-}
-
-class AlarmSwitch extends StatelessWidget {
-  const AlarmSwitch({
-    super.key,
-    required this.title,
-    required this.index,
-  });
-  final String title;
-  final int index;
-
-  @override
-  Widget build(BuildContext context) {
-    return Provider.of<ChangeSettings>(context).notificationsEnabled
-        ? Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
-            child: Card(
-              color: Theme.of(context).cardColor,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                child: Column(
-                  children: [
-                    SwitchListTile(
-                      title: Text(
-                        title,
-                      ),
-                      value: Provider.of<ChangeSettings>(context).alarmList[index],
-                      onChanged: (val) async {
-                        Provider.of<ChangeSettings>(context, listen: false).toggleAlarm(index);
-                      },
-                    ),
-                    Provider.of<ChangeSettings>(context).alarmList[index] == true
-                        ? Slider(
-                            value: Provider.of<ChangeSettings>(context).gaps[index].toDouble(),
-                            min: -60,
-                            max: 60,
-                            divisions: 24,
-                            secondaryTrackValue: 0,
-                            label:
-                                '${Provider.of<ChangeSettings>(context).gaps[index].toString()} ${AppLocalizations.of(context)!.minuteAbbreviation}',
-                            onChanged: (value) {
-                              Provider.of<ChangeSettings>(context, listen: false)
-                                  .saveGap(index, value.toInt());
-                            },
-                          )
-                        : Container(),
-                  ],
-                ),
-              ),
-            ),
-          )
-        : Container();
-  }
-}
-
-class BatteryPermissionService {
-  static final BatteryPermissionService _instance = BatteryPermissionService._internal();
-  factory BatteryPermissionService() => _instance;
-  BatteryPermissionService._internal();
-
-  Future<bool> requestBatteryOptimization() async {
-    // Doğrudan pil optimizasyonu iznini iste, açıklama dialogu gösterme
-    final status = await Permission.ignoreBatteryOptimizations.request();
-    return status.isGranted;
-  }
-
-  Future<bool> checkBatteryOptimization() async {
-    if (await Permission.ignoreBatteryOptimizations.status.isGranted) {
-      return true;
-    }
-    return false;
   }
 }

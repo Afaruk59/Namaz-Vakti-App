@@ -921,21 +921,26 @@ class PrayerNotificationService : Service() {
     }
     
     private fun getNotificationChannelId(prayerIndex: Int = -1): String {
-        val soundPreference = try {
-            // Flutter bazen Long olarak kaydediyor, önce Long olarak dene
-            prefs.getLong("flutter.notificationSound", 0).toInt()
-        } catch (e: Exception) {
+        // Her vakit için ayrı ses tercihi oku
+        val soundPreference = if (prayerIndex != -1) {
             try {
-                // Long olarak okunamadıysa Int olarak dene
-                prefs.getInt("flutter.notificationSound", 0)
-            } catch (e2: Exception) {
-                // Her ikisi de başarısızsa varsayılan değer
-                Log.e(TAG, "Error reading sound preference: ${e.message}, ${e2.message}")
-                0
+                // Flutter bazen Long olarak kaydediyor, önce Long olarak dene
+                prefs.getLong("flutter.${prayerIndex}voice", 0).toInt()
+            } catch (e: Exception) {
+                try {
+                    // Long olarak okunamadıysa Int olarak dene
+                    prefs.getInt("flutter.${prayerIndex}voice", 0)
+                } catch (e2: Exception) {
+                    // Her ikisi de başarısızsa varsayılan değer
+                    Log.e(TAG, "Error reading sound preference for prayer $prayerIndex: ${e.message}, ${e2.message}")
+                    0
+                }
             }
+        } else {
+            0 // Prayer index verilmemişse varsayılan
         }
         
-        Log.d(TAG, "Sound preference: $soundPreference, Prayer index: $prayerIndex")
+        Log.d(TAG, "Prayer index: $prayerIndex, Sound preference: $soundPreference")
         
         return when (soundPreference) {
             0 -> NOTIFICATION_CHANNEL_ID_SOUND_0 // Bildirim sesi
@@ -943,9 +948,9 @@ class PrayerNotificationService : Service() {
             2 -> {
                 // Ezan sesi - Vakit indeksine göre channel seç
                 when (prayerIndex) {
-                    0 -> NOTIFICATION_CHANNEL_ID_EZAN_IMSAK    // İmsak - Normal ses
+                    0 -> NOTIFICATION_CHANNEL_ID_EZAN_SABAH    // İmsak - Sabah ezanı
                     1 -> NOTIFICATION_CHANNEL_ID_EZAN_SABAH    // Sabah - Sabah ezanı
-                    2 -> NOTIFICATION_CHANNEL_ID_EZAN_GUNES    // Güneş - Normal ses  
+                    2 -> NOTIFICATION_CHANNEL_ID_EZAN_SABAH    // Güneş - Sabah ezanı
                     3 -> NOTIFICATION_CHANNEL_ID_EZAN_OGLE     // Öğle - Öğle ezanı
                     4 -> NOTIFICATION_CHANNEL_ID_EZAN_IKINDI   // İkindi - İkindi ezanı
                     5 -> NOTIFICATION_CHANNEL_ID_EZAN_AKSAM    // Akşam - Akşam ezanı

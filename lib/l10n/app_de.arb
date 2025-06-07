@@ -190,5 +190,34 @@
     "imsakSunriseNotificationInfo": "Standardbenachrichtigungston wird zur Fajr- und Sonnenaufgangszeit abgespielt.",
     "@imsakSunriseNotificationInfo": {
         "description": "Info über Standardbenachrichtigungston für Fajr- und Sonnenaufgangszeiten anstelle des Gebetsrufs"
+    },
+
+    "on": "Ein",
+    "@on":{
+        "description": "Ein-Schalter Titel"
+    },
+    "off": "Aus",
+    "@off":{
+        "description": "Aus-Schalter Titel"
+    },
+    "gapSliderTitle": "Zeitlücke",
+    "@gapSliderTitle":{
+        "description": "Lücken-Schieberegler Titel"
+    },
+    "enableAllAlarms": "Alle Aktivieren",
+    "@enableAllAlarms":{
+        "description": "Alle Alarme aktivieren Button-Titel"
+    },
+    "disableAllAlarms": "Alle Deaktivieren",
+    "@disableAllAlarms":{
+        "description": "Alle Alarme deaktivieren Button-Titel"
+    },
+    "allAlarmsEnabled": "Alle Alarme aktiviert.",
+    "@allAlarmsEnabled":{
+        "description": "Alle Alarme aktiviert Nachricht"
+    },
+    "allAlarmsDisabled": "Alle Alarme deaktiviert.",
+    "@allAlarmsDisabled":{
+        "description": "Alle Alarme deaktiviert Nachricht"
     }
 }

@@ -190,5 +190,34 @@
     "imsakSunriseNotificationInfo": "Le son de notification par défaut sera joué aux heures du Fajr et du lever du soleil.",
     "@imsakSunriseNotificationInfo": {
         "description": "Information sur le son de notification par défaut joué aux heures du Fajr et du lever du soleil au lieu de l'Adhan"
+    },
+
+    "on": "Activé",
+    "@on":{
+        "description": "Titre de l'interrupteur activé"
+    },
+    "off": "Désactivé",
+    "@off":{
+        "description": "Titre de l'interrupteur désactivé"
+    },
+    "gapSliderTitle": "Écart de Temps",
+    "@gapSliderTitle":{
+        "description": "Titre du curseur d'écart"
+    },
+    "enableAllAlarms": "Activer Tout",
+    "@enableAllAlarms":{
+        "description": "Titre du bouton d'activation de toutes les alarmes"
+    },
+    "disableAllAlarms": "Désactiver Tout",
+    "@disableAllAlarms":{
+        "description": "Titre du bouton de désactivation de toutes les alarmes"
+    },
+    "allAlarmsEnabled": "Toutes les alarmes activées.",
+    "@allAlarmsEnabled":{
+        "description": "Message d'activation de toutes les alarmes"
+    },
+    "allAlarmsDisabled": "Toutes les alarmes désactivées.",
+    "@allAlarmsDisabled":{
+        "description": "Message de désactivation de toutes les alarmes"
     }
 }

@@ -57,7 +57,7 @@ class ChangeSettings with ChangeNotifier {
   bool notificationsEnabled = false;
   bool lockScreenEnabled = false;
 
-  int voiceIndex = 0;
+  List<int> alarmVoices = [0, 0, 0, 0, 0, 0, 0];
 
   //SHAPE
   void toggleShape() {
@@ -140,17 +140,21 @@ class ChangeSettings with ChangeNotifier {
     notifyListeners();
   }
 
-  void toggleVoice(int index) {
-    voiceIndex = index;
-    _settings.setInt('notificationSound', index);
-    print(_settings.getInt('notificationSound'));
+  void saveVoice(int index, int voice) {
+    alarmVoices[index] = voice;
+    _settings.setInt('${index}voice', voice);
     notifyListeners();
+  }
+
+  void loadAlarmVoices() {
+    for (int i = 0; i < 7; i++) {
+      alarmVoices[i] = _settings.getInt('${i}voice') ?? 0;
+    }
   }
 
   void loadNotifications() {
     notificationsEnabled = _settings.getBool('notifications') ?? false;
     lockScreenEnabled = _settings.getBool('lockScreen') ?? false;
-    voiceIndex = _settings.getInt('notificationSound') ?? 0;
   }
 
   void loadGaps() {
@@ -175,6 +179,22 @@ class ChangeSettings with ChangeNotifier {
     for (int i = 0; i < 7; i++) {
       alarmList[i] = _settings.getBool('$i') ?? false;
     }
+  }
+
+  void enableAllAlarms() {
+    for (int i = 0; i < 7; i++) {
+      alarmList[i] = true;
+      _settings.setBool('$i', true);
+    }
+    notifyListeners();
+  }
+
+  void disableAllAlarms() {
+    for (int i = 0; i < 7; i++) {
+      alarmList[i] = false;
+      _settings.setBool('$i', false);
+    }
+    notifyListeners();
   }
 
   //THEME SETTINGS

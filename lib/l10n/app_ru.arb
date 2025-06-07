@@ -191,5 +191,34 @@
     "imsakSunriseNotificationInfo": "Стандартный звук уведомления будет воспроизводиться во время Фаджра и восхода солнца.",
     "@imsakSunriseNotificationInfo": {
         "description": "Информация о стандартном звуке уведомления, воспроизводимом во время Фаджра и восхода солнца вместо азана"
+    },
+
+    "on": "Включено",
+    "@on":{
+        "description": "Заголовок включенного переключателя"
+    },
+    "off": "Выключено",
+    "@off":{
+        "description": "Заголовок выключенного переключателя"
+    },
+    "gapSliderTitle": "Временной Разрыв",
+    "@gapSliderTitle":{
+        "description": "Заголовок ползунка разрыва"
+    },
+    "enableAllAlarms": "Включить Все",
+    "@enableAllAlarms":{
+        "description": "Заголовок кнопки включения всех будильников"
+    },
+    "disableAllAlarms": "Выключить Все",
+    "@disableAllAlarms":{
+        "description": "Заголовок кнопки выключения всех будильников"
+    },
+    "allAlarmsEnabled": "Все будильники включены.",
+    "@allAlarmsEnabled":{
+        "description": "Сообщение о включении всех будильников"
+    },
+    "allAlarmsDisabled": "Все будильники выключены.",
+    "@allAlarmsDisabled":{
+        "description": "Сообщение о выключении всех будильников"
     }
 }

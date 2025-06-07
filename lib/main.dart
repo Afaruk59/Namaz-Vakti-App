@@ -30,7 +30,7 @@ import 'package:namaz_vakti_app/pages/license.dart';
 import 'package:namaz_vakti_app/pages/qibla.dart';
 import 'package:namaz_vakti_app/pages/settings.dart';
 import 'package:namaz_vakti_app/pages/startup.dart';
-import 'package:namaz_vakti_app/pages/timesPage/alarms.dart';
+import 'package:namaz_vakti_app/pages/timesPage/alarms/alarms.dart';
 import 'package:namaz_vakti_app/pages/timesPage/search.dart';
 import 'package:namaz_vakti_app/pages/timesPage/times.dart';
 import 'package:namaz_vakti_app/pages/zikir.dart';
@@ -90,6 +90,7 @@ class MainApp extends StatelessWidget {
         : HijriCalendar.setLocal('en');
     Provider.of<ChangeSettings>(context, listen: false).loadAlarm();
     Provider.of<ChangeSettings>(context, listen: false).loadGaps();
+    Provider.of<ChangeSettings>(context, listen: false).loadAlarmVoices();
     Provider.of<ChangeSettings>(context, listen: false).loadShape();
     Provider.of<ChangeSettings>(context, listen: false).loadNotifications();
     return MaterialApp(

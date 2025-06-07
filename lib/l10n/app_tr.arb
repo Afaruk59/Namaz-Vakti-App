@@ -640,5 +640,34 @@
     "imsakSunriseNotificationInfo": "İmsak ve Güneş vakitlerinde varsayılan bildirim sesi çalınır.",
     "@imsakSunriseNotificationInfo": {
         "description": "İmsak ve güneş vakitlerinde ezan sesi yerine varsayılan bildirim sesi çalınacağına dair bilgi"
+    },
+
+    "on": "Açık",
+    "@on":{
+        "description": "On switch title"
+    },
+    "off": "Kapalı",
+    "@off":{
+        "description": "Alarm switch title"
+    },
+    "gapSliderTitle": "Zaman Farkı",
+    "@gapSliderTitle":{
+        "description": "Gap slider title"
+    },
+    "enableAllAlarms": "Tümünü Aç",
+    "@enableAllAlarms":{
+        "description": "Enable all alarms button title"
+    },
+    "disableAllAlarms": "Tümünü Kapat",
+    "@disableAllAlarms":{
+        "description": "Disable all alarms button title"
+    },
+    "allAlarmsEnabled": "Tüm alarmlar açıldı.",
+    "@allAlarmsEnabled":{
+        "description": "All alarms enabled message"
+    },
+    "allAlarmsDisabled": "Tüm alarmlar kapatıldı.",
+    "@allAlarmsDisabled":{
+        "description": "All alarms disabled message"
     }
 }

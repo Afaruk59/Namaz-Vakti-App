@@ -190,5 +190,34 @@
     "imsakSunriseNotificationInfo": "Default notification sound will be played for Fajr and Sunrise times.",
     "@imsakSunriseNotificationInfo": {
         "description": "Info about default notification sound being played for Fajr and Sunrise times instead of Adhan"
+    },
+
+    "on": "On",
+    "@on":{
+        "description": "On switch title"
+    },
+    "off": "Off",
+    "@off":{
+        "description": "Off switch title"
+    },
+    "gapSliderTitle": "Time Gap",
+    "@gapSliderTitle":{
+        "description": "Gap slider title"
+    },
+    "enableAllAlarms": "Enable All",
+    "@enableAllAlarms":{
+        "description": "Enable all alarms button title"
+    },
+    "disableAllAlarms": "Disable All",
+    "@disableAllAlarms":{
+        "description": "Disable all alarms button title"
+    },
+    "allAlarmsEnabled": "All alarms enabled.",
+    "@allAlarmsEnabled":{
+        "description": "All alarms enabled message"
+    },
+    "allAlarmsDisabled": "All alarms disabled.",
+    "@allAlarmsDisabled":{
+        "description": "All alarms disabled message"
     }
 }

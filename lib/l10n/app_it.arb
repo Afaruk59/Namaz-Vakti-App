@@ -184,5 +184,34 @@
     "imsakSunriseNotificationInfo": "Il suono di notifica predefinito verrà riprodotto negli orari del Fajr e dell'alba.",
     "@imsakSunriseNotificationInfo": {
         "description": "Informazioni sul suono di notifica predefinito riprodotto negli orari del Fajr e dell'alba invece dell'Adhan"
+    },
+
+    "on": "Acceso",
+    "@on":{
+        "description": "Titolo dell'interruttore acceso"
+    },
+    "off": "Spento",
+    "@off":{
+        "description": "Titolo dell'interruttore spento"
+    },
+    "gapSliderTitle": "Divario di Tempo",
+    "@gapSliderTitle":{
+        "description": "Titolo del cursore del divario"
+    },
+    "enableAllAlarms": "Attiva Tutti",
+    "@enableAllAlarms":{
+        "description": "Titolo del pulsante di attivazione di tutti gli allarmi"
+    },
+    "disableAllAlarms": "Disattiva Tutti",
+    "@disableAllAlarms":{
+        "description": "Titolo del pulsante di disattivazione di tutti gli allarmi"
+    },
+    "allAlarmsEnabled": "Tutti gli allarmi attivati.",
+    "@allAlarmsEnabled":{
+        "description": "Messaggio di attivazione di tutti gli allarmi"
+    },
+    "allAlarmsDisabled": "Tutti gli allarmi disattivati.",
+    "@allAlarmsDisabled":{
+        "description": "Messaggio di disattivazione di tutti gli allarmi"
     }
 }
