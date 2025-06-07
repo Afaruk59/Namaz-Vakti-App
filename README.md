@@ -67,19 +67,15 @@ Prayer Times App is a modern and user-friendly mobile application designed to fa
   <tr>
     <td align="center">
       <img src="screenshots/2.png" width="200"/>
-      <br><em>Home Page</em>
     </td>
     <td align="center">
       <img src="screenshots/4.png" width="200"/>
-      <br><em>Prayer Times</em>
     </td>
     <td align="center">
       <img src="screenshots/5.png" width="200"/>
-      <br><em>Qibla Compass</em>
     </td>
     <td align="center">
       <img src="screenshots/6.png" width="200"/>
-      <br><em>Settings</em>
     </td>
   </tr>
 </table>
