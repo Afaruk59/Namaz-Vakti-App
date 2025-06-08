@@ -60,6 +60,10 @@
 	<key>NSUserNotificationsUsageDescription</key>
 	<string>Bu uygulama, namaz vakitlerini size hatırlatmak için bildirim gönderme izni talep ediyor.</string>
 	
+	<!-- Yerel ağ izni (Flutter debugging için) -->
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Bu uygulama, geliştirme sırasında debugging ve hot reload özelliklerini kullanmak için yerel ağ erişimi talep ediyor.</string>
+	
 	<!-- Arka plan güncellemeleri -->
 	<key>UIBackgroundModes</key>
 	<array>

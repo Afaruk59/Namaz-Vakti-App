@@ -103,21 +103,67 @@ class _DatesCardState extends State<DatesCard> {
                               trailing: FilledButton.tonal(
                                   onPressed: () async {
                                     try {
-                                      var permissionStatus =
-                                          await Permission.calendarFullAccess.status;
-                                      if (!permissionStatus.isGranted) {
-                                        permissionStatus =
-                                            await Permission.calendarFullAccess.request();
-                                        if (!permissionStatus.isGranted) {
-                                          if (context.mounted) {
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              SnackBar(
-                                                content: Text(AppLocalizations.of(context)!
-                                                    .calendarPermissionDenied),
-                                              ),
-                                            );
+                                      // iOS'ta device_calendar plugin'inin kendi izin sistemini kullan
+                                      if (Theme.of(context).platform == TargetPlatform.iOS) {
+                                        debugPrint('iOS platformu - device_calendar izin kontrolü');
+                                        var permissionsGranted =
+                                            await _deviceCalendarPlugin.hasPermissions();
+                                        debugPrint('Takvim izin durumu: $permissionsGranted');
+
+                                        if (permissionsGranted.isSuccess &&
+                                            !(permissionsGranted.data ?? false)) {
+                                          debugPrint('İzin yok, talep ediliyor');
+                                          var permissionResult =
+                                              await _deviceCalendarPlugin.requestPermissions();
+                                          debugPrint(
+                                              'İzin talebi sonucu: ${permissionResult.isSuccess}, data: ${permissionResult.data}');
+
+                                          if (!permissionResult.isSuccess ||
+                                              !(permissionResult.data ?? false)) {
+                                            if (context.mounted) {
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                SnackBar(
+                                                  content: Text(AppLocalizations.of(context)!
+                                                      .calendarPermissionDenied),
+                                                  action: SnackBarAction(
+                                                    label: 'Ayarlar',
+                                                    onPressed: () async {
+                                                      // iOS ayarlarına yönlendir
+                                                      await openAppSettings();
+                                                    },
+                                                  ),
+                                                ),
+                                              );
+                                            }
+                                            return;
                                           }
-                                          return;
+                                        }
+                                      } else {
+                                        // Android için permission_handler kullan
+                                        debugPrint(
+                                            'Android platformu - permission_handler kontrolü');
+                                        Permission calendarPermission =
+                                            Permission.calendarFullAccess;
+
+                                        var permissionStatus = await calendarPermission.status;
+                                        debugPrint('Android izin durumu: $permissionStatus');
+
+                                        if (!permissionStatus.isGranted) {
+                                          permissionStatus = await calendarPermission.request();
+                                          debugPrint(
+                                              'Android izin talebi sonucu: $permissionStatus');
+
+                                          if (!permissionStatus.isGranted) {
+                                            if (context.mounted) {
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                SnackBar(
+                                                  content: Text(AppLocalizations.of(context)!
+                                                      .calendarPermissionDenied),
+                                                ),
+                                              );
+                                            }
+                                            return;
+                                          }
                                         }
                                       }
 

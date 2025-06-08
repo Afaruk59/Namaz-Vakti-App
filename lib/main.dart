@@ -282,7 +282,8 @@ class MainApp extends StatelessWidget {
             ? const Color.fromARGB(255, 230, 230, 230)
             : const Color.fromARGB(255, 45, 45, 45),
         navigationBarTheme: NavigationBarThemeData(
-          height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 70 : 80,
+          height:
+              Provider.of<ChangeSettings>(context).currentHeight! < 700 || Platform.isIOS ? 70 : 80,
           backgroundColor: Colors.transparent,
           labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
         ),

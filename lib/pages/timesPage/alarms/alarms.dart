@@ -223,36 +223,40 @@ class _AlarmsBodyState extends State<AlarmsBody> with WidgetsBindingObserver {
                                     ),
                                   );
                                 },
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Icon(Icons.add_rounded),
-                                    Text(AppLocalizations.of(context)!.enableAllAlarms),
-                                  ],
+                                child: FittedBox(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Icon(Icons.add_rounded),
+                                      Text(AppLocalizations.of(context)!.enableAllAlarms),
+                                    ],
+                                  ),
                                 )),
                           ),
                           const SizedBox(width: 10),
                           Expanded(
                             child: FilledButton.tonal(
-                                style: FilledButton.styleFrom(
-                                    backgroundColor: Theme.of(context).colorScheme.errorContainer),
-                                onPressed: () {
-                                  Provider.of<ChangeSettings>(context, listen: false)
-                                      .disableAllAlarms();
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content:
-                                          Text(AppLocalizations.of(context)!.allAlarmsDisabled),
-                                    ),
-                                  );
-                                },
+                              style: FilledButton.styleFrom(
+                                  backgroundColor: Theme.of(context).colorScheme.errorContainer),
+                              onPressed: () {
+                                Provider.of<ChangeSettings>(context, listen: false)
+                                    .disableAllAlarms();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(AppLocalizations.of(context)!.allAlarmsDisabled),
+                                  ),
+                                );
+                              },
+                              child: FittedBox(
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     const Icon(Icons.delete_forever_rounded),
                                     Text(AppLocalizations.of(context)!.disableAllAlarms),
                                   ],
-                                )),
+                                ),
+                              ),
+                            ),
                           ),
                         ],
                       ),

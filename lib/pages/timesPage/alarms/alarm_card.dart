@@ -26,6 +26,12 @@ class AlarmCard extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
                 child: ListTile(
+                  leading: CircleAvatar(
+                    radius: 10,
+                    backgroundColor: Provider.of<ChangeSettings>(context).alarmList[index]
+                        ? Colors.green
+                        : Theme.of(context).colorScheme.error,
+                  ),
                   title: Text(title),
                   trailing: const Icon(Icons.arrow_forward_ios),
                   onTap: () {
