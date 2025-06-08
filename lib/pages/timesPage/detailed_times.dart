@@ -88,132 +88,158 @@ class DetailedTimesBtn extends StatelessWidget {
                       child: Row(
                         children: [
                           Expanded(
-                            child: TransparentCard(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Text(
-                                    AppLocalizations.of(context)!.imsak,
-                                    style: style,
-                                  ),
-                                  Text(
-                                    AppLocalizations.of(context)!.sabah,
-                                    style: style,
-                                  ),
-                                  Text(
-                                    AppLocalizations.of(context)!.gunes,
-                                    style: style,
-                                  ),
-                                  Text(
-                                    AppLocalizations.of(context)!.israk,
-                                    style: style,
-                                  ),
-                                  Text(
-                                    AppLocalizations.of(context)!.kerahat,
-                                    style: style,
-                                  ),
-                                  Text(
-                                    AppLocalizations.of(context)!.ogle,
-                                    style: style,
-                                  ),
-                                  Text(
-                                    AppLocalizations.of(context)!.ikindi,
-                                    style: style,
-                                  ),
-                                  Text(
-                                    AppLocalizations.of(context)!.asrisani,
-                                    style: style,
-                                  ),
-                                  Text(
-                                    AppLocalizations.of(context)!.isfirar,
-                                    style: style,
-                                  ),
-                                  Text(
-                                    AppLocalizations.of(context)!.aksam,
-                                    style: style,
-                                  ),
-                                  Text(
-                                    AppLocalizations.of(context)!.istibak,
-                                    style: style,
-                                  ),
-                                  Text(
-                                    AppLocalizations.of(context)!.yatsi,
-                                    style: style,
-                                  ),
-                                  Text(
-                                    AppLocalizations.of(context)!.isaisani,
-                                    style: style,
-                                  ),
-                                  Text(
-                                    AppLocalizations.of(context)!.kible,
-                                    style: style,
-                                  ),
-                                ],
+                            child: Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(
+                                      Provider.of<ChangeSettings>(context).rounded == true
+                                          ? 50
+                                          : 10),
+                                  border: Border.all(
+                                      color: Provider.of<ChangeSettings>(context).isDark == false
+                                          ? Colors.white.withValues(alpha: 0.5)
+                                          : Colors.grey.withValues(alpha: 0.5)),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Text(
+                                      AppLocalizations.of(context)!.imsak,
+                                      style: style,
+                                    ),
+                                    Text(
+                                      AppLocalizations.of(context)!.sabah,
+                                      style: style,
+                                    ),
+                                    Text(
+                                      AppLocalizations.of(context)!.gunes,
+                                      style: style,
+                                    ),
+                                    Text(
+                                      AppLocalizations.of(context)!.israk,
+                                      style: style,
+                                    ),
+                                    Text(
+                                      AppLocalizations.of(context)!.kerahat,
+                                      style: style,
+                                    ),
+                                    Text(
+                                      AppLocalizations.of(context)!.ogle,
+                                      style: style,
+                                    ),
+                                    Text(
+                                      AppLocalizations.of(context)!.ikindi,
+                                      style: style,
+                                    ),
+                                    Text(
+                                      AppLocalizations.of(context)!.asrisani,
+                                      style: style,
+                                    ),
+                                    Text(
+                                      AppLocalizations.of(context)!.isfirar,
+                                      style: style,
+                                    ),
+                                    Text(
+                                      AppLocalizations.of(context)!.aksam,
+                                      style: style,
+                                    ),
+                                    Text(
+                                      AppLocalizations.of(context)!.istibak,
+                                      style: style,
+                                    ),
+                                    Text(
+                                      AppLocalizations.of(context)!.yatsi,
+                                      style: style,
+                                    ),
+                                    Text(
+                                      AppLocalizations.of(context)!.isaisani,
+                                      style: style,
+                                    ),
+                                    Text(
+                                      AppLocalizations.of(context)!.kible,
+                                      style: style,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
                           Expanded(
-                            child: TransparentCard(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Text(
-                                    DateFormat('HH:mm').format(_imsak!),
-                                    style: style,
-                                  ),
-                                  Text(
-                                    DateFormat('HH:mm').format(_sabah!),
-                                    style: style,
-                                  ),
-                                  Text(
-                                    DateFormat('HH:mm').format(_gunes!),
-                                    style: style,
-                                  ),
-                                  Text(
-                                    DateFormat('HH:mm').format(_israk!),
-                                    style: style,
-                                  ),
-                                  Text(
-                                    DateFormat('HH:mm').format(_kerahat!),
-                                    style: style,
-                                  ),
-                                  Text(
-                                    DateFormat('HH:mm').format(_ogle!),
-                                    style: style,
-                                  ),
-                                  Text(
-                                    DateFormat('HH:mm').format(_ikindi!),
-                                    style: style,
-                                  ),
-                                  Text(
-                                    DateFormat('HH:mm').format(_asrisani!),
-                                    style: style,
-                                  ),
-                                  Text(
-                                    DateFormat('HH:mm').format(_isfirar!),
-                                    style: style,
-                                  ),
-                                  Text(
-                                    DateFormat('HH:mm').format(_aksam!),
-                                    style: style,
-                                  ),
-                                  Text(
-                                    DateFormat('HH:mm').format(_istibak!),
-                                    style: style,
-                                  ),
-                                  Text(
-                                    DateFormat('HH:mm').format(_yatsi!),
-                                    style: style,
-                                  ),
-                                  Text(
-                                    DateFormat('HH:mm').format(_isaisani!),
-                                    style: style,
-                                  ),
-                                  Text(
-                                    _kible != null ? DateFormat('HH:mm').format(_kible!) : '-',
-                                    style: style,
-                                  ),
-                                ],
+                            child: Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(
+                                      Provider.of<ChangeSettings>(context).rounded == true
+                                          ? 50
+                                          : 10),
+                                  border: Border.all(
+                                      color: Provider.of<ChangeSettings>(context).isDark == false
+                                          ? Colors.white.withValues(alpha: 0.5)
+                                          : Colors.grey.withValues(alpha: 0.5)),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Text(
+                                      DateFormat('HH:mm').format(_imsak!),
+                                      style: style,
+                                    ),
+                                    Text(
+                                      DateFormat('HH:mm').format(_sabah!),
+                                      style: style,
+                                    ),
+                                    Text(
+                                      DateFormat('HH:mm').format(_gunes!),
+                                      style: style,
+                                    ),
+                                    Text(
+                                      DateFormat('HH:mm').format(_israk!),
+                                      style: style,
+                                    ),
+                                    Text(
+                                      DateFormat('HH:mm').format(_kerahat!),
+                                      style: style,
+                                    ),
+                                    Text(
+                                      DateFormat('HH:mm').format(_ogle!),
+                                      style: style,
+                                    ),
+                                    Text(
+                                      DateFormat('HH:mm').format(_ikindi!),
+                                      style: style,
+                                    ),
+                                    Text(
+                                      DateFormat('HH:mm').format(_asrisani!),
+                                      style: style,
+                                    ),
+                                    Text(
+                                      DateFormat('HH:mm').format(_isfirar!),
+                                      style: style,
+                                    ),
+                                    Text(
+                                      DateFormat('HH:mm').format(_aksam!),
+                                      style: style,
+                                    ),
+                                    Text(
+                                      DateFormat('HH:mm').format(_istibak!),
+                                      style: style,
+                                    ),
+                                    Text(
+                                      DateFormat('HH:mm').format(_yatsi!),
+                                      style: style,
+                                    ),
+                                    Text(
+                                      DateFormat('HH:mm').format(_isaisani!),
+                                      style: style,
+                                    ),
+                                    Text(
+                                      _kible != null ? DateFormat('HH:mm').format(_kible!) : '-',
+                                      style: style,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),

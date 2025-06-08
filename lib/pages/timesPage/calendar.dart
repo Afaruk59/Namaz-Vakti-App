@@ -122,7 +122,15 @@ class _CalendarBtnState extends State<CalendarBtn> {
                   const SizedBox(
                     height: 40,
                   ),
-                  TransparentCard(
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(
+                          Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
+                      border: Border.all(
+                          color: Provider.of<ChangeSettings>(context).isDark == false
+                              ? Colors.white.withValues(alpha: 0.5)
+                              : Colors.grey.withValues(alpha: 0.5)),
+                    ),
                     child: Padding(
                       padding: const EdgeInsets.all(5.0),
                       child: Text(
@@ -162,8 +170,6 @@ class _CalendarBtnState extends State<CalendarBtn> {
       icon: const Icon(Icons.date_range_rounded),
       onPressed: () async {
         if (_ilk) {
-          // await _fetchDay();
-          // await _fetchWord();
           await fetchWordnDay();
           await _fetchCalendar();
           setState(() {
