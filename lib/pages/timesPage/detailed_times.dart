@@ -16,6 +16,7 @@ limitations under the License.
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:namaz_vakti_app/components/transparent_card.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:namaz_vakti_app/data/time_data.dart';
 import 'package:provider/provider.dart';
@@ -63,23 +64,14 @@ class DetailedTimesBtn extends StatelessWidget {
       icon: const Icon(Icons.menu),
       onPressed: () {
         showModalBottomSheet(
-          backgroundColor: Theme.of(context).cardTheme.color,
           context: context,
-          showDragHandle: true,
           scrollControlDisabledMaxHeightRatio: 0.8,
-          elevation: 10,
           isScrollControlled:
               Provider.of<ChangeSettings>(context, listen: false).currentHeight! < 700.0
                   ? true
                   : false,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(
-              Provider.of<ChangeSettings>(context, listen: false).rounded == true ? 50 : 10,
-            ),
-          ),
           builder: (BuildContext context) {
-            return Card(
-              color: Theme.of(context).cardColor,
+            return TransparentCard(
               child: Column(
                 children: [
                   const SizedBox(
@@ -96,17 +88,7 @@ class DetailedTimesBtn extends StatelessWidget {
                       child: Row(
                         children: [
                           Expanded(
-                            child: Card(
-                              shape: RoundedRectangleBorder(
-                                side: const BorderSide(
-                                  color: Colors.grey,
-                                  width: 1.0,
-                                ),
-                                borderRadius: BorderRadius.circular(
-                                  Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10,
-                                ),
-                              ),
-                              color: Theme.of(context).cardColor,
+                            child: TransparentCard(
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [
@@ -171,17 +153,7 @@ class DetailedTimesBtn extends StatelessWidget {
                             ),
                           ),
                           Expanded(
-                            child: Card(
-                              shape: RoundedRectangleBorder(
-                                side: const BorderSide(
-                                  color: Colors.grey,
-                                  width: 1.0,
-                                ),
-                                borderRadius: BorderRadius.circular(
-                                  Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10,
-                                ),
-                              ),
-                              color: Theme.of(context).cardColor,
+                            child: TransparentCard(
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [

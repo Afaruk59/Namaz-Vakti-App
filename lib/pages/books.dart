@@ -16,6 +16,7 @@ limitations under the License.
 
 import 'package:flutter/material.dart';
 import 'package:namaz_vakti_app/components/scaffold_layout.dart';
+import 'package:namaz_vakti_app/components/transparent_card.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -183,6 +184,41 @@ class BookCard extends StatelessWidget {
   final String description;
   final String link;
 
+  void _showBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      enableDrag: true,
+      context: context,
+      scrollControlDisabledMaxHeightRatio: 0.6,
+      isScrollControlled:
+          Provider.of<ChangeSettings>(context, listen: false).currentHeight! < 700.0 ? true : false,
+      builder: (BuildContext context) {
+        return TransparentCard(
+          child: Scrollbar(
+            child: Padding(
+              padding: EdgeInsets.all(
+                  Provider.of<ChangeSettings>(context, listen: false).currentHeight! < 700.0
+                      ? 5.0
+                      : 15.0),
+              child: ListView(
+                children: [
+                  ListTile(
+                    title: Text(
+                      bookName,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Text(
+                    description,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -195,46 +231,7 @@ class BookCard extends StatelessWidget {
           child: ListTile(
             leading: ElevatedButton(
               onPressed: () {
-                showModalBottomSheet(
-                  enableDrag: true,
-                  context: context,
-                  showDragHandle: true,
-                  backgroundColor: col,
-                  elevation: 10,
-                  scrollControlDisabledMaxHeightRatio: 0.6,
-                  isScrollControlled:
-                      Provider.of<ChangeSettings>(context, listen: false).currentHeight! < 700.0
-                          ? true
-                          : false,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                      Provider.of<ChangeSettings>(context, listen: false).rounded == true ? 50 : 10,
-                    ),
-                  ),
-                  builder: (BuildContext context) {
-                    return Card(
-                      elevation: 10,
-                      color: Theme.of(context).cardColor,
-                      child: Scrollbar(
-                        child: Padding(
-                          padding: EdgeInsets.all(
-                              Provider.of<ChangeSettings>(context, listen: false).currentHeight! <
-                                      700.0
-                                  ? 5.0
-                                  : 15.0),
-                          child: ListView(
-                            children: [
-                              Text(
-                                description,
-                                style: const TextStyle(fontSize: 16),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                );
+                _showBottomSheet(context);
               },
               child: const Icon(Icons.info),
             ),

@@ -171,6 +171,15 @@ class MainApp extends StatelessWidget {
         return null;
       },
       theme: ThemeData(
+        bottomSheetTheme: BottomSheetThemeData(
+          modalBarrierColor: Colors.transparent,
+          showDragHandle: true,
+          backgroundColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+                Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
+          ),
+        ),
         snackBarTheme: SnackBarThemeData(
           elevation: 10,
           shape: RoundedRectangleBorder(
