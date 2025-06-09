@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:ui';
+import 'dart:io';
 
 class ChangeSettings with ChangeNotifier {
   static late SharedPreferences _settings;
@@ -81,7 +82,20 @@ class ChangeSettings with ChangeNotifier {
 
   //LANGUAGE
   void loadLanguage() {
-    String defaultLang = PlatformDispatcher.instance.locale.languageCode;
+    String defaultLang;
+
+    // iOS ve Android için platform-safe dil tespiti
+    try {
+      if (Platform.isIOS) {
+        // iOS için daha güvenilir dil tespiti
+        defaultLang = PlatformDispatcher.instance.locale.languageCode;
+      } else {
+        defaultLang = PlatformDispatcher.instance.locale.languageCode;
+      }
+    } catch (e) {
+      defaultLang = 'en'; // Fallback
+    }
+
     if (!['tr', 'en', 'ar', 'de', 'es', 'fr', 'it', 'ru'].contains(defaultLang)) {
       defaultLang = 'en';
     }
@@ -216,7 +230,19 @@ class ChangeSettings with ChangeNotifier {
     themeIndex = index;
     switch (index) {
       case 0:
-        isDark = PlatformDispatcher.instance.platformBrightness == Brightness.dark;
+        // iOS ve Android için platform-safe tema tespiti
+        try {
+          if (Platform.isIOS) {
+            // iOS için UIUserInterfaceStyle izni ile tema tespiti
+            final brightness = WidgetsBinding.instance.platformDispatcher.platformBrightness;
+            isDark = brightness == Brightness.dark;
+          } else {
+            isDark = PlatformDispatcher.instance.platformBrightness == Brightness.dark;
+          }
+        } catch (e) {
+          // Fallback: varsayılan olarak açık tema
+          isDark = false;
+        }
         break;
       case 1:
         isDark = true;
@@ -237,7 +263,19 @@ class ChangeSettings with ChangeNotifier {
     themeIndex = _settings.getInt('themeIndex') ?? 0;
     switch (themeIndex) {
       case 0:
-        isDark = PlatformDispatcher.instance.platformBrightness == Brightness.dark;
+        // iOS ve Android için platform-safe tema tespiti
+        try {
+          if (Platform.isIOS) {
+            // iOS için UIUserInterfaceStyle izni ile tema tespiti
+            final brightness = WidgetsBinding.instance.platformDispatcher.platformBrightness;
+            isDark = brightness == Brightness.dark;
+          } else {
+            isDark = PlatformDispatcher.instance.platformBrightness == Brightness.dark;
+          }
+        } catch (e) {
+          // Fallback: varsayılan olarak açık tema
+          isDark = false;
+        }
         break;
       case 1:
         isDark = true;
