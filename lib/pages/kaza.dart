@@ -29,7 +29,7 @@ class Kaza extends StatelessWidget {
     return ScaffoldLayout(
       title: AppLocalizations.of(context)!.kazaTitle,
       actions: const [],
-      gradient: true,
+      background: true,
       body: const KazaCard(),
     );
   }

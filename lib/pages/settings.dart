@@ -31,13 +31,13 @@ class Settings extends StatelessWidget {
         ? ScaffoldLayout(
             title: AppLocalizations.of(context)!.settingsPageTitle,
             actions: const [],
-            gradient: true,
+            background: true,
             body: const SettingsCard(),
           )
         : ScaffoldLayout(
             title: AppLocalizations.of(context)!.settingsPageTitle,
             actions: const [],
-            gradient: false,
+            background: false,
             body: const SettingsCard(),
           );
   }

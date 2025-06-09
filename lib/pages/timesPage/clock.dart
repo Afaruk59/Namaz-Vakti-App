@@ -91,13 +91,16 @@ class _ClockState extends State<Clock> {
                   clipBehavior: Clip.hardEdge,
                   height: double.infinity,
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey, width: 1),
+                    border: Border.all(
+                        color: Provider.of<ChangeSettings>(context).isDark == false
+                            ? Colors.white.withValues(alpha: 0.5)
+                            : Colors.grey.withValues(alpha: 0.5)),
                     borderRadius: BorderRadius.circular(
                       Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.25), // Gölge rengi ve opaklığı
+                        color: Colors.black.withValues(alpha: 0.25), // Gölge rengi ve opaklığı
                         spreadRadius: 5, // Gölgenin yayılma alanı
                         blurRadius: 10, // Gölgenin bulanıklığı
                         offset: const Offset(0, 5), // Gölgenin yatay ve dikey kayması
@@ -111,7 +114,7 @@ class _ClockState extends State<Clock> {
                     borderRadius: BorderRadius.circular(
                       Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10,
                     ),
-                    backgroundColor: Theme.of(context).cardColor,
+                    backgroundColor: Colors.transparent,
                     valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).cardTheme.color!),
                   ),
                 ),

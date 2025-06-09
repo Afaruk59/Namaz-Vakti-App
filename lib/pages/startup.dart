@@ -16,7 +16,6 @@ limitations under the License.
 
 import 'package:flutter/material.dart';
 import 'package:namaz_vakti_app/components/app_card.dart';
-import 'package:namaz_vakti_app/components/gradient_background.dart';
 import 'package:namaz_vakti_app/components/lang_selector.dart';
 import 'package:namaz_vakti_app/components/tenbih_card.dart';
 import 'package:namaz_vakti_app/components/time_note.dart';
@@ -31,27 +30,25 @@ class Startup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GradientBackground(
-      child: PopScope(
-        canPop: false,
-        child: Scaffold(
-          appBar: AppBar(
-            automaticallyImplyLeading: false,
-            title: Text(AppLocalizations.of(context)!.startupTitle),
-            actions: [
-              IconButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/settings');
-                },
-                icon: const Icon(Icons.settings),
-              ),
-              const SizedBox(
-                width: 20,
-              ),
-            ],
-          ),
-          body: const StartupCard(),
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: Text(AppLocalizations.of(context)!.startupTitle),
+          actions: [
+            IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/settings');
+              },
+              icon: const Icon(Icons.settings),
+            ),
+            const SizedBox(
+              width: 20,
+            ),
+          ],
         ),
+        body: const StartupCard(),
       ),
     );
   }

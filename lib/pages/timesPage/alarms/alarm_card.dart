@@ -38,6 +38,7 @@ class AlarmCard extends StatelessWidget {
                     Navigator.push(
                         context,
                         PageRouteBuilder(
+                          opaque: false,
                           pageBuilder: (context, animation, secondaryAnimation) => AlarmSettings(
                             index: index,
                             title: title,
@@ -71,7 +72,7 @@ class AlarmSettings extends StatelessWidget {
     return ScaffoldLayout(
       actions: const [],
       title: title,
-      gradient: true,
+      background: true,
       body: Padding(
         padding: const EdgeInsets.all(5),
         child: Card(

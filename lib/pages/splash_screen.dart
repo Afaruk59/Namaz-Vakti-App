@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:namaz_vakti_app/components/gradient_background.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:namaz_vakti_app/main.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
@@ -68,50 +67,48 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    return GradientBackground(
-      child: Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ScaleTransition(
-                scale: _scaleAnimation,
-                child: Image.asset(
-                  'assets/img/logo.png',
-                  height: 200,
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ScaleTransition(
+              scale: _scaleAnimation,
+              child: Image.asset(
+                'assets/img/logo.png',
+                height: 200,
+              ),
+            ),
+            const SizedBox(height: 20),
+            FadeTransition(
+              opacity: _fadeAnimation,
+              child: SlideTransition(
+                position: _slideAnimation,
+                child: Column(
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.appName,
+                      style: GoogleFonts.ubuntu(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                        color: Provider.of<ChangeSettings>(context).isDark
+                            ? Theme.of(context).primaryColorLight
+                            : Theme.of(context).primaryColor,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      '${MainApp.version} - by Afaruk59',
+                      style: GoogleFonts.ubuntu(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 20),
-              FadeTransition(
-                opacity: _fadeAnimation,
-                child: SlideTransition(
-                  position: _slideAnimation,
-                  child: Column(
-                    children: [
-                      Text(
-                        AppLocalizations.of(context)!.appName,
-                        style: GoogleFonts.ubuntu(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          color: Provider.of<ChangeSettings>(context).isDark
-                              ? Theme.of(context).primaryColorLight
-                              : Theme.of(context).primaryColor,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        '${MainApp.version} - by Afaruk59',
-                        style: GoogleFonts.ubuntu(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

@@ -31,7 +31,7 @@ class More extends StatelessWidget {
     return ScaffoldLayout(
       title: AppLocalizations.of(context)!.morePageTitle,
       actions: const [],
-      gradient: false,
+      background: false,
       body: Padding(
         padding: const EdgeInsets.all(5),
         child: Card(

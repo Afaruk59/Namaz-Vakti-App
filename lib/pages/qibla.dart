@@ -17,6 +17,8 @@ limitations under the License.
 import 'package:flutter/material.dart';
 import 'package:flutter_compass/flutter_compass.dart';
 import 'package:namaz_vakti_app/components/scaffold_layout.dart';
+import 'package:namaz_vakti_app/components/container_item.dart';
+import 'package:namaz_vakti_app/components/transparent_card.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:namaz_vakti_app/data/time_data.dart';
 import 'package:provider/provider.dart';
@@ -32,7 +34,7 @@ class Qibla extends StatelessWidget {
     return ScaffoldLayout(
       title: AppLocalizations.of(context)!.qiblaPageTitle,
       actions: const [],
-      gradient: false,
+      background: false,
       body: const QiblaCard(),
     );
   }
@@ -148,120 +150,87 @@ class _QiblaCardState extends State<QiblaCard> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(5),
-      child: Card(
-        child: Padding(
-          padding: EdgeInsets.all(
-              Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5.0 : 10.0),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  children: [
-                    Expanded(
-                      flex: 4,
-                      child: Card(
-                        color: Theme.of(context).cardColor,
-                        child: Center(
-                          child: _buildCompass(),
-                        ),
-                      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              children: [
+                Expanded(
+                  flex: 4,
+                  child: TransparentCard(
+                    child: Center(
+                      child: _buildCompass(),
                     ),
-                    Expanded(
-                      flex: 1,
-                      child: Card(
-                        color: Theme.of(context).cardColor,
-                        child: Padding(
-                          padding: const EdgeInsets.all(5),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Card(
-                                  shape: RoundedRectangleBorder(
-                                    side: const BorderSide(
-                                      color: Colors.grey,
-                                      width: 1.0,
-                                    ),
-                                    borderRadius: BorderRadius.circular(
-                                      Provider.of<ChangeSettings>(context).rounded == true
-                                          ? 50
-                                          : 10,
-                                    ),
-                                  ),
-                                  color: Theme.of(context).cardColor,
-                                  child: Center(
-                                      child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      FittedBox(
-                                        fit: BoxFit.scaleDown,
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                                          child: Text(
-                                            Provider.of<TimeData>(context).city!,
-                                            textAlign: TextAlign.center,
-                                            style: const TextStyle(fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 60,
-                                        child: Divider(
-                                          height:
-                                              Provider.of<ChangeSettings>(context).currentHeight! <
-                                                      700.0
-                                                  ? 5.0
-                                                  : 15.0,
-                                        ),
-                                      ),
-                                      Text(
-                                        Provider.of<TimeData>(context).cityState!,
-                                      ),
-                                    ],
-                                  )),
-                                ),
-                              ),
-                              Expanded(
-                                child: Card(
-                                  shape: RoundedRectangleBorder(
-                                    side: const BorderSide(
-                                      color: Colors.grey,
-                                      width: 1.0,
-                                    ),
-                                    borderRadius: BorderRadius.circular(
-                                      Provider.of<ChangeSettings>(context).rounded == true
-                                          ? 50
-                                          : 10,
-                                    ),
-                                  ),
-                                  color: Theme.of(context).cardColor,
-                                  child: Center(
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          '${AppLocalizations.of(context)!.qiblaTargetText} ${_target! < 0 ? (360 + _target!).toStringAsFixed(2) : _target!.toStringAsFixed(2)}°',
-                                          style: const TextStyle(fontSize: 16),
-                                        ),
-                                        Text(
-                                          '${_direction! < 0 ? (360 + _direction!).toStringAsFixed(2) : _direction!.toStringAsFixed(2)}°',
-                                          style: const TextStyle(fontSize: 18),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ],
+                Expanded(
+                  flex: 1,
+                  child: TransparentCard(
+                    child: Padding(
+                      padding: const EdgeInsets.all(5),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: ContainerItem(
+                              child: Center(
+                                  child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                                      child: Text(
+                                        Provider.of<TimeData>(context).city!,
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 60,
+                                    child: Divider(
+                                      height: Provider.of<ChangeSettings>(context).currentHeight! <
+                                              700.0
+                                          ? 5.0
+                                          : 15.0,
+                                    ),
+                                  ),
+                                  Text(
+                                    Provider.of<TimeData>(context).cityState!,
+                                  ),
+                                ],
+                              )),
+                            ),
+                          ),
+                          Expanded(
+                            child: ContainerItem(
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      '${AppLocalizations.of(context)!.qiblaTargetText} ${_target! < 0 ? (360 + _target!).toStringAsFixed(2) : _target!.toStringAsFixed(2)}°',
+                                      style: const TextStyle(fontSize: 16),
+                                    ),
+                                    Text(
+                                      '${_direction! < 0 ? (360 + _direction!).toStringAsFixed(2) : _direction!.toStringAsFixed(2)}°',
+                                      style: const TextStyle(fontSize: 18),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

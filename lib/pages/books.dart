@@ -32,7 +32,7 @@ class Books extends StatelessWidget {
     return ScaffoldLayout(
       title: AppLocalizations.of(context)!.booksTitle,
       actions: const [],
-      gradient: true,
+      background: true,
       body: Scrollbar(
         child: ListView(
           children: [

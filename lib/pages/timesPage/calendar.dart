@@ -17,6 +17,7 @@ limitations under the License.
 import 'package:flutter/material.dart';
 import 'package:html/parser.dart';
 import 'package:intl/intl.dart';
+import 'package:namaz_vakti_app/components/container_item.dart';
 import 'package:namaz_vakti_app/components/transparent_card.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:http/http.dart' as http;
@@ -122,15 +123,7 @@ class _CalendarBtnState extends State<CalendarBtn> {
                   const SizedBox(
                     height: 40,
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(
-                          Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
-                      border: Border.all(
-                          color: Provider.of<ChangeSettings>(context).isDark == false
-                              ? Colors.white.withValues(alpha: 0.5)
-                              : Colors.grey.withValues(alpha: 0.5)),
-                    ),
+                  ContainerItem(
                     child: Padding(
                       padding: const EdgeInsets.all(5.0),
                       child: Text(

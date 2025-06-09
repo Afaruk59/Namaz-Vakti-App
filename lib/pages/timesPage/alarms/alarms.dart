@@ -38,7 +38,7 @@ class _AlarmsState extends State<Alarms> {
     return ScaffoldLayout(
       title: AppLocalizations.of(context)!.notificationsPageTitle,
       actions: const [],
-      gradient: true,
+      background: true,
       body: const AlarmsBody(),
     );
   }

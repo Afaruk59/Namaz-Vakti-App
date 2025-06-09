@@ -31,7 +31,7 @@ class About extends StatelessWidget {
     return ScaffoldLayout(
       title: AppLocalizations.of(context)!.aboutTitle,
       actions: const [],
-      gradient: true,
+      background: true,
       body: const AboutPage(),
     );
   }

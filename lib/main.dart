@@ -157,6 +157,7 @@ class MainApp extends StatelessWidget {
 
         if (page != null) {
           return PageRouteBuilder(
+            opaque: false,
             pageBuilder: (context, animation, secondaryAnimation) => page!,
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               const begin = Offset(1.0, 0.0);
@@ -254,9 +255,7 @@ class MainApp extends StatelessWidget {
             ),
           ),
         ),
-        scaffoldBackgroundColor: Provider.of<ChangeSettings>(context).gradient == true
-            ? Colors.transparent
-            : Theme.of(context).navigationBarTheme.backgroundColor,
+        scaffoldBackgroundColor: Colors.transparent,
         useMaterial3: true,
         brightness: Provider.of<ChangeSettings>(context).isDark == false
             ? Brightness.light
@@ -291,9 +290,10 @@ class MainApp extends StatelessWidget {
             ? const Color.fromARGB(255, 230, 230, 230)
             : const Color.fromARGB(255, 45, 45, 45),
         navigationBarTheme: NavigationBarThemeData(
+          elevation: 0,
+          backgroundColor: Colors.transparent,
           height:
               Provider.of<ChangeSettings>(context).currentHeight! < 700 || Platform.isIOS ? 70 : 80,
-          backgroundColor: Colors.transparent,
           labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
         ),
       ),

@@ -27,7 +27,7 @@ class License extends StatelessWidget {
     return ScaffoldLayout(
       title: AppLocalizations.of(context)!.licenseTitle,
       actions: const [],
-      gradient: true,
+      background: true,
       body: const LicensePage(),
     );
   }

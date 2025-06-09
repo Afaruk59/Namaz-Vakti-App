@@ -19,6 +19,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:namaz_vakti_app/components/scaffold_layout.dart';
+import 'package:namaz_vakti_app/components/transparent_card.dart';
 import 'package:namaz_vakti_app/pages/timesPage/city_names.dart';
 import 'package:namaz_vakti_app/pages/timesPage/location.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
@@ -55,7 +56,6 @@ class Times extends StatelessWidget {
           width: 20,
         ),
       ],
-      gradient: false,
       body: const TimesBody(),
     );
   }
@@ -155,7 +155,7 @@ class _TimesBodyState extends State<TimesBody> {
                         child: TopTimesCard(),
                       ),
                       Expanded(
-                        child: Card(
+                        child: TransparentCard(
                           child: Center(
                             child: CityNameCard(),
                           ),
@@ -271,7 +271,7 @@ class _TopTimesCardState extends State<TopTimesCard> {
       children: [
         Expanded(
           flex: 4,
-          child: Card(
+          child: TransparentCard(
             child: Center(
               child: Stack(
                 children: [
@@ -393,7 +393,7 @@ class _TopTimesCardState extends State<TopTimesCard> {
         ),
         Expanded(
           flex: 4,
-          child: Card(
+          child: TransparentCard(
             child: Center(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
@@ -456,18 +456,11 @@ class BottomTimesCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Center(
-        child: Padding(
-          padding: EdgeInsets.all(
-              Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5.0 : 10.0),
-          child: Card(
-            color: Theme.of(context).cardColor,
-            child: Provider.of<TimeData>(context).isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : const MainTimes(),
-          ),
-        ),
+    return Center(
+      child: TransparentCard(
+        child: Provider.of<TimeData>(context).isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : const MainTimes(),
       ),
     );
   }

@@ -36,7 +36,7 @@ class Dates extends StatelessWidget {
           ? AppLocalizations.of(context)!.datesTitleShort
           : AppLocalizations.of(context)!.datesTitle,
       actions: const [],
-      gradient: true,
+      background: true,
       body: const DatesCard(),
     );
   }
