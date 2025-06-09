@@ -77,20 +77,14 @@ class _HomePageState extends State<HomePage> {
           Positioned.fill(
             child: ColorFiltered(
               colorFilter: ColorFilter.mode(
-                Provider.of<ChangeSettings>(context).isDark
-                    ? Colors.black.withValues(alpha: 0.4)
-                    : Colors.black.withValues(alpha: 0.0),
-                BlendMode.srcATop,
+                Provider.of<ChangeSettings>(context).color.withValues(alpha: 1),
+                BlendMode.color,
               ),
-              child: ColorFiltered(
-                colorFilter: ColorFilter.mode(
-                  Provider.of<ChangeSettings>(context).color.withValues(alpha: 1),
-                  BlendMode.color,
-                ),
-                child: Image.asset(
-                  'assets/img/wallpaper.png',
-                  fit: BoxFit.cover,
-                ),
+              child: Image.asset(
+                Provider.of<ChangeSettings>(context).isDark
+                    ? 'assets/img/wallpaperdark.png'
+                    : 'assets/img/wallpaper.png',
+                fit: BoxFit.cover,
               ),
             ),
           ),
