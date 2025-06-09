@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:namaz_vakti_app/components/container_item.dart';
 import 'package:namaz_vakti_app/components/scaffold_layout.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:namaz_vakti_app/pages/timesPage/alarms/alarm_switch.dart';
@@ -21,8 +22,7 @@ class AlarmCard extends StatelessWidget {
         ? Padding(
             padding: EdgeInsets.symmetric(
                 horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
-            child: Card(
-              color: Theme.of(context).cardColor,
+            child: ContainerItem(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
                 child: ListTile(
@@ -74,33 +74,28 @@ class AlarmSettings extends StatelessWidget {
       title: title,
       background: true,
       body: Padding(
-        padding: const EdgeInsets.all(5),
-        child: Card(
-          child: Padding(
-            padding: EdgeInsets.all(
-                Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5.0 : 15.0),
-            child: Provider.of<ChangeSettings>(context).alarmList[index]
-                ? Column(
-                    children: [
-                      AlarmSwitch(index: index),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 50),
-                        child: Divider(
-                          thickness: 2,
-                          height: 30,
-                        ),
-                      ),
-                      GapSlider(index: index),
-                      AlarmVoice(index: index),
-                    ],
-                  )
-                : Column(
-                    children: [
-                      AlarmSwitch(index: index),
-                    ],
+        padding: EdgeInsets.all(
+            Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5.0 : 15.0),
+        child: Provider.of<ChangeSettings>(context).alarmList[index]
+            ? Column(
+                children: [
+                  AlarmSwitch(index: index),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 50),
+                    child: Divider(
+                      thickness: 2,
+                      height: 30,
+                    ),
                   ),
-          ),
-        ),
+                  GapSlider(index: index),
+                  AlarmVoice(index: index),
+                ],
+              )
+            : Column(
+                children: [
+                  AlarmSwitch(index: index),
+                ],
+              ),
       ),
     );
   }

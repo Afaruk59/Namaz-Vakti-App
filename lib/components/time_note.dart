@@ -16,6 +16,7 @@ limitations under the License.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
+import 'package:namaz_vakti_app/components/transparent_card.dart';
 
 class TimeNote extends StatelessWidget {
   const TimeNote({
@@ -24,8 +25,7 @@ class TimeNote extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Theme.of(context).cardColor,
+    return TransparentCard(
       child: ListTile(
         title: Text(
           AppLocalizations.of(context)!.startupDescription,

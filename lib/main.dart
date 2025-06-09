@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -81,7 +83,6 @@ class MainApp extends StatelessWidget {
     Provider.of<ChangeSettings>(context, listen: false).changeHeight(context);
     Provider.of<ChangeSettings>(context, listen: false).loadCol();
     Provider.of<ChangeSettings>(context, listen: false).loadThemeFromSharedPref();
-    Provider.of<ChangeSettings>(context, listen: false).loadGradFromSharedPref();
     Provider.of<ChangeSettings>(context, listen: false).loadFirstFromSharedPref();
     Provider.of<ChangeSettings>(context, listen: false).loadLanguage();
     Provider.of<ChangeSettings>(context, listen: false).loadOtoLoc();
@@ -182,7 +183,6 @@ class MainApp extends StatelessWidget {
           ),
         ),
         snackBarTheme: SnackBarThemeData(
-          elevation: 10,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(
                 Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
@@ -285,6 +285,9 @@ class MainApp extends StatelessWidget {
             borderRadius: BorderRadius.circular(
                 Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
           ),
+        ),
+        dialogTheme: const DialogTheme(
+          backgroundColor: Colors.transparent,
         ),
         cardColor: Provider.of<ChangeSettings>(context).isDark == false
             ? const Color.fromARGB(255, 230, 230, 230)

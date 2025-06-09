@@ -16,6 +16,7 @@ limitations under the License.
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:namaz_vakti_app/components/transparent_card.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:namaz_vakti_app/main.dart';
 import 'package:provider/provider.dart';
@@ -60,7 +61,7 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
       opacity: _animation,
       child: Column(
         children: [
-          Card(
+          TransparentCard(
             child: Image.asset(
               'assets/img/logo.png',
               height: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 150 : 200,

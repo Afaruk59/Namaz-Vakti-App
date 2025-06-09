@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
@@ -67,50 +69,65 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ScaleTransition(
-              scale: _scaleAnimation,
-              child: Image.asset(
-                'assets/img/logo.png',
-                height: 200,
-              ),
+    return Stack(children: [
+      ClipRRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 15.0, sigmaY: 15.0),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Provider.of<ChangeSettings>(context).isDark == false
+                  ? Colors.white.withValues(alpha: 0.1)
+                  : Colors.black.withValues(alpha: 0.1),
             ),
-            const SizedBox(height: 20),
-            FadeTransition(
-              opacity: _fadeAnimation,
-              child: SlideTransition(
-                position: _slideAnimation,
-                child: Column(
-                  children: [
-                    Text(
-                      AppLocalizations.of(context)!.appName,
-                      style: GoogleFonts.ubuntu(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                        color: Provider.of<ChangeSettings>(context).isDark
-                            ? Theme.of(context).primaryColorLight
-                            : Theme.of(context).primaryColor,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      '${MainApp.version} - by Afaruk59',
-                      style: GoogleFonts.ubuntu(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
+            child: const SizedBox.expand(),
+          ),
         ),
       ),
-    );
+      Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ScaleTransition(
+                scale: _scaleAnimation,
+                child: Image.asset(
+                  'assets/img/logo.png',
+                  height: 200,
+                ),
+              ),
+              const SizedBox(height: 20),
+              FadeTransition(
+                opacity: _fadeAnimation,
+                child: SlideTransition(
+                  position: _slideAnimation,
+                  child: Column(
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.appName,
+                        style: GoogleFonts.ubuntu(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          color: Provider.of<ChangeSettings>(context).isDark
+                              ? Theme.of(context).primaryColorLight
+                              : Theme.of(context).primaryColor,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        '${MainApp.version} - by Afaruk59',
+                        style: GoogleFonts.ubuntu(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      )
+    ]);
   }
 }

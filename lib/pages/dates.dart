@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as html_parser;
 import 'package:html/dom.dart' as dom;
+import 'package:namaz_vakti_app/components/container_item.dart';
 import 'package:namaz_vakti_app/components/scaffold_layout.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
@@ -74,257 +75,244 @@ class _DatesCardState extends State<DatesCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(5),
-      child: Card(
-        child: Scrollbar(
-          child: _list.isEmpty
-              ? const Center(child: CircularProgressIndicator())
-              : Padding(
-                  padding: EdgeInsets.symmetric(
-                      vertical:
-                          Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 10.0),
-                  child: ListView.builder(
-                    itemCount: _list.length ~/ 3,
-                    itemBuilder: (context, index) {
-                      index *= 3;
-                      return Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0
-                                ? 5
-                                : 10.0),
-                        child: Card(
-                          color: Theme.of(context).cardColor,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: ListTile(
-                              title: Text(_list[index + 2]),
-                              subtitle: Text('${_list[index + 1]} | ${_list[index]}'),
-                              trailing: FilledButton.tonal(
-                                  onPressed: () async {
-                                    try {
-                                      // iOS'ta device_calendar plugin'inin kendi izin sistemini kullan
-                                      if (Theme.of(context).platform == TargetPlatform.iOS) {
-                                        debugPrint('iOS platformu - device_calendar izin kontrolü');
-                                        var permissionsGranted =
-                                            await _deviceCalendarPlugin.hasPermissions();
-                                        debugPrint('Takvim izin durumu: $permissionsGranted');
+    return Scrollbar(
+      child: _list.isEmpty
+          ? const Center(child: CircularProgressIndicator())
+          : Padding(
+              padding: EdgeInsets.symmetric(
+                  vertical: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 10.0),
+              child: ListView.builder(
+                itemCount: _list.length ~/ 3,
+                itemBuilder: (context, index) {
+                  index *= 3;
+                  return Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal:
+                            Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 10.0),
+                    child: ContainerItem(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: ListTile(
+                          title: Text(_list[index + 2]),
+                          subtitle: Text('${_list[index + 1]} | ${_list[index]}'),
+                          trailing: FilledButton.tonal(
+                              onPressed: () async {
+                                try {
+                                  // iOS'ta device_calendar plugin'inin kendi izin sistemini kullan
+                                  if (Theme.of(context).platform == TargetPlatform.iOS) {
+                                    debugPrint('iOS platformu - device_calendar izin kontrolü');
+                                    var permissionsGranted =
+                                        await _deviceCalendarPlugin.hasPermissions();
+                                    debugPrint('Takvim izin durumu: $permissionsGranted');
 
-                                        if (permissionsGranted.isSuccess &&
-                                            !(permissionsGranted.data ?? false)) {
-                                          debugPrint('İzin yok, talep ediliyor');
-                                          var permissionResult =
-                                              await _deviceCalendarPlugin.requestPermissions();
-                                          debugPrint(
-                                              'İzin talebi sonucu: ${permissionResult.isSuccess}, data: ${permissionResult.data}');
-
-                                          if (!permissionResult.isSuccess ||
-                                              !(permissionResult.data ?? false)) {
-                                            if (context.mounted) {
-                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                SnackBar(
-                                                  content: Text(AppLocalizations.of(context)!
-                                                      .calendarPermissionDenied),
-                                                  action: SnackBarAction(
-                                                    label: 'Ayarlar',
-                                                    onPressed: () async {
-                                                      // iOS ayarlarına yönlendir
-                                                      await openAppSettings();
-                                                    },
-                                                  ),
-                                                ),
-                                              );
-                                            }
-                                            return;
-                                          }
-                                        }
-                                      } else {
-                                        // Android için permission_handler kullan
-                                        debugPrint(
-                                            'Android platformu - permission_handler kontrolü');
-                                        Permission calendarPermission =
-                                            Permission.calendarFullAccess;
-
-                                        var permissionStatus = await calendarPermission.status;
-                                        debugPrint('Android izin durumu: $permissionStatus');
-
-                                        if (!permissionStatus.isGranted) {
-                                          permissionStatus = await calendarPermission.request();
-                                          debugPrint(
-                                              'Android izin talebi sonucu: $permissionStatus');
-
-                                          if (!permissionStatus.isGranted) {
-                                            if (context.mounted) {
-                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                SnackBar(
-                                                  content: Text(AppLocalizations.of(context)!
-                                                      .calendarPermissionDenied),
-                                                ),
-                                              );
-                                            }
-                                            return;
-                                          }
-                                        }
-                                      }
-
-                                      var calendarsResult =
-                                          await _deviceCalendarPlugin.retrieveCalendars();
+                                    if (permissionsGranted.isSuccess &&
+                                        !(permissionsGranted.data ?? false)) {
+                                      debugPrint('İzin yok, talep ediliyor');
+                                      var permissionResult =
+                                          await _deviceCalendarPlugin.requestPermissions();
                                       debugPrint(
-                                          'Takvimler: ${calendarsResult.data?.map((c) => "${c.id}: ${c.name}").join(", ")}');
-                                      var calendars = calendarsResult.data;
+                                          'İzin talebi sonucu: ${permissionResult.isSuccess}, data: ${permissionResult.data}');
 
-                                      if (calendars == null || calendars.isEmpty) {
+                                      if (!permissionResult.isSuccess ||
+                                          !(permissionResult.data ?? false)) {
                                         if (context.mounted) {
                                           ScaffoldMessenger.of(context).showSnackBar(
                                             SnackBar(
-                                              content: Text(
-                                                  AppLocalizations.of(context)!.calendarNotFound),
-                                            ),
-                                          );
-                                        }
-                                        return;
-                                      }
-
-                                      String? selectedCalendarId;
-
-                                      if (calendars.length > 1 && context.mounted) {
-                                        await showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return AlertDialog(
-                                              title: Text(AppLocalizations.of(context)!
-                                                  .selectCalendarTitle),
-                                              content: SizedBox(
-                                                width: double.maxFinite,
-                                                height: 300,
-                                                child: ListView.builder(
-                                                  shrinkWrap: true,
-                                                  itemCount: calendars.length,
-                                                  itemBuilder: (context, index) {
-                                                    return ListTile(
-                                                      title: Text(calendars[index].name ??
-                                                          'İsimsiz Takvim'),
-                                                      onTap: () {
-                                                        selectedCalendarId = calendars[index].id;
-                                                        Navigator.of(context).pop();
-                                                      },
-                                                    );
-                                                  },
-                                                ),
+                                              content: Text(AppLocalizations.of(context)!
+                                                  .calendarPermissionDenied),
+                                              action: SnackBarAction(
+                                                label: 'Ayarlar',
+                                                onPressed: () async {
+                                                  // iOS ayarlarına yönlendir
+                                                  await openAppSettings();
+                                                },
                                               ),
-                                              actions: [
-                                                TextButton(
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                  child: Text(AppLocalizations.of(context)!.leave),
-                                                ),
-                                              ],
-                                            );
-                                          },
-                                        );
-                                      } else {
-                                        selectedCalendarId = calendars.first.id;
-                                      }
-
-                                      if (selectedCalendarId == null) {
+                                            ),
+                                          );
+                                        }
                                         return;
-                                      }
-
-                                      final calendar = calendars.firstWhere(
-                                        (cal) => cal.id == selectedCalendarId,
-                                        orElse: () => calendars.first,
-                                      );
-
-                                      debugPrint(
-                                          'Seçilen Takvim: ${calendar.name} (${calendar.id})');
-
-                                      final originalDate = _list[index];
-                                      debugPrint('Orijinal tarih: $originalDate');
-
-                                      DateTime eventDate;
-                                      try {
-                                        final parts = originalDate.split('-');
-                                        if (parts.length == 3) {
-                                          final day = int.parse(parts[0]);
-                                          final month = int.parse(parts[1]);
-                                          final year = int.parse(parts[2]);
-                                          eventDate = DateTime(year, month, day);
-                                          debugPrint(
-                                              'Oluşturulan tarih: ${eventDate.toIso8601String()}');
-                                        } else {
-                                          eventDate = DateTime.parse(originalDate);
-                                        }
-                                      } catch (e) {
-                                        debugPrint('Tarih parse hatası: $e');
-                                        eventDate = DateTime.now();
-                                      }
-
-                                      debugPrint('Event date: $eventDate');
-
-                                      final startDate = DateTime(
-                                          eventDate.year, eventDate.month, eventDate.day, 0, 0, 0);
-
-                                      final endDate = DateTime(eventDate.year, eventDate.month,
-                                          eventDate.day, 23, 59, 59);
-
-                                      final event = Event(
-                                        calendar.id,
-                                        title: _list[index + 2],
-                                        description: '${_list[index + 1]} | ${_list[index]}',
-                                        start: TZDateTime.from(startDate, tz.local),
-                                        end: TZDateTime.from(endDate, tz.local),
-                                        allDay: true,
-                                      );
-
-                                      final result =
-                                          await _deviceCalendarPlugin.createOrUpdateEvent(event);
-
-                                      debugPrint(
-                                          'Sonuç: ${result?.isSuccess}, ID: ${result?.data}');
-
-                                      if (context.mounted) {
-                                        if (result?.isSuccess == true) {
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            SnackBar(
-                                              content: Text(AppLocalizations.of(context)!
-                                                  .calendarAddSuccess(_list[index + 2])),
-                                            ),
-                                          );
-                                        } else {
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            SnackBar(
-                                              content: Text(AppLocalizations.of(context)!
-                                                  .calendarAddError(result?.errors
-                                                          .map((e) => e.errorMessage)
-                                                          .join(", ") ??
-                                                      "Bilinmeyen hata")),
-                                            ),
-                                          );
-                                        }
-                                      }
-                                    } catch (e) {
-                                      debugPrint('Genel hata: $e');
-                                      if (context.mounted) {
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          SnackBar(
-                                            content: Text(AppLocalizations.of(context)!
-                                                .generalError(e.toString())),
-                                          ),
-                                        );
                                       }
                                     }
-                                  },
-                                  child: const Icon(Icons.edit_calendar_rounded)),
-                            ),
-                          ),
+                                  } else {
+                                    // Android için permission_handler kullan
+                                    debugPrint('Android platformu - permission_handler kontrolü');
+                                    Permission calendarPermission = Permission.calendarFullAccess;
+
+                                    var permissionStatus = await calendarPermission.status;
+                                    debugPrint('Android izin durumu: $permissionStatus');
+
+                                    if (!permissionStatus.isGranted) {
+                                      permissionStatus = await calendarPermission.request();
+                                      debugPrint('Android izin talebi sonucu: $permissionStatus');
+
+                                      if (!permissionStatus.isGranted) {
+                                        if (context.mounted) {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(
+                                              content: Text(AppLocalizations.of(context)!
+                                                  .calendarPermissionDenied),
+                                            ),
+                                          );
+                                        }
+                                        return;
+                                      }
+                                    }
+                                  }
+
+                                  var calendarsResult =
+                                      await _deviceCalendarPlugin.retrieveCalendars();
+                                  debugPrint(
+                                      'Takvimler: ${calendarsResult.data?.map((c) => "${c.id}: ${c.name}").join(", ")}');
+                                  var calendars = calendarsResult.data;
+
+                                  if (calendars == null || calendars.isEmpty) {
+                                    if (context.mounted) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content:
+                                              Text(AppLocalizations.of(context)!.calendarNotFound),
+                                        ),
+                                      );
+                                    }
+                                    return;
+                                  }
+
+                                  String? selectedCalendarId;
+
+                                  if (calendars.length > 1 && context.mounted) {
+                                    await showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: Text(
+                                              AppLocalizations.of(context)!.selectCalendarTitle),
+                                          content: SizedBox(
+                                            width: double.maxFinite,
+                                            height: 300,
+                                            child: ListView.builder(
+                                              shrinkWrap: true,
+                                              itemCount: calendars.length,
+                                              itemBuilder: (context, index) {
+                                                return ListTile(
+                                                  title: Text(
+                                                      calendars[index].name ?? 'İsimsiz Takvim'),
+                                                  onTap: () {
+                                                    selectedCalendarId = calendars[index].id;
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: Text(AppLocalizations.of(context)!.leave),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  } else {
+                                    selectedCalendarId = calendars.first.id;
+                                  }
+
+                                  if (selectedCalendarId == null) {
+                                    return;
+                                  }
+
+                                  final calendar = calendars.firstWhere(
+                                    (cal) => cal.id == selectedCalendarId,
+                                    orElse: () => calendars.first,
+                                  );
+
+                                  debugPrint('Seçilen Takvim: ${calendar.name} (${calendar.id})');
+
+                                  final originalDate = _list[index];
+                                  debugPrint('Orijinal tarih: $originalDate');
+
+                                  DateTime eventDate;
+                                  try {
+                                    final parts = originalDate.split('-');
+                                    if (parts.length == 3) {
+                                      final day = int.parse(parts[0]);
+                                      final month = int.parse(parts[1]);
+                                      final year = int.parse(parts[2]);
+                                      eventDate = DateTime(year, month, day);
+                                      debugPrint(
+                                          'Oluşturulan tarih: ${eventDate.toIso8601String()}');
+                                    } else {
+                                      eventDate = DateTime.parse(originalDate);
+                                    }
+                                  } catch (e) {
+                                    debugPrint('Tarih parse hatası: $e');
+                                    eventDate = DateTime.now();
+                                  }
+
+                                  debugPrint('Event date: $eventDate');
+
+                                  final startDate = DateTime(
+                                      eventDate.year, eventDate.month, eventDate.day, 0, 0, 0);
+
+                                  final endDate = DateTime(
+                                      eventDate.year, eventDate.month, eventDate.day, 23, 59, 59);
+
+                                  final event = Event(
+                                    calendar.id,
+                                    title: _list[index + 2],
+                                    description: '${_list[index + 1]} | ${_list[index]}',
+                                    start: TZDateTime.from(startDate, tz.local),
+                                    end: TZDateTime.from(endDate, tz.local),
+                                    allDay: true,
+                                  );
+
+                                  final result =
+                                      await _deviceCalendarPlugin.createOrUpdateEvent(event);
+
+                                  debugPrint('Sonuç: ${result?.isSuccess}, ID: ${result?.data}');
+
+                                  if (context.mounted) {
+                                    if (result?.isSuccess == true) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text(AppLocalizations.of(context)!
+                                              .calendarAddSuccess(_list[index + 2])),
+                                        ),
+                                      );
+                                    } else {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text(AppLocalizations.of(context)!
+                                              .calendarAddError(result?.errors
+                                                      .map((e) => e.errorMessage)
+                                                      .join(", ") ??
+                                                  "Bilinmeyen hata")),
+                                        ),
+                                      );
+                                    }
+                                  }
+                                } catch (e) {
+                                  debugPrint('Genel hata: $e');
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(AppLocalizations.of(context)!
+                                            .generalError(e.toString())),
+                                      ),
+                                    );
+                                  }
+                                }
+                              },
+                              child: const Icon(Icons.edit_calendar_rounded)),
                         ),
-                      );
-                    },
-                  ),
-                ),
-        ),
-      ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
     );
   }
 }

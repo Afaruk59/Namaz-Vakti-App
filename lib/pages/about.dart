@@ -16,6 +16,7 @@ limitations under the License.
 
 import 'package:flutter/material.dart';
 import 'package:namaz_vakti_app/components/app_card.dart';
+import 'package:namaz_vakti_app/components/container_item.dart';
 import 'package:namaz_vakti_app/components/scaffold_layout.dart';
 import 'package:namaz_vakti_app/components/time_note.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
@@ -45,68 +46,61 @@ class AboutPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(5.0),
-      child: Card(
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const AppCard(),
-              SizedBox(
-                height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 10 : 40,
-              ),
-              Card(
-                color: Theme.of(context).cardColor,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal:
-                          Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
-                  child: ListTile(
-                    title: Text(AppLocalizations.of(context)!.licenseTitle),
-                    onTap: () {
-                      Navigator.pushNamed(context, '/license');
-                    },
-                    trailing: FilledButton.tonal(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/license');
-                      },
-                      child: const Icon(
-                        Icons.text_snippet_outlined,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Card(
-                color: Theme.of(context).cardColor,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal:
-                          Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
-                  child: ListTile(
-                    title: Text(AppLocalizations.of(context)!.githubTitle),
-                    onTap: () async {
-                      Uri? url = Uri.parse('https://github.com/Afaruk59/Namaz-Vakti-App.git');
-                      await launchUrl(url);
-                    },
-                    trailing: FilledButton.tonal(
-                      onPressed: () async {
-                        Uri? url = Uri.parse('https://github.com/Afaruk59/Namaz-Vakti-App.git');
-                        await launchUrl(url);
-                      },
-                      child: const Icon(
-                        Icons.webhook_outlined,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              const TimeNote(),
-            ],
+      padding: EdgeInsets.symmetric(
+          horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const AppCard(),
+          SizedBox(
+            height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 10 : 40,
           ),
-        ),
+          ContainerItem(
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal:
+                      Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
+              child: ListTile(
+                title: Text(AppLocalizations.of(context)!.licenseTitle),
+                onTap: () {
+                  Navigator.pushNamed(context, '/license');
+                },
+                trailing: FilledButton.tonal(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/license');
+                  },
+                  child: const Icon(
+                    Icons.text_snippet_outlined,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          ContainerItem(
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal:
+                      Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
+              child: ListTile(
+                title: Text(AppLocalizations.of(context)!.githubTitle),
+                onTap: () async {
+                  Uri? url = Uri.parse('https://github.com/Afaruk59/Namaz-Vakti-App.git');
+                  await launchUrl(url);
+                },
+                trailing: FilledButton.tonal(
+                  onPressed: () async {
+                    Uri? url = Uri.parse('https://github.com/Afaruk59/Namaz-Vakti-App.git');
+                    await launchUrl(url);
+                  },
+                  child: const Icon(
+                    Icons.webhook_outlined,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const TimeNote(),
+        ],
       ),
     );
   }

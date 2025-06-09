@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
+import 'package:namaz_vakti_app/components/container_item.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:provider/provider.dart';
 
@@ -9,8 +10,7 @@ class GapSlider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Theme.of(context).cardColor,
+    return ContainerItem(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15.0),
         child: Column(
@@ -27,6 +27,7 @@ class GapSlider extends StatelessWidget {
               max: 60,
               divisions: 24,
               secondaryTrackValue: 0,
+              inactiveColor: Colors.transparent,
               label:
                   '${Provider.of<ChangeSettings>(context).gaps[index].toString()} ${AppLocalizations.of(context)!.minuteAbbreviation}',
               onChanged: (value) {

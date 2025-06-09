@@ -30,27 +30,44 @@ class Startup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: false,
-      child: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          title: Text(AppLocalizations.of(context)!.startupTitle),
-          actions: [
-            IconButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/settings');
-              },
-              icon: const Icon(Icons.settings),
-            ),
-            const SizedBox(
-              width: 20,
-            ),
-          ],
+    return Stack(children: [
+      Positioned.fill(
+        child: Image.asset(
+          'assets/img/wallpaper.png',
+          fit: BoxFit.cover,
         ),
-        body: const StartupCard(),
       ),
-    );
+      Container(
+        color: Provider.of<ChangeSettings>(context).color.withValues(alpha: 0.6),
+      ),
+      Provider.of<ChangeSettings>(context).isDark
+          ? Container(
+              color: Colors.black.withValues(alpha: 0.3),
+            )
+          : Container(),
+      PopScope(
+        canPop: false,
+        child: Scaffold(
+          extendBody: true,
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            title: Text(AppLocalizations.of(context)!.startupTitle),
+            actions: [
+              IconButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/settings');
+                },
+                icon: const Icon(Icons.settings),
+              ),
+              const SizedBox(
+                width: 20,
+              ),
+            ],
+          ),
+          body: const StartupCard(),
+        ),
+      ),
+    ]);
   }
 }
 
@@ -60,34 +77,29 @@ class StartupCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(5),
-        child: Card(
-          child: MediaQuery.of(context).orientation == Orientation.portrait
-              ? Column(
+      child: MediaQuery.of(context).orientation == Orientation.portrait
+          ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const AppCard(),
+                SizedBox(
+                  height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 0 : 20,
+                ),
+                const StartupSecondCard(),
+              ],
+            )
+          : const Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const AppCard(),
-                    SizedBox(
-                      height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 0 : 20,
-                    ),
-                    const StartupSecondCard(),
-                  ],
-                )
-              : const Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Expanded(child: AppCard()),
-                        Expanded(child: StartupSecondCard()),
-                      ],
-                    ),
+                    Expanded(child: AppCard()),
+                    Expanded(child: StartupSecondCard()),
                   ],
                 ),
-        ),
-      ),
+              ],
+            ),
     );
   }
 }

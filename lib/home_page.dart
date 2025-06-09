@@ -75,9 +75,23 @@ class _HomePageState extends State<HomePage> {
       body: Stack(
         children: [
           Positioned.fill(
-            child: Image.asset(
-              'assets/img/wallpaper.png',
-              fit: BoxFit.cover,
+            child: ColorFiltered(
+              colorFilter: ColorFilter.mode(
+                Provider.of<ChangeSettings>(context).isDark
+                    ? Colors.black.withValues(alpha: 0.4)
+                    : Colors.black.withValues(alpha: 0.0),
+                BlendMode.srcATop,
+              ),
+              child: ColorFiltered(
+                colorFilter: ColorFilter.mode(
+                  Provider.of<ChangeSettings>(context).color.withValues(alpha: 1),
+                  BlendMode.color,
+                ),
+                child: Image.asset(
+                  'assets/img/wallpaper.png',
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
           ),
           Padding(

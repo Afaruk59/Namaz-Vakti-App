@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:namaz_vakti_app/components/scaffold_layout.dart';
+import 'package:namaz_vakti_app/components/transparent_card.dart';
 import 'package:namaz_vakti_app/components/tenbih_card.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:provider/provider.dart';
@@ -32,43 +33,36 @@ class More extends StatelessWidget {
       title: AppLocalizations.of(context)!.morePageTitle,
       actions: const [],
       background: false,
-      body: Padding(
-        padding: const EdgeInsets.all(5),
-        child: Card(
-          child: ListView(
-            children: [
-              SizedBox(
-                  height: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
-              MoreCard(
-                title: AppLocalizations.of(context)!.datesTitle,
-                icon: const Icon(Icons.calendar_month),
-                route: '/dates',
-              ),
-              MoreCard(
-                title: AppLocalizations.of(context)!.kazaTitle,
-                icon: const Icon(Icons.note_alt),
-                route: '/kaza',
-              ),
-              BooksCard(
-                title: AppLocalizations.of(context)!.booksTitle,
-                icon: const Icon(Icons.local_library_rounded),
-                route: '/books',
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal:
-                        Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
-                child: const TenbihCard(),
-              ),
-              ReviewCard(),
-              MoreCard(
-                title: AppLocalizations.of(context)!.aboutTitle,
-                icon: const Icon(Icons.info),
-                route: '/about',
-              ),
-            ],
+      body: ListView(
+        children: [
+          SizedBox(height: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
+          MoreCard(
+            title: AppLocalizations.of(context)!.datesTitle,
+            icon: const Icon(Icons.calendar_month),
+            route: '/dates',
           ),
-        ),
+          MoreCard(
+            title: AppLocalizations.of(context)!.kazaTitle,
+            icon: const Icon(Icons.note_alt),
+            route: '/kaza',
+          ),
+          BooksCard(
+            title: AppLocalizations.of(context)!.booksTitle,
+            icon: const Icon(Icons.local_library_rounded),
+            route: '/books',
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
+            child: const TenbihCard(),
+          ),
+          ReviewCard(),
+          MoreCard(
+            title: AppLocalizations.of(context)!.aboutTitle,
+            icon: const Icon(Icons.info),
+            route: '/about',
+          ),
+        ],
       ),
     );
   }
@@ -82,8 +76,7 @@ class ReviewCard extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(
           horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
-      child: Card(
-        color: Theme.of(context).cardColor,
+      child: TransparentCard(
         child: Padding(
           padding: EdgeInsets.symmetric(
               horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
@@ -126,8 +119,7 @@ class MoreCard extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(
           horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
-      child: Card(
-        color: Theme.of(context).cardColor,
+      child: TransparentCard(
         child: Padding(
           padding: EdgeInsets.symmetric(
               horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
@@ -167,8 +159,7 @@ class BooksCard extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(
           horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
-      child: Card(
-        color: Theme.of(context).cardColor,
+      child: TransparentCard(
         child: Padding(
           padding: EdgeInsets.symmetric(
               horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),

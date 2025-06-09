@@ -17,7 +17,6 @@ limitations under the License.
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:namaz_vakti_app/components/container_item.dart';
-import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:namaz_vakti_app/pages/timesPage/calendar.dart';
 import 'package:namaz_vakti_app/pages/timesPage/clock.dart';
 import 'package:namaz_vakti_app/data/time_data.dart';

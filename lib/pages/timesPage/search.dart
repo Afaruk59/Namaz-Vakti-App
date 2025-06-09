@@ -17,6 +17,8 @@ limitations under the License.
 import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:namaz_vakti_app/components/container_item.dart';
+import 'package:namaz_vakti_app/components/scaffold_layout.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
@@ -82,70 +84,63 @@ class _SearchState extends State<Search> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.searchTitle),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(5.0),
-        child: Card(
-          child: _first
-              ? const Center(
-                  child: CircularProgressIndicator(),
-                )
-              : Padding(
-                  padding: EdgeInsets.all(
-                      Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 10.0),
-                  child: ListView.builder(
-                    itemCount: filteredItems.length + 1,
-                    itemBuilder: (context, index) {
-                      if (index == 0) {
-                        return Card(
-                          child: TextField(
-                            controller: searchController,
-                            decoration: InputDecoration(
-                              labelText: AppLocalizations.of(context)!.search,
-                              hintText: AppLocalizations.of(context)!.enterLoc,
-                              prefixIcon: const Icon(Icons.search),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(
-                                    Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
-                              ),
-                            ),
+    return ScaffoldLayout(
+      title: AppLocalizations.of(context)!.searchTitle,
+      actions: const [],
+      background: true,
+      body: _first
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : Padding(
+              padding: EdgeInsets.all(
+                  Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
+              child: ListView.builder(
+                itemCount: filteredItems.length + 1,
+                itemBuilder: (context, index) {
+                  if (index == 0) {
+                    return Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: TextField(
+                        controller: searchController,
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context)!.search,
+                          hintText: AppLocalizations.of(context)!.enterLoc,
+                          prefixIcon: const Icon(Icons.search),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(
+                                Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
                           ),
-                        );
-                      }
-                      return Card(
-                        color: Theme.of(context).cardColor,
-                        child: ListTile(
-                          leading: const Icon(Icons.location_city_rounded),
-                          title: Text(column2Data[filteredItems[index - 1]]),
-                          subtitle: Text(column3Data[filteredItems[index - 1]]),
-                          trailing: FilledButton.tonal(
-                              onPressed: () {
-                                Provider.of<ChangeSettings>(context, listen: false)
-                                    .changeOtoLoc(false);
-                                String cityId = column1Data[filteredItems[index - 1]].toString();
-                                String cityName = column2Data[filteredItems[index - 1]].toString();
-                                String stateName = column3Data[filteredItems[index - 1]].toString();
-
-                                ChangeSettings().saveLocaltoSharedPref(cityId, cityName, stateName);
-                                Navigator.pop(context);
-                                Provider.of<ChangeSettings>(context, listen: false).isfirst == true
-                                    ? Navigator.pop(context)
-                                    : Navigator.popAndPushNamed(context, '/');
-                                Provider.of<ChangeSettings>(context, listen: false)
-                                    .saveFirsttoSharedPref(false);
-                              },
-                              child: const Icon(Icons.arrow_circle_right_rounded)),
                         ),
-                      );
-                    },
-                  ),
-                ),
-        ),
-      ),
+                      ),
+                    );
+                  }
+                  return ContainerItem(
+                    child: ListTile(
+                      leading: const Icon(Icons.location_city_rounded),
+                      title: Text(column2Data[filteredItems[index - 1]]),
+                      subtitle: Text(column3Data[filteredItems[index - 1]]),
+                      trailing: FilledButton.tonal(
+                          onPressed: () {
+                            Provider.of<ChangeSettings>(context, listen: false).changeOtoLoc(false);
+                            String cityId = column1Data[filteredItems[index - 1]].toString();
+                            String cityName = column2Data[filteredItems[index - 1]].toString();
+                            String stateName = column3Data[filteredItems[index - 1]].toString();
+
+                            ChangeSettings().saveLocaltoSharedPref(cityId, cityName, stateName);
+                            Navigator.pop(context);
+                            Provider.of<ChangeSettings>(context, listen: false).isfirst == true
+                                ? Navigator.pop(context)
+                                : Navigator.popAndPushNamed(context, '/');
+                            Provider.of<ChangeSettings>(context, listen: false)
+                                .saveFirsttoSharedPref(false);
+                          },
+                          child: const Icon(Icons.arrow_circle_right_rounded)),
+                    ),
+                  );
+                },
+              ),
+            ),
     );
   }
 }

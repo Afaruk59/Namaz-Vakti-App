@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:namaz_vakti_app/components/lang_selector.dart';
 import 'package:namaz_vakti_app/components/scaffold_layout.dart';
+import 'package:namaz_vakti_app/components/transparent_card.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
@@ -100,111 +101,88 @@ class _SettingsCardState extends State<SettingsCard> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(5),
-      child: Card(
-        child: Padding(
-          padding: EdgeInsets.all(
-              Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5.0 : 15.0),
-          child: ListView(
-            children: [
-              const LangSelector(),
-              Card(
-                color: Theme.of(context).cardColor,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                  child: SwitchListTile(
-                    title: Text(AppLocalizations.of(context)!.otoLocal),
-                    value: Provider.of<ChangeSettings>(context).otoLocal,
-                    onChanged: (_) =>
-                        Provider.of<ChangeSettings>(context, listen: false).toggleOtoLoc(),
-                  ),
-                ),
+      padding:
+          EdgeInsets.all(Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5.0 : 15.0),
+      child: ListView(
+        children: [
+          const LangSelector(),
+          TransparentCard(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              child: SwitchListTile(
+                title: Text(AppLocalizations.of(context)!.otoLocal),
+                value: Provider.of<ChangeSettings>(context).otoLocal,
+                onChanged: (_) =>
+                    Provider.of<ChangeSettings>(context, listen: false).toggleOtoLoc(),
               ),
-              Card(
-                color: Theme.of(context).cardColor,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: SegmentedButton(
-                      segments: const [
-                        ButtonSegment(
-                          value: 0,
-                          icon: Icon(Icons.phone_android_rounded, size: 24),
-                        ),
-                        ButtonSegment(
-                          value: 1,
-                          icon: Icon(Icons.dark_mode_rounded, size: 24),
-                        ),
-                        ButtonSegment(
-                          value: 2,
-                          icon: Icon(Icons.light_mode_rounded, size: 24),
-                        ),
-                      ],
-                      emptySelectionAllowed: false,
-                      selected: {Provider.of<ChangeSettings>(context).themeIndex},
-                      onSelectionChanged: (Set<int> selected) {
-                        Provider.of<ChangeSettings>(context, listen: false)
-                            .toggleTheme(selected.first);
-                      },
-                    ),
-                  ),
-                ),
-              ),
-              Card(
-                color: Theme.of(context).cardColor,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                  child: SwitchListTile(
-                    title: Text(AppLocalizations.of(context)!.gradient),
-                    value: Provider.of<ChangeSettings>(context).gradient,
-                    onChanged: (_) =>
-                        Provider.of<ChangeSettings>(context, listen: false).toggleGrad(),
-                  ),
-                ),
-              ),
-              Card(
-                color: Theme.of(context).cardColor,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                  child: SwitchListTile(
-                    title: Text(AppLocalizations.of(context)!.layout),
-                    subtitle: Provider.of<ChangeSettings>(context).rounded == true
-                        ? Text(AppLocalizations.of(context)!.rounded)
-                        : Text(AppLocalizations.of(context)!.sharp),
-                    value: Provider.of<ChangeSettings>(context).rounded,
-                    onChanged: (_) =>
-                        Provider.of<ChangeSettings>(context, listen: false).toggleShape(),
-                  ),
-                ),
-              ),
-              Card(
-                color: Theme.of(context).cardColor,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      radius: 18,
-                      backgroundColor: Provider.of<ChangeSettings>(context, listen: false).color,
-                    ),
-                    title: Text(AppLocalizations.of(context)!.themeColor),
-                    onTap: () {
-                      pickerColor = Provider.of<ChangeSettings>(context, listen: false).color;
-                      colorPalette(context);
-                    },
-                    trailing: FilledButton.tonal(
-                      onPressed: () {
-                        pickerColor = Provider.of<ChangeSettings>(context, listen: false).color;
-                        colorPalette(context);
-                      },
-                      child: const Icon(Icons.color_lens),
-                    ),
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
+          TransparentCard(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: SegmentedButton(
+                  segments: const [
+                    ButtonSegment(
+                      value: 0,
+                      icon: Icon(Icons.phone_android_rounded, size: 24),
+                    ),
+                    ButtonSegment(
+                      value: 1,
+                      icon: Icon(Icons.dark_mode_rounded, size: 24),
+                    ),
+                    ButtonSegment(
+                      value: 2,
+                      icon: Icon(Icons.light_mode_rounded, size: 24),
+                    ),
+                  ],
+                  emptySelectionAllowed: false,
+                  selected: {Provider.of<ChangeSettings>(context).themeIndex},
+                  onSelectionChanged: (Set<int> selected) {
+                    Provider.of<ChangeSettings>(context, listen: false).toggleTheme(selected.first);
+                  },
+                ),
+              ),
+            ),
+          ),
+          TransparentCard(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              child: SwitchListTile(
+                title: Text(AppLocalizations.of(context)!.layout),
+                subtitle: Provider.of<ChangeSettings>(context).rounded == true
+                    ? Text(AppLocalizations.of(context)!.rounded)
+                    : Text(AppLocalizations.of(context)!.sharp),
+                value: Provider.of<ChangeSettings>(context).rounded,
+                onChanged: (_) => Provider.of<ChangeSettings>(context, listen: false).toggleShape(),
+              ),
+            ),
+          ),
+          TransparentCard(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              child: ListTile(
+                leading: CircleAvatar(
+                  radius: 18,
+                  backgroundColor: Provider.of<ChangeSettings>(context, listen: false).color,
+                ),
+                title: Text(AppLocalizations.of(context)!.themeColor),
+                onTap: () {
+                  pickerColor = Provider.of<ChangeSettings>(context, listen: false).color;
+                  colorPalette(context);
+                },
+                trailing: FilledButton.tonal(
+                  onPressed: () {
+                    pickerColor = Provider.of<ChangeSettings>(context, listen: false).color;
+                    colorPalette(context);
+                  },
+                  child: const Icon(Icons.color_lens),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

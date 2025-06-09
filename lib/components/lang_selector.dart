@@ -15,6 +15,8 @@ limitations under the License.
 */
 
 import 'package:flutter/material.dart';
+import 'package:namaz_vakti_app/components/container_item.dart';
+import 'package:namaz_vakti_app/components/transparent_card.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
@@ -24,8 +26,7 @@ class LangSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Theme.of(context).cardColor,
+    return TransparentCard(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15.0),
         child: ListTile(
@@ -61,10 +62,10 @@ class LangPage extends StatelessWidget {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(5),
-        child: Card(
+        child: TransparentCard(
           child: Padding(
             padding: EdgeInsets.all(
-                Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5.0 : 15.0),
+                Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5.0 : 10.0),
             child: ListView.builder(
               itemCount: 7,
               itemBuilder: (context, index) {
@@ -94,8 +95,7 @@ class LangItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Theme.of(context).cardColor,
+    return ContainerItem(
       child: ListTile(
         title: Text(langs[index]),
         onTap: () {
