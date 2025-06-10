@@ -57,9 +57,8 @@ void main() async {
     }
   }
   tz.initializeTimeZones();
-  tz.setLocalLocation(tz.getLocation(DateTime.now().timeZoneOffset.inHours >= 3
-      ? 'Europe/Istanbul'
-      : 'UTC')); // Basit örnekleme ile lokal saat dilimi
+  tz.setLocalLocation(
+      tz.getLocation(DateTime.now().timeZoneOffset.inHours >= 3 ? 'Europe/Istanbul' : 'UTC'));
 
   await ChangeSettings().createSharedPrefObject();
   ChangeSettings().loadLocalFromSharedPref();
@@ -71,8 +70,6 @@ void main() async {
         child: const MainApp(),
       ),
     );
-
-    // Uygulama tamamen yüklenip render edildikten sonra splash'i kaldır
     Future.delayed(const Duration(milliseconds: 1500), () {
       FlutterNativeSplash.remove();
     });
