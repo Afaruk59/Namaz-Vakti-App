@@ -217,8 +217,16 @@
     "@allAlarmsEnabled":{
         "description": "Сообщение о включении всех будильников"
     },
-    "allAlarmsDisabled": "Все будильники выключены.",
+    "allAlarmsDisabled": "Все будильники отключены.",
     "@allAlarmsDisabled":{
-        "description": "Сообщение о выключении всех будильников"
+        "description": "All alarms disabled message"
+    },
+    "compassOptimizationTitle": "Оптимизация Компаса",
+    "@compassOptimizationTitle": {
+        "description": "Title for compass optimization dialog"
+    },
+    "compassOptimizationMessage": "Откалибруйте компас для более точных результатов.",
+    "@compassOptimizationMessage": {
+        "description": "Message for compass optimization dialog"
     }
 }

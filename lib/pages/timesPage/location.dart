@@ -221,8 +221,9 @@ class LocationState extends State<Location> {
     String cityName = column2Data[index].toString();
     String stateName = column3Data[index].toString();
 
-    ChangeSettings().saveLocaltoSharedPref(cityId, cityName, stateName);
     if (mounted) {
+      Provider.of<ChangeSettings>(context, listen: false)
+          .saveLocaltoSharedPref(cityId, cityName, stateName);
       Provider.of<ChangeSettings>(context, listen: false).isfirst == true
           ? Navigator.pop(context)
           : Navigator.popAndPushNamed(context, '/');

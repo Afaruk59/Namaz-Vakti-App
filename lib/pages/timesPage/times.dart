@@ -80,7 +80,7 @@ class _TimesBodyState extends State<TimesBody> {
       }
     } else {
       Provider.of<TimeData>(context, listen: false).switchClock(true);
-      Provider.of<TimeData>(context, listen: false).loadPrayerTimes(DateTime.now());
+      Provider.of<TimeData>(context, listen: false).loadPrayerTimes(DateTime.now(), context);
     }
   }
 
@@ -295,7 +295,7 @@ class _TopTimesCardState extends State<TopTimesCard> {
                         });
                         _changeDate();
                         Provider.of<TimeData>(context, listen: false)
-                            .loadPrayerTimes(DateTime.now().add(Duration(days: count)));
+                            .loadPrayerTimes(DateTime.now().add(Duration(days: count)), context);
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -345,8 +345,8 @@ class _TopTimesCardState extends State<TopTimesCard> {
                                   }
                                 });
                                 _changeDate();
-                                Provider.of<TimeData>(context, listen: false)
-                                    .loadPrayerTimes(DateTime.now().add(Duration(days: count)));
+                                Provider.of<TimeData>(context, listen: false).loadPrayerTimes(
+                                    DateTime.now().add(Duration(days: count)), context);
                               }
                             },
                             icon: const Icon(Icons.arrow_back_ios_new),
@@ -376,8 +376,8 @@ class _TopTimesCardState extends State<TopTimesCard> {
                                   }
                                 });
                                 _changeDate();
-                                Provider.of<TimeData>(context, listen: false)
-                                    .loadPrayerTimes(DateTime.now().add(Duration(days: count)));
+                                Provider.of<TimeData>(context, listen: false).loadPrayerTimes(
+                                    DateTime.now().add(Duration(days: count)), context);
                               }
                             },
                             icon: const Icon(Icons.arrow_forward_ios),

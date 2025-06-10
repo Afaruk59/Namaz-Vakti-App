@@ -216,8 +216,16 @@
     "@allAlarmsEnabled":{
         "description": "Message d'activation de toutes les alarmes"
     },
-    "allAlarmsDisabled": "Toutes les alarmes désactivées.",
+    "allAlarmsDisabled": "Toutes les alarmes ont été désactivées.",
     "@allAlarmsDisabled":{
-        "description": "Message de désactivation de toutes les alarmes"
+        "description": "All alarms disabled message"
+    },
+    "compassOptimizationTitle": "Optimisation de la Boussole",
+    "@compassOptimizationTitle": {
+        "description": "Title for compass optimization dialog"
+    },
+    "compassOptimizationMessage": "Calibrez votre boussole pour des résultats plus précis.",
+    "@compassOptimizationMessage": {
+        "description": "Message for compass optimization dialog"
     }
 }

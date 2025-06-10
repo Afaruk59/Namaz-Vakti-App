@@ -20,7 +20,6 @@ import 'package:namaz_vakti_app/components/scaffold_layout.dart';
 import 'package:namaz_vakti_app/components/container_item.dart';
 import 'package:namaz_vakti_app/components/transparent_card.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
-import 'package:namaz_vakti_app/data/time_data.dart';
 import 'package:provider/provider.dart';
 import 'package:xml/xml.dart' as xml;
 import 'package:http/http.dart' as http;
@@ -33,7 +32,39 @@ class Qibla extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScaffoldLayout(
       title: AppLocalizations.of(context)!.qiblaPageTitle,
-      actions: const [],
+      actions: [
+        IconButton(
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: Text(AppLocalizations.of(context)!.compassOptimizationTitle),
+                content: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Expanded(
+                      flex: 1,
+                      child: Icon(Icons.compass_calibration_rounded, size: 50),
+                    ),
+                    Expanded(
+                      flex: 3,
+                      child: Text(AppLocalizations.of(context)!.compassOptimizationMessage),
+                    ),
+                  ],
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text(AppLocalizations.of(context)!.ok),
+                  ),
+                ],
+              ),
+            );
+          },
+          icon: const Icon(Icons.info_outline_rounded),
+        ),
+        const SizedBox(width: 20),
+      ],
       background: false,
       body: const QiblaCard(),
     );
@@ -68,7 +99,7 @@ class _QiblaCardState extends State<QiblaCard> {
 
   Future<void> loadTarget() async {
     String url =
-        'https://www.namazvakti.com/XML.php?cityID=${ChangeSettings.cityID}'; // Çevrimiçi XML dosyasının URL'si
+        'https://www.namazvakti.com/XML.php?cityID=${Provider.of<ChangeSettings>(context, listen: false).cityID}'; // Çevrimiçi XML dosyasının URL'si
 
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
@@ -181,7 +212,7 @@ class _QiblaCardState extends State<QiblaCard> {
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
                                       child: Text(
-                                        Provider.of<TimeData>(context).city!,
+                                        Provider.of<ChangeSettings>(context).cityName!,
                                         textAlign: TextAlign.center,
                                         style: const TextStyle(fontWeight: FontWeight.bold),
                                       ),
@@ -197,7 +228,7 @@ class _QiblaCardState extends State<QiblaCard> {
                                     ),
                                   ),
                                   Text(
-                                    Provider.of<TimeData>(context).cityState!,
+                                    Provider.of<ChangeSettings>(context).cityState!,
                                   ),
                                 ],
                               )),

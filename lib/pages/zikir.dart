@@ -79,8 +79,7 @@ class _ZikirCardState extends State<ZikirCard> {
       children: [
         Expanded(
           child: Padding(
-            padding: EdgeInsets.all(
-                Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5.0 : 10.0),
+            padding: const EdgeInsets.all(5),
             child: Column(
               children: [
                 Expanded(

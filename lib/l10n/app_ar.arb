@@ -217,9 +217,17 @@
     "@allAlarmsEnabled":{
         "description": "رسالة تفعيل جميع المنبهات"
     },
-    "allAlarmsDisabled": "تم إلغاء تفعيل جميع المنبهات.",
+    "allAlarmsDisabled": "تم تعطيل جميع التنبيهات.",
     "@allAlarmsDisabled":{
-        "description": "رسالة إلغاء تفعيل جميع المنبهات"
+        "description": "All alarms disabled message"
+    },
+    "compassOptimizationTitle": "تحسين البوصلة",
+    "@compassOptimizationTitle": {
+        "description": "Title for compass optimization dialog"
+    },
+    "compassOptimizationMessage": "قم بمعايرة البوصلة للحصول على نتائج أكثر دقة.",
+    "@compassOptimizationMessage": {
+        "description": "Message for compass optimization dialog"
     }
 }
 

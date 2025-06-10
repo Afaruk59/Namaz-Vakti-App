@@ -219,5 +219,13 @@
     "allAlarmsDisabled": "All alarms disabled.",
     "@allAlarmsDisabled":{
         "description": "All alarms disabled message"
+    },
+    "compassOptimizationTitle": "Compass Optimization",
+    "@compassOptimizationTitle": {
+        "description": "Title for compass optimization dialog"
+    },
+    "compassOptimizationMessage": "Calibrate your compass for more accurate results.",
+    "@compassOptimizationMessage": {
+        "description": "Message for compass optimization dialog"
     }
 }

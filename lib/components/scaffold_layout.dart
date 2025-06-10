@@ -14,11 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:namaz_vakti_app/data/change_settings.dart';
-import 'package:provider/provider.dart';
+import 'package:namaz_vakti_app/components/transparent_card.dart';
 
 class ScaffoldLayout extends StatelessWidget {
   const ScaffoldLayout(
@@ -33,32 +30,25 @@ class ScaffoldLayout extends StatelessWidget {
   final bool background;
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        background
-            ? ClipRRect(
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 15.0, sigmaY: 15.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Provider.of<ChangeSettings>(context).isDark == false
-                          ? Colors.white.withValues(alpha: 0.1)
-                          : Colors.black.withValues(alpha: 0.1),
-                    ),
-                    child: const SizedBox.expand(),
-                  ),
-                ),
-              )
-            : Container(),
-        Scaffold(
-          resizeToAvoidBottomInset: false,
-          appBar: AppBar(
-            title: Text(title),
-            actions: actions,
-          ),
-          body: body,
-        )
-      ],
-    );
+    return background
+        ? TransparentCard(
+            padding: false,
+            child: Scaffold(
+              resizeToAvoidBottomInset: false,
+              appBar: AppBar(
+                title: Text(title),
+                actions: actions,
+              ),
+              body: body,
+            ),
+          )
+        : Scaffold(
+            resizeToAvoidBottomInset: false,
+            appBar: AppBar(
+              title: Text(title),
+              actions: actions,
+            ),
+            body: body,
+          );
   }
 }

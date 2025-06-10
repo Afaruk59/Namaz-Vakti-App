@@ -666,8 +666,16 @@
     "@allAlarmsEnabled":{
         "description": "All alarms enabled message"
     },
-    "allAlarmsDisabled": "Tüm alarmlar kapatıldı.",
+    "allAlarmsDisabled": "Tüm alarmlar devre dışı bırakıldı.",
     "@allAlarmsDisabled":{
         "description": "All alarms disabled message"
+    },
+    "compassOptimizationTitle": "Pusula Optimizasyonu",
+    "@compassOptimizationTitle": {
+        "description": "Title for compass optimization dialog"
+    },
+    "compassOptimizationMessage": "Daha doğru sonuç almak için pusulanızı kalibre edin.",
+    "@compassOptimizationMessage": {
+        "description": "Message for compass optimization dialog"
     }
 }

@@ -31,9 +31,9 @@ class ChangeSettings with ChangeNotifier {
   int themeIndex = 0;
   Color color = Colors.blueGrey[500]!;
 
-  static String? cityID;
-  static String? cityName;
-  static String? cityState;
+  String? cityID;
+  String? cityName;
+  String? cityState;
 
   bool isfirst = true;
 
@@ -303,6 +303,7 @@ class ChangeSettings with ChangeNotifier {
     cityID = value;
     cityName = name;
     cityState = state;
+    notifyListeners();
   }
 
   void toggleOtoLoc() {

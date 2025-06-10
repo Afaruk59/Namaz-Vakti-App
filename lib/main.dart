@@ -14,8 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -40,7 +38,6 @@ import 'package:namaz_vakti_app/data/time_data.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
-import 'package:namaz_vakti_app/pages/splash_screen.dart';
 import 'dart:io' show Platform;
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -76,10 +73,11 @@ void main() async {
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
-  static String version = '1.4.3';
+  static String version = '1.5.0';
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<ChangeSettings>(context, listen: false).loadLocalFromSharedPref();
     Provider.of<ChangeSettings>(context, listen: false).changeHeight(context);
     Provider.of<ChangeSettings>(context, listen: false).loadCol();
     Provider.of<ChangeSettings>(context, listen: false).loadThemeFromSharedPref();
@@ -99,16 +97,12 @@ class MainApp extends StatelessWidget {
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       locale: Provider.of<ChangeSettings>(context).locale,
       debugShowCheckedModeBanner: false,
-      initialRoute: Provider.of<ChangeSettings>(context, listen: false).isfirst == true
-          ? '/startup'
-          : '/splash',
+      initialRoute:
+          Provider.of<ChangeSettings>(context, listen: false).isfirst == true ? '/startup' : '/',
       onGenerateRoute: (settings) {
         Widget? page;
 
         switch (settings.name) {
-          case '/splash':
-            page = const SplashScreen();
-            break;
           case '/':
             page = ChangeNotifierProvider<TimeData>(
               create: (context) => TimeData(),
@@ -285,9 +279,6 @@ class MainApp extends StatelessWidget {
             borderRadius: BorderRadius.circular(
                 Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
           ),
-        ),
-        dialogTheme: const DialogTheme(
-          backgroundColor: Colors.transparent,
         ),
         cardColor: Provider.of<ChangeSettings>(context).isDark == false
             ? const Color.fromARGB(255, 230, 230, 230)

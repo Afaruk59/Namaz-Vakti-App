@@ -32,19 +32,19 @@ class Startup extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(children: [
       Positioned.fill(
-        child: Image.asset(
-          'assets/img/wallpaper.png',
-          fit: BoxFit.cover,
+        child: ColorFiltered(
+          colorFilter: ColorFilter.mode(
+            Provider.of<ChangeSettings>(context).color.withValues(alpha: 1),
+            BlendMode.color,
+          ),
+          child: Image.asset(
+            Provider.of<ChangeSettings>(context).isDark
+                ? 'assets/img/wallpaperdark.png'
+                : 'assets/img/wallpaper.png',
+            fit: BoxFit.cover,
+          ),
         ),
       ),
-      Container(
-        color: Provider.of<ChangeSettings>(context).color.withValues(alpha: 0.6),
-      ),
-      Provider.of<ChangeSettings>(context).isDark
-          ? Container(
-              color: Colors.black.withValues(alpha: 0.3),
-            )
-          : Container(),
       PopScope(
         canPop: false,
         child: Scaffold(

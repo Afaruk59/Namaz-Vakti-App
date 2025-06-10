@@ -216,8 +216,16 @@
     "@allAlarmsEnabled":{
         "description": "Mensaje de todas las alarmas activadas"
     },
-    "allAlarmsDisabled": "Todas las alarmas desactivadas.",
+    "allAlarmsDisabled": "Todas las alarmas han sido desactivadas.",
     "@allAlarmsDisabled":{
-        "description": "Mensaje de todas las alarmas desactivadas"
+        "description": "All alarms disabled message"
+    },
+    "compassOptimizationTitle": "Optimización de la Brújula",
+    "@compassOptimizationTitle": {
+        "description": "Title for compass optimization dialog"
+    },
+    "compassOptimizationMessage": "Calibre su brújula para obtener resultados más precisos.",
+    "@compassOptimizationMessage": {
+        "description": "Message for compass optimization dialog"
     }
 }
