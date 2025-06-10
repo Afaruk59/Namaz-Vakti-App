@@ -16,6 +16,7 @@ limitations under the License.
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -43,7 +44,9 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
   if (Platform.isAndroid) {
     const platform = MethodChannel('com.afaruk59.namaz_vakti_app/notifications');
     try {
@@ -68,6 +71,11 @@ void main() async {
         child: const MainApp(),
       ),
     );
+
+    // Uygulama tamamen yüklenip render edildikten sonra splash'i kaldır
+    Future.delayed(const Duration(milliseconds: 1500), () {
+      FlutterNativeSplash.remove();
+    });
   });
 }
 
