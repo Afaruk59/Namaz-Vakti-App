@@ -41,14 +41,15 @@ class LicensePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.all(10.0),
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
       child: ContainerItem(
-        child: Padding(
-          padding: EdgeInsets.all(15.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
+          child: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: Scrollbar(
+          child: ListView(
+            shrinkWrap: true,
+            children: const [
               Text(
                 '''
 A globally functioning prayer times application developed with Flutter.
@@ -67,7 +68,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
             ],
           ),
         ),
-      ),
+      )),
     );
   }
 }

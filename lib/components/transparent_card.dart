@@ -12,27 +12,36 @@ class TransparentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: padding ? const EdgeInsets.all(3.0) : EdgeInsets.zero,
-      child: ClipRRect(
-        borderRadius:
-            BorderRadius.circular(Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 15.0, sigmaY: 15.0),
-          enabled: blur,
-          child: Container(
-            decoration: BoxDecoration(
-              color: Provider.of<ChangeSettings>(context).isDark == false
-                  ? Colors.white.withValues(alpha: 0.15)
-                  : Colors.black.withValues(alpha: 0.15), // Şeffaf beyaz
+    final bool isTopMost = ModalRoute.of(context)?.isCurrent ?? true;
+
+    return isTopMost
+        ? Padding(
+            padding: padding ? const EdgeInsets.all(3.0) : EdgeInsets.zero,
+            child: ClipRRect(
               borderRadius: BorderRadius.circular(
                   Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
-              border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 15.0, sigmaY: 15.0),
+                enabled: blur,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Provider.of<ChangeSettings>(context).isDark == false
+                        ? Colors.white.withValues(alpha: 0.15)
+                        : Colors.black.withValues(alpha: 0.15), // Şeffaf beyaz
+                    borderRadius: BorderRadius.circular(
+                        Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
+                    border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+                  ),
+                  child: child,
+                ),
+              ),
             ),
-            child: child,
-          ),
-        ),
-      ),
-    );
+          )
+        : Padding(
+            padding: padding ? const EdgeInsets.all(3.0) : EdgeInsets.zero,
+            child: Container(
+              child: child,
+            ),
+          );
   }
 }
