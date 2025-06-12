@@ -7,6 +7,7 @@ environment:
   sdk: '>=3.4.4 <4.0.0'
 
 dependencies:
+  blurrycontainer: ^2.1.0
   connectivity_plus: ^6.0.5
   csv: ^6.0.0
   device_calendar: ^4.3.3
@@ -49,14 +50,21 @@ flutter:
     - assets/svg/
 
 flutter_native_splash:
-  icon_only: true
+  image: assets/img/logo.png
+  image_dark: assets/img/logo.png
   
   color: "#FFFFFF"
   color_dark: "#1E1E1E"
   
+  android_gravity: center
+  ios_content_mode: center
+  
+  android: true
   android_12:
+    image: assets/img/logo.png
     icon_background_color: "#FFFFFF"
     icon_background_color_dark: "#1E1E1E"
+  
   ios: true
   web: false
   fullscreen: true

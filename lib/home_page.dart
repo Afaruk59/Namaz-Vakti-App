@@ -92,8 +92,8 @@ class _HomePageState extends State<HomePage> {
           Padding(
             padding: EdgeInsets.only(
               bottom: Provider.of<ChangeSettings>(context).currentHeight! < 700 || Platform.isIOS
-                  ? 70
-                  : 80,
+                  ? 60
+                  : 70,
             ),
             child: Center(
               child: PageView(
@@ -103,12 +103,12 @@ class _HomePageState extends State<HomePage> {
                     _currentIndex = index;
                   });
                 },
-                children: [
-                  Zikir(pageIndex: _currentIndex),
-                  Qibla(pageIndex: _currentIndex),
-                  Times(pageIndex: _currentIndex),
-                  More(pageIndex: _currentIndex),
-                  Settings(pageIndex: _currentIndex),
+                children: const [
+                  Zikir(),
+                  Qibla(),
+                  Times(),
+                  More(),
+                  Settings(),
                 ],
               ),
             ),
@@ -137,15 +137,12 @@ class _HomePageState extends State<HomePage> {
           ),
           TransparentCard(
             blur: _currentIndex == 2 ? true : false,
-            child: SizedBox.square(
-              dimension: Provider.of<ChangeSettings>(context).currentHeight! < 700 || Platform.isIOS
-                  ? 60
-                  : 70,
+            child: SizedBox(
+              height: Provider.of<ChangeSettings>(context).currentHeight! < 700 || Platform.isIOS
+                  ? 50
+                  : 60,
               child: IconButton(
                 iconSize: 28,
-                style: IconButton.styleFrom(
-                  overlayColor: Colors.transparent,
-                ),
                 onPressed: () {
                   _pageController.animateToPage(2,
                       duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);

@@ -81,7 +81,7 @@ class StartupCard extends StatelessWidget {
           ? Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const AppCard(),
+                const AppCard(blur: true),
                 SizedBox(
                   height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 0 : 20,
                 ),
@@ -94,7 +94,7 @@ class StartupCard extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Expanded(child: AppCard()),
+                    Expanded(child: AppCard(blur: true)),
                     Expanded(child: StartupSecondCard()),
                   ],
                 ),
@@ -115,7 +115,7 @@ class StartupSecondCard extends StatelessWidget {
       children: [
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 10.0),
-          child: TimeNote(),
+          child: TimeNote(blur: true),
         ),
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 10.0),

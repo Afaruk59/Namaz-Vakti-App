@@ -26,8 +26,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class Qibla extends StatelessWidget {
-  const Qibla({super.key, this.pageIndex = 0});
-  final int pageIndex;
+  const Qibla({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -67,14 +66,13 @@ class Qibla extends StatelessWidget {
         const SizedBox(width: 20),
       ],
       background: false,
-      body: QiblaCard(pageIndex: pageIndex),
+      body: const QiblaCard(),
     );
   }
 }
 
 class QiblaCard extends StatefulWidget {
-  const QiblaCard({super.key, required this.pageIndex});
-  final int pageIndex;
+  const QiblaCard({super.key});
 
   @override
   State<QiblaCard> createState() => _QiblaCardState();
@@ -191,7 +189,6 @@ class _QiblaCardState extends State<QiblaCard> {
                 Expanded(
                   flex: 4,
                   child: TransparentCard(
-                    blur: widget.pageIndex == 1 ? true : false,
                     child: Center(
                       child: _buildCompass(),
                     ),
@@ -200,7 +197,6 @@ class _QiblaCardState extends State<QiblaCard> {
                 Expanded(
                   flex: 1,
                   child: TransparentCard(
-                    blur: widget.pageIndex == 1 ? true : false,
                     child: Padding(
                       padding: const EdgeInsets.all(5),
                       child: Row(

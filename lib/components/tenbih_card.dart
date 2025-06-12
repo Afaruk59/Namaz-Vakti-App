@@ -24,13 +24,10 @@ import 'package:url_launcher/url_launcher.dart';
 class TenbihCard extends StatelessWidget {
   const TenbihCard({
     super.key,
-    this.pageIndex = 3,
   });
-  final int pageIndex;
   @override
   Widget build(BuildContext context) {
     return TransparentCard(
-      blur: pageIndex == 3 ? true : false,
       child: Padding(
         padding: EdgeInsets.symmetric(
             horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),

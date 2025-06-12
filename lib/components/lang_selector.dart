@@ -22,12 +22,10 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class LangSelector extends StatelessWidget {
-  const LangSelector({super.key, this.pageIndex = 4});
-  final int pageIndex;
+  const LangSelector({super.key});
   @override
   Widget build(BuildContext context) {
     return TransparentCard(
-      blur: pageIndex == 4 ? true : false,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15.0),
         child: Scrollbar(

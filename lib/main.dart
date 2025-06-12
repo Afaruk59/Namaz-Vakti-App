@@ -294,7 +294,7 @@ class MainApp extends StatelessWidget {
           elevation: 0,
           backgroundColor: Colors.transparent,
           height:
-              Provider.of<ChangeSettings>(context).currentHeight! < 700 || Platform.isIOS ? 70 : 80,
+              Provider.of<ChangeSettings>(context).currentHeight! < 700 || Platform.isIOS ? 60 : 70,
           labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
         ),
       ),

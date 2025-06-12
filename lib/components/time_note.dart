@@ -16,23 +16,35 @@ limitations under the License.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
+import 'package:namaz_vakti_app/components/container_item.dart';
 import 'package:namaz_vakti_app/components/transparent_card.dart';
 
 class TimeNote extends StatelessWidget {
   const TimeNote({
     super.key,
+    this.blur = false,
   });
-
+  final bool blur;
   @override
   Widget build(BuildContext context) {
-    return TransparentCard(
-      child: ListTile(
-        title: Text(
-          AppLocalizations.of(context)!.startupDescription,
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 15),
-        ),
-      ),
-    );
+    return blur
+        ? TransparentCard(
+            child: ListTile(
+              title: Text(
+                AppLocalizations.of(context)!.startupDescription,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 15),
+              ),
+            ),
+          )
+        : ContainerItem(
+            child: ListTile(
+              title: Text(
+                AppLocalizations.of(context)!.startupDescription,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 15),
+              ),
+            ),
+          );
   }
 }
