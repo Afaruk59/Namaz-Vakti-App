@@ -20,7 +20,6 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:namaz_vakti_app/components/lang_selector.dart';
 import 'package:namaz_vakti_app/pages/about.dart';
 import 'package:namaz_vakti_app/pages/kaza.dart';
 import 'package:namaz_vakti_app/l10n/l10n.dart';
@@ -150,9 +149,6 @@ class MainApp extends StatelessWidget {
           case '/search':
             page = const Search();
             break;
-          case '/lang':
-            page = const LangPage();
-            break;
         }
 
         if (page != null) {
@@ -172,6 +168,12 @@ class MainApp extends StatelessWidget {
         return null;
       },
       theme: ThemeData(
+        dialogTheme: DialogTheme(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+                Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
+          ),
+        ),
         bottomSheetTheme: BottomSheetThemeData(
           modalBarrierColor: Colors.transparent,
           showDragHandle: true,

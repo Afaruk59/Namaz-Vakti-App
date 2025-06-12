@@ -24,7 +24,8 @@ import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 
 class Settings extends StatelessWidget {
-  const Settings({super.key});
+  const Settings({super.key, this.pageIndex = 0});
+  final int pageIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -33,13 +34,13 @@ class Settings extends StatelessWidget {
             title: AppLocalizations.of(context)!.settingsPageTitle,
             actions: const [],
             background: true,
-            body: const SettingsCard(),
+            body: SettingsCard(pageIndex: pageIndex),
           )
         : ScaffoldLayout(
             title: AppLocalizations.of(context)!.settingsPageTitle,
             actions: const [],
             background: false,
-            body: const SettingsCard(),
+            body: SettingsCard(pageIndex: pageIndex),
           );
   }
 }
@@ -47,8 +48,9 @@ class Settings extends StatelessWidget {
 class SettingsCard extends StatefulWidget {
   const SettingsCard({
     super.key,
+    required this.pageIndex,
   });
-
+  final int pageIndex;
   @override
   State<SettingsCard> createState() => _SettingsCardState();
 }
@@ -105,8 +107,9 @@ class _SettingsCardState extends State<SettingsCard> {
           EdgeInsets.all(Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5.0 : 15.0),
       child: ListView(
         children: [
-          const LangSelector(),
+          LangSelector(pageIndex: widget.pageIndex),
           TransparentCard(
+            blur: widget.pageIndex == 4 ? true : false,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15.0),
               child: SwitchListTile(
@@ -118,6 +121,7 @@ class _SettingsCardState extends State<SettingsCard> {
             ),
           ),
           TransparentCard(
+            blur: widget.pageIndex == 4 ? true : false,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15.0),
               child: Padding(
@@ -147,6 +151,7 @@ class _SettingsCardState extends State<SettingsCard> {
             ),
           ),
           TransparentCard(
+            blur: widget.pageIndex == 4 ? true : false,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15.0),
               child: SwitchListTile(
@@ -160,6 +165,7 @@ class _SettingsCardState extends State<SettingsCard> {
             ),
           ),
           TransparentCard(
+            blur: widget.pageIndex == 4 ? true : false,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15.0),
               child: ListTile(

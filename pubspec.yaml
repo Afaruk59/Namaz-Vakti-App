@@ -48,34 +48,15 @@ flutter:
     - assets/cities/
     - assets/svg/
 
-# Flutter Native Splash Yapılandırması
 flutter_native_splash:
-  # Ana logo resmi
-  image: assets/img/logo.png
+  icon_only: true
   
-  # Açık tema - temiz beyaz arkaplan
   color: "#FFFFFF"
-  
-  # Koyu tema - uygulamanızın koyu temasına uygun
   color_dark: "#1E1E1E"
   
-  # Android 12+ için optimize edilmiş ayarlar
   android_12:
-    # Logo görseli
-    image: assets/img/logo.png
-    # Android 12+ icon_background_color (açık tema)
     icon_background_color: "#FFFFFF"
-    # Android 12+ icon_background_color (koyu tema) 
     icon_background_color_dark: "#1E1E1E"
-  
-  # iOS için özel optimizasyonlar
   ios: true
-  
-  # Web için ayarlar
   web: false
-  
-  # Tam ekran splash (kenarlarda boşluk olmasın)
   fullscreen: true
-  
-  # Logo görselinin boyutlandırma ayarları
-  image_dark: assets/img/logo.png

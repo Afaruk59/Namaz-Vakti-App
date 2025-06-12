@@ -25,7 +25,8 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class More extends StatelessWidget {
-  const More({super.key});
+  const More({super.key, this.pageIndex = 0});
+  final int pageIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -40,27 +41,31 @@ class More extends StatelessWidget {
             title: AppLocalizations.of(context)!.datesTitle,
             icon: const Icon(Icons.calendar_month),
             route: '/dates',
+            pageIndex: pageIndex,
           ),
           MoreCard(
             title: AppLocalizations.of(context)!.kazaTitle,
             icon: const Icon(Icons.note_alt),
             route: '/kaza',
+            pageIndex: pageIndex,
           ),
           BooksCard(
             title: AppLocalizations.of(context)!.booksTitle,
             icon: const Icon(Icons.local_library_rounded),
             route: '/books',
+            pageIndex: pageIndex,
           ),
           Padding(
             padding: EdgeInsets.symmetric(
                 horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
-            child: const TenbihCard(),
+            child: TenbihCard(pageIndex: pageIndex),
           ),
-          ReviewCard(),
+          ReviewCard(pageIndex: pageIndex),
           MoreCard(
             title: AppLocalizations.of(context)!.aboutTitle,
             icon: const Icon(Icons.info),
             route: '/about',
+            pageIndex: pageIndex,
           ),
         ],
       ),
@@ -69,7 +74,8 @@ class More extends StatelessWidget {
 }
 
 class ReviewCard extends StatelessWidget {
-  ReviewCard({super.key});
+  ReviewCard({super.key, required this.pageIndex});
+  final int pageIndex;
   final InAppReview inAppReview = InAppReview.instance;
   @override
   Widget build(BuildContext context) {
@@ -77,6 +83,7 @@ class ReviewCard extends StatelessWidget {
       padding: EdgeInsets.symmetric(
           horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
       child: TransparentCard(
+        blur: pageIndex == 3 ? true : false,
         child: Padding(
           padding: EdgeInsets.symmetric(
               horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
@@ -108,18 +115,20 @@ class MoreCard extends StatelessWidget {
     required this.title,
     required this.icon,
     required this.route,
+    required this.pageIndex,
   });
 
   final String title;
   final Icon icon;
   final String route;
-
+  final int pageIndex;
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(
           horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
       child: TransparentCard(
+        blur: pageIndex == 3 ? true : false,
         child: Padding(
           padding: EdgeInsets.symmetric(
               horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
@@ -148,18 +157,20 @@ class BooksCard extends StatelessWidget {
     required this.title,
     required this.icon,
     required this.route,
+    required this.pageIndex,
   });
 
   final String title;
   final Icon icon;
   final String route;
-
+  final int pageIndex;
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(
           horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
       child: TransparentCard(
+        blur: pageIndex == 3 ? true : false,
         child: Padding(
           padding: EdgeInsets.symmetric(
               horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),

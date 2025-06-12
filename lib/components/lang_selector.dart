@@ -22,32 +22,35 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class LangSelector extends StatelessWidget {
-  const LangSelector({super.key});
-
+  const LangSelector({super.key, this.pageIndex = 4});
+  final int pageIndex;
   @override
   Widget build(BuildContext context) {
     return TransparentCard(
+      blur: pageIndex == 4 ? true : false,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15.0),
-        child: ListTile(
-          title: Text(AppLocalizations.of(context)!.ln),
-          subtitle: Text(AppLocalizations.of(context)!.lang),
-          trailing: const Icon(Icons.translate_rounded),
-          onTap: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: Text(AppLocalizations.of(context)!.ln),
-                  content: SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.6,
-                    width: MediaQuery.of(context).size.width * 0.8,
-                    child: const LangPage(),
-                  ),
-                );
-              },
-            );
-          },
+        child: Scrollbar(
+          child: ListTile(
+            title: Text(AppLocalizations.of(context)!.ln),
+            subtitle: Text(AppLocalizations.of(context)!.lang),
+            trailing: const Icon(Icons.translate_rounded),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text(AppLocalizations.of(context)!.ln),
+                    content: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.6,
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      child: const LangPage(),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
         ),
       ),
     );
@@ -56,22 +59,19 @@ class LangSelector extends StatelessWidget {
 
 class LangPage extends StatelessWidget {
   const LangPage({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(5),
-        child: TransparentCard(
-          child: Padding(
-            padding: EdgeInsets.all(
-                Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5.0 : 10.0),
-            child: ListView.builder(
-              itemCount: 7,
-              itemBuilder: (context, index) {
-                return LangItem(index: index);
-              },
-            ),
+        child: Padding(
+          padding: EdgeInsets.all(
+              Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5.0 : 10.0),
+          child: ListView.builder(
+            itemCount: 7,
+            itemBuilder: (context, index) {
+              return LangItem(index: index);
+            },
           ),
         ),
       ),

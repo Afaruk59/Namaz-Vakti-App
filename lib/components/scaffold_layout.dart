@@ -30,8 +30,11 @@ class ScaffoldLayout extends StatelessWidget {
   final bool background;
   @override
   Widget build(BuildContext context) {
+    final bool isTopMost = ModalRoute.of(context)?.isCurrent ?? true;
+
     return background
         ? TransparentCard(
+            blur: isTopMost ? true : false,
             padding: false,
             child: Scaffold(
               resizeToAvoidBottomInset: false,

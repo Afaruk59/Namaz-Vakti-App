@@ -30,7 +30,8 @@ import 'package:hijri/hijri_calendar.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class Times extends StatelessWidget {
-  const Times({super.key});
+  const Times({super.key, this.pageIndex = 0});
+  final int pageIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -56,13 +57,14 @@ class Times extends StatelessWidget {
           width: 20,
         ),
       ],
-      body: const TimesBody(),
+      body: TimesBody(pageIndex: pageIndex),
     );
   }
 }
 
 class TimesBody extends StatefulWidget {
-  const TimesBody({super.key});
+  const TimesBody({super.key, required this.pageIndex});
+  final int pageIndex;
 
   @override
   State<TimesBody> createState() => _TimesBodyState();
@@ -149,14 +151,15 @@ class _TimesBodyState extends State<TimesBody> {
               children: [
                 Expanded(
                   flex: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 6 : 5,
-                  child: const Row(
+                  child: Row(
                     children: [
                       Expanded(
-                        child: TopTimesCard(),
+                        child: TopTimesCard(pageIndex: widget.pageIndex),
                       ),
                       Expanded(
                         child: TransparentCard(
-                          child: Center(
+                          blur: widget.pageIndex == 2 ? true : false,
+                          child: const Center(
                             child: CityNameCard(),
                           ),
                         ),
@@ -164,19 +167,19 @@ class _TimesBodyState extends State<TimesBody> {
                     ],
                   ),
                 ),
-                const Expanded(flex: 11, child: BottomTimesCard()),
+                Expanded(flex: 11, child: BottomTimesCard(pageIndex: widget.pageIndex)),
               ],
             )
           : Row(
               children: [
                 Expanded(
                   flex: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 6 : 5,
-                  child: const Column(
+                  child: Column(
                     children: [
                       Expanded(
-                        child: TopTimesCard(),
+                        child: TopTimesCard(pageIndex: widget.pageIndex),
                       ),
-                      Expanded(
+                      const Expanded(
                         child: Card(
                           child: Center(
                             child: CityNameCard(),
@@ -186,9 +189,9 @@ class _TimesBodyState extends State<TimesBody> {
                     ],
                   ),
                 ),
-                const Expanded(
+                Expanded(
                   flex: 5,
-                  child: BottomTimesCard(),
+                  child: BottomTimesCard(pageIndex: widget.pageIndex),
                 ),
               ],
             ),
@@ -197,7 +200,8 @@ class _TimesBodyState extends State<TimesBody> {
 }
 
 class TopTimesCard extends StatefulWidget {
-  const TopTimesCard({super.key});
+  const TopTimesCard({super.key, required this.pageIndex});
+  final int pageIndex;
 
   @override
   State<TopTimesCard> createState() => _TopTimesCardState();
@@ -272,6 +276,7 @@ class _TopTimesCardState extends State<TopTimesCard> {
         Expanded(
           flex: 4,
           child: TransparentCard(
+            blur: widget.pageIndex == 2 ? true : false,
             child: Center(
               child: Stack(
                 children: [
@@ -394,6 +399,7 @@ class _TopTimesCardState extends State<TopTimesCard> {
         Expanded(
           flex: 4,
           child: TransparentCard(
+            blur: widget.pageIndex == 2 ? true : false,
             child: Center(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
@@ -452,12 +458,15 @@ class _TopTimesCardState extends State<TopTimesCard> {
 class BottomTimesCard extends StatelessWidget {
   const BottomTimesCard({
     super.key,
+    required this.pageIndex,
   });
+  final int pageIndex;
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: TransparentCard(
+        blur: pageIndex == 2 ? true : false,
         child: Provider.of<TimeData>(context).isLoading
             ? const Center(child: CircularProgressIndicator())
             : const MainTimes(),
