@@ -76,9 +76,9 @@ class _HomePageState extends State<HomePage> {
       return 100;
     } else {
       if (Provider.of<ChangeSettings>(context).currentHeight! < 700) {
-        return 70;
+        return 60;
       }
-      return 90;
+      return 70;
     }
   }
 
@@ -150,9 +150,7 @@ class _HomePageState extends State<HomePage> {
           TransparentCard(
             blur: _currentIndex == 2 ? true : false,
             child: SizedBox(
-              height: Provider.of<ChangeSettings>(context).currentHeight! < 700 || Platform.isIOS
-                  ? 50
-                  : 60,
+              height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 50 : 60,
               child: IconButton(
                 iconSize: 28,
                 onPressed: () {
