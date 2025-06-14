@@ -127,13 +127,18 @@ class _SearchState extends State<Search> {
                             String cityName = column2Data[filteredItems[index - 1]].toString();
                             String stateName = column3Data[filteredItems[index - 1]].toString();
 
-                            ChangeSettings().saveLocaltoSharedPref(cityId, cityName, stateName);
                             Navigator.pop(context);
-                            Provider.of<ChangeSettings>(context, listen: false).isfirst == true
-                                ? Navigator.pop(context)
-                                : Navigator.popAndPushNamed(context, '/');
+                            Provider.of<ChangeSettings>(context, listen: false)
+                                .saveLocaltoSharedPref(cityId, cityName, stateName);
                             Provider.of<ChangeSettings>(context, listen: false)
                                 .saveFirsttoSharedPref(false);
+                            if (Provider.of<ChangeSettings>(context, listen: false).isfirst ==
+                                true) {
+                              Navigator.pop(context);
+                              Navigator.popAndPushNamed(context, '/');
+                            } else {
+                              Navigator.popAndPushNamed(context, '/');
+                            }
                           },
                           child: const Icon(Icons.arrow_circle_right_rounded)),
                     ),

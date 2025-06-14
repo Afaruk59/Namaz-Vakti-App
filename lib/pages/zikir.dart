@@ -33,7 +33,7 @@ class Zikir extends StatelessWidget {
     return ScaffoldLayout(
       title: AppLocalizations.of(context)!.zikirPageTitle,
       actions: const [],
-      body: ZikirCard(),
+      body: const ZikirCard(),
       background: false,
     );
   }

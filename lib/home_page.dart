@@ -68,6 +68,20 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  int getPadding() {
+    if (Platform.isIOS) {
+      if (Provider.of<ChangeSettings>(context).currentHeight! < 700) {
+        return 70;
+      }
+      return 100;
+    } else {
+      if (Provider.of<ChangeSettings>(context).currentHeight! < 700) {
+        return 70;
+      }
+      return 90;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,9 +105,7 @@ class _HomePageState extends State<HomePage> {
           ),
           Padding(
             padding: EdgeInsets.only(
-              bottom: Provider.of<ChangeSettings>(context).currentHeight! < 700 || Platform.isIOS
-                  ? 60
-                  : 70,
+              bottom: getPadding().toDouble(),
             ),
             child: Center(
               child: PageView(

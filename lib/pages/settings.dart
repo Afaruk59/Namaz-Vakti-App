@@ -161,10 +161,24 @@ class _SettingsCardState extends State<SettingsCard> {
           TransparentCard(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              child: SwitchListTile(
+                title: Text("Blur Efekti"),
+                value: Provider.of<ChangeSettings>(context).blur,
+                onChanged: (_) => Provider.of<ChangeSettings>(context, listen: false).toggleBlur(),
+              ),
+            ),
+          ),
+          TransparentCard(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15.0),
               child: ListTile(
                 leading: CircleAvatar(
                   radius: 18,
-                  backgroundColor: Provider.of<ChangeSettings>(context, listen: false).color,
+                  backgroundColor: Theme.of(context).cardColor,
+                  child: CircleAvatar(
+                    radius: 16,
+                    backgroundColor: Provider.of<ChangeSettings>(context, listen: false).color,
+                  ),
                 ),
                 title: Text(AppLocalizations.of(context)!.themeColor),
                 onTap: () {

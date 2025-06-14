@@ -51,7 +51,6 @@ class LocationState extends State<Location> {
     return R * c;
   }
 
-// Dereceyi radyana çeviren yardımcı fonksiyon
   double _toRadians(double degree) {
     return degree * pi / 180;
   }
@@ -108,15 +107,13 @@ class LocationState extends State<Location> {
       );
     }
 
-    // Konum izni kontrol et
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
 
-      // İzin tekrar reddedildiyse bir uyarı göster
       if (permission == LocationPermission.denied) {
         if (!mounted) {
-          return; // Eğer widget unmounted olduysa fonksiyonu terk et
+          return;
         }
         return showDialog(
           barrierDismissible: false,
@@ -134,7 +131,7 @@ class LocationState extends State<Location> {
                       setState(() {
                         progress = true;
                       });
-                      await getCurrentLocation(); // İzin tekrar isteniyor
+                      await getCurrentLocation();
                     }
                   },
                 ),
@@ -184,7 +181,7 @@ class LocationState extends State<Location> {
     final String csvData = await rootBundle.loadString("assets/cities/cities.csv");
 
     List<List<dynamic>> rowsAsListOfValues = const CsvToListConverter(
-      eol: '\n', // Satır sonu ayırıcı
+      eol: '\n',
       fieldDelimiter: ',',
     ).convert(csvData);
 
@@ -224,10 +221,13 @@ class LocationState extends State<Location> {
     if (mounted) {
       Provider.of<ChangeSettings>(context, listen: false)
           .saveLocaltoSharedPref(cityId, cityName, stateName);
-      Provider.of<ChangeSettings>(context, listen: false).isfirst == true
-          ? Navigator.pop(context)
-          : Navigator.popAndPushNamed(context, '/');
       Provider.of<ChangeSettings>(context, listen: false).saveFirsttoSharedPref(false);
+      if (Provider.of<ChangeSettings>(context, listen: false).isfirst == true) {
+        Navigator.pop(context);
+        Navigator.popAndPushNamed(context, '/');
+      } else {
+        Navigator.popAndPushNamed(context, '/');
+      }
     }
   }
 
