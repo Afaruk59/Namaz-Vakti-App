@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import 'package:flutter/material.dart';
-import 'package:namaz_vakti_app/components/gradient_background.dart';
+import 'package:namaz_vakti_app/components/transparent_card.dart';
 
 class ScaffoldLayout extends StatelessWidget {
   const ScaffoldLayout(
@@ -23,15 +23,16 @@ class ScaffoldLayout extends StatelessWidget {
       required this.title,
       required this.actions,
       required this.body,
-      required this.gradient});
+      this.background = false});
   final String title;
   final List<Widget> actions;
   final Widget body;
-  final bool gradient;
+  final bool background;
   @override
   Widget build(BuildContext context) {
-    return gradient
-        ? GradientBackground(
+    return background
+        ? TransparentCard(
+            padding: false,
             child: Scaffold(
               resizeToAvoidBottomInset: false,
               appBar: AppBar(

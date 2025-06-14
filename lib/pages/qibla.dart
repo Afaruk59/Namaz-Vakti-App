@@ -17,8 +17,9 @@ limitations under the License.
 import 'package:flutter/material.dart';
 import 'package:flutter_compass/flutter_compass.dart';
 import 'package:namaz_vakti_app/components/scaffold_layout.dart';
+import 'package:namaz_vakti_app/components/container_item.dart';
+import 'package:namaz_vakti_app/components/transparent_card.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
-import 'package:namaz_vakti_app/data/time_data.dart';
 import 'package:provider/provider.dart';
 import 'package:xml/xml.dart' as xml;
 import 'package:http/http.dart' as http;
@@ -31,8 +32,40 @@ class Qibla extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScaffoldLayout(
       title: AppLocalizations.of(context)!.qiblaPageTitle,
-      actions: const [],
-      gradient: false,
+      actions: [
+        IconButton(
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: Text(AppLocalizations.of(context)!.compassOptimizationTitle),
+                content: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Expanded(
+                      flex: 1,
+                      child: Icon(Icons.compass_calibration_rounded, size: 50),
+                    ),
+                    Expanded(
+                      flex: 3,
+                      child: Text(AppLocalizations.of(context)!.compassOptimizationMessage),
+                    ),
+                  ],
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text(AppLocalizations.of(context)!.ok),
+                  ),
+                ],
+              ),
+            );
+          },
+          icon: const Icon(Icons.info_outline_rounded),
+        ),
+        const SizedBox(width: 20),
+      ],
+      background: false,
       body: const QiblaCard(),
     );
   }
@@ -66,7 +99,7 @@ class _QiblaCardState extends State<QiblaCard> {
 
   Future<void> loadTarget() async {
     String url =
-        'https://www.namazvakti.com/XML.php?cityID=${ChangeSettings.cityID}'; // Çevrimiçi XML dosyasının URL'si
+        'https://www.namazvakti.com/XML.php?cityID=${Provider.of<ChangeSettings>(context, listen: false).cityID}'; // Çevrimiçi XML dosyasının URL'si
 
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
@@ -148,120 +181,87 @@ class _QiblaCardState extends State<QiblaCard> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(5),
-      child: Card(
-        child: Padding(
-          padding: EdgeInsets.all(
-              Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5.0 : 10.0),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  children: [
-                    Expanded(
-                      flex: 4,
-                      child: Card(
-                        color: Theme.of(context).cardColor,
-                        child: Center(
-                          child: _buildCompass(),
-                        ),
-                      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              children: [
+                Expanded(
+                  flex: 4,
+                  child: TransparentCard(
+                    child: Center(
+                      child: _buildCompass(),
                     ),
-                    Expanded(
-                      flex: 1,
-                      child: Card(
-                        color: Theme.of(context).cardColor,
-                        child: Padding(
-                          padding: const EdgeInsets.all(5),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Card(
-                                  shape: RoundedRectangleBorder(
-                                    side: const BorderSide(
-                                      color: Colors.grey,
-                                      width: 1.0,
-                                    ),
-                                    borderRadius: BorderRadius.circular(
-                                      Provider.of<ChangeSettings>(context).rounded == true
-                                          ? 50
-                                          : 10,
-                                    ),
-                                  ),
-                                  color: Theme.of(context).cardColor,
-                                  child: Center(
-                                      child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      FittedBox(
-                                        fit: BoxFit.scaleDown,
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                                          child: Text(
-                                            Provider.of<TimeData>(context).city!,
-                                            textAlign: TextAlign.center,
-                                            style: const TextStyle(fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 60,
-                                        child: Divider(
-                                          height:
-                                              Provider.of<ChangeSettings>(context).currentHeight! <
-                                                      700.0
-                                                  ? 5.0
-                                                  : 15.0,
-                                        ),
-                                      ),
-                                      Text(
-                                        Provider.of<TimeData>(context).cityState!,
-                                      ),
-                                    ],
-                                  )),
-                                ),
-                              ),
-                              Expanded(
-                                child: Card(
-                                  shape: RoundedRectangleBorder(
-                                    side: const BorderSide(
-                                      color: Colors.grey,
-                                      width: 1.0,
-                                    ),
-                                    borderRadius: BorderRadius.circular(
-                                      Provider.of<ChangeSettings>(context).rounded == true
-                                          ? 50
-                                          : 10,
-                                    ),
-                                  ),
-                                  color: Theme.of(context).cardColor,
-                                  child: Center(
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          '${AppLocalizations.of(context)!.qiblaTargetText} ${_target! < 0 ? (360 + _target!).toStringAsFixed(2) : _target!.toStringAsFixed(2)}°',
-                                          style: const TextStyle(fontSize: 16),
-                                        ),
-                                        Text(
-                                          '${_direction! < 0 ? (360 + _direction!).toStringAsFixed(2) : _direction!.toStringAsFixed(2)}°',
-                                          style: const TextStyle(fontSize: 18),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ],
+                Expanded(
+                  flex: 1,
+                  child: TransparentCard(
+                    child: Padding(
+                      padding: const EdgeInsets.all(5),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: ContainerItem(
+                              child: Center(
+                                  child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                                      child: Text(
+                                        Provider.of<ChangeSettings>(context).cityName!,
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 60,
+                                    child: Divider(
+                                      height: Provider.of<ChangeSettings>(context).currentHeight! <
+                                              700.0
+                                          ? 5.0
+                                          : 15.0,
+                                    ),
+                                  ),
+                                  Text(
+                                    Provider.of<ChangeSettings>(context).cityState!,
+                                  ),
+                                ],
+                              )),
+                            ),
+                          ),
+                          Expanded(
+                            child: ContainerItem(
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      '${AppLocalizations.of(context)!.qiblaTargetText} ${_target! < 0 ? (360 + _target!).toStringAsFixed(2) : _target!.toStringAsFixed(2)}°',
+                                      style: const TextStyle(fontSize: 16),
+                                    ),
+                                    Text(
+                                      '${_direction! < 0 ? (360 + _direction!).toStringAsFixed(2) : _direction!.toStringAsFixed(2)}°',
+                                      style: const TextStyle(fontSize: 18),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

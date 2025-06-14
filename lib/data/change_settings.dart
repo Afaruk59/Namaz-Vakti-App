@@ -30,11 +30,10 @@ class ChangeSettings with ChangeNotifier {
   bool isDark = false;
   int themeIndex = 0;
   Color color = Colors.blueGrey[500]!;
-  bool gradient = true;
 
-  static String? cityID;
-  static String? cityName;
-  static String? cityState;
+  String? cityID;
+  String? cityName;
+  String? cityState;
 
   bool isfirst = true;
 
@@ -212,19 +211,6 @@ class ChangeSettings with ChangeNotifier {
   }
 
   //THEME SETTINGS
-  void toggleGrad() {
-    gradient = !gradient;
-    saveGradtoSharedPref(gradient);
-    notifyListeners();
-  }
-
-  void loadGradFromSharedPref() {
-    gradient = _settings.getBool('gradient') ?? true;
-  }
-
-  void saveGradtoSharedPref(bool value) {
-    _settings.setBool('gradient', value);
-  }
 
   void toggleTheme(int index) {
     themeIndex = index;
@@ -317,6 +303,7 @@ class ChangeSettings with ChangeNotifier {
     cityID = value;
     cityName = name;
     cityState = state;
+    notifyListeners();
   }
 
   void toggleOtoLoc() {

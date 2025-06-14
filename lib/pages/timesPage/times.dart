@@ -19,6 +19,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:namaz_vakti_app/components/scaffold_layout.dart';
+import 'package:namaz_vakti_app/components/transparent_card.dart';
 import 'package:namaz_vakti_app/pages/timesPage/city_names.dart';
 import 'package:namaz_vakti_app/pages/timesPage/location.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
@@ -55,7 +56,6 @@ class Times extends StatelessWidget {
           width: 20,
         ),
       ],
-      gradient: false,
       body: const TimesBody(),
     );
   }
@@ -80,7 +80,7 @@ class _TimesBodyState extends State<TimesBody> {
       }
     } else {
       Provider.of<TimeData>(context, listen: false).switchClock(true);
-      Provider.of<TimeData>(context, listen: false).loadPrayerTimes(DateTime.now());
+      Provider.of<TimeData>(context, listen: false).loadPrayerTimes(DateTime.now(), context);
     }
   }
 
@@ -155,7 +155,7 @@ class _TimesBodyState extends State<TimesBody> {
                         child: TopTimesCard(),
                       ),
                       Expanded(
-                        child: Card(
+                        child: TransparentCard(
                           child: Center(
                             child: CityNameCard(),
                           ),
@@ -271,7 +271,7 @@ class _TopTimesCardState extends State<TopTimesCard> {
       children: [
         Expanded(
           flex: 4,
-          child: Card(
+          child: TransparentCard(
             child: Center(
               child: Stack(
                 children: [
@@ -295,7 +295,7 @@ class _TopTimesCardState extends State<TopTimesCard> {
                         });
                         _changeDate();
                         Provider.of<TimeData>(context, listen: false)
-                            .loadPrayerTimes(DateTime.now().add(Duration(days: count)));
+                            .loadPrayerTimes(DateTime.now().add(Duration(days: count)), context);
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -345,8 +345,8 @@ class _TopTimesCardState extends State<TopTimesCard> {
                                   }
                                 });
                                 _changeDate();
-                                Provider.of<TimeData>(context, listen: false)
-                                    .loadPrayerTimes(DateTime.now().add(Duration(days: count)));
+                                Provider.of<TimeData>(context, listen: false).loadPrayerTimes(
+                                    DateTime.now().add(Duration(days: count)), context);
                               }
                             },
                             icon: const Icon(Icons.arrow_back_ios_new),
@@ -376,8 +376,8 @@ class _TopTimesCardState extends State<TopTimesCard> {
                                   }
                                 });
                                 _changeDate();
-                                Provider.of<TimeData>(context, listen: false)
-                                    .loadPrayerTimes(DateTime.now().add(Duration(days: count)));
+                                Provider.of<TimeData>(context, listen: false).loadPrayerTimes(
+                                    DateTime.now().add(Duration(days: count)), context);
                               }
                             },
                             icon: const Icon(Icons.arrow_forward_ios),
@@ -393,7 +393,7 @@ class _TopTimesCardState extends State<TopTimesCard> {
         ),
         Expanded(
           flex: 4,
-          child: Card(
+          child: TransparentCard(
             child: Center(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
@@ -450,24 +450,15 @@ class _TopTimesCardState extends State<TopTimesCard> {
 }
 
 class BottomTimesCard extends StatelessWidget {
-  const BottomTimesCard({
-    super.key,
-  });
+  const BottomTimesCard({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Center(
-        child: Padding(
-          padding: EdgeInsets.all(
-              Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5.0 : 10.0),
-          child: Card(
-            color: Theme.of(context).cardColor,
-            child: Provider.of<TimeData>(context).isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : const MainTimes(),
-          ),
-        ),
+    return Center(
+      child: TransparentCard(
+        child: Provider.of<TimeData>(context).isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : const MainTimes(),
       ),
     );
   }

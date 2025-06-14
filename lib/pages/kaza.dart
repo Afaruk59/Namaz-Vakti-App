@@ -16,6 +16,7 @@ limitations under the License.
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:namaz_vakti_app/components/container_item.dart';
 import 'package:namaz_vakti_app/components/scaffold_layout.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:provider/provider.dart';
@@ -29,7 +30,7 @@ class Kaza extends StatelessWidget {
     return ScaffoldLayout(
       title: AppLocalizations.of(context)!.kazaTitle,
       actions: const [],
-      gradient: true,
+      background: true,
       body: const KazaCard(),
     );
   }
@@ -40,46 +41,41 @@ class KazaCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(5),
-      child: Card(
-        child: Scrollbar(
-          child: ListView(
-            children: [
-              const SizedBox(
-                height: 10,
-              ),
-              PrayCard(
-                title: AppLocalizations.of(context)!.sabah,
-                value: Provider.of<ChangeSettings>(context, listen: false).loadKaza('Sabah'),
-              ),
-              PrayCard(
-                title: AppLocalizations.of(context)!.ogle,
-                value: Provider.of<ChangeSettings>(context, listen: false).loadKaza('Öğle'),
-              ),
-              PrayCard(
-                title: AppLocalizations.of(context)!.ikindi,
-                value: Provider.of<ChangeSettings>(context, listen: false).loadKaza('İkindi'),
-              ),
-              PrayCard(
-                title: AppLocalizations.of(context)!.aksam,
-                value: Provider.of<ChangeSettings>(context, listen: false).loadKaza('Akşam'),
-              ),
-              PrayCard(
-                title: AppLocalizations.of(context)!.yatsi,
-                value: Provider.of<ChangeSettings>(context, listen: false).loadKaza('Yatsı'),
-              ),
-              PrayCard(
-                title: AppLocalizations.of(context)!.vitir,
-                value: Provider.of<ChangeSettings>(context, listen: false).loadKaza('Vitir'),
-              ),
-              PrayCard(
-                title: AppLocalizations.of(context)!.oruc,
-                value: Provider.of<ChangeSettings>(context, listen: false).loadKaza('Oruç'),
-              ),
-            ],
+    return Scrollbar(
+      child: ListView(
+        children: [
+          const SizedBox(
+            height: 10,
           ),
-        ),
+          PrayCard(
+            title: AppLocalizations.of(context)!.sabah,
+            value: Provider.of<ChangeSettings>(context, listen: false).loadKaza('Sabah'),
+          ),
+          PrayCard(
+            title: AppLocalizations.of(context)!.ogle,
+            value: Provider.of<ChangeSettings>(context, listen: false).loadKaza('Öğle'),
+          ),
+          PrayCard(
+            title: AppLocalizations.of(context)!.ikindi,
+            value: Provider.of<ChangeSettings>(context, listen: false).loadKaza('İkindi'),
+          ),
+          PrayCard(
+            title: AppLocalizations.of(context)!.aksam,
+            value: Provider.of<ChangeSettings>(context, listen: false).loadKaza('Akşam'),
+          ),
+          PrayCard(
+            title: AppLocalizations.of(context)!.yatsi,
+            value: Provider.of<ChangeSettings>(context, listen: false).loadKaza('Yatsı'),
+          ),
+          PrayCard(
+            title: AppLocalizations.of(context)!.vitir,
+            value: Provider.of<ChangeSettings>(context, listen: false).loadKaza('Vitir'),
+          ),
+          PrayCard(
+            title: AppLocalizations.of(context)!.oruc,
+            value: Provider.of<ChangeSettings>(context, listen: false).loadKaza('Oruç'),
+          ),
+        ],
       ),
     );
   }
@@ -113,8 +109,7 @@ class _PrayCardState extends State<PrayCard> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0),
-      child: Card(
-        color: Theme.of(context).cardColor,
+      child: ContainerItem(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [

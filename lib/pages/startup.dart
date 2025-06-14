@@ -16,7 +16,6 @@ limitations under the License.
 
 import 'package:flutter/material.dart';
 import 'package:namaz_vakti_app/components/app_card.dart';
-import 'package:namaz_vakti_app/components/gradient_background.dart';
 import 'package:namaz_vakti_app/components/lang_selector.dart';
 import 'package:namaz_vakti_app/components/tenbih_card.dart';
 import 'package:namaz_vakti_app/components/time_note.dart';
@@ -31,10 +30,25 @@ class Startup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GradientBackground(
-      child: PopScope(
+    return Stack(children: [
+      Positioned.fill(
+        child: ColorFiltered(
+          colorFilter: ColorFilter.mode(
+            Provider.of<ChangeSettings>(context).color.withValues(alpha: 1),
+            BlendMode.color,
+          ),
+          child: Image.asset(
+            Provider.of<ChangeSettings>(context).isDark
+                ? 'assets/img/wallpaperdark.png'
+                : 'assets/img/wallpaper.png',
+            fit: BoxFit.cover,
+          ),
+        ),
+      ),
+      PopScope(
         canPop: false,
         child: Scaffold(
+          extendBody: true,
           appBar: AppBar(
             automaticallyImplyLeading: false,
             title: Text(AppLocalizations.of(context)!.startupTitle),
@@ -53,7 +67,7 @@ class Startup extends StatelessWidget {
           body: const StartupCard(),
         ),
       ),
-    );
+    ]);
   }
 }
 
@@ -63,34 +77,29 @@ class StartupCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(5),
-        child: Card(
-          child: MediaQuery.of(context).orientation == Orientation.portrait
-              ? Column(
+      child: MediaQuery.of(context).orientation == Orientation.portrait
+          ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const AppCard(blur: true),
+                SizedBox(
+                  height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 0 : 20,
+                ),
+                const StartupSecondCard(),
+              ],
+            )
+          : const Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const AppCard(),
-                    SizedBox(
-                      height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 0 : 20,
-                    ),
-                    const StartupSecondCard(),
-                  ],
-                )
-              : const Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Expanded(child: AppCard()),
-                        Expanded(child: StartupSecondCard()),
-                      ],
-                    ),
+                    Expanded(child: AppCard(blur: true)),
+                    Expanded(child: StartupSecondCard()),
                   ],
                 ),
-        ),
-      ),
+              ],
+            ),
     );
   }
 }
@@ -106,7 +115,7 @@ class StartupSecondCard extends StatelessWidget {
       children: [
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 10.0),
-          child: TimeNote(),
+          child: TimeNote(blur: true),
         ),
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 10.0),

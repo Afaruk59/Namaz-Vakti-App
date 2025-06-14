@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 import 'package:flutter/material.dart';
+import 'package:namaz_vakti_app/components/container_item.dart';
 import 'package:namaz_vakti_app/components/scaffold_layout.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:namaz_vakti_app/pages/timesPage/alarms/alarm_card.dart';
@@ -38,7 +39,7 @@ class _AlarmsState extends State<Alarms> {
     return ScaffoldLayout(
       title: AppLocalizations.of(context)!.notificationsPageTitle,
       actions: const [],
-      gradient: true,
+      background: true,
       body: const AlarmsBody(),
     );
   }
@@ -121,178 +122,163 @@ class _AlarmsBodyState extends State<AlarmsBody> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(5),
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(5),
-          child: ListView(
-            children: [
-              SizedBox(
-                  height: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
-              if (!_batteryOptimizationDisabled && Platform.isAndroid)
-                Padding(
+      child: ListView(
+        children: [
+          SizedBox(height: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
+          if (!_batteryOptimizationDisabled && Platform.isAndroid)
+            Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal:
+                      Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
+              child: ContainerItem(
+                color: Theme.of(context).colorScheme.errorContainer.withValues(alpha: 0.6),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                  child: ListTile(
+                    leading: const Icon(Icons.battery_alert_rounded),
+                    title: Text(
+                      AppLocalizations.of(context)!.disableBatteryOptimization,
+                      style: TextStyle(color: Theme.of(context).colorScheme.onErrorContainer),
+                    ),
+                    subtitle: Text(
+                      AppLocalizations.of(context)!.batteryOptimizationSubtitle,
+                      style: TextStyle(color: Theme.of(context).colorScheme.onErrorContainer),
+                    ),
+                    trailing: const Icon(Icons.arrow_forward_ios),
+                    onTap: _requestBatteryOptimization,
+                  ),
+                ),
+              ),
+            ),
+          Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
+            child: ContainerItem(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                child: SwitchListTile(
+                  title: Text(AppLocalizations.of(context)!.enableNotifications),
+                  subtitle: Text(AppLocalizations.of(context)!.notificationsSubtitle),
+                  value: Provider.of<ChangeSettings>(context).notificationsEnabled,
+                  onChanged: (value) {
+                    Provider.of<ChangeSettings>(context, listen: false).toggleNotifications(value);
+                    _toggleNotificationService(value);
+                  },
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
+            child: ContainerItem(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                child: SwitchListTile(
+                  title: Text(AppLocalizations.of(context)!.lockScreen),
+                  value: Provider.of<ChangeSettings>(context).lockScreenEnabled,
+                  onChanged: (value) {
+                    Provider.of<ChangeSettings>(context, listen: false).toggleLockScreen(value);
+                  },
+                ),
+              ),
+            ),
+          ),
+          Provider.of<ChangeSettings>(context).notificationsEnabled
+              ? const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 50),
+                  child: Divider(
+                    thickness: 2,
+                    height: 30,
+                  ),
+                )
+              : const SizedBox(),
+          Provider.of<ChangeSettings>(context).notificationsEnabled
+              ? Padding(
                   padding: EdgeInsets.symmetric(
                       horizontal:
-                          Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
-                  child: Card(
-                    color: Theme.of(context).colorScheme.errorContainer,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                      child: ListTile(
-                        leading: const Icon(Icons.battery_alert_rounded),
-                        title: Text(
-                          AppLocalizations.of(context)!.disableBatteryOptimization,
-                          style: TextStyle(color: Theme.of(context).colorScheme.onErrorContainer),
-                        ),
-                        subtitle: Text(
-                          AppLocalizations.of(context)!.batteryOptimizationSubtitle,
-                          style: TextStyle(color: Theme.of(context).colorScheme.onErrorContainer),
-                        ),
-                        trailing: const Icon(Icons.arrow_forward_ios),
-                        onTap: _requestBatteryOptimization,
-                      ),
-                    ),
-                  ),
-                ),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal:
-                        Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
-                child: Card(
-                  color: Theme.of(context).cardColor,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                    child: SwitchListTile(
-                      title: Text(AppLocalizations.of(context)!.enableNotifications),
-                      subtitle: Text(AppLocalizations.of(context)!.notificationsSubtitle),
-                      value: Provider.of<ChangeSettings>(context).notificationsEnabled,
-                      onChanged: (value) {
-                        Provider.of<ChangeSettings>(context, listen: false)
-                            .toggleNotifications(value);
-                        _toggleNotificationService(value);
-                      },
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal:
-                        Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
-                child: Card(
-                  color: Theme.of(context).cardColor,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                    child: SwitchListTile(
-                      title: Text(AppLocalizations.of(context)!.lockScreen),
-                      value: Provider.of<ChangeSettings>(context).lockScreenEnabled,
-                      onChanged: (value) {
-                        Provider.of<ChangeSettings>(context, listen: false).toggleLockScreen(value);
-                      },
-                    ),
-                  ),
-                ),
-              ),
-              Provider.of<ChangeSettings>(context).notificationsEnabled
-                  ? const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 50),
-                      child: Divider(
-                        thickness: 2,
-                        height: 30,
-                      ),
-                    )
-                  : const SizedBox(),
-              Provider.of<ChangeSettings>(context).notificationsEnabled
-                  ? Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0
-                              ? 5
-                              : 20.0),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: FilledButton.tonal(
-                                style: FilledButton.styleFrom(
-                                    backgroundColor:
-                                        Theme.of(context).colorScheme.primaryContainer),
-                                onPressed: () {
-                                  Provider.of<ChangeSettings>(context, listen: false)
-                                      .enableAllAlarms();
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(AppLocalizations.of(context)!.allAlarmsEnabled),
-                                    ),
-                                  );
-                                },
-                                child: FittedBox(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Icon(Icons.add_rounded),
-                                      Text(AppLocalizations.of(context)!.enableAllAlarms),
-                                    ],
-                                  ),
-                                )),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: FilledButton.tonal(
-                              style: FilledButton.styleFrom(
-                                  backgroundColor: Theme.of(context).colorScheme.errorContainer),
-                              onPressed: () {
-                                Provider.of<ChangeSettings>(context, listen: false)
-                                    .disableAllAlarms();
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(AppLocalizations.of(context)!.allAlarmsDisabled),
-                                  ),
-                                );
-                              },
-                              child: FittedBox(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Icon(Icons.delete_forever_rounded),
-                                    Text(AppLocalizations.of(context)!.disableAllAlarms),
-                                  ],
+                          Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 20.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: FilledButton.tonal(
+                            style: FilledButton.styleFrom(
+                                backgroundColor: Theme.of(context).colorScheme.primaryContainer),
+                            onPressed: () {
+                              Provider.of<ChangeSettings>(context, listen: false).enableAllAlarms();
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(AppLocalizations.of(context)!.allAlarmsEnabled),
                                 ),
+                              );
+                            },
+                            child: FittedBox(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(Icons.add_rounded),
+                                  Text(AppLocalizations.of(context)!.enableAllAlarms),
+                                ],
                               ),
+                            )),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: FilledButton.tonal(
+                          style: FilledButton.styleFrom(
+                              backgroundColor: Theme.of(context).colorScheme.errorContainer),
+                          onPressed: () {
+                            Provider.of<ChangeSettings>(context, listen: false).disableAllAlarms();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(AppLocalizations.of(context)!.allAlarmsDisabled),
+                              ),
+                            );
+                          },
+                          child: FittedBox(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(Icons.delete_forever_rounded),
+                                Text(AppLocalizations.of(context)!.disableAllAlarms),
+                              ],
                             ),
                           ),
-                        ],
+                        ),
                       ),
-                    )
-                  : const SizedBox(),
-              AlarmCard(
-                title: AppLocalizations.of(context)!.imsakAlarm,
-                index: 0,
-              ),
-              AlarmCard(
-                title: AppLocalizations.of(context)!.morningAlarm,
-                index: 1,
-              ),
-              AlarmCard(
-                title: AppLocalizations.of(context)!.sunriseAlarm,
-                index: 2,
-              ),
-              AlarmCard(
-                title: AppLocalizations.of(context)!.noonAlarm,
-                index: 3,
-              ),
-              AlarmCard(
-                title: AppLocalizations.of(context)!.afternoonAlarm,
-                index: 4,
-              ),
-              AlarmCard(
-                title: AppLocalizations.of(context)!.sunsetAlarm,
-                index: 5,
-              ),
-              AlarmCard(
-                title: AppLocalizations.of(context)!.nightAlarm,
-                index: 6,
-              ),
-            ],
+                    ],
+                  ),
+                )
+              : const SizedBox(),
+          AlarmCard(
+            title: AppLocalizations.of(context)!.imsakAlarm,
+            index: 0,
           ),
-        ),
+          AlarmCard(
+            title: AppLocalizations.of(context)!.morningAlarm,
+            index: 1,
+          ),
+          AlarmCard(
+            title: AppLocalizations.of(context)!.sunriseAlarm,
+            index: 2,
+          ),
+          AlarmCard(
+            title: AppLocalizations.of(context)!.noonAlarm,
+            index: 3,
+          ),
+          AlarmCard(
+            title: AppLocalizations.of(context)!.afternoonAlarm,
+            index: 4,
+          ),
+          AlarmCard(
+            title: AppLocalizations.of(context)!.sunsetAlarm,
+            index: 5,
+          ),
+          AlarmCard(
+            title: AppLocalizations.of(context)!.nightAlarm,
+            index: 6,
+          ),
+        ],
       ),
     );
   }

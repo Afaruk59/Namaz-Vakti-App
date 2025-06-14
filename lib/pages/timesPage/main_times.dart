@@ -16,7 +16,7 @@ limitations under the License.
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:namaz_vakti_app/data/change_settings.dart';
+import 'package:namaz_vakti_app/components/container_item.dart';
 import 'package:namaz_vakti_app/pages/timesPage/calendar.dart';
 import 'package:namaz_vakti_app/pages/timesPage/clock.dart';
 import 'package:namaz_vakti_app/data/time_data.dart';
@@ -43,17 +43,7 @@ class MainTimes extends StatelessWidget {
             child: Row(
               children: [
                 Expanded(
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      side: const BorderSide(
-                        color: Colors.grey, // Kenar rengini belirleyin
-                        width: 1.0, // Kenar kalınlığını belirleyin
-                      ),
-                      borderRadius: BorderRadius.circular(
-                        Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10,
-                      ), // Kenarların yuvarlaklığını belirleyin
-                    ),
-                    color: Theme.of(context).cardColor,
+                  child: ContainerItem(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -90,17 +80,7 @@ class MainTimes extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      side: const BorderSide(
-                        color: Colors.grey, // Kenar rengini belirleyin
-                        width: 1.0, // Kenar kalınlığını belirleyin
-                      ),
-                      borderRadius: BorderRadius.circular(
-                        Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10,
-                      ), // Kenarların yuvarlaklığını belirleyin
-                    ),
-                    color: Theme.of(context).cardColor,
+                  child: ContainerItem(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [

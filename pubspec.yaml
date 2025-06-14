@@ -1,12 +1,13 @@
 name: namaz_vakti_app
 description: "A new Flutter project."
 publish_to: 'none'
-version: 1.4.3+29
+version: 1.5.0+30
 
 environment:
   sdk: '>=3.4.4 <4.0.0'
 
 dependencies:
+  blurrycontainer: ^2.1.0
   connectivity_plus: ^6.0.5
   csv: ^6.0.0
   device_calendar: ^4.3.3
@@ -15,6 +16,7 @@ dependencies:
   flutter_colorpicker: ^1.1.0
   flutter_compass: ^0.8.1
   flutter_localization: ^0.2.2
+  flutter_native_splash: ^2.4.1
   flutter_svg: ^2.0.16
   geolocator: ^13.0.0
   google_fonts: ^6.2.1
@@ -46,3 +48,23 @@ flutter:
     - assets/img/
     - assets/cities/
     - assets/svg/
+
+flutter_native_splash:
+  image: assets/img/logo.png
+  image_dark: assets/img/logo.png
+  
+  color: "#FFFFFF"
+  color_dark: "#1E1E1E"
+  
+  android_gravity: center
+  ios_content_mode: center
+  
+  android: true
+  android_12:
+    image: assets/img/logo.png
+    icon_background_color: "#FFFFFF"
+    icon_background_color_dark: "#1E1E1E"
+  
+  ios: true
+  web: false
+  fullscreen: true

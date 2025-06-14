@@ -16,10 +16,10 @@ limitations under the License.
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:namaz_vakti_app/components/lang_selector.dart';
 import 'package:namaz_vakti_app/pages/about.dart';
 import 'package:namaz_vakti_app/pages/kaza.dart';
 import 'package:namaz_vakti_app/l10n/l10n.dart';
@@ -38,13 +38,14 @@ import 'package:namaz_vakti_app/data/time_data.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
-import 'package:namaz_vakti_app/pages/splash_screen.dart';
 import 'dart:io' show Platform;
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
   if (Platform.isAndroid) {
     const platform = MethodChannel('com.afaruk59.namaz_vakti_app/notifications');
     try {
@@ -55,9 +56,8 @@ void main() async {
     }
   }
   tz.initializeTimeZones();
-  tz.setLocalLocation(tz.getLocation(DateTime.now().timeZoneOffset.inHours >= 3
-      ? 'Europe/Istanbul'
-      : 'UTC')); // Basit örnekleme ile lokal saat dilimi
+  tz.setLocalLocation(
+      tz.getLocation(DateTime.now().timeZoneOffset.inHours >= 3 ? 'Europe/Istanbul' : 'UTC'));
 
   await ChangeSettings().createSharedPrefObject();
   ChangeSettings().loadLocalFromSharedPref();
@@ -69,19 +69,22 @@ void main() async {
         child: const MainApp(),
       ),
     );
+    Future.delayed(const Duration(milliseconds: 1500), () {
+      FlutterNativeSplash.remove();
+    });
   });
 }
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
-  static String version = '1.4.3';
+  static String version = '1.5.0';
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<ChangeSettings>(context, listen: false).loadLocalFromSharedPref();
     Provider.of<ChangeSettings>(context, listen: false).changeHeight(context);
     Provider.of<ChangeSettings>(context, listen: false).loadCol();
     Provider.of<ChangeSettings>(context, listen: false).loadThemeFromSharedPref();
-    Provider.of<ChangeSettings>(context, listen: false).loadGradFromSharedPref();
     Provider.of<ChangeSettings>(context, listen: false).loadFirstFromSharedPref();
     Provider.of<ChangeSettings>(context, listen: false).loadLanguage();
     Provider.of<ChangeSettings>(context, listen: false).loadOtoLoc();
@@ -98,16 +101,12 @@ class MainApp extends StatelessWidget {
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       locale: Provider.of<ChangeSettings>(context).locale,
       debugShowCheckedModeBanner: false,
-      initialRoute: Provider.of<ChangeSettings>(context, listen: false).isfirst == true
-          ? '/startup'
-          : '/splash',
+      initialRoute:
+          Provider.of<ChangeSettings>(context, listen: false).isfirst == true ? '/startup' : '/',
       onGenerateRoute: (settings) {
         Widget? page;
 
         switch (settings.name) {
-          case '/splash':
-            page = const SplashScreen();
-            break;
           case '/':
             page = ChangeNotifierProvider<TimeData>(
               create: (context) => TimeData(),
@@ -150,13 +149,11 @@ class MainApp extends StatelessWidget {
           case '/search':
             page = const Search();
             break;
-          case '/lang':
-            page = const LangPage();
-            break;
         }
 
         if (page != null) {
           return PageRouteBuilder(
+            opaque: false,
             pageBuilder: (context, animation, secondaryAnimation) => page!,
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               const begin = Offset(1.0, 0.0);
@@ -171,6 +168,12 @@ class MainApp extends StatelessWidget {
         return null;
       },
       theme: ThemeData(
+        dialogTheme: DialogTheme(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+                Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
+          ),
+        ),
         bottomSheetTheme: BottomSheetThemeData(
           modalBarrierColor: Colors.transparent,
           showDragHandle: true,
@@ -181,7 +184,6 @@ class MainApp extends StatelessWidget {
           ),
         ),
         snackBarTheme: SnackBarThemeData(
-          elevation: 10,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(
                 Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
@@ -254,9 +256,7 @@ class MainApp extends StatelessWidget {
             ),
           ),
         ),
-        scaffoldBackgroundColor: Provider.of<ChangeSettings>(context).gradient == true
-            ? Colors.transparent
-            : Theme.of(context).navigationBarTheme.backgroundColor,
+        scaffoldBackgroundColor: Colors.transparent,
         useMaterial3: true,
         brightness: Provider.of<ChangeSettings>(context).isDark == false
             ? Brightness.light
@@ -291,9 +291,10 @@ class MainApp extends StatelessWidget {
             ? const Color.fromARGB(255, 230, 230, 230)
             : const Color.fromARGB(255, 45, 45, 45),
         navigationBarTheme: NavigationBarThemeData(
-          height:
-              Provider.of<ChangeSettings>(context).currentHeight! < 700 || Platform.isIOS ? 70 : 80,
+          elevation: 0,
           backgroundColor: Colors.transparent,
+          height:
+              Provider.of<ChangeSettings>(context).currentHeight! < 700 || Platform.isIOS ? 60 : 70,
           labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
         ),
       ),

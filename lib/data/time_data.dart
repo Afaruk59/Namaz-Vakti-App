@@ -14,8 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
+import 'package:provider/provider.dart';
 import 'package:xml/xml.dart' as xml;
 import 'package:http/http.dart' as http;
 
@@ -36,8 +38,6 @@ class TimeData extends ChangeSettings {
   DateTime? istibak;
   DateTime? isaisani;
   DateTime? kible;
-  String? city;
-  String? cityState;
 
   List<Map<String, String>> prayerTimes = [];
   Map<String, String>? selectedDayTimes;
@@ -70,9 +70,9 @@ class TimeData extends ChangeSettings {
     notifyListeners();
   }
 
-  Future<void> loadPrayerTimes(DateTime time) async {
+  Future<void> loadPrayerTimes(DateTime time, BuildContext context) async {
     String url =
-        'https://www.namazvakti.com/XML.php?cityID=${ChangeSettings.cityID}'; // Çevrimiçi XML dosyasının URL'si
+        'https://www.namazvakti.com/XML.php?cityID=${Provider.of<ChangeSettings>(context, listen: false).cityID}'; // Çevrimiçi XML dosyasının URL'si
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       final data = response.body;
