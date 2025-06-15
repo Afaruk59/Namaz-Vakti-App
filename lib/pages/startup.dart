@@ -52,17 +52,6 @@ class Startup extends StatelessWidget {
           appBar: AppBar(
             automaticallyImplyLeading: false,
             title: Text(AppLocalizations.of(context)!.startupTitle),
-            actions: [
-              IconButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/settings');
-                },
-                icon: const Icon(Icons.settings),
-              ),
-              const SizedBox(
-                width: 20,
-              ),
-            ],
           ),
           body: const StartupCard(),
         ),

@@ -387,7 +387,6 @@ class _ZikirCardState extends State<ZikirCard> {
                                         value: _count / _target, // İlerleme yüzdesi
                                         minHeight: 4.0, // Göstergenin yüksekliği
                                         backgroundColor: Colors.transparent, // Arka plan rengi
-
                                         valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context)
                                             .cardTheme
                                             .color!
@@ -409,8 +408,7 @@ class _ZikirCardState extends State<ZikirCard> {
                           ? Positioned(
                               right: 20,
                               top: 20,
-                              child: Card(
-                                color: Theme.of(context).cardColor,
+                              child: ContainerItem(
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
@@ -475,11 +473,9 @@ class _ZikirCardState extends State<ZikirCard> {
                                         ),
                                         Padding(
                                           padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                                          child: SizedBox(
-                                            height: 8,
+                                          child: TransparentCard(
+                                            blur: false,
                                             child: LinearProgressIndicator(
-                                              borderRadius:
-                                                  const BorderRadius.all(Radius.circular(10)),
                                               value: Provider.of<ChangeSettings>(context,
                                                           listen: false)
                                                       .loadZikirCount(item) /
@@ -487,7 +483,8 @@ class _ZikirCardState extends State<ZikirCard> {
                                                           listen: false)
                                                       .loadZikirSet(item), // İlerleme yüzdesi
                                               minHeight: 4.0, // Göstergenin yüksekliği
-                                              backgroundColor: Colors.grey, // Arka plan rengi
+                                              backgroundColor:
+                                                  Colors.transparent, // Arka plan rengi
                                               valueColor: AlwaysStoppedAnimation<Color>(
                                                   Theme.of(context)
                                                       .cardTheme

@@ -29,19 +29,12 @@ class Settings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Provider.of<ChangeSettings>(context, listen: false).isfirst == true
-        ? ScaffoldLayout(
-            title: AppLocalizations.of(context)!.settingsPageTitle,
-            actions: const [],
-            background: true,
-            body: SettingsCard(pageIndex: pageIndex),
-          )
-        : ScaffoldLayout(
-            title: AppLocalizations.of(context)!.settingsPageTitle,
-            actions: const [],
-            background: false,
-            body: SettingsCard(pageIndex: pageIndex),
-          );
+    return ScaffoldLayout(
+      title: AppLocalizations.of(context)!.settingsPageTitle,
+      actions: const [],
+      background: false,
+      body: SettingsCard(pageIndex: pageIndex),
+    );
   }
 }
 
