@@ -50,9 +50,6 @@ flutter:
     - assets/svg/
 
 flutter_native_splash:
-  image: assets/img/logo.png
-  image_dark: assets/img/logo.png
-  
   color: "#FFFFFF"
   color_dark: "#1E1E1E"
   
@@ -60,11 +57,6 @@ flutter_native_splash:
   ios_content_mode: center
   
   android: true
-  android_12:
-    image: assets/img/logo.png
-    icon_background_color: "#FFFFFF"
-    icon_background_color_dark: "#1E1E1E"
-  
   ios: true
   web: false
   fullscreen: true

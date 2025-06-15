@@ -12,14 +12,13 @@ class TransparentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Provider.of<ChangeSettings>(context).blur
+    return ModalRoute.of(context)?.isCurrent == true && blur == true
         ? Padding(
             padding: padding ? const EdgeInsets.all(3) : EdgeInsets.zero,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(
                   Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
               child: BackdropFilter(
-                enabled: blur ? true : false,
                 filter: ImageFilter.blur(sigmaX: 15.0, sigmaY: 15.0),
                 child: Container(
                   decoration: BoxDecoration(
@@ -35,9 +34,19 @@ class TransparentCard extends StatelessWidget {
               ),
             ),
           )
-        : Card(
-            color: Provider.of<ChangeSettings>(context).color,
-            child: child,
+        : Padding(
+            padding: padding ? const EdgeInsets.all(3) : EdgeInsets.zero,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Provider.of<ChangeSettings>(context).isDark == false
+                    ? Colors.white.withValues(alpha: 0.15)
+                    : Colors.black.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(
+                    Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+              ),
+              child: child,
+            ),
           );
   }
 }

@@ -26,21 +26,23 @@ import 'package:vibration/vibration.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class Zikir extends StatelessWidget {
-  const Zikir({super.key});
+  const Zikir({super.key, this.pageIndex = 0});
+  final int pageIndex;
 
   @override
   Widget build(BuildContext context) {
     return ScaffoldLayout(
       title: AppLocalizations.of(context)!.zikirPageTitle,
       actions: const [],
-      body: const ZikirCard(),
+      body: ZikirCard(pageIndex: pageIndex),
       background: false,
     );
   }
 }
 
 class ZikirCard extends StatefulWidget {
-  const ZikirCard({super.key});
+  const ZikirCard({super.key, required this.pageIndex});
+  final int pageIndex;
 
   @override
   State<ZikirCard> createState() => _ZikirCardState();
@@ -85,6 +87,7 @@ class _ZikirCardState extends State<ZikirCard> {
                 Expanded(
                   flex: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 3 : 2,
                   child: TransparentCard(
+                    blur: widget.pageIndex == 0 ? true : false,
                     child: Padding(
                       padding: const EdgeInsets.all(5),
                       child: Row(
@@ -371,26 +374,27 @@ class _ZikirCardState extends State<ZikirCard> {
                             RotatedBox(
                               quarterTurns: 3,
                               child: TransparentCard(
+                                  blur: widget.pageIndex == 0 ? true : false,
                                   child: SizedBox.expand(
-                                child: Directionality(
-                                  textDirection: TextDirection.ltr,
-                                  child: LinearProgressIndicator(
-                                    borderRadius: BorderRadius.circular(
-                                      Provider.of<ChangeSettings>(context).rounded == true
-                                          ? 50
-                                          : 10,
-                                    ),
-                                    value: _count / _target, // İlerleme yüzdesi
-                                    minHeight: 4.0, // Göstergenin yüksekliği
-                                    backgroundColor: Colors.transparent, // Arka plan rengi
+                                    child: Directionality(
+                                      textDirection: TextDirection.ltr,
+                                      child: LinearProgressIndicator(
+                                        borderRadius: BorderRadius.circular(
+                                          Provider.of<ChangeSettings>(context).rounded == true
+                                              ? 50
+                                              : 10,
+                                        ),
+                                        value: _count / _target, // İlerleme yüzdesi
+                                        minHeight: 4.0, // Göstergenin yüksekliği
+                                        backgroundColor: Colors.transparent, // Arka plan rengi
 
-                                    valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context)
-                                        .cardTheme
-                                        .color!
-                                        .withValues(alpha: 0.6)), // İlerleme çubuğu rengi
-                                  ),
-                                ),
-                              )),
+                                        valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context)
+                                            .cardTheme
+                                            .color!
+                                            .withValues(alpha: 0.6)), // İlerleme çubuğu rengi
+                                      ),
+                                    ),
+                                  )),
                             ),
                             Center(
                               child: Text(
@@ -448,6 +452,7 @@ class _ZikirCardState extends State<ZikirCard> {
                               return PopupMenuItem<String>(
                                 value: item,
                                 child: TransparentCard(
+                                  blur: widget.pageIndex == 0 ? true : false,
                                   child: Padding(
                                     padding: const EdgeInsets.all(5.0),
                                     child: Column(

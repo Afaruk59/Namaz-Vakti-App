@@ -48,7 +48,6 @@ class LicensePage extends StatelessWidget {
         padding: const EdgeInsets.all(15.0),
         child: Scrollbar(
           child: ListView(
-            shrinkWrap: true,
             children: const [
               Text(
                 '''

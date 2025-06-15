@@ -119,11 +119,11 @@ class StartupSecondCard extends StatelessWidget {
         ),
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 10.0),
-          child: TenbihCard(),
+          child: TenbihCard(pageIndex: 3),
         ),
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 10.0),
-          child: LangSelector(),
+          child: LangSelector(pageIndex: 4),
         ),
         SizedBox.square(
           dimension: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 0 : 20,

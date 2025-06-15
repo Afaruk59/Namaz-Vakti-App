@@ -85,7 +85,6 @@ class MainApp extends StatelessWidget {
     Provider.of<ChangeSettings>(context, listen: false).changeHeight(context);
     Provider.of<ChangeSettings>(context, listen: false).loadCol();
     Provider.of<ChangeSettings>(context, listen: false).loadThemeFromSharedPref();
-    Provider.of<ChangeSettings>(context, listen: false).loadBlur();
     Provider.of<ChangeSettings>(context, listen: false).loadFirstFromSharedPref();
     Provider.of<ChangeSettings>(context, listen: false).loadLanguage();
     Provider.of<ChangeSettings>(context, listen: false).loadOtoLoc();
@@ -289,12 +288,12 @@ class MainApp extends StatelessWidget {
           ),
         ),
         cardColor: Provider.of<ChangeSettings>(context).isDark == false
-            ? const Color.fromARGB(255, 208, 208, 208)
+            ? const Color.fromARGB(255, 185, 185, 185)
             : const Color.fromARGB(255, 45, 45, 45),
         navigationBarTheme: NavigationBarThemeData(
           elevation: 0,
           backgroundColor: Colors.transparent,
-          height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 65 : 75,
+          height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 60 : 75,
           labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
         ),
       ),

@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
@@ -68,113 +67,94 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  int getPadding() {
-    if (Platform.isIOS) {
-      if (Provider.of<ChangeSettings>(context).currentHeight! < 700) {
-        return 70;
-      }
-      return 100;
-    } else {
-      if (Provider.of<ChangeSettings>(context).currentHeight! < 700) {
-        return 60;
-      }
-      return 70;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBody: true,
-      resizeToAvoidBottomInset: false,
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: ColorFiltered(
-              colorFilter: ColorFilter.mode(
-                Provider.of<ChangeSettings>(context).color.withValues(alpha: 1),
-                BlendMode.color,
-              ),
-              child: Image.asset(
-                Provider.of<ChangeSettings>(context).isDark
-                    ? 'assets/img/wallpaperdark.png'
-                    : 'assets/img/wallpaper.png',
-                fit: BoxFit.cover,
-              ),
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: ColorFiltered(
+            colorFilter: ColorFilter.mode(
+              Provider.of<ChangeSettings>(context).color.withValues(alpha: 1),
+              BlendMode.color,
+            ),
+            child: Image.asset(
+              Provider.of<ChangeSettings>(context).isDark
+                  ? 'assets/img/wallpaperdark.png'
+                  : 'assets/img/wallpaper.png',
+              fit: BoxFit.cover,
             ),
           ),
-          Padding(
-            padding: EdgeInsets.only(
-              bottom: getPadding().toDouble(),
+        ),
+        Scaffold(
+          extendBody: false,
+          resizeToAvoidBottomInset: false,
+          body: Center(
+            child: PageView(
+              controller: _pageController,
+              onPageChanged: (index) {
+                setState(() {
+                  _currentIndex = index;
+                });
+              },
+              children: [
+                Zikir(pageIndex: _currentIndex),
+                Qibla(pageIndex: _currentIndex),
+                Times(pageIndex: _currentIndex),
+                More(pageIndex: _currentIndex),
+                Settings(pageIndex: _currentIndex),
+              ],
             ),
-            child: Center(
-              child: PageView(
-                controller: _pageController,
-                onPageChanged: (index) {
-                  setState(() {
-                    _currentIndex = index;
-                  });
-                },
-                children: const [
-                  Zikir(),
-                  Qibla(),
-                  Times(),
-                  More(),
-                  Settings(),
-                ],
+          ),
+          bottomNavigationBar: NavigationBar(
+            selectedIndex: _currentIndex,
+            onDestinationSelected: (int index) {
+              setState(() {
+                _currentIndex = index;
+              });
+              _pageController.animateToPage(index,
+                  duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+            },
+            destinations: <Widget>[
+              NavigationDestination(
+                selectedIcon: const Icon(Icons.timer),
+                icon: const Icon(Icons.timer_outlined),
+                label: AppLocalizations.of(context)!.nav3,
               ),
-            ),
-          ),
-        ],
-      ),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _currentIndex,
-        onDestinationSelected: (int index) {
-          setState(() {
-            _currentIndex = index;
-          });
-          _pageController.animateToPage(index,
-              duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
-        },
-        destinations: <Widget>[
-          NavigationDestination(
-            selectedIcon: const Icon(Icons.timer),
-            icon: const Icon(Icons.timer_outlined),
-            label: AppLocalizations.of(context)!.nav3,
-          ),
-          NavigationDestination(
-            selectedIcon: const Icon(Icons.explore),
-            icon: const Icon(Icons.explore_outlined),
-            label: AppLocalizations.of(context)!.nav2,
-          ),
-          TransparentCard(
-            blur: _currentIndex == 2 ? true : false,
-            child: SizedBox(
-              height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 50 : 60,
-              child: IconButton(
-                iconSize: 28,
-                onPressed: () {
-                  _pageController.animateToPage(2,
-                      duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
-                },
-                icon: _currentIndex == 2
-                    ? const Icon(Icons.access_time_filled_rounded)
-                    : const Icon(Icons.access_time_rounded),
+              NavigationDestination(
+                selectedIcon: const Icon(Icons.explore),
+                icon: const Icon(Icons.explore_outlined),
+                label: AppLocalizations.of(context)!.nav2,
               ),
-            ),
+              TransparentCard(
+                blur: _currentIndex == 2 ? true : false,
+                child: SizedBox(
+                  height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 50 : 60,
+                  child: IconButton(
+                    iconSize: 28,
+                    onPressed: () {
+                      _pageController.animateToPage(2,
+                          duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+                    },
+                    icon: _currentIndex == 2
+                        ? const Icon(Icons.access_time_filled_rounded)
+                        : const Icon(Icons.access_time_rounded),
+                  ),
+                ),
+              ),
+              NavigationDestination(
+                selectedIcon: const Icon(Icons.more_horiz),
+                icon: const Icon(Icons.more_horiz),
+                label: AppLocalizations.of(context)!.nav4,
+              ),
+              NavigationDestination(
+                selectedIcon: const Icon(Icons.settings),
+                icon: const Icon(Icons.settings_outlined),
+                label: AppLocalizations.of(context)!.nav5,
+              ),
+            ],
           ),
-          NavigationDestination(
-            selectedIcon: const Icon(Icons.more_horiz),
-            icon: const Icon(Icons.more_horiz),
-            label: AppLocalizations.of(context)!.nav4,
-          ),
-          NavigationDestination(
-            selectedIcon: const Icon(Icons.settings),
-            icon: const Icon(Icons.settings_outlined),
-            label: AppLocalizations.of(context)!.nav5,
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

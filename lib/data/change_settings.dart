@@ -59,24 +59,6 @@ class ChangeSettings with ChangeNotifier {
 
   List<int> alarmVoices = [0, 0, 0, 0, 0, 0, 0];
 
-  bool blur = false;
-
-  //BLUR
-  void toggleBlur() {
-    blur = !blur;
-    saveBlur(blur);
-    notifyListeners();
-  }
-
-  void saveBlur(bool value) {
-    _settings.setBool('blur', value);
-    notifyListeners();
-  }
-
-  void loadBlur() {
-    blur = _settings.getBool('blur') ?? true;
-  }
-
   //SHAPE
   void toggleShape() {
     rounded = !rounded;
