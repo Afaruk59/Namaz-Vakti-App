@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
@@ -43,7 +44,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _checkForUpdate();
+    Platform.isAndroid ? _checkForUpdate() : null;
   }
 
   Future<void> _checkForUpdate() async {
@@ -124,24 +125,29 @@ class _HomePageState extends State<HomePage> {
                 icon: const Icon(Icons.explore_outlined),
                 label: AppLocalizations.of(context)!.nav2,
               ),
-              Card(
-                color: _currentIndex == 2
-                    ? Provider.of<ChangeSettings>(context).color
-                    : Theme.of(context).cardColor,
-                child: SizedBox(
-                  height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 50 : 60,
-                  child: IconButton(
-                    iconSize: 28,
-                    onPressed: () {
-                      _pageController.animateToPage(2,
-                          duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
-                    },
-                    icon: _currentIndex == 2
-                        ? const Icon(Icons.access_time_filled_rounded)
-                        : const Icon(Icons.access_time_rounded),
-                  ),
-                ),
-              ),
+              _currentIndex == 2
+                  ? SizedBox(
+                      height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 45 : 55,
+                      child: IconButton.filledTonal(
+                        iconSize: 28,
+                        onPressed: () {
+                          _pageController.animateToPage(2,
+                              duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+                        },
+                        icon: const Icon(Icons.access_time_filled_rounded),
+                      ),
+                    )
+                  : SizedBox(
+                      height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 45 : 55,
+                      child: IconButton.outlined(
+                        iconSize: 28,
+                        onPressed: () {
+                          _pageController.animateToPage(2,
+                              duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+                        },
+                        icon: const Icon(Icons.access_time_rounded),
+                      ),
+                    ),
               NavigationDestination(
                 selectedIcon: const Icon(Icons.more_horiz),
                 icon: const Icon(Icons.more_horiz),
