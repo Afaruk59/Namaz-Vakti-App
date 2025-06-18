@@ -18,31 +18,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:namaz_vakti_app/components/scaffold_layout.dart';
-import 'package:namaz_vakti_app/components/container_item.dart';
-import 'package:namaz_vakti_app/components/transparent_card.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:provider/provider.dart';
 import 'package:vibration/vibration.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class Zikir extends StatelessWidget {
-  const Zikir({super.key, this.pageIndex = 0});
-  final int pageIndex;
+  const Zikir({super.key});
 
   @override
   Widget build(BuildContext context) {
     return ScaffoldLayout(
       title: AppLocalizations.of(context)!.zikirPageTitle,
       actions: const [],
-      body: ZikirCard(pageIndex: pageIndex),
+      body: const ZikirCard(),
       background: false,
     );
   }
 }
 
 class ZikirCard extends StatefulWidget {
-  const ZikirCard({super.key, required this.pageIndex});
-  final int pageIndex;
+  const ZikirCard({super.key});
 
   @override
   State<ZikirCard> createState() => _ZikirCardState();
@@ -86,15 +82,15 @@ class _ZikirCardState extends State<ZikirCard> {
               children: [
                 Expanded(
                   flex: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 3 : 2,
-                  child: TransparentCard(
-                    blur: widget.pageIndex == 0 ? true : false,
+                  child: Card(
                     child: Padding(
                       padding: const EdgeInsets.all(5),
                       child: Row(
                         children: [
                           Expanded(
                             flex: 1,
-                            child: ContainerItem(
+                            child: Card(
+                              color: Theme.of(context).cardColor,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [
@@ -167,7 +163,8 @@ class _ZikirCardState extends State<ZikirCard> {
                           ),
                           Expanded(
                             flex: 2,
-                            child: ContainerItem(
+                            child: Card(
+                              color: Theme.of(context).cardColor,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -184,7 +181,8 @@ class _ZikirCardState extends State<ZikirCard> {
                                                         700.0
                                                     ? 5.0
                                                     : 10.0),
-                                            child: ContainerItem(
+                                            child: Card(
+                                              color: Theme.of(context).cardColor,
                                               child: Column(
                                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                 children: [
@@ -373,27 +371,29 @@ class _ZikirCardState extends State<ZikirCard> {
                           children: [
                             RotatedBox(
                               quarterTurns: 3,
-                              child: TransparentCard(
-                                  blur: widget.pageIndex == 0 ? true : false,
-                                  child: SizedBox.expand(
-                                    child: Directionality(
-                                      textDirection: TextDirection.ltr,
-                                      child: LinearProgressIndicator(
-                                        borderRadius: BorderRadius.circular(
-                                          Provider.of<ChangeSettings>(context).rounded == true
-                                              ? 50
-                                              : 10,
-                                        ),
-                                        value: _count / _target, // İlerleme yüzdesi
-                                        minHeight: 4.0, // Göstergenin yüksekliği
-                                        backgroundColor: Colors.transparent, // Arka plan rengi
-                                        valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context)
-                                            .cardTheme
-                                            .color!
-                                            .withValues(alpha: 0.6)), // İlerleme çubuğu rengi
+                              child: Card(
+                                color: Theme.of(context).cardColor,
+                                clipBehavior: Clip.hardEdge,
+                                child: SizedBox.expand(
+                                  child: Directionality(
+                                    textDirection: TextDirection.ltr,
+                                    child: LinearProgressIndicator(
+                                      borderRadius: BorderRadius.circular(
+                                        Provider.of<ChangeSettings>(context).rounded == true
+                                            ? 50
+                                            : 10,
                                       ),
+                                      value: _count / _target, // İlerleme yüzdesi
+                                      minHeight: 4.0, // Göstergenin yüksekliği
+                                      backgroundColor: Colors.transparent, // Arka plan rengi
+                                      valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context)
+                                          .cardTheme
+                                          .color!
+                                          .withValues(alpha: 0.6)), // İlerleme çubuğu rengi
                                     ),
-                                  )),
+                                  ),
+                                ),
+                              ),
                             ),
                             Center(
                               child: Text(
@@ -408,7 +408,8 @@ class _ZikirCardState extends State<ZikirCard> {
                           ? Positioned(
                               right: 20,
                               top: 20,
-                              child: ContainerItem(
+                              child: Card(
+                                color: Theme.of(context).cardColor,
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
@@ -449,8 +450,7 @@ class _ZikirCardState extends State<ZikirCard> {
                             return _profiles.map((String item) {
                               return PopupMenuItem<String>(
                                 value: item,
-                                child: TransparentCard(
-                                  blur: widget.pageIndex == 0 ? true : false,
+                                child: Card(
                                   child: Padding(
                                     padding: const EdgeInsets.all(5.0),
                                     child: Column(
@@ -473,8 +473,7 @@ class _ZikirCardState extends State<ZikirCard> {
                                         ),
                                         Padding(
                                           padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                                          child: TransparentCard(
-                                            blur: false,
+                                          child: Card(
                                             child: LinearProgressIndicator(
                                               value: Provider.of<ChangeSettings>(context,
                                                           listen: false)

@@ -18,7 +18,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
-import 'package:namaz_vakti_app/components/transparent_card.dart';
 import 'package:namaz_vakti_app/pages/more.dart';
 import 'package:namaz_vakti_app/pages/qibla.dart';
 import 'package:namaz_vakti_app/pages/settings.dart';
@@ -96,12 +95,12 @@ class _HomePageState extends State<HomePage> {
                   _currentIndex = index;
                 });
               },
-              children: [
-                Zikir(pageIndex: _currentIndex),
-                Qibla(pageIndex: _currentIndex),
-                Times(pageIndex: _currentIndex),
-                More(pageIndex: _currentIndex),
-                Settings(pageIndex: _currentIndex),
+              children: const [
+                Zikir(),
+                Qibla(),
+                Times(),
+                More(),
+                Settings(),
               ],
             ),
           ),
@@ -125,8 +124,10 @@ class _HomePageState extends State<HomePage> {
                 icon: const Icon(Icons.explore_outlined),
                 label: AppLocalizations.of(context)!.nav2,
               ),
-              TransparentCard(
-                blur: _currentIndex == 2 ? true : false,
+              Card(
+                color: _currentIndex == 2
+                    ? Provider.of<ChangeSettings>(context).color
+                    : Theme.of(context).cardColor,
                 child: SizedBox(
                   height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 50 : 60,
                   child: IconButton(

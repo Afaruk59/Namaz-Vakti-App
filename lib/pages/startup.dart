@@ -48,7 +48,6 @@ class Startup extends StatelessWidget {
       PopScope(
         canPop: false,
         child: Scaffold(
-          extendBody: true,
           appBar: AppBar(
             automaticallyImplyLeading: false,
             title: Text(AppLocalizations.of(context)!.startupTitle),
@@ -70,7 +69,7 @@ class StartupCard extends StatelessWidget {
           ? Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const AppCard(blur: true),
+                const AppCard(),
                 SizedBox(
                   height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 0 : 20,
                 ),
@@ -83,7 +82,7 @@ class StartupCard extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Expanded(child: AppCard(blur: true)),
+                    Expanded(child: AppCard()),
                     Expanded(child: StartupSecondCard()),
                   ],
                 ),
@@ -104,15 +103,15 @@ class StartupSecondCard extends StatelessWidget {
       children: [
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 10.0),
-          child: TimeNote(blur: true),
+          child: TimeNote(),
         ),
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 10.0),
-          child: TenbihCard(pageIndex: 3),
+          child: TenbihCard(),
         ),
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 10.0),
-          child: LangSelector(pageIndex: 4),
+          child: LangSelector(),
         ),
         SizedBox.square(
           dimension: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 0 : 20,

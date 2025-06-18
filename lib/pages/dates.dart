@@ -18,7 +18,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as html_parser;
 import 'package:html/dom.dart' as dom;
-import 'package:namaz_vakti_app/components/container_item.dart';
 import 'package:namaz_vakti_app/components/scaffold_layout.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
@@ -89,7 +88,8 @@ class _DatesCardState extends State<DatesCard> {
                     padding: EdgeInsets.symmetric(
                         horizontal:
                             Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 10.0),
-                    child: ContainerItem(
+                    child: Card(
+                      color: Theme.of(context).cardColor,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: ListTile(

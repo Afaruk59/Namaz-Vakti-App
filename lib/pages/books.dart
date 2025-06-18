@@ -224,7 +224,7 @@ class BookCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5.0),
       child: Card(
-        color: col.withValues(alpha: 0.7),
+        color: col,
         child: Padding(
           padding: EdgeInsets.all(
               Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 3.0 : 8.0),

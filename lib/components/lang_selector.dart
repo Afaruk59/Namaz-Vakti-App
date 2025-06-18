@@ -15,19 +15,16 @@ limitations under the License.
 */
 
 import 'package:flutter/material.dart';
-import 'package:namaz_vakti_app/components/container_item.dart';
-import 'package:namaz_vakti_app/components/transparent_card.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class LangSelector extends StatelessWidget {
-  const LangSelector({super.key, required this.pageIndex});
-  final int pageIndex;
+  const LangSelector({super.key});
   @override
   Widget build(BuildContext context) {
-    return TransparentCard(
-      blur: pageIndex == 4 ? true : false,
+    return Card(
+      color: Theme.of(context).cardColor,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15.0),
         child: Scrollbar(
@@ -95,7 +92,7 @@ class LangItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ContainerItem(
+    return Card(
       child: ListTile(
         title: Text(langs[index]),
         onTap: () {

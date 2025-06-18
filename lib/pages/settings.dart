@@ -18,14 +18,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:namaz_vakti_app/components/lang_selector.dart';
 import 'package:namaz_vakti_app/components/scaffold_layout.dart';
-import 'package:namaz_vakti_app/components/transparent_card.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 
 class Settings extends StatelessWidget {
-  const Settings({super.key, this.pageIndex = 0});
-  final int pageIndex;
+  const Settings({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -33,17 +31,13 @@ class Settings extends StatelessWidget {
       title: AppLocalizations.of(context)!.settingsPageTitle,
       actions: const [],
       background: false,
-      body: SettingsCard(pageIndex: pageIndex),
+      body: const SettingsCard(),
     );
   }
 }
 
 class SettingsCard extends StatefulWidget {
-  const SettingsCard({
-    super.key,
-    required this.pageIndex,
-  });
-  final int pageIndex;
+  const SettingsCard({super.key});
   @override
   State<SettingsCard> createState() => _SettingsCardState();
 }
@@ -100,9 +94,9 @@ class _SettingsCardState extends State<SettingsCard> {
           EdgeInsets.all(Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5.0 : 15.0),
       child: ListView(
         children: [
-          LangSelector(pageIndex: widget.pageIndex),
-          TransparentCard(
-            blur: widget.pageIndex == 4 ? true : false,
+          const LangSelector(),
+          Card(
+            color: Theme.of(context).cardColor,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15.0),
               child: SwitchListTile(
@@ -113,8 +107,8 @@ class _SettingsCardState extends State<SettingsCard> {
               ),
             ),
           ),
-          TransparentCard(
-            blur: widget.pageIndex == 4 ? true : false,
+          Card(
+            color: Theme.of(context).cardColor,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15.0),
               child: Padding(
@@ -143,8 +137,8 @@ class _SettingsCardState extends State<SettingsCard> {
               ),
             ),
           ),
-          TransparentCard(
-            blur: widget.pageIndex == 4 ? true : false,
+          Card(
+            color: Theme.of(context).cardColor,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15.0),
               child: SwitchListTile(
@@ -157,18 +151,14 @@ class _SettingsCardState extends State<SettingsCard> {
               ),
             ),
           ),
-          TransparentCard(
-            blur: widget.pageIndex == 4 ? true : false,
+          Card(
+            color: Theme.of(context).cardColor,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15.0),
               child: ListTile(
                 leading: CircleAvatar(
                   radius: 18,
-                  backgroundColor: Theme.of(context).cardColor,
-                  child: CircleAvatar(
-                    radius: 16,
-                    backgroundColor: Provider.of<ChangeSettings>(context, listen: false).color,
-                  ),
+                  backgroundColor: Provider.of<ChangeSettings>(context, listen: false).color,
                 ),
                 title: Text(AppLocalizations.of(context)!.themeColor),
                 onTap: () {

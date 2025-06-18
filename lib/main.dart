@@ -264,6 +264,7 @@ class MainApp extends StatelessWidget {
         colorSchemeSeed: Provider.of<ChangeSettings>(context).color,
         applyElevationOverlayColor: true,
         appBarTheme: AppBarTheme(
+          centerTitle: Platform.isAndroid ? false : true,
           systemOverlayStyle: SystemUiOverlayStyle(
             statusBarColor: Colors.transparent,
             statusBarIconBrightness: Provider.of<ChangeSettings>(context).isDark == false
@@ -288,7 +289,7 @@ class MainApp extends StatelessWidget {
           ),
         ),
         cardColor: Provider.of<ChangeSettings>(context).isDark == false
-            ? const Color.fromARGB(255, 233, 233, 233)
+            ? const Color.fromARGB(255, 216, 216, 216)
             : const Color.fromARGB(255, 45, 45, 45),
         navigationBarTheme: NavigationBarThemeData(
           elevation: 0,

@@ -16,7 +16,6 @@ limitations under the License.
 
 import 'package:flutter/material.dart';
 import 'package:namaz_vakti_app/components/app_card.dart';
-import 'package:namaz_vakti_app/components/container_item.dart';
 import 'package:namaz_vakti_app/components/scaffold_layout.dart';
 import 'package:namaz_vakti_app/components/time_note.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
@@ -55,7 +54,8 @@ class AboutPage extends StatelessWidget {
           SizedBox(
             height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 10 : 40,
           ),
-          ContainerItem(
+          Card(
+            color: Theme.of(context).cardColor,
             child: Padding(
               padding: EdgeInsets.symmetric(
                   horizontal:
@@ -76,7 +76,8 @@ class AboutPage extends StatelessWidget {
               ),
             ),
           ),
-          ContainerItem(
+          Card(
+            color: Theme.of(context).cardColor,
             child: Padding(
               padding: EdgeInsets.symmetric(
                   horizontal:

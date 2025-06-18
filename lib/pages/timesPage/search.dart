@@ -17,7 +17,6 @@ limitations under the License.
 import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:namaz_vakti_app/components/container_item.dart';
 import 'package:namaz_vakti_app/components/scaffold_layout.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:provider/provider.dart';
@@ -115,7 +114,8 @@ class _SearchState extends State<Search> {
                       ),
                     );
                   }
-                  return ContainerItem(
+                  return Card(
+                    color: Theme.of(context).cardColor,
                     child: ListTile(
                       leading: const Icon(Icons.location_city_rounded),
                       title: Text(column2Data[filteredItems[index - 1]]),

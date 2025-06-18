@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 import 'package:flutter/material.dart';
-import 'package:namaz_vakti_app/components/transparent_card.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
@@ -24,13 +23,11 @@ import 'package:url_launcher/url_launcher.dart';
 class TenbihCard extends StatelessWidget {
   const TenbihCard({
     super.key,
-    required this.pageIndex,
   });
-  final int pageIndex;
   @override
   Widget build(BuildContext context) {
-    return TransparentCard(
-      blur: pageIndex == 3 ? true : false,
+    return Card(
+      color: Theme.of(context).cardColor,
       child: Padding(
         padding: EdgeInsets.symmetric(
             horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),

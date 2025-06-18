@@ -16,7 +16,6 @@ limitations under the License.
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:namaz_vakti_app/components/container_item.dart';
 import 'package:namaz_vakti_app/pages/timesPage/calendar.dart';
 import 'package:namaz_vakti_app/pages/timesPage/clock.dart';
 import 'package:namaz_vakti_app/data/time_data.dart';
@@ -43,7 +42,8 @@ class MainTimes extends StatelessWidget {
             child: Row(
               children: [
                 Expanded(
-                  child: ContainerItem(
+                  child: Card(
+                    color: Theme.of(context).cardColor,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -80,7 +80,8 @@ class MainTimes extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                  child: ContainerItem(
+                  child: Card(
+                    color: Theme.of(context).cardColor,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
