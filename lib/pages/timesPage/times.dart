@@ -413,52 +413,34 @@ class _TopTimesCardState extends State<TopTimesCard> {
         ),
         Expanded(
           flex: 3,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Card(
-                  color: Theme.of(context).colorScheme.secondaryContainer,
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: Location(
-                          title: AppLocalizations.of(context)!.locationButtonText,
-                        ),
-                      ),
-                    ],
+          child: Card(
+            color: Theme.of(context).colorScheme.secondaryContainer,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  flex: 7,
+                  child: Location(
+                    title: AppLocalizations.of(context)!.locationButtonText,
                   ),
                 ),
-              ),
-              Card(
-                color: Theme.of(context).colorScheme.secondaryContainer,
-                child: const Column(
-                  children: [
-                    Expanded(
-                      child: SearchButton(),
-                    ),
-                  ],
+                RotatedBox(
+                  quarterTurns: 1,
+                  child: Divider(
+                    height: 10,
+                    color: Theme.of(context).colorScheme.secondary,
+                    thickness: 1,
+                  ),
                 ),
-              ),
-            ],
+                const Expanded(
+                  flex: 3,
+                  child: SearchButton(),
+                ),
+              ],
+            ),
           ),
         ),
       ],
-    );
-  }
-}
-
-class BottomTimesCard extends StatelessWidget {
-  const BottomTimesCard({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Card(
-        child: Provider.of<TimeData>(context).isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : const MainTimes(),
-      ),
     );
   }
 }

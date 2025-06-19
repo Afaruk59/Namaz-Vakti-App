@@ -166,26 +166,31 @@ class _CalendarBtnState extends State<CalendarBtn> {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton.filledTonal(
-      iconSize: 25,
-      style: IconButton.styleFrom(
-        shape: Provider.of<ChangeSettings>(context).rounded == true
-            ? const CircleBorder()
-            : const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-              ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
+      child: SizedBox.expand(
+        child: IconButton.filledTonal(
+          iconSize: 25,
+          style: IconButton.styleFrom(
+            shape: Provider.of<ChangeSettings>(context).rounded == true
+                ? const CircleBorder()
+                : const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
+          ),
+          icon: const Icon(Icons.date_range_rounded),
+          onPressed: () async {
+            if (_ilk) {
+              await fetchWordnDay();
+              await _fetchCalendar();
+              setState(() {
+                _ilk = false;
+              });
+            }
+            _showBottomSheet(context);
+          },
+        ),
       ),
-      icon: const Icon(Icons.date_range_rounded),
-      onPressed: () async {
-        if (_ilk) {
-          await fetchWordnDay();
-          await _fetchCalendar();
-          setState(() {
-            _ilk = false;
-          });
-        }
-        _showBottomSheet(context);
-      },
     );
   }
 }

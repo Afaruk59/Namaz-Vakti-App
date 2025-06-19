@@ -264,7 +264,7 @@ class MainApp extends StatelessWidget {
         colorSchemeSeed: Provider.of<ChangeSettings>(context).color,
         applyElevationOverlayColor: true,
         appBarTheme: AppBarTheme(
-          centerTitle: Platform.isAndroid ? false : true,
+          centerTitle: false,
           systemOverlayStyle: SystemUiOverlayStyle(
             statusBarColor: Colors.transparent,
             statusBarIconBrightness: Provider.of<ChangeSettings>(context).isDark == false
@@ -274,11 +274,19 @@ class MainApp extends StatelessWidget {
           toolbarHeight: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 40 : 50,
           titleSpacing: 30,
           color: Colors.transparent,
-          titleTextStyle: GoogleFonts.ubuntu(
-              fontSize: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 22 : 25.0,
-              color: Provider.of<ChangeSettings>(context).isDark == false
-                  ? Colors.black87
-                  : Colors.white),
+          titleTextStyle: Platform.isAndroid
+              ? GoogleFonts.ubuntu(
+                  fontSize: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 22 : 25.0,
+                  color: Provider.of<ChangeSettings>(context).isDark == false
+                      ? Colors.black87
+                      : Colors.white)
+              : TextStyle(
+                  fontFamily: 'SF Pro Display',
+                  fontWeight: FontWeight.bold,
+                  fontSize: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 25 : 30.0,
+                  color: Provider.of<ChangeSettings>(context).isDark == false
+                      ? Colors.black87
+                      : Colors.white),
         ),
         cardTheme: CardTheme(
           color: Provider.of<ChangeSettings>(context).color,

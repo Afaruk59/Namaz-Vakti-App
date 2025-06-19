@@ -54,7 +54,7 @@ class TimeData extends ChangeSettings {
   bool minute = true;
   DateTime preTime = DateTime.now();
   Duration mainDifference = const Duration(minutes: 1);
-  bool isEnabled = true;
+  bool isClockEnabled = true;
 
   String miladi = DateFormat('dd MMMM yyyy').format(DateTime.now());
 
@@ -197,9 +197,9 @@ class TimeData extends ChangeSettings {
 
   void switchClock(bool value) {
     if (value) {
-      isEnabled = true;
+      isClockEnabled = true;
     } else {
-      isEnabled = false;
+      isClockEnabled = false;
     }
   }
 

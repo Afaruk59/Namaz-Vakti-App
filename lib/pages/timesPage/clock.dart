@@ -72,7 +72,7 @@ class _ClockState extends State<Clock> {
     _prayList[5] = AppLocalizations.of(context)!.timeLeftAksam;
     _prayList[6] = AppLocalizations.of(context)!.timeLeftYatsi;
     _prayList[7] = AppLocalizations.of(context)!.timeLeftImsak;
-    return Provider.of<TimeData>(context).isEnabled == false
+    return Provider.of<TimeData>(context).isClockEnabled == false
         ? IconButton.filledTonal(
             iconSize: 25,
             style: IconButton.styleFrom(shape: const CircleBorder()),

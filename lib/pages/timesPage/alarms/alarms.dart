@@ -130,7 +130,7 @@ class _AlarmsBodyState extends State<AlarmsBody> with WidgetsBindingObserver {
                   horizontal:
                       Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
               child: Card(
-                color: Theme.of(context).colorScheme.errorContainer.withValues(alpha: 0.6),
+                color: Theme.of(context).colorScheme.errorContainer,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15.0),
                   child: ListTile(
