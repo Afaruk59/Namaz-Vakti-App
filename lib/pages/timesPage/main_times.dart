@@ -16,6 +16,7 @@ limitations under the License.
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:namaz_vakti_app/pages/timesPage/calendar.dart';
 import 'package:namaz_vakti_app/pages/timesPage/clock.dart';
 import 'package:namaz_vakti_app/data/time_data.dart';
@@ -42,9 +43,11 @@ class BottomTimesCard extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    const Expanded(flex: 1, child: Daily()),
+                    Provider.of<ChangeSettings>(context).langCode == 'tr'
+                        ? const Expanded(flex: 1, child: Daily())
+                        : const SizedBox.shrink(),
                     Expanded(
-                      flex: 4,
+                      flex: Provider.of<ChangeSettings>(context).langCode == 'tr' ? 4 : 5,
                       child: Row(
                         children: [
                           Expanded(

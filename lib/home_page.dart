@@ -86,7 +86,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         Scaffold(
-          extendBody: false,
+          extendBody: true,
           resizeToAvoidBottomInset: false,
           body: Center(
             child: PageView(
@@ -97,11 +97,11 @@ class _HomePageState extends State<HomePage> {
                 });
               },
               children: const [
-                Zikir(),
-                Qibla(),
-                Times(),
-                More(),
-                Settings(),
+                SafeArea(child: Zikir()),
+                SafeArea(child: Qibla()),
+                SafeArea(child: Times()),
+                SafeArea(child: More()),
+                SafeArea(child: Settings()),
               ],
             ),
           ),

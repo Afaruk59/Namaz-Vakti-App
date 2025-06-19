@@ -283,14 +283,14 @@ class MainApp extends StatelessWidget {
               : TextStyle(
                   fontFamily: 'SF Pro Display',
                   fontWeight: FontWeight.bold,
-                  fontSize: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 25 : 30.0,
+                  fontSize: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 24 : 28.0,
                   color: Provider.of<ChangeSettings>(context).isDark == false
                       ? Colors.black87
                       : Colors.white),
         ),
         cardTheme: CardTheme(
-          color: Provider.of<ChangeSettings>(context).color,
           elevation: 10,
+          color: Provider.of<ChangeSettings>(context).color,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(
                 Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),

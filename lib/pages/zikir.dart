@@ -431,7 +431,7 @@ class _ZikirCardState extends State<ZikirCard> {
                           icon: const Icon(Icons.my_library_books),
                           offset: const Offset(5, 0),
                           enabled: true,
-                          elevation: 0,
+                          elevation: 10,
                           onSelected: (String result) {
                             setState(() {
                               _selectedProfile = result;
@@ -445,12 +445,13 @@ class _ZikirCardState extends State<ZikirCard> {
                                   .loadZikirStack(_selectedProfile);
                             });
                           },
-                          color: Colors.transparent,
+                          color: Theme.of(context).cardTheme.color,
                           itemBuilder: (BuildContext context) {
                             return _profiles.map((String item) {
                               return PopupMenuItem<String>(
                                 value: item,
                                 child: Card(
+                                  color: Theme.of(context).cardColor,
                                   child: Padding(
                                     padding: const EdgeInsets.all(5.0),
                                     child: Column(
@@ -483,7 +484,7 @@ class _ZikirCardState extends State<ZikirCard> {
                                                       .loadZikirSet(item), // İlerleme yüzdesi
                                               minHeight: 4.0, // Göstergenin yüksekliği
                                               backgroundColor:
-                                                  Colors.transparent, // Arka plan rengi
+                                                  Theme.of(context).cardColor, // Arka plan rengi
                                               valueColor: AlwaysStoppedAnimation<Color>(
                                                   Theme.of(context)
                                                       .cardTheme
