@@ -30,8 +30,6 @@ class BottomTimesCard extends StatelessWidget {
     super.key,
   });
 
-  final TextStyle style = const TextStyle(fontSize: 20);
-
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -43,11 +41,15 @@ class BottomTimesCard extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Provider.of<ChangeSettings>(context).langCode == 'tr'
+                    Provider.of<ChangeSettings>(context).langCode == 'tr' &&
+                            Provider.of<ChangeSettings>(context).currentHeight! > 700
                         ? const Expanded(flex: 1, child: Daily())
                         : const SizedBox.shrink(),
                     Expanded(
-                      flex: Provider.of<ChangeSettings>(context).langCode == 'tr' ? 4 : 5,
+                      flex: Provider.of<ChangeSettings>(context).langCode == 'tr' &&
+                              Provider.of<ChangeSettings>(context).currentHeight! > 700
+                          ? 4
+                          : 5,
                       child: Row(
                         children: [
                           Expanded(
@@ -58,31 +60,66 @@ class BottomTimesCard extends StatelessWidget {
                                 children: [
                                   Text(
                                     AppLocalizations.of(context)!.imsak,
-                                    style: style,
+                                    style: TextStyle(
+                                        fontSize:
+                                            Provider.of<ChangeSettings>(context).currentHeight! <
+                                                    700
+                                                ? 16
+                                                : 20),
                                   ),
                                   Text(
                                     AppLocalizations.of(context)!.sabah,
-                                    style: style,
+                                    style: TextStyle(
+                                        fontSize:
+                                            Provider.of<ChangeSettings>(context).currentHeight! <
+                                                    700
+                                                ? 16
+                                                : 20),
                                   ),
                                   Text(
                                     AppLocalizations.of(context)!.gunes,
-                                    style: style,
+                                    style: TextStyle(
+                                        fontSize:
+                                            Provider.of<ChangeSettings>(context).currentHeight! <
+                                                    700
+                                                ? 16
+                                                : 20),
                                   ),
                                   Text(
                                     AppLocalizations.of(context)!.ogle,
-                                    style: style,
+                                    style: TextStyle(
+                                        fontSize:
+                                            Provider.of<ChangeSettings>(context).currentHeight! <
+                                                    700
+                                                ? 16
+                                                : 20),
                                   ),
                                   Text(
                                     AppLocalizations.of(context)!.ikindi,
-                                    style: style,
+                                    style: TextStyle(
+                                        fontSize:
+                                            Provider.of<ChangeSettings>(context).currentHeight! <
+                                                    700
+                                                ? 16
+                                                : 20),
                                   ),
                                   Text(
                                     AppLocalizations.of(context)!.aksam,
-                                    style: style,
+                                    style: TextStyle(
+                                        fontSize:
+                                            Provider.of<ChangeSettings>(context).currentHeight! <
+                                                    700
+                                                ? 16
+                                                : 20),
                                   ),
                                   Text(
                                     AppLocalizations.of(context)!.yatsi,
-                                    style: style,
+                                    style: TextStyle(
+                                        fontSize:
+                                            Provider.of<ChangeSettings>(context).currentHeight! <
+                                                    700
+                                                ? 16
+                                                : 20),
                                   ),
                                 ],
                               ),
@@ -97,37 +134,72 @@ class BottomTimesCard extends StatelessWidget {
                                   Text(
                                     DateFormat('HH:mm').format(
                                         Provider.of<TimeData>(context).imsak ?? DateTime.now()),
-                                    style: style,
+                                    style: TextStyle(
+                                        fontSize:
+                                            Provider.of<ChangeSettings>(context).currentHeight! <
+                                                    700
+                                                ? 16
+                                                : 20),
                                   ),
                                   Text(
                                     DateFormat('HH:mm').format(
                                         Provider.of<TimeData>(context).sabah ?? DateTime.now()),
-                                    style: style,
+                                    style: TextStyle(
+                                        fontSize:
+                                            Provider.of<ChangeSettings>(context).currentHeight! <
+                                                    700
+                                                ? 16
+                                                : 20),
                                   ),
                                   Text(
                                     DateFormat('HH:mm').format(
                                         Provider.of<TimeData>(context).gunes ?? DateTime.now()),
-                                    style: style,
+                                    style: TextStyle(
+                                        fontSize:
+                                            Provider.of<ChangeSettings>(context).currentHeight! <
+                                                    700
+                                                ? 16
+                                                : 20),
                                   ),
                                   Text(
                                     DateFormat('HH:mm').format(
                                         Provider.of<TimeData>(context).ogle ?? DateTime.now()),
-                                    style: style,
+                                    style: TextStyle(
+                                        fontSize:
+                                            Provider.of<ChangeSettings>(context).currentHeight! <
+                                                    700
+                                                ? 16
+                                                : 20),
                                   ),
                                   Text(
                                     DateFormat('HH:mm').format(
                                         Provider.of<TimeData>(context).ikindi ?? DateTime.now()),
-                                    style: style,
+                                    style: TextStyle(
+                                        fontSize:
+                                            Provider.of<ChangeSettings>(context).currentHeight! <
+                                                    700
+                                                ? 16
+                                                : 20),
                                   ),
                                   Text(
                                     DateFormat('HH:mm').format(
                                         Provider.of<TimeData>(context).aksam ?? DateTime.now()),
-                                    style: style,
+                                    style: TextStyle(
+                                        fontSize:
+                                            Provider.of<ChangeSettings>(context).currentHeight! <
+                                                    700
+                                                ? 16
+                                                : 20),
                                   ),
                                   Text(
                                     DateFormat('HH:mm').format(
                                         Provider.of<TimeData>(context).yatsi ?? DateTime.now()),
-                                    style: style,
+                                    style: TextStyle(
+                                        fontSize:
+                                            Provider.of<ChangeSettings>(context).currentHeight! <
+                                                    700
+                                                ? 16
+                                                : 20),
                                   ),
                                 ],
                               ),

@@ -265,6 +265,7 @@ class MainApp extends StatelessWidget {
         applyElevationOverlayColor: true,
         appBarTheme: AppBarTheme(
           centerTitle: false,
+          elevation: 0,
           systemOverlayStyle: SystemUiOverlayStyle(
             statusBarColor: Colors.transparent,
             statusBarIconBrightness: Provider.of<ChangeSettings>(context).isDark == false

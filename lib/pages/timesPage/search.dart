@@ -100,15 +100,18 @@ class _SearchState extends State<Search> {
                   if (index == 0) {
                     return Padding(
                       padding: const EdgeInsets.all(5.0),
-                      child: TextField(
-                        controller: searchController,
-                        decoration: InputDecoration(
-                          labelText: AppLocalizations.of(context)!.search,
-                          hintText: AppLocalizations.of(context)!.enterLoc,
-                          prefixIcon: const Icon(Icons.search),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(
-                                Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
+                      child: Card(
+                        color: Theme.of(context).cardColor,
+                        child: TextField(
+                          controller: searchController,
+                          decoration: InputDecoration(
+                            labelText: AppLocalizations.of(context)!.search,
+                            hintText: AppLocalizations.of(context)!.enterLoc,
+                            prefixIcon: const Icon(Icons.search),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(
+                                  Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
+                            ),
                           ),
                         ),
                       ),

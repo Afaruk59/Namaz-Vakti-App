@@ -97,11 +97,26 @@ class _HomePageState extends State<HomePage> {
                 });
               },
               children: const [
-                SafeArea(child: Zikir()),
-                SafeArea(child: Qibla()),
-                SafeArea(child: Times()),
-                SafeArea(child: More()),
-                SafeArea(child: Settings()),
+                SafeArea(
+                  child: Zikir(),
+                  top: false,
+                ),
+                SafeArea(
+                  child: Qibla(),
+                  top: false,
+                ),
+                SafeArea(
+                  child: Times(),
+                  top: false,
+                ),
+                SafeArea(
+                  child: More(),
+                  top: false,
+                ),
+                SafeArea(
+                  child: Settings(),
+                  top: false,
+                ),
               ],
             ),
           ),

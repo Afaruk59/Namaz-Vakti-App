@@ -78,8 +78,10 @@ class _TimesBodyState extends State<TimesBody> {
         alertOpen = true;
       }
     } else {
-      Provider.of<TimeData>(context, listen: false).switchClock(true);
-      Provider.of<TimeData>(context, listen: false).loadPrayerTimes(DateTime.now(), context);
+      if (mounted) {
+        Provider.of<TimeData>(context, listen: false).switchClock(true);
+        Provider.of<TimeData>(context, listen: false).loadPrayerTimes(DateTime.now(), context);
+      }
     }
   }
 
