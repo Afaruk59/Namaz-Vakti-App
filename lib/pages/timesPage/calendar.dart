@@ -15,157 +15,24 @@ limitations under the License.
 */
 
 import 'package:flutter/material.dart';
-import 'package:html/parser.dart';
-import 'package:intl/intl.dart';
-import 'package:namaz_vakti_app/components/transparent_card.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
-import 'package:http/http.dart' as http;
-import 'package:html/parser.dart' as html_parser;
+import 'package:namaz_vakti_app/data/time_data.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class CalendarBtn extends StatefulWidget {
+class CalendarBtn extends StatelessWidget {
   const CalendarBtn({super.key});
-
-  @override
-  State<CalendarBtn> createState() => _CalendarBtnState();
-}
-
-class _CalendarBtnState extends State<CalendarBtn> {
   static String? _day;
   static String? _word;
   static String? _calendar;
-  static bool _ilk = true;
-
-  Future<void> fetchWordnDay() async {
-    final url = Uri.parse('https://www.turktakvim.com/');
-    try {
-      final response = await http.get(url);
-      if (response.statusCode == 200) {
-        final document = parse(response.body);
-        final olayElement = document.querySelector(
-            'html body div#Wrapper article#contents div div#takvimon_part2 div span#gununolayi');
-        final sozElement = document.querySelector(
-            'html body div#Wrapper article#contents div div#takvimon_part2 div span#gununsozu');
-
-        setState(() {
-          _day = olayElement?.text ?? "Günün önemi bulunamadı.";
-          _word = sozElement?.text ?? "Günün sözü bulunamadı.";
-        });
-      } else {
-        setState(() {
-          _day = "Siteye erişim başarısız.";
-          _word = "Siteye erişim başarısız.";
-        });
-      }
-    } catch (e) {
-      setState(() {
-        _day = "Hata oluştu: $e";
-        _word = "Hata oluştu: $e";
-      });
-    }
-  }
-
-  Future<void> _fetchCalendar() async {
-    const url = 'https://www.turktakvim.com/10/Tr/';
-
-    final response = await http.get(Uri.parse(url));
-
-    if (response.statusCode == 200) {
-      var document = html_parser.parse(response.body);
-
-      var textContent = document.body!.text;
-
-      setState(() {
-        _calendar = textContent;
-      });
-    }
-  }
-
-  void _showBottomSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled:
-          Provider.of<ChangeSettings>(context, listen: false).currentHeight! < 700.0 ? true : false,
-      enableDrag: true,
-      scrollControlDisabledMaxHeightRatio: 0.8,
-      builder: (BuildContext context) {
-        return TransparentCard(
-          child: Scrollbar(
-            child: Padding(
-              padding: EdgeInsets.all(
-                  Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5.0 : 15.0),
-              child: ListView(
-                children: [
-                  Text(
-                    DateFormat(
-                      'dd MMMM yyyy',
-                      Provider.of<ChangeSettings>(context, listen: false).langCode,
-                    ).format(DateTime.now()),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Text(
-                    _day!,
-                  ),
-                  const SizedBox(
-                    height: 30,
-                    child: Divider(
-                      thickness: 3,
-                    ),
-                  ),
-                  Text(
-                    _word!,
-                  ),
-                  const SizedBox(
-                    height: 40,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Provider.of<ChangeSettings>(context).isDark
-                            ? Colors.grey.withValues(alpha: 0.5)
-                            : Colors.white.withValues(alpha: 0.5),
-                      ),
-                      borderRadius: BorderRadius.circular(
-                          Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: Text(
-                        _calendar!,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: FilledButton.tonal(
-                      onPressed: () async {
-                        final Uri url = Uri.parse('https://www.turktakvim.com/');
-                        await launchUrl(url);
-                      },
-                      child: const Text('Turktakvim.com'),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
+  static String? _miladi;
 
   @override
   Widget build(BuildContext context) {
+    _day = Provider.of<TimeData>(context).day;
+    _word = Provider.of<TimeData>(context).word;
+    _calendar = Provider.of<TimeData>(context).calendar;
+    _miladi = Provider.of<TimeData>(context).miladi;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
       child: SizedBox.expand(
@@ -180,14 +47,85 @@ class _CalendarBtnState extends State<CalendarBtn> {
           ),
           icon: const Icon(Icons.date_range_rounded),
           onPressed: () async {
-            if (_ilk) {
-              await fetchWordnDay();
-              await _fetchCalendar();
-              setState(() {
-                _ilk = false;
-              });
-            }
-            _showBottomSheet(context);
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled:
+                  Provider.of<ChangeSettings>(context, listen: false).currentHeight! < 700.0
+                      ? true
+                      : false,
+              enableDrag: true,
+              scrollControlDisabledMaxHeightRatio: 0.8,
+              builder: (context) {
+                return Scrollbar(
+                  child: Card(
+                    color: Theme.of(context).cardColor,
+                    child: Padding(
+                      padding: EdgeInsets.all(
+                          Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5.0 : 15.0),
+                      child: ListView(
+                        children: [
+                          Text(
+                            _miladi!,
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Text(
+                            _day!,
+                          ),
+                          const SizedBox(
+                            height: 30,
+                            child: Divider(
+                              thickness: 3,
+                            ),
+                          ),
+                          Text(
+                            _word!,
+                          ),
+                          const SizedBox(
+                            height: 40,
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Provider.of<ChangeSettings>(context).isDark
+                                    ? Colors.grey.withValues(alpha: 0.5)
+                                    : Colors.white.withValues(alpha: 0.5),
+                              ),
+                              borderRadius: BorderRadius.circular(
+                                  Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: Text(
+                                _calendar!,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                            child: FilledButton.tonal(
+                              onPressed: () async {
+                                final Uri url = Uri.parse('https://www.turktakvim.com/');
+                                await launchUrl(url);
+                              },
+                              child: const Text('Turktakvim.com'),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            );
           },
         ),
       ),

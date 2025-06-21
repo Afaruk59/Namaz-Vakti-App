@@ -16,7 +16,6 @@ limitations under the License.
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:namaz_vakti_app/components/transparent_card.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:namaz_vakti_app/data/time_data.dart';
 import 'package:provider/provider.dart';
@@ -81,7 +80,8 @@ class DetailedTimesBtn extends StatelessWidget {
                       ? true
                       : false,
               builder: (BuildContext context) {
-                return TransparentCard(
+                return Card(
+                  color: Theme.of(context).cardColor,
                   child: Column(
                     children: [
                       const SizedBox(

@@ -20,6 +20,7 @@ import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:provider/provider.dart';
 import 'package:xml/xml.dart' as xml;
 import 'package:http/http.dart' as http;
+import 'package:html/parser.dart' as html_parser;
 
 class TimeData extends ChangeSettings {
   DateTime? yatsi2;
@@ -57,6 +58,10 @@ class TimeData extends ChangeSettings {
   bool isClockEnabled = true;
 
   String miladi = DateFormat('dd MMMM yyyy').format(DateTime.now());
+
+  String day = '';
+  String word = '';
+  String calendar = '';
 
   void selectDate(DateTime time) {
     final DateTime picked = time;
@@ -190,8 +195,49 @@ class TimeData extends ChangeSettings {
       } on Exception catch (_) {
         yatsi2 = null;
       }
+      await fetchCalendar();
+      await fetchWordnDay(context);
       isTimeLoading = false;
       notifyListeners();
+    }
+  }
+
+  Future<void> fetchWordnDay(BuildContext context) async {
+    final url = Uri.parse(
+        'https://turktakvim.com/index.php?tarih=${DateFormat('yyyy-MM-dd').format(Provider.of<TimeData>(context, listen: false).selectedDate!.add(const Duration(days: 1)))}&page=onyuz');
+
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final document = html_parser.parse(response.body);
+        final olayElement = document.querySelector(
+            'html body div#Wrapper article#contents div div#takvimon_part2 div span#gununolayi');
+        final sozElement = document.querySelector(
+            'html body div#Wrapper article#contents div div#takvimon_part2 div span#gununsozu');
+
+        day = olayElement?.text ?? "Günün önemi bulunamadı.";
+        word = sozElement?.text ?? "Günün sözü bulunamadı.";
+      } else {
+        day = "Siteye erişim başarısız.";
+        word = "Siteye erişim başarısız.";
+      }
+    } catch (e) {
+      day = "Hata oluştu: $e";
+      word = "Hata oluştu: $e";
+    }
+  }
+
+  Future<void> fetchCalendar() async {
+    const url = 'https://www.turktakvim.com/10/Tr/';
+
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      var document = html_parser.parse(response.body);
+
+      var textContent = document.body!.text;
+
+      calendar = textContent;
     }
   }
 

@@ -16,7 +16,6 @@ limitations under the License.
 
 import 'package:flutter/material.dart';
 import 'package:namaz_vakti_app/components/scaffold_layout.dart';
-import 'package:namaz_vakti_app/components/transparent_card.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -192,7 +191,8 @@ class BookCard extends StatelessWidget {
       isScrollControlled:
           Provider.of<ChangeSettings>(context, listen: false).currentHeight! < 700.0 ? true : false,
       builder: (BuildContext context) {
-        return TransparentCard(
+        return Card(
+          color: Theme.of(context).cardColor,
           child: Scrollbar(
             child: Padding(
               padding: EdgeInsets.all(

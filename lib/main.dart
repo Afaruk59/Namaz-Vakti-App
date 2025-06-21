@@ -175,9 +175,8 @@ class MainApp extends StatelessWidget {
           ),
         ),
         bottomSheetTheme: BottomSheetThemeData(
-          modalBarrierColor: Colors.transparent,
           showDragHandle: true,
-          backgroundColor: Colors.transparent,
+          backgroundColor: Provider.of<ChangeSettings>(context).color,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(
                 Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
