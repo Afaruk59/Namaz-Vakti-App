@@ -16,131 +16,215 @@ limitations under the License.
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:namaz_vakti_app/components/container_item.dart';
+import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:namaz_vakti_app/pages/timesPage/calendar.dart';
 import 'package:namaz_vakti_app/pages/timesPage/clock.dart';
 import 'package:namaz_vakti_app/data/time_data.dart';
+import 'package:namaz_vakti_app/pages/timesPage/daily.dart';
 import 'package:namaz_vakti_app/pages/timesPage/detailed_times.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
-class MainTimes extends StatelessWidget {
-  const MainTimes({
+class BottomTimesCard extends StatelessWidget {
+  const BottomTimesCard({
     super.key,
   });
 
-  final TextStyle style = const TextStyle(fontSize: 20);
-
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(5),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Expanded(
-            flex: 5,
-            child: Row(
-              children: [
-                Expanded(
-                  child: ContainerItem(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Text(
-                          AppLocalizations.of(context)!.imsak,
-                          style: style,
-                        ),
-                        Text(
-                          AppLocalizations.of(context)!.sabah,
-                          style: style,
-                        ),
-                        Text(
-                          AppLocalizations.of(context)!.gunes,
-                          style: style,
-                        ),
-                        Text(
-                          AppLocalizations.of(context)!.ogle,
-                          style: style,
-                        ),
-                        Text(
-                          AppLocalizations.of(context)!.ikindi,
-                          style: style,
-                        ),
-                        Text(
-                          AppLocalizations.of(context)!.aksam,
-                          style: style,
-                        ),
-                        Text(
-                          AppLocalizations.of(context)!.yatsi,
-                          style: style,
-                        ),
-                      ],
+    return Center(
+      child: Card(
+        child: Provider.of<TimeData>(context).isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : Padding(
+                padding: const EdgeInsets.all(5),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Provider.of<ChangeSettings>(context).langCode == 'tr' &&
+                            Provider.of<ChangeSettings>(context).currentHeight! > 700
+                        ? const Expanded(flex: 1, child: Daily())
+                        : const SizedBox.shrink(),
+                    Expanded(
+                      flex: Provider.of<ChangeSettings>(context).langCode == 'tr' &&
+                              Provider.of<ChangeSettings>(context).currentHeight! > 700
+                          ? 4
+                          : 5,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Card(
+                              color: Theme.of(context).cardColor,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!.imsak,
+                                    style: TextStyle(
+                                        fontSize:
+                                            Provider.of<ChangeSettings>(context).currentHeight! <
+                                                    700
+                                                ? 16
+                                                : 20),
+                                  ),
+                                  Text(
+                                    AppLocalizations.of(context)!.sabah,
+                                    style: TextStyle(
+                                        fontSize:
+                                            Provider.of<ChangeSettings>(context).currentHeight! <
+                                                    700
+                                                ? 16
+                                                : 20),
+                                  ),
+                                  Text(
+                                    AppLocalizations.of(context)!.gunes,
+                                    style: TextStyle(
+                                        fontSize:
+                                            Provider.of<ChangeSettings>(context).currentHeight! <
+                                                    700
+                                                ? 16
+                                                : 20),
+                                  ),
+                                  Text(
+                                    AppLocalizations.of(context)!.ogle,
+                                    style: TextStyle(
+                                        fontSize:
+                                            Provider.of<ChangeSettings>(context).currentHeight! <
+                                                    700
+                                                ? 16
+                                                : 20),
+                                  ),
+                                  Text(
+                                    AppLocalizations.of(context)!.ikindi,
+                                    style: TextStyle(
+                                        fontSize:
+                                            Provider.of<ChangeSettings>(context).currentHeight! <
+                                                    700
+                                                ? 16
+                                                : 20),
+                                  ),
+                                  Text(
+                                    AppLocalizations.of(context)!.aksam,
+                                    style: TextStyle(
+                                        fontSize:
+                                            Provider.of<ChangeSettings>(context).currentHeight! <
+                                                    700
+                                                ? 16
+                                                : 20),
+                                  ),
+                                  Text(
+                                    AppLocalizations.of(context)!.yatsi,
+                                    style: TextStyle(
+                                        fontSize:
+                                            Provider.of<ChangeSettings>(context).currentHeight! <
+                                                    700
+                                                ? 16
+                                                : 20),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Card(
+                              color: Theme.of(context).cardColor,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Text(
+                                    DateFormat('HH:mm').format(
+                                        Provider.of<TimeData>(context).imsak ?? DateTime.now()),
+                                    style: TextStyle(
+                                        fontSize:
+                                            Provider.of<ChangeSettings>(context).currentHeight! <
+                                                    700
+                                                ? 16
+                                                : 20),
+                                  ),
+                                  Text(
+                                    DateFormat('HH:mm').format(
+                                        Provider.of<TimeData>(context).sabah ?? DateTime.now()),
+                                    style: TextStyle(
+                                        fontSize:
+                                            Provider.of<ChangeSettings>(context).currentHeight! <
+                                                    700
+                                                ? 16
+                                                : 20),
+                                  ),
+                                  Text(
+                                    DateFormat('HH:mm').format(
+                                        Provider.of<TimeData>(context).gunes ?? DateTime.now()),
+                                    style: TextStyle(
+                                        fontSize:
+                                            Provider.of<ChangeSettings>(context).currentHeight! <
+                                                    700
+                                                ? 16
+                                                : 20),
+                                  ),
+                                  Text(
+                                    DateFormat('HH:mm').format(
+                                        Provider.of<TimeData>(context).ogle ?? DateTime.now()),
+                                    style: TextStyle(
+                                        fontSize:
+                                            Provider.of<ChangeSettings>(context).currentHeight! <
+                                                    700
+                                                ? 16
+                                                : 20),
+                                  ),
+                                  Text(
+                                    DateFormat('HH:mm').format(
+                                        Provider.of<TimeData>(context).ikindi ?? DateTime.now()),
+                                    style: TextStyle(
+                                        fontSize:
+                                            Provider.of<ChangeSettings>(context).currentHeight! <
+                                                    700
+                                                ? 16
+                                                : 20),
+                                  ),
+                                  Text(
+                                    DateFormat('HH:mm').format(
+                                        Provider.of<TimeData>(context).aksam ?? DateTime.now()),
+                                    style: TextStyle(
+                                        fontSize:
+                                            Provider.of<ChangeSettings>(context).currentHeight! <
+                                                    700
+                                                ? 16
+                                                : 20),
+                                  ),
+                                  Text(
+                                    DateFormat('HH:mm').format(
+                                        Provider.of<TimeData>(context).yatsi ?? DateTime.now()),
+                                    style: TextStyle(
+                                        fontSize:
+                                            Provider.of<ChangeSettings>(context).currentHeight! <
+                                                    700
+                                                ? 16
+                                                : 20),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ),
-                Expanded(
-                  child: ContainerItem(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Text(
-                          DateFormat('HH:mm')
-                              .format(Provider.of<TimeData>(context).imsak ?? DateTime.now()),
-                          style: style,
+                    const Expanded(
+                      flex: 1,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 5.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Expanded(flex: 1, child: DetailedTimesBtn()),
+                            Expanded(flex: 5, child: Clock()),
+                            Expanded(flex: 1, child: CalendarBtn()),
+                          ],
                         ),
-                        Text(
-                          DateFormat('HH:mm')
-                              .format(Provider.of<TimeData>(context).sabah ?? DateTime.now()),
-                          style: style,
-                        ),
-                        Text(
-                          DateFormat('HH:mm')
-                              .format(Provider.of<TimeData>(context).gunes ?? DateTime.now()),
-                          style: style,
-                        ),
-                        Text(
-                          DateFormat('HH:mm')
-                              .format(Provider.of<TimeData>(context).ogle ?? DateTime.now()),
-                          style: style,
-                        ),
-                        Text(
-                          DateFormat('HH:mm')
-                              .format(Provider.of<TimeData>(context).ikindi ?? DateTime.now()),
-                          style: style,
-                        ),
-                        Text(
-                          DateFormat('HH:mm')
-                              .format(Provider.of<TimeData>(context).aksam ?? DateTime.now()),
-                          style: style,
-                        ),
-                        Text(
-                          DateFormat('HH:mm')
-                              .format(Provider.of<TimeData>(context).yatsi ?? DateTime.now()),
-                          style: style,
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
-          ),
-          const Expanded(
-            flex: 1,
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 5.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(flex: 1, child: DetailedTimesBtn()),
-                  Expanded(flex: 5, child: Clock()),
-                  Expanded(flex: 1, child: CalendarBtn()),
-                ],
               ),
-            ),
-          ),
-        ],
       ),
     );
   }

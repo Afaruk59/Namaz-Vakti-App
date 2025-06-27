@@ -88,5 +88,9 @@
 		<true/>
 		<key>UIViewControllerBasedStatusBarAppearance</key>
 		<false/>
+		<key>UIAppFonts</key>
+		<array>
+			<string>Assets/Fonts/SFPRODISPLAYBOLD.OTF</string>
+		</array>
 	</dict>
 </plist>

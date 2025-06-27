@@ -15,10 +15,10 @@ limitations under the License.
 */
 
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
-import 'package:namaz_vakti_app/components/transparent_card.dart';
 import 'package:namaz_vakti_app/pages/more.dart';
 import 'package:namaz_vakti_app/pages/qibla.dart';
 import 'package:namaz_vakti_app/pages/settings.dart';
@@ -40,11 +40,12 @@ class _HomePageState extends State<HomePage> {
   Timer? timer;
   int _currentIndex = 2;
   final PageController _pageController = PageController(initialPage: 2);
+  double _backgroundOffset = 0.5;
 
   @override
   void initState() {
     super.initState();
-    _checkForUpdate();
+    Platform.isAndroid ? _checkForUpdate() : null;
   }
 
   Future<void> _checkForUpdate() async {
@@ -72,21 +73,34 @@ class _HomePageState extends State<HomePage> {
     return Stack(
       children: [
         Positioned.fill(
-          child: ColorFiltered(
-            colorFilter: ColorFilter.mode(
-              Provider.of<ChangeSettings>(context).color.withValues(alpha: 1),
-              BlendMode.color,
-            ),
-            child: Image.asset(
-              Provider.of<ChangeSettings>(context).isDark
-                  ? 'assets/img/wallpaperdark.png'
-                  : 'assets/img/wallpaper.png',
-              fit: BoxFit.cover,
+          child: OverflowBox(
+            maxWidth: double.infinity,
+            child: TweenAnimationBuilder<double>(
+              duration: const Duration(milliseconds: 1000),
+              curve: Curves.easeInOutCirc,
+              tween: Tween<double>(begin: _backgroundOffset, end: _backgroundOffset),
+              builder: (context, animatedOffset, child) {
+                return Transform.translate(
+                  offset: Offset((0.5 - animatedOffset) * MediaQuery.of(context).size.width, 0),
+                  child: child,
+                );
+              },
+              child: ColorFiltered(
+                colorFilter: ColorFilter.mode(
+                  Provider.of<ChangeSettings>(context).color.withValues(alpha: 1),
+                  BlendMode.color,
+                ),
+                child: Image.asset(
+                  Provider.of<ChangeSettings>(context).isDark
+                      ? 'assets/img/wallpaperdark.png'
+                      : 'assets/img/wallpaper.png',
+                ),
+              ),
             ),
           ),
         ),
         Scaffold(
-          extendBody: false,
+          extendBody: true,
           resizeToAvoidBottomInset: false,
           body: Center(
             child: PageView(
@@ -94,14 +108,31 @@ class _HomePageState extends State<HomePage> {
               onPageChanged: (index) {
                 setState(() {
                   _currentIndex = index;
+                  bool isRTL = Provider.of<ChangeSettings>(context, listen: false).langCode == 'ar';
+                  _backgroundOffset = isRTL ? (4 - index) * 0.25 : index * 0.25;
                 });
               },
-              children: [
-                Zikir(pageIndex: _currentIndex),
-                Qibla(pageIndex: _currentIndex),
-                Times(pageIndex: _currentIndex),
-                More(pageIndex: _currentIndex),
-                Settings(pageIndex: _currentIndex),
+              children: const [
+                SafeArea(
+                  top: false,
+                  child: Zikir(),
+                ),
+                SafeArea(
+                  top: false,
+                  child: Qibla(),
+                ),
+                SafeArea(
+                  top: false,
+                  child: Times(),
+                ),
+                SafeArea(
+                  top: false,
+                  child: More(),
+                ),
+                SafeArea(
+                  top: false,
+                  child: Settings(),
+                ),
               ],
             ),
           ),
@@ -125,21 +156,27 @@ class _HomePageState extends State<HomePage> {
                 icon: const Icon(Icons.explore_outlined),
                 label: AppLocalizations.of(context)!.nav2,
               ),
-              TransparentCard(
-                blur: _currentIndex == 2 ? true : false,
-                child: SizedBox(
-                  height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 50 : 60,
-                  child: IconButton(
-                    iconSize: 28,
-                    onPressed: () {
-                      _pageController.animateToPage(2,
-                          duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
-                    },
-                    icon: _currentIndex == 2
-                        ? const Icon(Icons.access_time_filled_rounded)
-                        : const Icon(Icons.access_time_rounded),
-                  ),
-                ),
+              SizedBox(
+                height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 45 : 55,
+                child: _currentIndex == 2
+                    ? IconButton.filledTonal(
+                        tooltip: AppLocalizations.of(context)!.nav1,
+                        iconSize: 28,
+                        onPressed: () {
+                          _pageController.animateToPage(2,
+                              duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+                        },
+                        icon: const Icon(Icons.access_time_filled_rounded),
+                      )
+                    : IconButton.outlined(
+                        tooltip: AppLocalizations.of(context)!.nav1,
+                        iconSize: 28,
+                        onPressed: () {
+                          _pageController.animateToPage(2,
+                              duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+                        },
+                        icon: const Icon(Icons.access_time_rounded),
+                      ),
               ),
               NavigationDestination(
                 selectedIcon: const Icon(Icons.more_horiz),

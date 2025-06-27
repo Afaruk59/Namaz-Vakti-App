@@ -17,7 +17,6 @@ limitations under the License.
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:namaz_vakti_app/components/container_item.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:namaz_vakti_app/data/time_data.dart';
 import 'package:provider/provider.dart';
@@ -73,7 +72,7 @@ class _ClockState extends State<Clock> {
     _prayList[5] = AppLocalizations.of(context)!.timeLeftAksam;
     _prayList[6] = AppLocalizations.of(context)!.timeLeftYatsi;
     _prayList[7] = AppLocalizations.of(context)!.timeLeftImsak;
-    return Provider.of<TimeData>(context).isEnabled == false
+    return Provider.of<TimeData>(context).isClockEnabled == false
         ? IconButton.filledTonal(
             iconSize: 25,
             style: IconButton.styleFrom(shape: const CircleBorder()),
@@ -84,7 +83,9 @@ class _ClockState extends State<Clock> {
           )
         : Stack(
             children: [
-              ContainerItem(
+              Card(
+                clipBehavior: Clip.hardEdge,
+                color: Theme.of(context).cardColor,
                 child: SizedBox.expand(
                   child: LinearProgressIndicator(
                     value: (Provider.of<TimeData>(context).mainDifference.inSeconds -

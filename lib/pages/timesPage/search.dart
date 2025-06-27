@@ -17,7 +17,6 @@ limitations under the License.
 import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:namaz_vakti_app/components/container_item.dart';
 import 'package:namaz_vakti_app/components/scaffold_layout.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:provider/provider.dart';
@@ -101,21 +100,25 @@ class _SearchState extends State<Search> {
                   if (index == 0) {
                     return Padding(
                       padding: const EdgeInsets.all(5.0),
-                      child: TextField(
-                        controller: searchController,
-                        decoration: InputDecoration(
-                          labelText: AppLocalizations.of(context)!.search,
-                          hintText: AppLocalizations.of(context)!.enterLoc,
-                          prefixIcon: const Icon(Icons.search),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(
-                                Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
+                      child: Card(
+                        color: Theme.of(context).cardColor,
+                        child: TextField(
+                          controller: searchController,
+                          decoration: InputDecoration(
+                            labelText: AppLocalizations.of(context)!.search,
+                            hintText: AppLocalizations.of(context)!.enterLoc,
+                            prefixIcon: const Icon(Icons.search),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(
+                                  Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
+                            ),
                           ),
                         ),
                       ),
                     );
                   }
-                  return ContainerItem(
+                  return Card(
+                    color: Theme.of(context).cardColor,
                     child: ListTile(
                       leading: const Icon(Icons.location_city_rounded),
                       title: Text(column2Data[filteredItems[index - 1]]),

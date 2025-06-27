@@ -15,7 +15,8 @@ limitations under the License.
 */
 
 import 'package:flutter/material.dart';
-import 'package:namaz_vakti_app/components/transparent_card.dart';
+import 'package:namaz_vakti_app/data/change_settings.dart';
+import 'package:provider/provider.dart';
 
 class ScaffoldLayout extends StatelessWidget {
   const ScaffoldLayout(
@@ -31,16 +32,31 @@ class ScaffoldLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return background
-        ? TransparentCard(
-            padding: false,
-            child: Scaffold(
-              resizeToAvoidBottomInset: false,
-              appBar: AppBar(
-                title: Text(title),
-                actions: actions,
+        ? Stack(
+            children: [
+              Positioned.fill(
+                child: ColorFiltered(
+                  colorFilter: ColorFilter.mode(
+                    Provider.of<ChangeSettings>(context).color.withValues(alpha: 1),
+                    BlendMode.color,
+                  ),
+                  child: Image.asset(
+                    Provider.of<ChangeSettings>(context).isDark
+                        ? 'assets/img/wallpaperdark.png'
+                        : 'assets/img/wallpaper.png',
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
-              body: body,
-            ),
+              Scaffold(
+                resizeToAvoidBottomInset: false,
+                appBar: AppBar(
+                  title: Text(title),
+                  actions: actions,
+                ),
+                body: body,
+              ),
+            ],
           )
         : Scaffold(
             resizeToAvoidBottomInset: false,

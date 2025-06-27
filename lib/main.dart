@@ -77,7 +77,7 @@ void main() async {
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
-  static String version = '1.5.0';
+  static String version = '1.4.4';
 
   @override
   Widget build(BuildContext context) {
@@ -175,9 +175,8 @@ class MainApp extends StatelessWidget {
           ),
         ),
         bottomSheetTheme: BottomSheetThemeData(
-          modalBarrierColor: Colors.transparent,
           showDragHandle: true,
-          backgroundColor: Colors.transparent,
+          backgroundColor: Provider.of<ChangeSettings>(context).color,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(
                 Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
@@ -264,6 +263,8 @@ class MainApp extends StatelessWidget {
         colorSchemeSeed: Provider.of<ChangeSettings>(context).color,
         applyElevationOverlayColor: true,
         appBarTheme: AppBarTheme(
+          centerTitle: false,
+          elevation: 0,
           systemOverlayStyle: SystemUiOverlayStyle(
             statusBarColor: Colors.transparent,
             statusBarIconBrightness: Provider.of<ChangeSettings>(context).isDark == false
@@ -273,27 +274,35 @@ class MainApp extends StatelessWidget {
           toolbarHeight: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 40 : 50,
           titleSpacing: 30,
           color: Colors.transparent,
-          titleTextStyle: GoogleFonts.ubuntu(
-              fontSize: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 22 : 25.0,
-              color: Provider.of<ChangeSettings>(context).isDark == false
-                  ? Colors.black87
-                  : Colors.white),
+          titleTextStyle: Platform.isAndroid
+              ? GoogleFonts.ubuntu(
+                  fontSize: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 22 : 25.0,
+                  color: Provider.of<ChangeSettings>(context).isDark == false
+                      ? Colors.black87
+                      : Colors.white)
+              : TextStyle(
+                  fontFamily: 'SF Pro Display',
+                  fontWeight: FontWeight.bold,
+                  fontSize: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 24 : 28.0,
+                  color: Provider.of<ChangeSettings>(context).isDark == false
+                      ? Colors.black87
+                      : Colors.white),
         ),
         cardTheme: CardTheme(
-          color: Provider.of<ChangeSettings>(context).color,
           elevation: 10,
+          color: Provider.of<ChangeSettings>(context).color,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(
                 Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
           ),
         ),
         cardColor: Provider.of<ChangeSettings>(context).isDark == false
-            ? const Color.fromARGB(255, 233, 233, 233)
+            ? const Color.fromARGB(255, 216, 216, 216)
             : const Color.fromARGB(255, 45, 45, 45),
         navigationBarTheme: NavigationBarThemeData(
           elevation: 0,
           backgroundColor: Colors.transparent,
-          height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 60 : 75,
+          height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 50 : 60,
           labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
         ),
       ),

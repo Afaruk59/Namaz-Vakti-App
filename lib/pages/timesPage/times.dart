@@ -19,7 +19,6 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:namaz_vakti_app/components/scaffold_layout.dart';
-import 'package:namaz_vakti_app/components/transparent_card.dart';
 import 'package:namaz_vakti_app/pages/timesPage/city_names.dart';
 import 'package:namaz_vakti_app/pages/timesPage/location.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
@@ -30,8 +29,7 @@ import 'package:hijri/hijri_calendar.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class Times extends StatelessWidget {
-  const Times({super.key, this.pageIndex = 0});
-  final int pageIndex;
+  const Times({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -57,14 +55,13 @@ class Times extends StatelessWidget {
           width: 20,
         ),
       ],
-      body: TimesBody(pageIndex: pageIndex),
+      body: const TimesBody(),
     );
   }
 }
 
 class TimesBody extends StatefulWidget {
-  const TimesBody({super.key, required this.pageIndex});
-  final int pageIndex;
+  const TimesBody({super.key});
 
   @override
   State<TimesBody> createState() => _TimesBodyState();
@@ -81,8 +78,10 @@ class _TimesBodyState extends State<TimesBody> {
         alertOpen = true;
       }
     } else {
-      Provider.of<TimeData>(context, listen: false).switchClock(true);
-      Provider.of<TimeData>(context, listen: false).loadPrayerTimes(DateTime.now(), context);
+      if (mounted) {
+        Provider.of<TimeData>(context, listen: false).switchClock(true);
+        Provider.of<TimeData>(context, listen: false).loadPrayerTimes(DateTime.now(), context);
+      }
     }
   }
 
@@ -151,35 +150,12 @@ class _TimesBodyState extends State<TimesBody> {
               children: [
                 Expanded(
                   flex: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 6 : 5,
-                  child: Row(
+                  child: const Row(
                     children: [
                       Expanded(
-                        child: TopTimesCard(pageIndex: widget.pageIndex),
+                        child: TopTimesCard(),
                       ),
                       Expanded(
-                        child: TransparentCard(
-                          blur: widget.pageIndex == 2 ? true : false,
-                          child: const Center(
-                            child: CityNameCard(),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(flex: 11, child: BottomTimesCard(pageIndex: widget.pageIndex)),
-              ],
-            )
-          : Row(
-              children: [
-                Expanded(
-                  flex: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 6 : 5,
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: TopTimesCard(pageIndex: widget.pageIndex),
-                      ),
-                      const Expanded(
                         child: Card(
                           child: Center(
                             child: CityNameCard(),
@@ -189,9 +165,31 @@ class _TimesBodyState extends State<TimesBody> {
                     ],
                   ),
                 ),
+                const Expanded(flex: 11, child: BottomTimesCard()),
+              ],
+            )
+          : Row(
+              children: [
                 Expanded(
+                  flex: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 6 : 5,
+                  child: const Column(
+                    children: [
+                      Expanded(
+                        child: TopTimesCard(),
+                      ),
+                      Expanded(
+                        child: Card(
+                          child: Center(
+                            child: CityNameCard(),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const Expanded(
                   flex: 5,
-                  child: BottomTimesCard(pageIndex: widget.pageIndex),
+                  child: BottomTimesCard(),
                 ),
               ],
             ),
@@ -200,8 +198,7 @@ class _TimesBodyState extends State<TimesBody> {
 }
 
 class TopTimesCard extends StatefulWidget {
-  const TopTimesCard({super.key, required this.pageIndex});
-  final int pageIndex;
+  const TopTimesCard({super.key});
 
   @override
   State<TopTimesCard> createState() => _TopTimesCardState();
@@ -275,8 +272,7 @@ class _TopTimesCardState extends State<TopTimesCard> {
       children: [
         Expanded(
           flex: 4,
-          child: TransparentCard(
-            blur: widget.pageIndex == 2 ? true : false,
+          child: Card(
             child: Center(
               child: Stack(
                 children: [
@@ -398,8 +394,7 @@ class _TopTimesCardState extends State<TopTimesCard> {
         ),
         Expanded(
           flex: 4,
-          child: TransparentCard(
-            blur: widget.pageIndex == 2 ? true : false,
+          child: Card(
             child: Center(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
@@ -420,54 +415,34 @@ class _TopTimesCardState extends State<TopTimesCard> {
         ),
         Expanded(
           flex: 3,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Card(
-                  color: Theme.of(context).colorScheme.secondaryContainer,
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: Location(
-                          title: AppLocalizations.of(context)!.locationButtonText,
-                        ),
-                      ),
-                    ],
+          child: Card(
+            color: Theme.of(context).colorScheme.secondaryContainer,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  flex: 7,
+                  child: Location(
+                    title: AppLocalizations.of(context)!.locationButtonText,
                   ),
                 ),
-              ),
-              Card(
-                color: Theme.of(context).colorScheme.secondaryContainer,
-                child: const Column(
-                  children: [
-                    Expanded(
-                      child: SearchButton(),
-                    ),
-                  ],
+                RotatedBox(
+                  quarterTurns: 1,
+                  child: Divider(
+                    height: 10,
+                    color: Theme.of(context).colorScheme.secondary,
+                    thickness: 1,
+                  ),
                 ),
-              ),
-            ],
+                const Expanded(
+                  flex: 3,
+                  child: SearchButton(),
+                ),
+              ],
+            ),
           ),
         ),
       ],
-    );
-  }
-}
-
-class BottomTimesCard extends StatelessWidget {
-  const BottomTimesCard({super.key, required this.pageIndex});
-  final int pageIndex;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: TransparentCard(
-        blur: pageIndex == 2 ? true : false,
-        child: Provider.of<TimeData>(context).isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : const MainTimes(),
-      ),
     );
   }
 }
