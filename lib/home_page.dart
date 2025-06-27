@@ -40,6 +40,7 @@ class _HomePageState extends State<HomePage> {
   Timer? timer;
   int _currentIndex = 2;
   final PageController _pageController = PageController(initialPage: 2);
+  double _backgroundOffset = 0.5;
 
   @override
   void initState() {
@@ -72,16 +73,29 @@ class _HomePageState extends State<HomePage> {
     return Stack(
       children: [
         Positioned.fill(
-          child: ColorFiltered(
-            colorFilter: ColorFilter.mode(
-              Provider.of<ChangeSettings>(context).color.withValues(alpha: 1),
-              BlendMode.color,
-            ),
-            child: Image.asset(
-              Provider.of<ChangeSettings>(context).isDark
-                  ? 'assets/img/wallpaperdark.png'
-                  : 'assets/img/wallpaper.png',
-              fit: BoxFit.cover,
+          child: OverflowBox(
+            maxWidth: double.infinity,
+            child: TweenAnimationBuilder<double>(
+              duration: const Duration(milliseconds: 1000),
+              curve: Curves.easeInOutCirc,
+              tween: Tween<double>(begin: _backgroundOffset, end: _backgroundOffset),
+              builder: (context, animatedOffset, child) {
+                return Transform.translate(
+                  offset: Offset((0.5 - animatedOffset) * MediaQuery.of(context).size.width, 0),
+                  child: child,
+                );
+              },
+              child: ColorFiltered(
+                colorFilter: ColorFilter.mode(
+                  Provider.of<ChangeSettings>(context).color.withValues(alpha: 1),
+                  BlendMode.color,
+                ),
+                child: Image.asset(
+                  Provider.of<ChangeSettings>(context).isDark
+                      ? 'assets/img/wallpaperdark.png'
+                      : 'assets/img/wallpaper.png',
+                ),
+              ),
             ),
           ),
         ),
@@ -94,28 +108,30 @@ class _HomePageState extends State<HomePage> {
               onPageChanged: (index) {
                 setState(() {
                   _currentIndex = index;
+                  bool isRTL = Provider.of<ChangeSettings>(context, listen: false).langCode == 'ar';
+                  _backgroundOffset = isRTL ? (4 - index) * 0.25 : index * 0.25;
                 });
               },
               children: const [
                 SafeArea(
+                  top: false,
                   child: Zikir(),
-                  top: false,
                 ),
                 SafeArea(
+                  top: false,
                   child: Qibla(),
-                  top: false,
                 ),
                 SafeArea(
+                  top: false,
                   child: Times(),
-                  top: false,
                 ),
                 SafeArea(
+                  top: false,
                   child: More(),
-                  top: false,
                 ),
                 SafeArea(
-                  child: Settings(),
                   top: false,
+                  child: Settings(),
                 ),
               ],
             ),
@@ -140,21 +156,20 @@ class _HomePageState extends State<HomePage> {
                 icon: const Icon(Icons.explore_outlined),
                 label: AppLocalizations.of(context)!.nav2,
               ),
-              _currentIndex == 2
-                  ? SizedBox(
-                      height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 45 : 55,
-                      child: IconButton.filledTonal(
+              SizedBox(
+                height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 45 : 55,
+                child: _currentIndex == 2
+                    ? IconButton.filledTonal(
+                        tooltip: AppLocalizations.of(context)!.nav1,
                         iconSize: 28,
                         onPressed: () {
                           _pageController.animateToPage(2,
                               duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
                         },
                         icon: const Icon(Icons.access_time_filled_rounded),
-                      ),
-                    )
-                  : SizedBox(
-                      height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 45 : 55,
-                      child: IconButton.outlined(
+                      )
+                    : IconButton.outlined(
+                        tooltip: AppLocalizations.of(context)!.nav1,
                         iconSize: 28,
                         onPressed: () {
                           _pageController.animateToPage(2,
@@ -162,7 +177,7 @@ class _HomePageState extends State<HomePage> {
                         },
                         icon: const Icon(Icons.access_time_rounded),
                       ),
-                    ),
+              ),
               NavigationDestination(
                 selectedIcon: const Icon(Icons.more_horiz),
                 icon: const Icon(Icons.more_horiz),

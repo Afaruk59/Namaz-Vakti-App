@@ -302,7 +302,7 @@ class MainApp extends StatelessWidget {
         navigationBarTheme: NavigationBarThemeData(
           elevation: 0,
           backgroundColor: Colors.transparent,
-          height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 60 : 75,
+          height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 50 : 60,
           labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
         ),
       ),

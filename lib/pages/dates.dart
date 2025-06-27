@@ -52,6 +52,208 @@ class DatesCard extends StatefulWidget {
 class _DatesCardState extends State<DatesCard> {
   static List<String> _list = [];
   final DeviceCalendarPlugin _deviceCalendarPlugin = DeviceCalendarPlugin();
+  final Map<String, Map<String, String>> translations = {
+    "Üç Ayların başlaması": {
+      "en": "Beginning of the Three Holy Months",
+      "ar": "بداية الأشهر الثلاثة",
+      "de": "Beginn der drei heiligen Monate",
+      "es": "Comienzo de los Tres Meses Sagrados",
+      "fr": "Début des trois mois sacrés",
+      "it": "Inizio dei tre mesi sacri",
+      "ru": "Начало трёх священных месяцев"
+    },
+    "Regâib Kandili Gecesi (Receb ayının ilk Cuma gecesi)": {
+      "en": "Night of Raghaib (First Friday night of the month of Rajab)",
+      "ar": "ليلة الرغائب (ليلة الجمعة الأولى من رجب)",
+      "de": "Nacht von Raghaib (Erster Freitagabend im Monat Radschab)",
+      "es": "Noche de Raghaib (Primer viernes del mes de Rayab)",
+      "fr": "Nuit de Raghaïb (Premier vendredi du mois de Rajab)",
+      "it": "Notte di Raghaib (Primo venerdì del mese di Rajab)",
+      "ru": "Ночь Рагаиб (первая пятничная ночь месяца Раджаб)"
+    },
+    "Mi'râc Kandili Gecesi": {
+      "en": "Night of Mi'raj (Ascension)",
+      "ar": "ليلة المعراج",
+      "de": "Nacht der Miraj (Himmelfahrt des Propheten)",
+      "es": "Noche del Mi'ray (Ascensión del Profeta)",
+      "fr": "Nuit du Mi'râj (Ascension du Prophète)",
+      "it": "Notte del Mi'rāj (Ascensione del Profeta)",
+      "ru": "Ночь Мирадж (вознесение Пророка)"
+    },
+    "Berât Kandili Gecesi": {
+      "en": "Night of Bara'at",
+      "ar": "ليلة البراءة",
+      "de": "Nacht von Bara'a",
+      "es": "Noche de Bara'at",
+      "fr": "Nuit de la Bara'a",
+      "it": "Notte di Barāʾa",
+      "ru": "Ночь Бараат"
+    },
+    "Ramezân-ı şerîf'in başlangıcı": {
+      "en": "Beginning of the Holy Month of Ramadan",
+      "ar": "بداية شهر رمضان المبارك",
+      "de": "Beginn des heiligen Monats Ramadan",
+      "es": "Comienzo del sagrado mes de Ramadán",
+      "fr": "Début du mois sacré de Ramadan",
+      "it": "Inizio del mese sacro di Ramadan",
+      "ru": "Начало священного месяца Рамадан"
+    },
+    "Kadr Gecesi": {
+      "en": "Night of Qadr (Power)",
+      "ar": "ليلة القدر",
+      "de": "Nacht der Bestimmung (Lailat al-Qadr)",
+      "es": "Noche del Decreto (Laylat al-Qadr)",
+      "fr": "Nuit du Destin (Laylat al-Qadr)",
+      "it": "Notte del Destino (Laylat al-Qadr)",
+      "ru": "Ночь Предопределения (Лейлат аль-Кадр)"
+    },
+    "Fıtr Bayramı Gecesi": {
+      "en": "Night Before Eid al-Fitr",
+      "ar": "ليلة عيد الفطر",
+      "de": "Vorabend des Festes des Fastenbrechens (Eid al-Fitr)",
+      "es": "Noche anterior a la Fiesta de la ruptura del ayuno (Eid al-Fitr)",
+      "fr": "Veille de l'Aïd el-Fitr",
+      "it": "Notte prima della Festa di fine Ramadan (Eid al-Fitr)",
+      "ru": "Ночь перед праздником Ид аль-Фитр"
+    },
+    "Ramezân-ı şerîf bayramının 1. Günü": {
+      "en": "1st Day of Eid al-Fitr",
+      "ar": "اليوم الأول من عيد الفطر",
+      "de": "Erster Tag des Eid al-Fitr",
+      "es": "Primer día del Eid al-Fitr",
+      "fr": "Premier jour de l'Aïd el-Fitr",
+      "it": "Primo giorno dell'Eid al-Fitr",
+      "ru": "Первый день Ид аль-Фитр"
+    },
+    "Ramezân-ı şerîf bayramının 2. Günü": {
+      "en": "2nd Day of Eid al-Fitr",
+      "ar": "اليوم الثاني من عيد الفطر",
+      "de": "Zweiter Tag des Eid al-Fitr",
+      "es": "Segundo día del Eid al-Fitr",
+      "fr": "Deuxième jour de l'Aïd el-Fitr",
+      "it": "Secondo giorno dell'Eid al-Fitr",
+      "ru": "Второй день Ид аль-Фитр"
+    },
+    "Ramezân-ı şerîf bayramının 3. Günü": {
+      "en": "3rd Day of Eid al-Fitr",
+      "ar": "اليوم الثالث من عيد الفطر",
+      "de": "Dritter Tag des Eid al-Fitr",
+      "es": "Tercer día del Eid al-Fitr",
+      "fr": "Troisième jour de l'Aïd el-Fitr",
+      "it": "Terzo giorno dell'Eid al-Fitr",
+      "ru": "Третий день Ид аль-Фитр"
+    },
+    "Terviye Günü": {
+      "en": "Day of Tarwiyah",
+      "ar": "يوم التروية",
+      "de": "Tag von Tarwiyah",
+      "es": "Día de Tarwiyah",
+      "fr": "Jour de Tarwiyah",
+      "it": "Giorno di Tarwiyah",
+      "ru": "День Тарвия"
+    },
+    "Arefe Günü": {
+      "en": "Day of Arafah",
+      "ar": "يوم عرفة",
+      "de": "Tag von Arafat",
+      "es": "Día de Arafat",
+      "fr": "Jour d'Arafat",
+      "it": "Giorno di Arafat",
+      "ru": "День Арафат"
+    },
+    "Kurban Bayramı 1. Günü": {
+      "en": "1st Day of Eid al-Adha",
+      "ar": "اليوم الأول من عيد الأضحى",
+      "de": "Erster Tag des Opferfestes (Eid al-Adha)",
+      "es": "Primer día de la Fiesta del Sacrificio (Eid al-Adha)",
+      "fr": "Premier jour de l'Aïd al-Adha",
+      "it": "Primo giorno dell'Eid al-Adha",
+      "ru": "Первый день Курбан-байрама"
+    },
+    "Kurban Bayramı 2. Günü": {
+      "en": "2nd Day of Eid al-Adha",
+      "ar": "اليوم الثاني من عيد الأضحى",
+      "de": "Zweiter Tag des Opferfestes",
+      "es": "Segundo día del Eid al-Adha",
+      "fr": "Deuxième jour de l'Aïd al-Adha",
+      "it": "Secondo giorno dell'Eid al-Adha",
+      "ru": "Второй день Курбан-байрама"
+    },
+    "Kurban Bayramı 3. Günü": {
+      "en": "3rd Day of Eid al-Adha",
+      "ar": "اليوم الثالث من عيد الأضحى",
+      "de": "Dritter Tag des Opferfestes",
+      "es": "Tercer día del Eid al-Adha",
+      "fr": "Troisième jour de l'Aïd al-Adha",
+      "it": "Terzo giorno dell'Eid al-Adha",
+      "ru": "Третий день Курбан-байрама"
+    },
+    "Kurban Bayramı 4. Günü": {
+      "en": "4th Day of Eid al-Adha",
+      "ar": "اليوم الرابع من عيد الأضحى",
+      "de": "Vierter Tag des Opferfestes",
+      "es": "Cuarto día del Eid al-Adha",
+      "fr": "Quatrième jour de l'Aïd al-Adha",
+      "it": "Quarto giorno dell'Eid al-Adha",
+      "ru": "Четвёртый день Курбан-байрама"
+    },
+    "Hicrî Yılbaşı Gecesi": {
+      "en": "Hijri New Year's Eve",
+      "ar": "ليلة رأس السنة الهجرية",
+      "de": "Vorabend des islamischen Neujahrs",
+      "es": "Víspera del Año Nuevo Hégira",
+      "fr": "Veille du Nouvel An hégirien",
+      "it": "Vigilia del Capodanno islamico",
+      "ru": "Ночь перед Хиджри новым годом"
+    },
+    "Hicrî Yılbaşı": {
+      "en": "Hijri New Year",
+      "ar": "رأس السنة الهجرية",
+      "de": "Islamisches Neujahr",
+      "es": "Año Nuevo Hégira",
+      "fr": "Nouvel An hégirien",
+      "it": "Capodanno islamico",
+      "ru": "Исламский Новый год (Хиджра)"
+    },
+    "Aşûre Gecesi": {
+      "en": "Eve of Ashura",
+      "ar": "ليلة عاشوراء",
+      "de": "Vorabend von Ashura",
+      "es": "Víspera de Ashura",
+      "fr": "Veille de l'Achoura",
+      "it": "Vigilia di Ashura",
+      "ru": "Ночь перед Ашурой"
+    },
+    "Aşûre Günü": {
+      "en": "Day of Ashura",
+      "ar": "يوم عاشوراء",
+      "de": "Tag von Ashura",
+      "es": "Día de Ashura",
+      "fr": "Jour de l'Achoura",
+      "it": "Giorno di Ashura",
+      "ru": "День Ашура"
+    },
+    "Mevlid Kandili Gecesi": {
+      "en": "Night of Mawlid (Birth of the Prophet)",
+      "ar": "ليلة المولد النبوي",
+      "de": "Nacht des Prophetengeburtstages (Mawlid)",
+      "es": "Noche del Mawlid (Nacimiento del Profeta)",
+      "fr": "Nuit du Mawlid (Naissance du Prophète)",
+      "it": "Notte del Mawlid (Nascita del Profeta)",
+      "ru": "Ночь Мавлид (рождение Пророка)"
+    }
+  };
+
+  String getTranslation(String turkishValue) {
+    final langCode = Provider.of<ChangeSettings>(context, listen: false).langCode;
+
+    if (translations.containsKey(turkishValue)) {
+      debugPrint('Tam eşleşme bulundu: $turkishValue');
+      return translations[turkishValue]![langCode] ?? turkishValue;
+    }
+    return turkishValue;
+  }
+
   @override
   initState() {
     super.initState();
@@ -93,12 +295,15 @@ class _DatesCardState extends State<DatesCard> {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: ListTile(
-                          title: Text(_list[index + 2]),
+                          title: Text(
+                            Provider.of<ChangeSettings>(context).langCode == 'tr'
+                                ? _list[index + 2]
+                                : getTranslation(_list[index + 2]),
+                          ),
                           subtitle: Text('${_list[index + 1]} | ${_list[index]}'),
                           trailing: FilledButton.tonal(
                               onPressed: () async {
                                 try {
-                                  // iOS'ta device_calendar plugin'inin kendi izin sistemini kullan
                                   if (Theme.of(context).platform == TargetPlatform.iOS) {
                                     debugPrint('iOS platformu - device_calendar izin kontrolü');
                                     var permissionsGranted =
@@ -123,7 +328,6 @@ class _DatesCardState extends State<DatesCard> {
                                               action: SnackBarAction(
                                                 label: 'Ayarlar',
                                                 onPressed: () async {
-                                                  // iOS ayarlarına yönlendir
                                                   await openAppSettings();
                                                 },
                                               ),

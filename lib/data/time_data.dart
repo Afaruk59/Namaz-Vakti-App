@@ -196,15 +196,15 @@ class TimeData extends ChangeSettings {
         yatsi2 = null;
       }
       await fetchCalendar();
-      await fetchWordnDay(context);
+      await fetchWordnDay();
       isTimeLoading = false;
       notifyListeners();
     }
   }
 
-  Future<void> fetchWordnDay(BuildContext context) async {
+  Future<void> fetchWordnDay() async {
     final url = Uri.parse(
-        'https://turktakvim.com/index.php?tarih=${DateFormat('yyyy-MM-dd').format(Provider.of<TimeData>(context, listen: false).selectedDate!.add(const Duration(days: 1)))}&page=onyuz');
+        'https://turktakvim.com/index.php?tarih=${DateFormat('yyyy-MM-dd').format(selectedDate!.add(const Duration(days: 1)))}&page=onyuz');
 
     try {
       final response = await http.get(url);
