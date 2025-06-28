@@ -96,6 +96,20 @@ class MainApp extends StatelessWidget {
     Provider.of<ChangeSettings>(context, listen: false).loadAlarmVoices();
     Provider.of<ChangeSettings>(context, listen: false).loadShape();
     Provider.of<ChangeSettings>(context, listen: false).loadNotifications();
+
+    final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
+    if (!isTablet) {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+      ]);
+    } else {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+      ]);
+    }
     return MaterialApp(
       supportedLocales: L10n.all,
       localizationsDelegates: AppLocalizations.localizationsDelegates,

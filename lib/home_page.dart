@@ -81,13 +81,18 @@ class _HomePageState extends State<HomePage> {
               tween: Tween<double>(begin: _backgroundOffset, end: _backgroundOffset),
               builder: (context, animatedOffset, child) {
                 return Transform.translate(
-                  offset: Offset((0.5 - animatedOffset) * MediaQuery.of(context).size.width, 0),
+                  offset: Offset(
+                      (0.5 - animatedOffset) *
+                          (MediaQuery.of(context).size.width >= MediaQuery.of(context).size.height
+                              ? 0
+                              : (MediaQuery.of(context).size.height * 0.6)),
+                      0),
                   child: child,
                 );
               },
               child: ColorFiltered(
                 colorFilter: ColorFilter.mode(
-                  Provider.of<ChangeSettings>(context).color.withValues(alpha: 1),
+                  Provider.of<ChangeSettings>(context).color,
                   BlendMode.color,
                 ),
                 child: Image.asset(
