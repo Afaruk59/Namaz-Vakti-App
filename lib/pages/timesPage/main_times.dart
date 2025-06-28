@@ -215,9 +215,9 @@ class BottomTimesCard extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Expanded(flex: 1, child: DetailedTimesBtn()),
-                            Expanded(flex: 5, child: Clock()),
                             Expanded(flex: 1, child: CalendarBtn()),
+                            Expanded(flex: 5, child: Clock()),
+                            Expanded(flex: 1, child: DetailedTimesBtn()),
                           ],
                         ),
                       ),

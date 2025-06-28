@@ -56,15 +56,15 @@ class _HomePageState extends State<HomePage> {
         }
       });
     }).catchError((e) {
-      print(e.toString());
+      debugPrint(e.toString());
     });
   }
 
   void _update() async {
-    print('Updating');
+    debugPrint('Updating');
     await InAppUpdate.startFlexibleUpdate();
     InAppUpdate.completeFlexibleUpdate().then((_) {}).catchError((e) {
-      print(e.toString());
+      debugPrint(e.toString());
     });
   }
 

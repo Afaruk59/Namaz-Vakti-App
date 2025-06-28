@@ -52,6 +52,20 @@ class DatesCard extends StatefulWidget {
 class _DatesCardState extends State<DatesCard> {
   static List<String> _list = [];
   final DeviceCalendarPlugin _deviceCalendarPlugin = DeviceCalendarPlugin();
+  final Map<String, String> _months = {
+    'MUHARREM': 'al-Muḥarram',
+    'SAFER': 'Ṣafar',
+    "REBÎ'UL-EVVEL": 'Rabīʿ al-ʾAwwal',
+    "REBÎ'UL-ÂHIR": 'Rabīʿ ath-Thānī',
+    "CEMÂZİL-EVVEL": 'Jumādā al-ʾŪlā',
+    "CEMÂZİL-ÂHIR": 'Jumādā al-ʾĀkhirah',
+    "RECEB": 'Rajab',
+    "ŞA'BÂN": 'Shaʿbān',
+    "RAMEZÂN": 'Ramaḍān',
+    "ŞEVVÂL": 'Shawwāl',
+    "ZİL-KA'DE": 'Ḏū al-Qaʿdah',
+    "ZİL-HİCCE": 'Ḏū al-Ḥijjah',
+  };
   final Map<String, Map<String, String>> translations = {
     "Üç Ayların başlaması": {
       "en": "Beginning of the Three Holy Months",
@@ -254,6 +268,16 @@ class _DatesCardState extends State<DatesCard> {
     return turkishValue;
   }
 
+  String getMonth(String month) {
+    final langCode = Provider.of<ChangeSettings>(context, listen: false).langCode;
+    final parts = month.split(' ');
+    if (langCode == 'ar') {
+      return '${_months[parts[2]]!} ${parts[4]} ${parts[0]}';
+    } else {
+      return '${parts[0]} ${_months[parts[2]]!} ${parts[4]}';
+    }
+  }
+
   @override
   initState() {
     super.initState();
@@ -300,7 +324,8 @@ class _DatesCardState extends State<DatesCard> {
                                 ? _list[index + 2]
                                 : getTranslation(_list[index + 2]),
                           ),
-                          subtitle: Text('${_list[index + 1]} | ${_list[index]}'),
+                          subtitle: Text(
+                              '${Provider.of<ChangeSettings>(context).langCode == "tr" ? _list[index + 1] : getMonth(_list[index + 1])} | ${_list[index]}'),
                           trailing: FilledButton.tonal(
                               onPressed: () async {
                                 try {
