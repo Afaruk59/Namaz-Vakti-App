@@ -54,7 +54,7 @@ void main() async {
     } on PlatformException catch (e) {
       debugPrint('Failed to start notification service: ${e.message}');
     }
-  }
+  }dwd
   tz.initializeTimeZones();
   tz.setLocalLocation(
       tz.getLocation(DateTime.now().timeZoneOffset.inHours >= 3 ? 'Europe/Istanbul' : 'UTC'));
