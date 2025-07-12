@@ -20,7 +20,7 @@ import 'package:flutter/services.dart';
 import 'package:namaz_vakti_app/components/scaffold_layout.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localization.dart';
+import 'package:namaz_vakti_app/l10n/app_localization.dart';
 
 class Search extends StatefulWidget {
   const Search({super.key});

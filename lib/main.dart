@@ -36,7 +36,7 @@ import 'package:namaz_vakti_app/pages/timesPage/times.dart';
 import 'package:namaz_vakti_app/pages/zikir.dart';
 import 'package:namaz_vakti_app/data/time_data.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localization.dart';
+import 'package:namaz_vakti_app/l10n/app_localization.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'dart:io' show Platform;
 import 'package:timezone/data/latest.dart' as tz;
@@ -182,7 +182,7 @@ class MainApp extends StatelessWidget {
         return null;
       },
       theme: ThemeData(
-        dialogTheme: DialogTheme(
+        dialogTheme: DialogThemeData(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(
                 Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
@@ -302,7 +302,7 @@ class MainApp extends StatelessWidget {
                       ? Colors.black87
                       : Colors.white),
         ),
-        cardTheme: CardTheme(
+        cardTheme: CardThemeData(
           elevation: 10,
           color: Provider.of<ChangeSettings>(context).color,
           shape: RoundedRectangleBorder(

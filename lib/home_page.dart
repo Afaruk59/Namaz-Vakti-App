@@ -24,7 +24,7 @@ import 'package:namaz_vakti_app/pages/qibla.dart';
 import 'package:namaz_vakti_app/pages/settings.dart';
 import 'package:namaz_vakti_app/pages/timesPage/times.dart';
 import 'package:namaz_vakti_app/pages/zikir.dart';
-import 'package:flutter_gen/gen_l10n/app_localization.dart';
+import 'package:namaz_vakti_app/l10n/app_localization.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {

@@ -21,7 +21,7 @@ import 'package:namaz_vakti_app/components/time_note.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_gen/gen_l10n/app_localization.dart';
+import 'package:namaz_vakti_app/l10n/app_localization.dart';
 
 class About extends StatelessWidget {
   const About({super.key});

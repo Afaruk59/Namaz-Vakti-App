@@ -19,7 +19,7 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:namaz_vakti_app/components/lang_selector.dart';
 import 'package:namaz_vakti_app/components/scaffold_layout.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localization.dart';
+import 'package:namaz_vakti_app/l10n/app_localization.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 
 class Settings extends StatelessWidget {

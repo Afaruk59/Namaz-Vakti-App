@@ -19,7 +19,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:namaz_vakti_app/main.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localization.dart';
+import 'package:namaz_vakti_app/l10n/app_localization.dart';
 
 class AppCard extends StatelessWidget {
   const AppCard({

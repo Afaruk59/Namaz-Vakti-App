@@ -26,7 +26,7 @@ import 'package:namaz_vakti_app/pages/timesPage/main_times.dart';
 import 'package:namaz_vakti_app/data/time_data.dart';
 import 'package:provider/provider.dart';
 import 'package:hijri/hijri_calendar.dart';
-import 'package:flutter_gen/gen_l10n/app_localization.dart';
+import 'package:namaz_vakti_app/l10n/app_localization.dart';
 
 class Times extends StatelessWidget {
   const Times({super.key});

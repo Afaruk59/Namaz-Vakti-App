@@ -16,6 +16,30 @@ allprojects {
         google()
         mavenCentral()
     }
+    
+    // Global Java version configuration
+    tasks.withType(JavaCompile).configureEach {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+        options.compilerArgs += [
+            '-Xlint:none',
+            '-Xlint:-options',
+            '-nowarn'
+        ]
+    }
+    
+    // Force Java 17 for all subprojects
+    subprojects { subproject ->
+        subproject.tasks.withType(JavaCompile).configureEach {
+            sourceCompatibility = JavaVersion.VERSION_17
+            targetCompatibility = JavaVersion.VERSION_17
+            options.compilerArgs += [
+                '-Xlint:none',
+                '-Xlint:-options',
+                '-nowarn'
+            ]
+        }
+    }
 }
 
 rootProject.buildDir = "../build"

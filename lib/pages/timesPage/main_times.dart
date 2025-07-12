@@ -23,7 +23,7 @@ import 'package:namaz_vakti_app/data/time_data.dart';
 import 'package:namaz_vakti_app/pages/timesPage/daily.dart';
 import 'package:namaz_vakti_app/pages/timesPage/detailed_times.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localization.dart';
+import 'package:namaz_vakti_app/l10n/app_localization.dart';
 
 class BottomTimesCard extends StatelessWidget {
   const BottomTimesCard({

@@ -16,7 +16,7 @@ limitations under the License.
 
 import 'package:flutter/material.dart';
 
-import 'package:flutter_gen/gen_l10n/app_localization.dart';
+import 'package:namaz_vakti_app/l10n/app_localization.dart';
 import 'package:namaz_vakti_app/components/scaffold_layout.dart';
 
 class License extends StatelessWidget {

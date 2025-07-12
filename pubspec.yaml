@@ -1,10 +1,10 @@
 name: namaz_vakti_app
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 version: 1.4.5+32
 
 environment:
-  sdk: '>=3.4.4 <4.0.0'
+  sdk: ">=3.4.4 <4.0.0"
 
 dependencies:
   blurrycontainer: ^2.1.0
@@ -25,7 +25,6 @@ dependencies:
   http: ^1.2.2
   in_app_review: ^2.0.10
   in_app_update: ^4.2.3
-  intl: ^0.19.0
   permission_handler: ^11.3.1
   provider: ^6.1.2
   shared_preferences: ^2.3.1
@@ -34,6 +33,9 @@ dependencies:
   url_launcher: ^6.3.0
   vibration: ^2.0.1
   xml: ^6.5.0
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_lints: ^4.0.0
@@ -52,10 +54,10 @@ flutter:
 flutter_native_splash:
   color: "#FFFFFF"
   color_dark: "#1E1E1E"
-  
+
   android_gravity: center
   ios_content_mode: center
-  
+
   android: true
   ios: true
   web: false
