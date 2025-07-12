@@ -58,12 +58,6 @@ void main() async {
       debugPrint('Failed to start notification service: ${e.message}');
     }
   }
-  const platform = MethodChannel('com.afaruk59.namaz_vakti_app/media_service');
-
-  // AudioPlayerService'i başlat (singleton instance oluştur)
-  final audioPlayerService = AudioPlayerService();
-  // MediaController'ı başlat
-  final mediaController = MediaController(audioPlayerService: audioPlayerService);
   // Initialize AudioPageService
   AudioPageService();
   tz.initializeTimeZones();
@@ -77,11 +71,7 @@ void main() async {
     runApp(
       ChangeNotifierProvider<ChangeSettings>(
         create: (context) => ChangeSettings(),
-        child: MainApp(
-          mediaController: mediaController,
-          audioPlayerService: audioPlayerService,
-          platform: platform,
-        ),
+        child: const MainApp(),
       ),
     );
     Future.delayed(const Duration(milliseconds: 1500), () {
@@ -92,31 +82,10 @@ void main() async {
 
 class MainApp extends StatelessWidget {
   static String version = '1.4.5';
-  final MediaController mediaController;
-  final AudioPlayerService audioPlayerService;
-  final MethodChannel? platform;
 
-  const MainApp({
-    super.key,
-    required this.mediaController,
-    required this.audioPlayerService,
-    this.platform,
-  });
-
+  const MainApp({super.key});
   @override
   Widget build(BuildContext context) {
-    if (platform != null) {
-      platform!.setMethodCallHandler((call) async {
-        if (call.method == 'next') {
-          // HomeScreen'e bir şekilde haber verilmeli
-          // En iyi yol: bir global event/callback veya state management ile
-          // Şimdilik: HomeScreen'e bir static method ekleyip çağırabiliriz
-          debugPrint('main.dart: Androidden next çağrısı geldi.');
-          BookScreen.goToNextPageFromBackground();
-        }
-        return null;
-      });
-    }
     Provider.of<ChangeSettings>(context, listen: false).loadLocalFromSharedPref();
     Provider.of<ChangeSettings>(context, listen: false).changeHeight(context);
     Provider.of<ChangeSettings>(context, listen: false).loadCol();
