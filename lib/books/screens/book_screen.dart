@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:namaz_vakti_app/components/scaffold_layout.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:android_intent_plus/android_intent.dart';
 import 'dart:io' show Platform;
@@ -17,25 +18,26 @@ import 'package:namaz_vakti_app/books/features/book/services/book_info_service.d
 import 'dart:ui';
 import 'package:flutter/services.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class BookScreen extends StatefulWidget {
+  const BookScreen({Key? key}) : super(key: key);
 
   @override
-  HomeScreenState createState() => HomeScreenState();
+  BookScreenState createState() => BookScreenState();
 
   /// Arka plandan (method channel ile) çağrıldığında bir sonraki sayfaya geçişi tetikler
   static void goToNextPageFromBackground() {
     // TODO: Eğer kitap veya Kuran dinleme ekranı açıksa ilgili controller'a haber ver
     // Bunu bir global event, provider, veya callback ile ilgili ekrana iletmek gerekir.
     // Şimdilik sadece log basalım.
-    print('HomeScreen.goToNextPageFromBackground: Arka plandan bir sonraki sayfa çağrısı geldi.');
+    debugPrint(
+        'HomeScreen.goToNextPageFromBackground: Arka plandan bir sonraki sayfa çağrısı geldi.');
     // Burada örneğin: BookPageScreen veya ModularQuranPageScreen'e bir event gönderebilirsin.
     // Örn: BookPageScreen.nextPageFromBackground();
     // veya: ModularQuranPageScreen.nextAyahFromBackground();
   }
 }
 
-class HomeScreenState extends State<HomeScreen> {
+class BookScreenState extends State<BookScreen> {
   final List<Book> books = Book.samples();
   int _gridColumns = 3;
   final BookProgressService _progressService = BookProgressService();
@@ -128,7 +130,7 @@ class HomeScreenState extends State<HomeScreen> {
         });
       }
     } catch (e) {
-      print('Error initializing progress service: $e');
+      debugPrint('Error initializing progress service: $e');
       if (mounted) {
         setState(() {
           _isProgressLoaded = false;
@@ -142,7 +144,7 @@ class HomeScreenState extends State<HomeScreen> {
       var connectivityResult = await Connectivity().checkConnectivity();
       return connectivityResult != ConnectivityResult.none;
     } catch (e) {
-      print('Connectivity check error: $e');
+      debugPrint('Connectivity check error: $e');
       return true; // Hata durumunda varsayılan olarak bağlantı var kabul edelim
     }
   }
@@ -172,7 +174,7 @@ class HomeScreenState extends State<HomeScreen> {
               });
             }
           } catch (e) {
-            print('Error reinitializing services: $e');
+            debugPrint('Error reinitializing services: $e');
             if (mounted) {
               setState(() {
                 _isLoading = false;
@@ -270,7 +272,7 @@ class HomeScreenState extends State<HomeScreen> {
         extractedColor = await ColorExtractor.extractDominantColor(AssetImage(book.coverImageUrl),
             defaultColor: defaultColor);
       } catch (e) {
-        print('Error extracting color: $e');
+        debugPrint('Error extracting color: $e');
       }
     }
 
@@ -446,7 +448,7 @@ class HomeScreenState extends State<HomeScreen> {
                                           try {
                                             final url =
                                                 Uri.parse('https://www.hakikatkitabevi.net');
-                                            print('URL açılmaya çalışılıyor: $url');
+                                            debugPrint('URL açılmaya çalışılıyor: $url');
 
                                             // URL'yi doğrudan açmaya çalış
                                             final launched = await launchUrl(
@@ -455,9 +457,9 @@ class HomeScreenState extends State<HomeScreen> {
                                             );
 
                                             if (launched) {
-                                              print('URL başarıyla açıldı');
+                                              debugPrint('URL başarıyla açıldı');
                                             } else {
-                                              print('URL açılamadı');
+                                              debugPrint('URL açılamadı');
                                               if (mounted) {
                                                 ScaffoldMessenger.of(context).showSnackBar(
                                                   SnackBar(
@@ -469,7 +471,7 @@ class HomeScreenState extends State<HomeScreen> {
                                               }
                                             }
                                           } catch (e) {
-                                            print('URL açma hatası: $e');
+                                            debugPrint('URL açma hatası: $e');
                                             if (mounted) {
                                               ScaffoldMessenger.of(context).showSnackBar(
                                                 SnackBar(
@@ -624,33 +626,9 @@ class HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Kuran-ı Kerim ve Kitaplar',
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-            fontFamily: 'Arial',
-          ),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        flexibleSpace: Stack(
-          fit: StackFit.expand,
-          children: [
-            Image.asset(
-              'assets/images/appbar3.png',
-              fit: BoxFit.cover,
-            ),
-            Container(
-              color: Color(0xCC184C3A).withOpacity(0.7),
-            ),
-          ],
-        ),
-        foregroundColor: Colors.white,
-      ),
+    return ScaffoldLayout(
+      title: 'Kuran-ı Kerim ve Kitaplar',
+      actions: const [],
       body: Stack(
         fit: StackFit.expand,
         children: [
@@ -664,6 +642,7 @@ class HomeScreenState extends State<HomeScreen> {
           _buildBody(),
         ],
       ),
+      background: true,
     );
   }
 
@@ -694,29 +673,5 @@ class HomeScreenState extends State<HomeScreen> {
     setState(() {
       _quranHighlightCount = bookmarks.where((b) => b.highlightColor != null).length;
     });
-  }
-
-  Widget _buildQuranTile() {
-    return Stack(
-      children: [
-        // ... mevcut kutucuk ...
-        if (_quranHighlightCount > 0)
-          Positioned(
-            right: 8,
-            top: 8,
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: Colors.amber[700],
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Text(
-                '$_quranHighlightCount',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-              ),
-            ),
-          ),
-      ],
-    );
   }
 }

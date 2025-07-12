@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:namaz_vakti_app/books/features/book/services/bookmark_service.dart';
 import 'package:namaz_vakti_app/books/features/book/screens/bookmarks_screen.dart';
-import 'package:namaz_vakti_app/books/screens/home_screen.dart';
+import 'package:namaz_vakti_app/books/screens/book_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class BookBookmarkIndicator extends StatefulWidget {
@@ -102,9 +102,9 @@ class _BookBookmarkIndicatorState extends State<BookBookmarkIndicator> {
 
           // Ana ekrandaki tüm bookmark göstergelerini yenilemek için
           // HomeScreen'deki refreshBookmarkIndicators metodunu çağır
-          final homeScreenState = context.findAncestorStateOfType<HomeScreenState>();
-          if (homeScreenState != null) {
-            homeScreenState.refreshBookmarkIndicators();
+          final bookScreenState = context.findAncestorStateOfType<BookScreenState>();
+          if (bookScreenState != null) {
+            bookScreenState.refreshBookmarkIndicators();
           }
         });
       },

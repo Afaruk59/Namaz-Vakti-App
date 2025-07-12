@@ -4,7 +4,7 @@ import 'package:namaz_vakti_app/books/features/book/services/book_title_service.
 import 'package:namaz_vakti_app/books/features/book/screens/book_page_screen.dart';
 import 'package:namaz_vakti_app/books/features/book/ui/color_extractor.dart';
 import 'package:namaz_vakti_app/books/shared/models/book_model.dart';
-import 'package:namaz_vakti_app/books/screens/home_screen.dart';
+import 'package:namaz_vakti_app/books/screens/book_screen.dart';
 import 'package:namaz_vakti_app/books/features/quran/screens/modular_quran_page_screen.dart';
 
 class BookmarksScreen extends StatefulWidget {
@@ -237,9 +237,9 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
 
     return WillPopScope(
       onWillPop: () async {
-        final homeScreenState = context.findAncestorStateOfType<HomeScreenState>();
-        if (homeScreenState != null) {
-          homeScreenState.refreshBookmarkIndicators();
+        final bookScreenState = context.findAncestorStateOfType<BookScreenState>();
+        if (bookScreenState != null) {
+          bookScreenState.refreshBookmarkIndicators();
         }
         return true;
       },
@@ -309,9 +309,9 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
             ),
             onPressed: () {
               // Ana ekrana dönmeden önce tüm bookmark göstergelerini yenile
-              final homeScreenState = context.findAncestorStateOfType<HomeScreenState>();
-              if (homeScreenState != null) {
-                homeScreenState.refreshBookmarkIndicators();
+              final bookScreenState = context.findAncestorStateOfType<BookScreenState>();
+              if (bookScreenState != null) {
+                bookScreenState.refreshBookmarkIndicators();
               }
               Navigator.pop(context);
             },

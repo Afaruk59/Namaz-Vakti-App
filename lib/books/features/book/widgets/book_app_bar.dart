@@ -82,7 +82,7 @@ class _BookAppBarState extends State<BookAppBar> {
       ),
       centerTitle: true,
       leading: IconButton(
-        icon: Icon(Icons.arrow_back),
+        icon: Icon(Icons.arrow_back, color: Colors.white),
         onPressed: () => Navigator.of(context).pop(),
       ),
       title: Text(
@@ -96,7 +96,7 @@ class _BookAppBarState extends State<BookAppBar> {
       ),
       actions: [
         PopupMenuButton<Map<String, dynamic>>(
-          icon: Icon(Icons.format_size),
+          icon: Icon(Icons.format_size, color: Colors.white),
           itemBuilder: (BuildContext context) => [
             PopupMenuItem<Map<String, dynamic>>(
               value: {'type': 'settings'},
@@ -126,8 +126,7 @@ class _BookAppBarState extends State<BookAppBar> {
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text('Yazı Boyutu',
-                  style: TextStyle(fontWeight: FontWeight.bold)),
+              child: Text('Yazı Boyutu', style: TextStyle(fontWeight: FontWeight.bold)),
             ),
             Column(
               children: [
@@ -178,8 +177,7 @@ class _BookAppBarState extends State<BookAppBar> {
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text('Arka Plan',
-                  style: TextStyle(fontWeight: FontWeight.bold)),
+              child: Text('Arka Plan', style: TextStyle(fontWeight: FontWeight.bold)),
             ),
             Column(
               children: [
@@ -189,11 +187,7 @@ class _BookAppBarState extends State<BookAppBar> {
                     Column(
                       children: [
                         Row(
-                          children: [
-                            Colors.white,
-                            Color(0xFFF5E6D3),
-                            Color(0xFFE5F9E0)
-                          ]
+                          children: [Colors.white, Color(0xFFF5E6D3), Color(0xFFE5F9E0)]
                               .map(
                                 (color) => GestureDetector(
                                   onTap: () async {
@@ -201,8 +195,7 @@ class _BookAppBarState extends State<BookAppBar> {
                                       _isAutoBackground = false;
                                       _backgroundColor = color;
                                     });
-                                    await widget
-                                        .onBackgroundColorChanged(color);
+                                    await widget.onBackgroundColorChanged(color);
                                   },
                                   child: Container(
                                     width: 40,
@@ -212,14 +205,11 @@ class _BookAppBarState extends State<BookAppBar> {
                                       color: color,
                                       shape: BoxShape.circle,
                                       border: Border.all(
-                                        color: !_isAutoBackground &&
-                                                _backgroundColor == color
+                                        color: !_isAutoBackground && _backgroundColor == color
                                             ? Colors.blue
                                             : Colors.grey,
-                                        width: !_isAutoBackground &&
-                                                _backgroundColor == color
-                                            ? 2
-                                            : 1,
+                                        width:
+                                            !_isAutoBackground && _backgroundColor == color ? 2 : 1,
                                       ),
                                     ),
                                   ),
@@ -228,11 +218,7 @@ class _BookAppBarState extends State<BookAppBar> {
                               .toList(),
                         ),
                         Row(
-                          children: [
-                            Color(0xFFE0F1F9),
-                            Color(0xFF2C3E50),
-                            Color(0xFF2E1810)
-                          ]
+                          children: [Color(0xFFE0F1F9), Color(0xFF2C3E50), Color(0xFF2E1810)]
                               .map(
                                 (color) => GestureDetector(
                                   onTap: () async {
@@ -240,8 +226,7 @@ class _BookAppBarState extends State<BookAppBar> {
                                       _isAutoBackground = false;
                                       _backgroundColor = color;
                                     });
-                                    await widget
-                                        .onBackgroundColorChanged(color);
+                                    await widget.onBackgroundColorChanged(color);
                                   },
                                   child: Container(
                                     width: 40,
@@ -251,14 +236,11 @@ class _BookAppBarState extends State<BookAppBar> {
                                       color: color,
                                       shape: BoxShape.circle,
                                       border: Border.all(
-                                        color: !_isAutoBackground &&
-                                                _backgroundColor == color
+                                        color: !_isAutoBackground && _backgroundColor == color
                                             ? Colors.blue
                                             : Colors.grey,
-                                        width: !_isAutoBackground &&
-                                                _backgroundColor == color
-                                            ? 2
-                                            : 1,
+                                        width:
+                                            !_isAutoBackground && _backgroundColor == color ? 2 : 1,
                                       ),
                                     ),
                                   ),

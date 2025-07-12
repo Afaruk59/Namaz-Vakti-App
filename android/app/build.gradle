@@ -87,4 +87,8 @@ flutter {
 dependencies {
     // Core library desugaring for Java 17 features on older Android versions
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
+    
+    // Media Session dependencies
+    implementation 'androidx.media:media:1.6.0'
+    implementation 'androidx.core:core:1.12.0'
 }

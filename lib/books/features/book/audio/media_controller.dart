@@ -12,7 +12,8 @@ class MediaController {
   factory MediaController.singleton(AudioPlayerService audioPlayerService) {
     return _instance ??= MediaController(audioPlayerService: audioPlayerService);
   }
-  static const MethodChannel _channel = MethodChannel('com.example.kitaplar_1/media_controls');
+  static const MethodChannel _channel =
+      MethodChannel('com.afaruk59.namaz_vakti_app/media_controls');
   final AudioPlayerService _audioPlayerService;
   final BookProgressService _bookProgressService = BookProgressService();
   bool _isServiceRunning = false;

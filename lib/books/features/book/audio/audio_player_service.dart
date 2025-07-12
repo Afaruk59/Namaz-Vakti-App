@@ -8,7 +8,7 @@ class AudioPlayerService {
 
   // Method channel for Android communication
   static const MethodChannel _platform =
-      MethodChannel('com.example.kitaplar_1/media_service');
+      MethodChannel('com.afaruk59.namaz_vakti_app/media_service');
 
   // AudioPlayer instance
   AudioPlayer? _audioPlayer;
@@ -79,8 +79,7 @@ class AudioPlayerService {
 
       // Hata durumlarını kontrol et
       if (state == PlayerState.stopped && isPlaying) {
-        print(
-            'AudioPlayerService: Player stopped unexpectedly, treating as error');
+        print('AudioPlayerService: Player stopped unexpectedly, treating as error');
         // Beklenmeyen durma durumunu hata olarak değerlendir
         isPlaying = false;
         if (!_playingStateController!.isClosed) {
@@ -92,11 +91,9 @@ class AudioPlayerService {
 
         // Android servisine hata durumunu bildir
         try {
-          _platform.invokeMethod(
-              'audio_error', {'error': 'Player stopped unexpectedly'});
+          _platform.invokeMethod('audio_error', {'error': 'Player stopped unexpectedly'});
         } catch (e) {
-          print(
-              'AudioPlayerService: Failed to notify Android service about error: $e');
+          print('AudioPlayerService: Failed to notify Android service about error: $e');
         }
         return;
       }
@@ -120,8 +117,7 @@ class AudioPlayerService {
         // Yüksek hızda daha az güncelleme yapalım
         final now = DateTime.now();
         if (_lastPositionUpdateTime != null) {
-          final elapsed =
-              now.difference(_lastPositionUpdateTime!).inMilliseconds;
+          final elapsed = now.difference(_lastPositionUpdateTime!).inMilliseconds;
           // Yüksek hızda daha fazla throttling uygula
           final throttleInterval = (200 * playbackSpeed).round();
           if (elapsed < throttleInterval) {
@@ -165,11 +161,9 @@ class AudioPlayerService {
         // This should work even when bookCode is null (app in background)
         try {
           await _platform.invokeMethod('audio_completed');
-          print(
-              'AudioPlayerService: Audio completion notification sent to Android service');
+          print('AudioPlayerService: Audio completion notification sent to Android service');
         } catch (e) {
-          print(
-              'AudioPlayerService: Failed to notify Android service about audio completion: $e');
+          print('AudioPlayerService: Failed to notify Android service about audio completion: $e');
         }
 
         // Reset the completion handling flag after a short delay
@@ -237,9 +231,7 @@ class AudioPlayerService {
       // Ek güvenlik: Ekran kilitleme durumlarında daha güvenli olması için
       // bir süre sonra durumu tekrar kontrol et
       await Future.delayed(Duration(seconds: 2));
-      if (_audioPlayer != null &&
-          _audioPlayer!.state == PlayerState.stopped &&
-          isPlaying) {
+      if (_audioPlayer != null && _audioPlayer!.state == PlayerState.stopped && isPlaying) {
         print(
             'AudioPlayerService: Player stopped unexpectedly after 2 seconds, attempting recovery');
         // Beklenmeyen durma durumunda recovery dene
@@ -276,8 +268,7 @@ class AudioPlayerService {
   Future<void> pauseAudio() async {
     try {
       if (_audioPlayer != null) {
-        print(
-            'AudioPlayerService.pauseAudio called, current position: ${position.inSeconds}s');
+        print('AudioPlayerService.pauseAudio called, current position: ${position.inSeconds}s');
 
         // Mevcut pozisyonu kaydet
         position = await _audioPlayer!.getCurrentPosition() ?? position;
@@ -499,8 +490,7 @@ class AudioPlayerService {
 
       // Stream controller'ları güvenli bir şekilde kapat
       try {
-        if (_playingStateController != null &&
-            !_playingStateController!.isClosed) {
+        if (_playingStateController != null && !_playingStateController!.isClosed) {
           _playingStateController!.close();
           _playingStateController = null;
         }
@@ -527,8 +517,7 @@ class AudioPlayerService {
       }
 
       try {
-        if (_playbackRateController != null &&
-            !_playbackRateController!.isClosed) {
+        if (_playbackRateController != null && !_playbackRateController!.isClosed) {
           _playbackRateController!.close();
           _playbackRateController = null;
         }
@@ -558,8 +547,7 @@ class AudioPlayerService {
     print('AudioPlayerService: Playing book code set to: $bookCode');
 
     if (bookCode == null) {
-      _isHandlingCompletion =
-          false; // Reset completion handling if book code is cleared
+      _isHandlingCompletion = false; // Reset completion handling if book code is cleared
     }
   }
 
@@ -587,8 +575,7 @@ class AudioPlayerService {
       // Remove any previous completion listeners to avoid multiple triggers
       StreamSubscription? completionSubscription;
       completionSubscription = _audioPlayer?.onPlayerComplete.listen((_) async {
-        print(
-            'AudioPlayerService: Current audio finished, switching to next audio');
+        print('AudioPlayerService: Current audio finished, switching to next audio');
 
         // Cancel this subscription to prevent memory leaks
         completionSubscription?.cancel();

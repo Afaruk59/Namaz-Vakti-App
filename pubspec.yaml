@@ -62,6 +62,10 @@ flutter:
     - assets/img/
     - assets/cities/
     - assets/svg/
+    - assets/book_covers/
+    - assets/fonts/
+    - assets/icon/
+    - assets/images/
 
 flutter_native_splash:
   color: "#FFFFFF"

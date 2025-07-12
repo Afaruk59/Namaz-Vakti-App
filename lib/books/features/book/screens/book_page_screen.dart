@@ -374,8 +374,8 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
   }
 
   void _setupMediaChannelListeners() {
-    // com.example.kitaplar_1/media_service kanalı üzerinden gelen bildirimler
-    const mediaServiceChannel = MethodChannel('com.example.kitaplar_1/media_service');
+    // com.afaruk59.namaz_vakti_app/media_service kanalı üzerinden gelen bildirimler
+    const mediaServiceChannel = MethodChannel('com.afaruk59.namaz_vakti_app/media_service');
 
     mediaServiceChannel.setMethodCallHandler((call) async {
       print("BookPageScreen: Method channel çağrısı: ${call.method}");
@@ -424,7 +424,7 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
 
   Future<void> _updateMediaPageState() async {
     try {
-      const mediaServiceChannel = MethodChannel('com.example.kitaplar_1/media_service');
+      const mediaServiceChannel = MethodChannel('com.afaruk59.namaz_vakti_app/media_service');
 
       final currentPage = _pageController.currentPage;
       final lastPage = _pageController.isLastPage ? currentPage : currentPage + 1;
@@ -680,6 +680,7 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
       key: _scaffoldKey,
       drawer: _uiManager.buildDrawer(
         searchFunction: _apiService.searchBook,

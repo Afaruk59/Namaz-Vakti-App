@@ -4,7 +4,8 @@ import 'package:namaz_vakti_app/books/features/book/audio/audio_player_service.d
 
 /// Kuran için kilit ekranında medya kontrollerini yöneten sınıf
 class QuranMediaController {
-  static const MethodChannel _channel = MethodChannel('com.example.kitaplar_1/media_controls');
+  static const MethodChannel _channel =
+      MethodChannel('com.afaruk59.namaz_vakti_app/media_controls');
   final QuranAudioService _audioService;
   final AudioPlayerService _audioPlayerService;
   bool _isServiceRunning = false;

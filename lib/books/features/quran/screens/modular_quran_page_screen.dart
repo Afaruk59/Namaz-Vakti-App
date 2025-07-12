@@ -14,10 +14,10 @@ import '../controllers/quran_navigation_controller.dart';
 import '../ui/quran_body_builder.dart';
 import '../services/quran_progress_service.dart';
 import 'package:namaz_vakti_app/books/features/book/audio/audio_player_service.dart';
-import 'package:namaz_vakti_app/books/screens/home_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:namaz_vakti_app/books/features/book/services/bookmark_service.dart';
 import 'package:namaz_vakti_app/books/features/book/screens/bookmarks_screen.dart';
+import 'package:namaz_vakti_app/books/screens/book_screen.dart';
 
 /// Kuran sayfası ekranı
 class ModularQuranPageScreen extends StatefulWidget {
@@ -206,9 +206,9 @@ class _ModularQuranPageScreenState extends State<ModularQuranPageScreen> {
       onWillPop: () async {
         // Çıkarken ses ve bildirim temizliği yap
         await _cleanupAndDispose();
-        final homeScreenState = context.findAncestorStateOfType<HomeScreenState>();
-        if (homeScreenState != null) {
-          homeScreenState.refreshBookmarkIndicators();
+        final bookScreenState = context.findAncestorStateOfType<BookScreenState>();
+        if (bookScreenState != null) {
+          bookScreenState.refreshBookmarkIndicators();
         }
         return true;
       },
@@ -440,40 +440,43 @@ class _ModularQuranPageScreenState extends State<ModularQuranPageScreen> {
       future: BookmarkService().getBookmarkCount('quran'),
       builder: (context, snapshot) {
         final hasBookmarks = (snapshot.hasData && snapshot.data != null && snapshot.data! > 0);
-        return QuranNavigationBar(
-          currentPage: displayPageNumber,
-          onMenuPressed: _openDrawer,
-          onPreviousPage: _navigationController.goToPreviousPage,
-          onNextPage: _navigationController.goToNextPage,
-          onPageNumberTap: _navigationController.showPageInputDialog,
-          onPlayAudio: () {
-            _audioController.resetMediaNotificationClosed();
-            _audioController.playAudio();
-          },
-          isPlaying: _audioController.showAudioProgress,
-          leadingWidgets: [
-            if (hasBookmarks)
-              Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: IconButton(
-                  icon: Icon(Icons.bookmarks_outlined, color: Colors.white, size: 24),
-                  onPressed: () async {
-                    BookmarkService().clearCache();
-                    await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            BookmarksScreen(initialBookCode: 'quran', showMeal: _showMeal),
-                      ),
-                    );
-                    setState(() {}); // Dönüşte güncelle
-                  },
-                  padding: EdgeInsets.zero,
-                  constraints: BoxConstraints(minWidth: 40, minHeight: 40),
-                  visualDensity: VisualDensity.compact,
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: QuranNavigationBar(
+            currentPage: displayPageNumber,
+            onMenuPressed: _openDrawer,
+            onPreviousPage: _navigationController.goToPreviousPage,
+            onNextPage: _navigationController.goToNextPage,
+            onPageNumberTap: _navigationController.showPageInputDialog,
+            onPlayAudio: () {
+              _audioController.resetMediaNotificationClosed();
+              _audioController.playAudio();
+            },
+            isPlaying: _audioController.showAudioProgress,
+            leadingWidgets: [
+              if (hasBookmarks)
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: IconButton(
+                    icon: Icon(Icons.bookmarks_outlined, color: Colors.white, size: 24),
+                    onPressed: () async {
+                      BookmarkService().clearCache();
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              BookmarksScreen(initialBookCode: 'quran', showMeal: _showMeal),
+                        ),
+                      );
+                      setState(() {}); // Dönüşte güncelle
+                    },
+                    padding: EdgeInsets.zero,
+                    constraints: BoxConstraints(minWidth: 40, minHeight: 40),
+                    visualDensity: VisualDensity.compact,
+                  ),
                 ),
-              ),
-          ],
+            ],
+          ),
         );
       },
     );

@@ -48,43 +48,43 @@ class BookBottomControls extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         if (showAudioProgress)
-          Container(
-            // color: appBarColor, // kaldır
-            child: AudioPlayerControls(
-              audioPlayerService: audioPlayerService,
-              onSeek: onSeek,
-              onSpeedChange: onSpeedChange,
-              onPlayPauseProgress: onPlayPauseProgress ?? onPlayAudio,
-              appBarColor: appBarColor, // parametreyi ilet
-            ),
+          AudioPlayerControls(
+            audioPlayerService: audioPlayerService,
+            onSeek: onSeek,
+            onSpeedChange: onSpeedChange,
+            onPlayPauseProgress: onPlayPauseProgress ?? onPlayAudio,
+            appBarColor: appBarColor, // parametreyi ilet
           ),
         if (!isFullScreen)
-          BookBottomBar(
-            appBarColor: appBarColor,
-            currentPage: pageController.currentPage,
-            isFirstPage: pageController.isFirstPage,
-            isLastPage: pageController.isLastPage,
-            onPreviousPage: () {
-              pageController.previousPage(
-                duration: Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-              );
-            },
-            onNextPage: () {
-              pageController.nextPage(
-                duration: Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-              );
-            },
-            onMenuPressed: onMenuPressed,
-            onPlayAudio: onPlayAudio,
-            hasAudio: hasAudio,
-            isAudioPlaying: showAudioProgress,
-            isPlaying: audioPlayerService.isPlaying,
-            bookCode: bookCode,
-            hasBookmarks: hasBookmarks,
-            onBookmarksReturn: refreshBookmarkStatus,
-            onPageNumberEntered: onPageNumberEntered,
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: BookBottomBar(
+              appBarColor: appBarColor,
+              currentPage: pageController.currentPage,
+              isFirstPage: pageController.isFirstPage,
+              isLastPage: pageController.isLastPage,
+              onPreviousPage: () {
+                pageController.previousPage(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                );
+              },
+              onNextPage: () {
+                pageController.nextPage(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                );
+              },
+              onMenuPressed: onMenuPressed,
+              onPlayAudio: onPlayAudio,
+              hasAudio: hasAudio,
+              isAudioPlaying: showAudioProgress,
+              isPlaying: audioPlayerService.isPlaying,
+              bookCode: bookCode,
+              hasBookmarks: hasBookmarks,
+              onBookmarksReturn: refreshBookmarkStatus,
+              onPageNumberEntered: onPageNumberEntered,
+            ),
           ),
       ],
     );

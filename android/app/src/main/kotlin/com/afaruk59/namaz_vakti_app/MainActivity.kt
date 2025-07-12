@@ -24,6 +24,12 @@ import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import android.util.Log
+import android.content.Context
+import android.content.ServiceConnection
+import android.os.Handler
+import android.os.IBinder
+import android.os.Looper
+import androidx.media.session.MediaButtonReceiver
 
 class MainActivity : FlutterActivity() {
     companion object {
@@ -82,41 +88,8 @@ class MainActivity : FlutterActivity() {
                     }
                 }
             }
-    }
 
-    private fun updateWidget() {
-        val appWidgetManager = AppWidgetManager.getInstance(this)
-        val thisWidget = ComponentName(this, PrayerTimesWidget::class.java)
-        val appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget)
-        
-        val intent = Intent(this, PrayerTimesWidget::class.java)
-        intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds)
-        sendBroadcast(intent)
-    }
-
-    private val connection = object : ServiceConnection {
-        override fun onServiceConnected(className: ComponentName, service: IBinder) {
-            val binder = service as MediaService.LocalBinder
-            mediaService = binder.getService()
-            bound = true
-            
-            // MethodChannel'ı servise ilet
-            methodChannel?.let { channel ->
-                mediaService?.setMethodChannel(channel)
-            }
-        }
-
-        override fun onServiceDisconnected(arg0: ComponentName) {
-            bound = false
-            mediaService = null
-        }
-    }
-
-    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
-        super.configureFlutterEngine(flutterEngine)
-        
-        // Use background execution to ensure method calls work when app is in background
+             // Use background execution to ensure method calls work when app is in background
         methodChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL)
         methodChannel?.setMethodCallHandler { call, result ->
             when (call.method) {
@@ -243,6 +216,35 @@ class MainActivity : FlutterActivity() {
         
         // Intent'ten gelen action'ı işle
         intent?.let { handleIntent(it) }
+    }
+
+    private fun updateWidget() {
+        val appWidgetManager = AppWidgetManager.getInstance(this)
+        val thisWidget = ComponentName(this, PrayerTimesWidget::class.java)
+        val appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget)
+        
+        val intent = Intent(this, PrayerTimesWidget::class.java)
+        intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds)
+        sendBroadcast(intent)
+    }
+
+    private val connection = object : ServiceConnection {
+        override fun onServiceConnected(className: ComponentName, service: IBinder) {
+            val binder = service as MediaService.LocalBinder
+            mediaService = binder.getService()
+            bound = true
+            
+            // MethodChannel'ı servise ilet
+            methodChannel?.let { channel ->
+                mediaService?.setMethodChannel(channel)
+            }
+        }
+
+        override fun onServiceDisconnected(arg0: ComponentName) {
+            bound = false
+            mediaService = null
+        }
     }
     
     override fun onResume() {
