@@ -6,6 +6,8 @@ import 'package:namaz_vakti_app/books/features/book/ui/color_extractor.dart';
 import 'package:namaz_vakti_app/books/shared/models/book_model.dart';
 import 'package:namaz_vakti_app/books/screens/book_screen.dart';
 import 'package:namaz_vakti_app/books/features/quran/screens/modular_quran_page_screen.dart';
+import 'package:namaz_vakti_app/data/change_settings.dart';
+import 'package:provider/provider.dart';
 
 class BookmarksScreen extends StatefulWidget {
   final String? initialBookCode;
@@ -264,20 +266,38 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
                   }).toList(),
                 ),
         ),
-        body: _isLoading
-            ? Center(
-                child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(ColorExtractor.defaultBlue),
-              ))
-            : _bookCodes.isEmpty || _tabController == null
-                ? _buildEmptyBookmarksView()
-                : TabBarView(
-                    controller: _tabController!,
-                    children: _bookCodes.map((bookCode) {
-                      final bookmarks = _allBookmarks[bookCode] ?? [];
-                      return _buildBookmarksList(bookCode, bookmarks);
-                    }).toList(),
-                  ),
+        body: Stack(
+          children: [
+            Positioned.fill(
+              child: ColorFiltered(
+                colorFilter: ColorFilter.mode(
+                  Provider.of<ChangeSettings>(context).color.withValues(alpha: 1),
+                  BlendMode.color,
+                ),
+                child: Image.asset(
+                  Provider.of<ChangeSettings>(context).isDark
+                      ? 'assets/img/wallpaperdark.png'
+                      : 'assets/img/wallpaper.png',
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            _isLoading
+                ? Center(
+                    child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(ColorExtractor.defaultBlue),
+                  ))
+                : _bookCodes.isEmpty || _tabController == null
+                    ? _buildEmptyBookmarksView()
+                    : TabBarView(
+                        controller: _tabController!,
+                        children: _bookCodes.map((bookCode) {
+                          final bookmarks = _allBookmarks[bookCode] ?? [];
+                          return _buildBookmarksList(bookCode, bookmarks);
+                        }).toList(),
+                      ),
+          ],
+        ),
       ),
     );
   }
@@ -374,6 +394,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
           ayetNumber = bookmark.ayahNumber;
         }
         return Card(
+          color: Theme.of(context).cardColor,
           margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
