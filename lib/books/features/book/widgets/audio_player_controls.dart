@@ -115,7 +115,7 @@ class _AudioPlayerControlsState extends State<AudioPlayerControls>
                     }
 
                     return Container(
-                      height: 45,
+                      height: 42,
                       decoration: BoxDecoration(
                         image: DecorationImage(
                           image: AssetImage('assets/images/appbar3.png'),

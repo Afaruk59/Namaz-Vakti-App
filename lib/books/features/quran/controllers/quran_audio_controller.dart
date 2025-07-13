@@ -4,6 +4,7 @@ import '../audio/quran_audio_repository.dart';
 import '../controllers/quran_page_controller.dart';
 import '../audio/quran_media_controller.dart';
 import 'package:namaz_vakti_app/books/features/book/audio/audio_player_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// Kuran ses kontrolü için controller sınıfı
 class QuranAudioController with ChangeNotifier {
@@ -258,25 +259,36 @@ class QuranAudioController with ChangeNotifier {
     // Ses çalıyor, duraklatılmış veya besmele çalıyor durumda olabilir
     if (showAudioProgress || audioService.isBesmelePlaying) {
       print('Stop düğmesine basıldı, ses tamamen durduruluyor');
+      // --- EKLENDİ: Bildirim player'ı kapatmak için playback state'i güncelle ---
+      await mediaController.updatePlaybackState(QuranMediaController.STATE_STOPPED);
+      await Future.delayed(Duration(milliseconds: 100));
+      await mediaController.stopService();
+      await Future.delayed(Duration(milliseconds: 200));
+      await mediaController.stopService();
+
       await audioService.stop();
 
       // Progress bar'ı hemen gizle
       showAudioProgress = false;
       _mediaNotificationClosed = true;
 
-      // MediaController'ı durdur (2 kez çağır, bazı cihazlarda gerekebilir)
-      await mediaController.stopService();
-      await Future.delayed(Duration(milliseconds: 200));
-      await mediaController.stopService();
-
       notifyListeners();
     }
   }
 
   Future<void> playAudio() async {
+    // --- EKLENDİ: Kuran için notification player tuşları çalışsın diye gerekli anahtarları kaydet ---
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('playing_book_code', 'quran');
+    await prefs.setInt('quran_current_audio_page', pageController.currentPage);
+    await prefs.setInt('quran_first_page', 1);
+    await prefs.setInt('quran_last_page', 604);
     // Her playAudio çağrısında callback ve handler'ı tekrar kur
     if (_mediaNotificationClosed) return;
     _setupMediaCallbacks();
+    // --- EKLENDİ: Servis ve handler'ı başlat ---
+    await mediaController.startService();
+    mediaController.setupMethodCallHandler();
     // Eğer ses çalıyor, duraklatılmış veya besmele çalıyor durumda ise
     if (showAudioProgress || audioService.isBesmelePlaying) {
       print('Play/Stop düğmesine basıldı, ses tamamen durduruluyor');

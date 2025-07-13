@@ -102,9 +102,9 @@ class _BookBookmarkIndicatorState extends State<BookBookmarkIndicator> {
 
           // Ana ekrandaki tüm bookmark göstergelerini yenilemek için
           // HomeScreen'deki refreshBookmarkIndicators metodunu çağır
-          final bookScreenState = context.findAncestorStateOfType<BookScreenState>();
-          if (bookScreenState != null) {
-            bookScreenState.refreshBookmarkIndicators();
+          final homeScreenState = context.findAncestorStateOfType<BookScreenState>();
+          if (homeScreenState != null) {
+            homeScreenState.refreshBookmarkIndicators();
           }
         });
       },

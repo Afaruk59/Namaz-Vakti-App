@@ -44,49 +44,48 @@ class BookBottomControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (showAudioProgress)
-          AudioPlayerControls(
-            audioPlayerService: audioPlayerService,
-            onSeek: onSeek,
-            onSpeedChange: onSpeedChange,
-            onPlayPauseProgress: onPlayPauseProgress ?? onPlayAudio,
-            appBarColor: appBarColor, // parametreyi ilet
-          ),
-        if (!isFullScreen)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: BookBottomBar(
-              appBarColor: appBarColor,
-              currentPage: pageController.currentPage,
-              isFirstPage: pageController.isFirstPage,
-              isLastPage: pageController.isLastPage,
-              onPreviousPage: () {
-                pageController.previousPage(
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                );
-              },
-              onNextPage: () {
-                pageController.nextPage(
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                );
-              },
-              onMenuPressed: onMenuPressed,
-              onPlayAudio: onPlayAudio,
-              hasAudio: hasAudio,
-              isAudioPlaying: showAudioProgress,
-              isPlaying: audioPlayerService.isPlaying,
-              bookCode: bookCode,
-              hasBookmarks: hasBookmarks,
-              onBookmarksReturn: refreshBookmarkStatus,
-              onPageNumberEntered: onPageNumberEntered,
-            ),
-          ),
-      ],
-    );
+    return Padding(
+        padding: const EdgeInsets.only(bottom: 15),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (showAudioProgress)
+              AudioPlayerControls(
+                audioPlayerService: audioPlayerService,
+                onSeek: onSeek,
+                onSpeedChange: onSpeedChange,
+                onPlayPauseProgress: onPlayPauseProgress ?? onPlayAudio,
+                appBarColor: appBarColor, // parametreyi ilet
+              ),
+            if (!isFullScreen)
+              BookBottomBar(
+                appBarColor: appBarColor,
+                currentPage: pageController.currentPage,
+                isFirstPage: pageController.isFirstPage,
+                isLastPage: pageController.isLastPage,
+                onPreviousPage: () {
+                  pageController.previousPage(
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
+                },
+                onNextPage: () {
+                  pageController.nextPage(
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
+                },
+                onMenuPressed: onMenuPressed,
+                onPlayAudio: onPlayAudio,
+                hasAudio: hasAudio,
+                isAudioPlaying: showAudioProgress,
+                isPlaying: audioPlayerService.isPlaying,
+                bookCode: bookCode,
+                hasBookmarks: hasBookmarks,
+                onBookmarksReturn: refreshBookmarkStatus,
+                onPageNumberEntered: onPageNumberEntered,
+              ),
+          ],
+        ));
   }
 }

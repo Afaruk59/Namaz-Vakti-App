@@ -10,6 +10,7 @@ class BookPageView extends StatelessWidget {
   final String bookCode;
   final Function(int) onPageChanged;
   final VoidCallback? onStateChanged;
+  final Color backgroundColor;
 
   const BookPageView({
     Key? key,
@@ -18,17 +19,21 @@ class BookPageView extends StatelessWidget {
     required this.bookCode,
     required this.onPageChanged,
     this.onStateChanged,
+    required this.backgroundColor,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return _EdgeAwareBookPageView(
-      pageController: pageController.pageController,
-      bookCode: bookCode,
-      onPageChanged: onPageChanged,
-      itemBuilder: (context, index) {
-        return uiManager.buildPageContent(index, onStateChanged: onStateChanged);
-      },
+    return Container(
+      color: backgroundColor,
+      child: _EdgeAwareBookPageView(
+        pageController: pageController.pageController,
+        bookCode: bookCode,
+        onPageChanged: onPageChanged,
+        itemBuilder: (context, index) {
+          return uiManager.buildPageContent(index, onStateChanged: onStateChanged);
+        },
+      ),
     );
   }
 }

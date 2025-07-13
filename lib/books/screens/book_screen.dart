@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:namaz_vakti_app/l10n/app_localization.dart';
 import 'package:namaz_vakti_app/components/scaffold_layout.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:android_intent_plus/android_intent.dart';
@@ -16,7 +15,6 @@ import 'package:namaz_vakti_app/books/features/book/services/audio_page_service.
 import 'no_internet_screen.dart';
 import 'package:namaz_vakti_app/books/features/book/services/bookmark_service.dart';
 import 'package:namaz_vakti_app/books/features/book/services/book_info_service.dart';
-import 'dart:ui';
 import 'package:flutter/services.dart';
 
 class BookScreen extends StatefulWidget {
@@ -24,6 +22,17 @@ class BookScreen extends StatefulWidget {
 
   @override
   BookScreenState createState() => BookScreenState();
+
+  /// Arka plandan (method channel ile) çağrıldığında bir sonraki sayfaya geçişi tetikler
+  static void goToNextPageFromBackground() {
+    // TODO: Eğer kitap veya Kuran dinleme ekranı açıksa ilgili controller'a haber ver
+    // Bunu bir global event, provider, veya callback ile ilgili ekrana iletmek gerekir.
+    // Şimdilik sadece log basalım.
+    print('BookScreen.goToNextPageFromBackground: Arka plandan bir sonraki sayfa çağrısı geldi.');
+    // Burada örneğin: BookPageScreen veya ModularQuranPageScreen'e bir event gönderebilirsin.
+    // Örn: BookPageScreen.nextPageFromBackground();
+    // veya: ModularQuranPageScreen.nextAyahFromBackground();
+  }
 }
 
 class BookScreenState extends State<BookScreen> {
@@ -119,7 +128,7 @@ class BookScreenState extends State<BookScreen> {
         });
       }
     } catch (e) {
-      debugPrint('Error initializing progress service: $e');
+      print('Error initializing progress service: $e');
       if (mounted) {
         setState(() {
           _isProgressLoaded = false;
@@ -133,7 +142,7 @@ class BookScreenState extends State<BookScreen> {
       var connectivityResult = await Connectivity().checkConnectivity();
       return connectivityResult != ConnectivityResult.none;
     } catch (e) {
-      debugPrint('Connectivity check error: $e');
+      print('Connectivity check error: $e');
       return true; // Hata durumunda varsayılan olarak bağlantı var kabul edelim
     }
   }
@@ -141,8 +150,7 @@ class BookScreenState extends State<BookScreen> {
   void _setupConnectivityStream() {
     Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> result) async {
       if (mounted) {
-        bool isConnected =
-            result.contains(ConnectivityResult.mobile) || result.contains(ConnectivityResult.wifi);
+        bool isConnected = result != ConnectivityResult.none;
 
         if (isConnected && !_hasInternetConnection) {
           // İnternet bağlantısı yeni geldi, servisleri yeniden başlat
@@ -163,7 +171,7 @@ class BookScreenState extends State<BookScreen> {
               });
             }
           } catch (e) {
-            debugPrint('Error reinitializing services: $e');
+            print('Error reinitializing services: $e');
             if (mounted) {
               setState(() {
                 _isLoading = false;
@@ -261,7 +269,7 @@ class BookScreenState extends State<BookScreen> {
         extractedColor = await ColorExtractor.extractDominantColor(AssetImage(book.coverImageUrl),
             defaultColor: defaultColor);
       } catch (e) {
-        debugPrint('Error extracting color: $e');
+        print('Error extracting color: $e');
       }
     }
 
@@ -437,7 +445,7 @@ class BookScreenState extends State<BookScreen> {
                                           try {
                                             final url =
                                                 Uri.parse('https://www.hakikatkitabevi.net');
-                                            debugPrint('URL açılmaya çalışılıyor: $url');
+                                            print('URL açılmaya çalışılıyor: $url');
 
                                             // URL'yi doğrudan açmaya çalış
                                             final launched = await launchUrl(
@@ -446,9 +454,9 @@ class BookScreenState extends State<BookScreen> {
                                             );
 
                                             if (launched) {
-                                              debugPrint('URL başarıyla açıldı');
+                                              print('URL başarıyla açıldı');
                                             } else {
-                                              debugPrint('URL açılamadı');
+                                              print('URL açılamadı');
                                               if (mounted) {
                                                 ScaffoldMessenger.of(context).showSnackBar(
                                                   SnackBar(
@@ -460,7 +468,7 @@ class BookScreenState extends State<BookScreen> {
                                               }
                                             }
                                           } catch (e) {
-                                            debugPrint('URL açma hatası: $e');
+                                            print('URL açma hatası: $e');
                                             if (mounted) {
                                               ScaffoldMessenger.of(context).showSnackBar(
                                                 SnackBar(
@@ -616,10 +624,10 @@ class BookScreenState extends State<BookScreen> {
   @override
   Widget build(BuildContext context) {
     return ScaffoldLayout(
-      title: AppLocalizations.of(context)!.booksTitle,
-      actions: const [],
-      body: _buildBody(),
+      title: 'Kuran-ı Kerim ve Kitaplar',
+      actions: [],
       background: true,
+      body: _buildBody(),
     );
   }
 
@@ -650,5 +658,29 @@ class BookScreenState extends State<BookScreen> {
     setState(() {
       _quranHighlightCount = bookmarks.where((b) => b.highlightColor != null).length;
     });
+  }
+
+  Widget _buildQuranTile() {
+    return Stack(
+      children: [
+        // ... mevcut kutucuk ...
+        if (_quranHighlightCount > 0)
+          Positioned(
+            right: 8,
+            top: 8,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: Colors.amber[700],
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                '$_quranHighlightCount',
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+      ],
+    );
   }
 }

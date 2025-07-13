@@ -15,8 +15,8 @@ class BookInfoService {
           (e) => e.attributes['name'] == 'description',
           orElse: () => Element.tag('meta'),
         );
-        if (!meta.attributes.containsKey('name') ||
-            meta.attributes['name'] != 'description') return null;
+        if (!meta.attributes.containsKey('name') || meta.attributes['name'] != 'description')
+          return null;
         return meta.attributes['content'];
       }
     } catch (e) {
@@ -46,10 +46,4 @@ class BookInfoService {
     }
     return null;
   }
-}
-
-void main() async {
-  final desc = await BookInfoService.fetchBookDescription(
-      'https://www.hakikatkitabevi.net/book.php?bookCode=001');
-  print(desc);
 }

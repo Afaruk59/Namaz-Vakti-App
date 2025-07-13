@@ -82,7 +82,7 @@ class _BookAppBarState extends State<BookAppBar> {
       ),
       centerTitle: true,
       leading: IconButton(
-        icon: Icon(Icons.arrow_back, color: Colors.white),
+        icon: Icon(Icons.arrow_back),
         onPressed: () => Navigator.of(context).pop(),
       ),
       title: Text(
@@ -90,13 +90,12 @@ class _BookAppBarState extends State<BookAppBar> {
         style: const TextStyle(
           fontFamily: 'Arial',
           fontWeight: FontWeight.bold,
-          color: Colors.white,
           fontSize: 22,
         ),
       ),
       actions: [
         PopupMenuButton<Map<String, dynamic>>(
-          icon: Icon(Icons.format_size, color: Colors.white),
+          icon: Icon(Icons.format_size),
           itemBuilder: (BuildContext context) => [
             PopupMenuItem<Map<String, dynamic>>(
               value: {'type': 'settings'},
@@ -132,9 +131,6 @@ class _BookAppBarState extends State<BookAppBar> {
               children: [
                 SliderTheme(
                   data: SliderTheme.of(context).copyWith(
-                    activeTrackColor: Colors.blue,
-                    inactiveTrackColor: Colors.grey[300],
-                    thumbColor: Colors.blue,
                     thumbShape: RoundSliderThumbShape(enabledThumbRadius: 10.0),
                     overlayShape: RoundSliderOverlayShape(overlayRadius: 20.0),
                     trackHeight: 4.0,

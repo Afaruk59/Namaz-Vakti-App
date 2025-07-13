@@ -2,6 +2,7 @@ import 'package:namaz_vakti_app/books/features/book/audio/audio_player_service.d
 import 'package:namaz_vakti_app/books/features/book/services/api_service.dart';
 import 'package:namaz_vakti_app/books/features/book/models/book_page_model.dart';
 import 'package:namaz_vakti_app/books/features/book/services/book_title_service.dart';
+import 'package:namaz_vakti_app/books/screens/book_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'package:namaz_vakti_app/books/features/book/services/book_progress_service.dart';

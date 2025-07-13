@@ -5,6 +5,7 @@ import 'package:namaz_vakti_app/books/features/book/controllers/book_media_contr
 import 'package:namaz_vakti_app/books/features/book/controllers/book_audio_controller.dart';
 import 'package:namaz_vakti_app/books/features/book/audio/audio_player_service.dart';
 import 'package:namaz_vakti_app/books/features/book/models/book_page_model.dart';
+import 'package:namaz_vakti_app/books/screens/book_screen.dart';
 import 'package:namaz_vakti_app/books/features/book/services/book_title_service.dart';
 import 'package:namaz_vakti_app/books/features/book/services/book_progress_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,6 +24,9 @@ class BookNavigationController {
   final Function(BookPageModel?) onBookPageUpdated;
   final Function() onMediaInfoUpdated;
 
+  // Method Channel for native media service
+  static const platform = MethodChannel('com.afaruk59.namaz_vakti_app/media_service');
+
   BookNavigationController({
     required this.bookCode,
     required this.pageController,
@@ -35,7 +39,89 @@ class BookNavigationController {
     required this.onAudioProgressVisibilityChanged,
     required this.onBookPageUpdated,
     required this.onMediaInfoUpdated,
-  });
+  }) {
+    // Medya servis method channel listener'ı kur
+    _initMediaServiceListener();
+  }
+
+  // Medya servis method channel'ını dinlemeye başla
+  void _initMediaServiceListener() {
+    platform.setMethodCallHandler((call) async {
+      print("BookNavigationController: Method channel çağrısı: ${call.method}");
+
+      switch (call.method) {
+        case 'next':
+          await goToNextPage();
+          break;
+        case 'previous':
+          await goToPreviousPage();
+          break;
+        case 'togglePlay':
+          // Ses çalıyorsa durdur/başlat
+          if (audioPlayerService.playingBookCode == bookCode) {
+            if (audioPlayerService.isPlaying) {
+              audioPlayerService.pauseAudio();
+            } else {
+              audioPlayerService.resumeAudio();
+            }
+          } else {
+            // Ses çalmıyorsa, mevcut sayfadaki sesi başlat
+            final currentPage = pageController.currentPage;
+            final bookPage = await pageController.getPageFromCacheOrLoad(currentPage);
+            if (bookPage?.mp3.isNotEmpty ?? false) {
+              final bookTitle = await bookTitleService.getTitle(bookCode);
+              final bookAuthor = await bookTitleService.getAuthor(bookCode);
+
+              await audioController.handlePlayAudio(
+                currentBookPage: bookPage!,
+                currentPage: currentPage,
+                fromBottomBar: true,
+                bookTitle: bookTitle,
+                bookAuthor: bookAuthor,
+              );
+            }
+          }
+          break;
+      }
+
+      // Sayfa durumunu native tarafına bildir
+      _updateMediaPageState();
+
+      return null;
+    });
+  }
+
+  // Medya servisine sayfa durumunu bildir
+  Future<void> _updateMediaPageState() async {
+    try {
+      final firstPage = 1;
+      final lastPage =
+          pageController.isLastPage ? pageController.currentPage : pageController.currentPage + 1;
+      final currentPage = pageController.currentPage;
+
+      print("BookNavigationController: Sayfa durumu güncelleniyor: $currentPage / $lastPage");
+
+      await platform.invokeMethod('updateAudioPageState', {
+        'bookCode': bookCode,
+        'currentPage': currentPage,
+        'firstPage': firstPage,
+        'lastPage': lastPage,
+      });
+    } catch (e) {
+      print("Medya servisi sayfa durumu güncelleme hatası: $e");
+    }
+  }
+
+  // Medya servisini başlat
+  Future<void> initMediaService() async {
+    try {
+      await platform.invokeMethod('initMediaService');
+      await _updateMediaPageState();
+      print("BookNavigationController: Medya servisi başlatıldı");
+    } catch (e) {
+      print("Medya servisi başlatma hatası: $e");
+    }
+  }
 
   /// Navigate to the next page
   Future<void> goToNextPage({bool fromAudioCompletion = false}) async {
@@ -97,6 +183,9 @@ class BookNavigationController {
 
       // Update media controller with new page info
       onMediaInfoUpdated();
+
+      // Medya servisine sayfa değişimini bildir
+      _updateMediaPageState();
 
       // Get the book page content
       BookPageModel? bookPage = await pageController.getPageFromCacheOrLoad(nextPage);
@@ -177,6 +266,9 @@ class BookNavigationController {
       // Update media controller with new page info
       onMediaInfoUpdated();
 
+      // Medya servisine sayfa değişimini bildir
+      _updateMediaPageState();
+
       // Get the book page content
       BookPageModel? bookPage = await pageController.getPageFromCacheOrLoad(previousPage);
       onBookPageUpdated(bookPage);
@@ -252,6 +344,9 @@ class BookNavigationController {
 
       // Update media controller with new page info
       onMediaInfoUpdated();
+
+      // Medya servisine sayfa değişimini bildir
+      _updateMediaPageState();
 
       // Get the new page content
       BookPageModel? bookPage = await pageController.getPageFromCacheOrLoad(pageNumber);

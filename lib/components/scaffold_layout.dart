@@ -37,7 +37,7 @@ class ScaffoldLayout extends StatelessWidget {
               Positioned.fill(
                 child: ColorFiltered(
                   colorFilter: ColorFilter.mode(
-                    Provider.of<ChangeSettings>(context).color.withValues(alpha: 1),
+                    Provider.of<ChangeSettings>(context).color,
                     BlendMode.color,
                   ),
                   child: Image.asset(

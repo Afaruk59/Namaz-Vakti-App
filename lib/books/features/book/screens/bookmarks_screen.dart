@@ -195,12 +195,38 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
       return await ColorExtractor.getBookColor(
         bookCode,
         coverImage,
-        defaultColor: Colors.blue,
+        defaultColor: Provider.of<ChangeSettings>(context).color,
       );
     } catch (e) {
       print('Kitap rengi alınırken hata: $e');
-      return Colors.blue;
+      return Provider.of<ChangeSettings>(context).color;
     }
+  }
+
+  // Silme onay dialogu göster
+  Future<bool?> _showDeleteConfirmationDialog(BuildContext context) async {
+    return showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Yer İşaretini Sil'),
+          content: Text('Bu yer işaretini silmek istediğinizden emin misiniz?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text('İptal'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text('Sil'),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.red,
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -219,7 +245,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
   @override
   Widget build(BuildContext context) {
     // Seçili kitabın rengini al
-    Color selectedTabColor = ColorExtractor.defaultBlue; // Varsayılan renk olarak koyu mavi kullan
+    Color selectedTabColor = Colors.transparent; // Varsayılan renk olarak koyu mavi kullan
 
     // TabController ve kitap kodları hazır olduğunda seçili kitabın rengini al
     if (!_isLoading &&
@@ -230,7 +256,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
         int currentIndex = _tabController!.index;
         if (currentIndex >= 0 && currentIndex < _bookCodes.length) {
           final selectedBookCode = _bookCodes[currentIndex];
-          selectedTabColor = _bookColors[selectedBookCode] ?? ColorExtractor.defaultBlue;
+          selectedTabColor = _bookColors[selectedBookCode] ?? Colors.transparent;
         }
       } catch (e) {
         print('Tab rengi alınırken hata: $e');
@@ -239,54 +265,46 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
 
     return WillPopScope(
       onWillPop: () async {
-        final bookScreenState = context.findAncestorStateOfType<BookScreenState>();
-        if (bookScreenState != null) {
-          bookScreenState.refreshBookmarkIndicators();
+        final homeScreenState = context.findAncestorStateOfType<BookScreenState>();
+        if (homeScreenState != null) {
+          homeScreenState.refreshBookmarkIndicators();
         }
         return true;
       },
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: selectedTabColor, // Seçili kitabın rengini kullan
-          foregroundColor: Colors.white, // Yazıların rengini beyaz yap
-          title: Text('Yer İşaretleri'),
-          bottom: _isLoading || _bookCodes.isEmpty || _tabController == null
-              ? null
-              : TabBar(
-                  controller: _tabController!,
-                  isScrollable: true,
-                  indicatorColor: Colors.white, // Seçili tab göstergesini beyaz yap
-                  labelColor: Colors.white, // Seçili tab yazısını beyaz yap
-                  unselectedLabelColor: Colors.white
-                      .withOpacity(0.7), // Seçili olmayan tab yazılarını yarı saydam beyaz yap
-                  tabs: _bookCodes.map((bookCode) {
-                    return Tab(
-                      text: _bookTitles[bookCode] ?? bookCode,
-                    );
-                  }).toList(),
-                ),
-        ),
-        body: Stack(
-          children: [
-            Positioned.fill(
-              child: ColorFiltered(
-                colorFilter: ColorFilter.mode(
-                  Provider.of<ChangeSettings>(context).color.withValues(alpha: 1),
-                  BlendMode.color,
-                ),
-                child: Image.asset(
-                  Provider.of<ChangeSettings>(context).isDark
-                      ? 'assets/img/wallpaperdark.png'
-                      : 'assets/img/wallpaper.png',
-                  fit: BoxFit.cover,
-                ),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: ColorFiltered(
+              colorFilter: ColorFilter.mode(
+                Provider.of<ChangeSettings>(context).color,
+                BlendMode.color,
+              ),
+              child: Image.asset(
+                Provider.of<ChangeSettings>(context).isDark
+                    ? 'assets/img/wallpaperdark.png'
+                    : 'assets/img/wallpaper.png',
+                fit: BoxFit.cover,
               ),
             ),
-            _isLoading
-                ? Center(
-                    child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(ColorExtractor.defaultBlue),
-                  ))
+          ),
+          Scaffold(
+            appBar: AppBar(
+              backgroundColor: selectedTabColor,
+              title: Text('Yer İşaretleri'),
+              bottom: _isLoading || _bookCodes.isEmpty || _tabController == null
+                  ? null
+                  : TabBar(
+                      controller: _tabController!,
+                      isScrollable: true, // Seçili olmayan tab yazılarını yarı saydam beyaz yap
+                      tabs: _bookCodes.map((bookCode) {
+                        return Tab(
+                          text: _bookTitles[bookCode] ?? bookCode,
+                        );
+                      }).toList(),
+                    ),
+            ),
+            body: _isLoading
+                ? Center(child: CircularProgressIndicator())
                 : _bookCodes.isEmpty || _tabController == null
                     ? _buildEmptyBookmarksView()
                     : TabBarView(
@@ -296,8 +314,8 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
                           return _buildBookmarksList(bookCode, bookmarks);
                         }).toList(),
                       ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -311,27 +329,21 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
           Icon(
             Icons.bookmark_border,
             size: 64,
-            color: Colors.grey,
           ),
           SizedBox(height: 16),
           Text(
             'Henüz yer işareti eklenmemiş',
             style: TextStyle(
               fontSize: 18,
-              color: Colors.grey,
             ),
           ),
           SizedBox(height: 24),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: ColorExtractor.defaultBlue, // Varsayılan mavi rengi kullan
-              foregroundColor: Colors.white, // Yazı rengini beyaz yap
-            ),
+          FilledButton.tonal(
             onPressed: () {
               // Ana ekrana dönmeden önce tüm bookmark göstergelerini yenile
-              final bookScreenState = context.findAncestorStateOfType<BookScreenState>();
-              if (bookScreenState != null) {
-                bookScreenState.refreshBookmarkIndicators();
+              final homeScreenState = context.findAncestorStateOfType<BookScreenState>();
+              if (homeScreenState != null) {
+                homeScreenState.refreshBookmarkIndicators();
               }
               Navigator.pop(context);
             },
@@ -373,9 +385,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
 
       // Geçici olarak yükleniyor göster
       return Center(
-        child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(ColorExtractor.defaultBlue),
-        ),
+        child: CircularProgressIndicator(),
       );
     }
 
@@ -401,12 +411,10 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
             children: [
               ListTile(
                 leading: CircleAvatar(
-                  backgroundColor: bookColor,
                   child: isQuran
-                      ? Icon(Icons.menu_book, color: Colors.white)
+                      ? Icon(Icons.menu_book)
                       : Text(
                           bookmark.pageNumber.toString(),
-                          style: TextStyle(color: Colors.white),
                         ),
                 ),
                 title: isQuran ? Text('Kur\'an-ı Kerim') : Text('Sayfa ${bookmark.pageNumber}'),
@@ -419,14 +427,17 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
                 trailing: IconButton(
                   icon: Icon(Icons.delete),
                   onPressed: () async {
-                    await _bookmarkService.removeBookmark(
-                      bookCode,
-                      bookmark.pageNumber,
-                      selectedText: bookmark.selectedText,
-                      startIndex: bookmark.startIndex,
-                      endIndex: bookmark.endIndex,
-                    );
-                    _loadBookmarks();
+                    final shouldDelete = await _showDeleteConfirmationDialog(context);
+                    if (shouldDelete == true) {
+                      await _bookmarkService.removeBookmark(
+                        bookCode,
+                        bookmark.pageNumber,
+                        selectedText: bookmark.selectedText,
+                        startIndex: bookmark.startIndex,
+                        endIndex: bookmark.endIndex,
+                      );
+                      _loadBookmarks();
+                    }
                   },
                 ),
                 onTap: () {
@@ -472,7 +483,6 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
                             'Seçilen Metin:',
                             style: TextStyle(
                               fontSize: 12,
-                              color: Colors.grey[600],
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -486,7 +496,6 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
                                 color: bookmark.highlightColor,
                                 shape: BoxShape.circle,
                                 border: Border.all(
-                                  color: Colors.grey.shade300,
                                   width: 1,
                                 ),
                               ),
@@ -606,7 +615,7 @@ class _QuranBookmarkExpandableState extends State<_QuranBookmarkExpandable> {
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
               widget.mealText!,
-              style: TextStyle(fontSize: 14, color: Colors.grey[800]),
+              style: TextStyle(fontSize: 14),
             ),
           ),
       ],

@@ -20,6 +20,7 @@ import 'package:namaz_vakti_app/books/features/book/controllers/book_ui_componen
 
 // Widgets
 import 'package:namaz_vakti_app/books/features/book/widgets/book_page_view.dart';
+import 'package:namaz_vakti_app/books/features/book/widgets/book_controls_overlay.dart';
 
 // Legacy managers - will be removed eventually
 import 'package:namaz_vakti_app/books/features/book/services/audio_manager.dart';
@@ -79,6 +80,9 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
   String _bookTitleText = 'Hakikat Kitabevi';
   BookPageModel? _currentBookPage;
 
+  // --- EKLENDİ: Çıkış sırasında tekrar audio başlatmayı engelleyen flag ---
+  bool _isExiting = false;
+
   // --- EKLENDİ: Başlık güncelleme fonksiyonu ---
   Future<void> _updateBookTitle() async {
     final title = await _bookTitleService.getTitle(widget.bookCode);
@@ -98,6 +102,9 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
   // Periodic timer to check for page changes in the background
   Timer? _backgroundCheckTimer;
   int _lastCheckedPage = 0;
+
+  // Lock screen event channel
+  MethodChannel? _lockScreenChannel;
 
   @override
   void initState() {
@@ -131,6 +138,17 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
 
       // Start the background page change listener
       _startBackgroundPageChangeListener();
+
+      // --- YENİ: Lock screen event channel dinleyici ---
+      _lockScreenChannel = const MethodChannel('lock_screen_events');
+      _lockScreenChannel!.setMethodCallHandler((call) async {
+        if (call.method == 'pageChanged') {
+          print('BookPageScreen: lock_screen_events.pageChanged event alındı');
+          await _checkAndSyncCurrentAudioPage();
+        }
+        return null;
+      });
+      // --- YENİ SONU ---
     } catch (e) {
       print('BookPageScreen initState error: $e');
     }
@@ -354,6 +372,79 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
         _navigationController.goToNextPage(fromAudioCompletion: fromAudioCompletion);
       }
     });
+
+    // MediaChannel listener'lar kur
+    _setupMediaChannelListeners();
+  }
+
+  void _setupMediaChannelListeners() {
+    // com.afaruk59.namaz_vakti_app/media_service kanalı üzerinden gelen bildirimler
+    const mediaServiceChannel = MethodChannel('com.afaruk59.namaz_vakti_app/media_service');
+
+    mediaServiceChannel.setMethodCallHandler((call) async {
+      print("BookPageScreen: Method channel çağrısı: ${call.method}");
+
+      if (!mounted) return null;
+
+      switch (call.method) {
+        case 'next':
+          await _navigationController.goToNextPage();
+          break;
+        case 'previous':
+          await _navigationController.goToPreviousPage();
+          break;
+        case 'togglePlay':
+          if (_currentBookPage != null && _currentBookPage!.mp3.isNotEmpty) {
+            final bookTitle = await _bookTitleService.getTitle(widget.bookCode);
+            final bookAuthor = await _bookTitleService.getAuthor(widget.bookCode);
+
+            await _audioController.handlePlayAudio(
+              currentBookPage: _currentBookPage!,
+              currentPage: _pageController.currentPage,
+              fromBottomBar: true,
+              bookTitle: bookTitle,
+              bookAuthor: bookAuthor,
+            );
+          }
+          break;
+      }
+
+      return null;
+    });
+
+    // Başlatma sırasında method channel servisini native tarafa bildir
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      try {
+        await mediaServiceChannel.invokeMethod('initMediaService');
+        print("BookPageScreen: Method channel servisi başlatıldı");
+
+        // Sayfa durumunu bildir
+        await _updateMediaPageState();
+      } catch (e) {
+        print("Method channel servis başlatma hatası: $e");
+      }
+    });
+  }
+
+  Future<void> _updateMediaPageState() async {
+    try {
+      const mediaServiceChannel = MethodChannel('com.afaruk59.namaz_vakti_app/media_service');
+
+      final currentPage = _pageController.currentPage;
+      final lastPage = _pageController.isLastPage ? currentPage : currentPage + 1;
+      final firstPage = 1;
+
+      await mediaServiceChannel.invokeMethod('updateAudioPageState', {
+        'bookCode': widget.bookCode,
+        'currentPage': currentPage,
+        'firstPage': firstPage,
+        'lastPage': lastPage,
+      });
+
+      print("BookPageScreen: Sayfa durumu güncellendi: $currentPage / $lastPage");
+    } catch (e) {
+      print("Sayfa durumu güncelleme hatası: $e");
+    }
   }
 
   void _initializeManagers() {
@@ -443,6 +534,7 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
   }
 
   void _handlePlayAudio({bool fromBottomBar = false, bool afterPageChange = false}) async {
+    if (_isExiting) return;
     try {
       // Log to help troubleshoot audio issues
       print(
@@ -571,14 +663,17 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
   }
 
   void _onPageChanged(int pageNumber) {
+    if (_isExiting) return;
     _pageController.onPageChanged(pageNumber);
 
     try {
       Future.microtask(() async {
         try {
+          if (_isExiting) return;
           await _audioController.checkIfAudioIsPlayingForThisBook();
 
           if (pageNumber != _pageController.currentPage) {
+            if (_isExiting) return;
             await _navigationController.goToPage(pageNumber);
           }
         } catch (e) {
@@ -592,37 +687,46 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBody: true,
-      key: _scaffoldKey,
-      drawer: _uiManager.buildDrawer(
-        searchFunction: _apiService.searchBook,
-        currentBookPage: _currentBookPage,
+    return WillPopScope(
+      onWillPop: () async {
+        _isExiting = true;
+        // Geri tuşuna basınca notification ve audio kesinlikle kapatılsın
+        await _audioManager.stopAllAudioAndNotification();
+        return true;
+      },
+      child: Scaffold(
+        extendBody: true,
+        key: _scaffoldKey,
+        drawer: _uiManager.buildDrawer(
+          searchFunction: _apiService.searchBook,
+          currentBookPage: _currentBookPage,
+        ),
+        appBar: _uiManager.buildAppBar(onBackgroundColorChanged: () {
+          if (mounted) setState(() {});
+        }),
+        body: Stack(
+          children: [
+            BookPageView(
+              pageController: _pageController,
+              uiManager: _uiManager,
+              bookCode: widget.bookCode,
+              onPageChanged: _onPageChanged,
+              onStateChanged: () => setState(() {}),
+              backgroundColor: _themeController.backgroundColor,
+            ),
+            // BookControlsOverlay widget'ı kaldırıldı
+          ],
+        ),
+        bottomNavigationBar: _uiManager.buildBottomBar(
+          onPlayAudio: () => _handlePlayAudio(fromBottomBar: true),
+          onPlayPauseProgress: _handlePlayPauseFromProgressBar,
+          onSeek: _handleSeek,
+          onSpeedChange: _handleSpeedChange,
+          refreshBookmarkStatus: _refreshBookmarkStatus,
+          onPageNumberEntered: (pageNumber) => _navigationController.goToPage(pageNumber),
+        ),
+        drawerEnableOpenDragGesture: false,
       ),
-      appBar: _uiManager.buildAppBar(onBackgroundColorChanged: () {
-        if (mounted) setState(() {});
-      }),
-      body: Stack(
-        children: [
-          BookPageView(
-            pageController: _pageController,
-            uiManager: _uiManager,
-            bookCode: widget.bookCode,
-            onPageChanged: _onPageChanged,
-            onStateChanged: () => setState(() {}),
-          ),
-          // BookControlsOverlay widget'ı kaldırıldı
-        ],
-      ),
-      bottomNavigationBar: _uiManager.buildBottomBar(
-        onPlayAudio: () => _handlePlayAudio(fromBottomBar: true),
-        onPlayPauseProgress: _handlePlayPauseFromProgressBar,
-        onSeek: _handleSeek,
-        onSpeedChange: _handleSpeedChange,
-        refreshBookmarkStatus: _refreshBookmarkStatus,
-        onPageNumberEntered: (pageNumber) => _navigationController.goToPage(pageNumber),
-      ),
-      drawerEnableOpenDragGesture: false,
     );
   }
 
@@ -640,6 +744,13 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
 
   @override
   void dispose() {
+    // dispose'u asenkron hale getir
+    _disposeAsync();
+    super.dispose();
+  }
+
+  Future<void> _disposeAsync() async {
+    _isExiting = true;
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
@@ -649,9 +760,9 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
     // Dispose background check timer
     _backgroundCheckTimer?.cancel();
 
-    // Always stop audio playback when leaving the book screen
-    print('Stopping audio playback when leaving book screen');
-    AudioPageService().stopAudioAndClearPlayer();
+    // Always stop audio playback and notification when leaving the book screen
+    print('Stopping audio playback and notification when leaving book screen');
+    await _audioManager.stopAllAudioAndNotification();
 
     try {
       _pageController.dispose();
@@ -660,7 +771,8 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
       print('BookPageScreen dispose error: $e');
     }
 
-    super.dispose();
+    // --- YENİ: Lock screen channel temizle ---
+    _lockScreenChannel = null;
   }
 
   @override

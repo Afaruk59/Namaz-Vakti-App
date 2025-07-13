@@ -20,6 +20,8 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:namaz_vakti_app/books/features/book/audio/audio_player_service.dart';
+import 'package:namaz_vakti_app/books/features/book/audio/media_controller.dart';
 import 'package:namaz_vakti_app/pages/about.dart';
 import 'package:namaz_vakti_app/pages/kaza.dart';
 import 'package:namaz_vakti_app/l10n/l10n.dart';
@@ -56,6 +58,15 @@ void main() async {
       debugPrint('Failed to start notification service: ${e.message}');
     }
   }
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Medya servisi için method channel'ı kur
+  const platform = MethodChannel('com.afaruk59.namaz_vakti_app/media_service');
+
+  // AudioPlayerService'i başlat (singleton instance oluştur)
+  final audioPlayerService = AudioPlayerService();
+  // MediaController'ı başlat
+  final mediaController = MediaController(audioPlayerService: audioPlayerService);
   // Initialize AudioPageService
   AudioPageService();
   tz.initializeTimeZones();
@@ -69,7 +80,11 @@ void main() async {
     runApp(
       ChangeNotifierProvider<ChangeSettings>(
         create: (context) => ChangeSettings(),
-        child: const MainApp(),
+        child: MainApp(
+          mediaController: mediaController,
+          audioPlayerService: audioPlayerService,
+          platform: platform,
+        ),
       ),
     );
     Future.delayed(const Duration(milliseconds: 1500), () {
@@ -80,10 +95,32 @@ void main() async {
 
 class MainApp extends StatelessWidget {
   static String version = '1.5.0';
+  final MediaController mediaController;
+  final AudioPlayerService audioPlayerService;
+  final MethodChannel? platform;
 
-  const MainApp({super.key});
+  const MainApp({
+    super.key,
+    required this.mediaController,
+    required this.audioPlayerService,
+    this.platform,
+  });
+
   @override
   Widget build(BuildContext context) {
+    // MethodChannel handler'ı burada kur
+    if (platform != null) {
+      platform!.setMethodCallHandler((call) async {
+        if (call.method == 'next') {
+          // HomeScreen'e bir şekilde haber verilmeli
+          // En iyi yol: bir global event/callback veya state management ile
+          // Şimdilik: HomeScreen'e bir static method ekleyip çağırabiliriz
+          print('main.dart: Androidden next çağrısı geldi.');
+          BookScreen.goToNextPageFromBackground();
+        }
+        return null;
+      });
+    }
     Provider.of<ChangeSettings>(context, listen: false).loadLocalFromSharedPref();
     Provider.of<ChangeSettings>(context, listen: false).changeHeight(context);
     Provider.of<ChangeSettings>(context, listen: false).loadCol();

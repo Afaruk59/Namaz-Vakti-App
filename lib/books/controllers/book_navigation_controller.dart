@@ -22,11 +22,13 @@ class BookNavigationController {
       case 'next':
         if (currentPage < lastPage) {
           changePage(currentPage + 1);
+          _updateMediaPageState(); // Medya servisine bildir
         }
         break;
       case 'previous':
         if (currentPage > firstPage) {
           changePage(currentPage - 1);
+          _updateMediaPageState(); // Medya servisine bildir
         }
         break;
       case 'togglePlay':
@@ -49,6 +51,36 @@ class BookNavigationController {
     }
   }
 
+  // Medya servisine sayfa durumunu bildir
+  void _updateMediaPageState() {
+    if (currentBookCode.isEmpty) return;
+
+    const platform = MethodChannel('com.afaruk59.namaz_vakti_app/media_service');
+    try {
+      platform.invokeMethod('updateAudioPageState', {
+        'bookCode': currentBookCode,
+        'currentPage': currentPage,
+        'firstPage': firstPage,
+        'lastPage': lastPage,
+      });
+    } catch (e) {
+      print("Medya servisi sayfa durumu güncelleme hatası: $e");
+    }
+  }
+
+  // Medya servisini başlat ve sayfa durumunu bildir
+  void initMediaService() {
+    if (currentBookCode.isEmpty) return;
+
+    const platform = MethodChannel('com.afaruk59.namaz_vakti_app/media_service');
+    try {
+      platform.invokeMethod('initMediaService');
+      _updateMediaPageState();
+    } catch (e) {
+      print("Medya servisi başlatma hatası: $e");
+    }
+  }
+
   // ... existing code ...
 
   // Kitap açıldığında medya servisini başlat
@@ -56,12 +88,16 @@ class BookNavigationController {
     // Add the implementation
     currentBookCode = bookCode;
     currentPage = page;
+    // Medya servisini başlat
+    initMediaService();
   }
 
   // Sayfayı değiştirdiğimizde medya servisine bildir
   void changePage(int page) {
     // Add the implementation
     currentPage = page;
+    // Sayfa değiştiğinde medya servisine bildir
+    _updateMediaPageState();
   }
 
   // ... existing code ...
