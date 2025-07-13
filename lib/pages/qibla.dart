@@ -97,7 +97,7 @@ class _QiblaCardState extends State<QiblaCard> {
 
   Future<void> loadTarget() async {
     String url =
-        'https://www.namazvakti.com/XML.php?cityID=${Provider.of<ChangeSettings>(context, listen: false).cityID}'; // Çevrimiçi XML dosyasının URL'si
+        'http://www.namazvakti.com/XML.php?cityID=${Provider.of<ChangeSettings>(context, listen: false).cityID}'; // Çevrimiçi XML dosyasının URL'si
 
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {

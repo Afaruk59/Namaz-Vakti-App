@@ -79,7 +79,7 @@ void main() async {
 }
 
 class MainApp extends StatelessWidget {
-  static String version = '1.4.5';
+  static String version = '1.5.0';
 
   const MainApp({super.key});
   @override

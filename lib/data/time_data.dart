@@ -77,7 +77,7 @@ class TimeData extends ChangeSettings {
 
   Future<void> loadPrayerTimes(DateTime time, BuildContext context) async {
     String url =
-        'https://www.namazvakti.com/XML.php?cityID=${Provider.of<ChangeSettings>(context, listen: false).cityID}'; // Çevrimiçi XML dosyasının URL'si
+        'http://www.namazvakti.com/XML.php?cityID=${Provider.of<ChangeSettings>(context, listen: false).cityID}'; // Çevrimiçi XML dosyasının URL'si
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       final data = response.body;
@@ -195,16 +195,16 @@ class TimeData extends ChangeSettings {
       } on Exception catch (_) {
         yatsi2 = null;
       }
+      isTimeLoading = false;
       await fetchCalendar();
       await fetchWordnDay();
-      isTimeLoading = false;
       notifyListeners();
     }
   }
 
   Future<void> fetchWordnDay() async {
     final url = Uri.parse(
-        'https://turktakvim.com/index.php?tarih=${DateFormat('yyyy-MM-dd').format(selectedDate!.add(const Duration(days: 1)))}&page=onyuz');
+        'http://turktakvim.com/index.php?tarih=${DateFormat('yyyy-MM-dd').format(selectedDate!.add(const Duration(days: 1)))}&page=onyuz');
 
     try {
       final response = await http.get(url);
@@ -228,7 +228,7 @@ class TimeData extends ChangeSettings {
   }
 
   Future<void> fetchCalendar() async {
-    const url = 'https://www.turktakvim.com/10/Tr/';
+    const url = 'http://www.turktakvim.com/10/Tr/';
 
     final response = await http.get(Uri.parse(url));
 
