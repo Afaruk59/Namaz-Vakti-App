@@ -99,9 +99,6 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
   Timer? _backgroundCheckTimer;
   int _lastCheckedPage = 0;
 
-  // Lock screen event channel
-  MethodChannel? _lockScreenChannel;
-
   @override
   void initState() {
     super.initState();
@@ -134,17 +131,6 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
 
       // Start the background page change listener
       _startBackgroundPageChangeListener();
-
-      // --- YENİ: Lock screen event channel dinleyici ---
-      _lockScreenChannel = const MethodChannel('lock_screen_events');
-      _lockScreenChannel!.setMethodCallHandler((call) async {
-        if (call.method == 'pageChanged') {
-          print('BookPageScreen: lock_screen_events.pageChanged event alındı');
-          await _checkAndSyncCurrentAudioPage();
-        }
-        return null;
-      });
-      // --- YENİ SONU ---
     } catch (e) {
       print('BookPageScreen initState error: $e');
     }
@@ -368,79 +354,6 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
         _navigationController.goToNextPage(fromAudioCompletion: fromAudioCompletion);
       }
     });
-
-    // MediaChannel listener'lar kur
-    _setupMediaChannelListeners();
-  }
-
-  void _setupMediaChannelListeners() {
-    // com.afaruk59.namaz_vakti_app/media_service kanalı üzerinden gelen bildirimler
-    const mediaServiceChannel = MethodChannel('com.afaruk59.namaz_vakti_app/media_service');
-
-    mediaServiceChannel.setMethodCallHandler((call) async {
-      print("BookPageScreen: Method channel çağrısı: ${call.method}");
-
-      if (!mounted) return null;
-
-      switch (call.method) {
-        case 'next':
-          await _navigationController.goToNextPage();
-          break;
-        case 'previous':
-          await _navigationController.goToPreviousPage();
-          break;
-        case 'togglePlay':
-          if (_currentBookPage != null && _currentBookPage!.mp3.isNotEmpty) {
-            final bookTitle = await _bookTitleService.getTitle(widget.bookCode);
-            final bookAuthor = await _bookTitleService.getAuthor(widget.bookCode);
-
-            await _audioController.handlePlayAudio(
-              currentBookPage: _currentBookPage!,
-              currentPage: _pageController.currentPage,
-              fromBottomBar: true,
-              bookTitle: bookTitle,
-              bookAuthor: bookAuthor,
-            );
-          }
-          break;
-      }
-
-      return null;
-    });
-
-    // Başlatma sırasında method channel servisini native tarafa bildir
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      try {
-        await mediaServiceChannel.invokeMethod('initMediaService');
-        print("BookPageScreen: Method channel servisi başlatıldı");
-
-        // Sayfa durumunu bildir
-        await _updateMediaPageState();
-      } catch (e) {
-        print("Method channel servis başlatma hatası: $e");
-      }
-    });
-  }
-
-  Future<void> _updateMediaPageState() async {
-    try {
-      const mediaServiceChannel = MethodChannel('com.afaruk59.namaz_vakti_app/media_service');
-
-      final currentPage = _pageController.currentPage;
-      final lastPage = _pageController.isLastPage ? currentPage : currentPage + 1;
-      final firstPage = 1;
-
-      await mediaServiceChannel.invokeMethod('updateAudioPageState', {
-        'bookCode': widget.bookCode,
-        'currentPage': currentPage,
-        'firstPage': firstPage,
-        'lastPage': lastPage,
-      });
-
-      print("BookPageScreen: Sayfa durumu güncellendi: $currentPage / $lastPage");
-    } catch (e) {
-      print("Sayfa durumu güncelleme hatası: $e");
-    }
   }
 
   void _initializeManagers() {
@@ -746,10 +659,6 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
     } catch (e) {
       print('BookPageScreen dispose error: $e');
     }
-
-    // --- YENİ: Lock screen channel temizle ---
-    _lockScreenChannel = null;
-    // --- YENİ SONU ---
 
     super.dispose();
   }

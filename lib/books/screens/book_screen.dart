@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:namaz_vakti_app/l10n/app_localization.dart';
 import 'package:namaz_vakti_app/components/scaffold_layout.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:android_intent_plus/android_intent.dart';
@@ -23,18 +24,6 @@ class BookScreen extends StatefulWidget {
 
   @override
   BookScreenState createState() => BookScreenState();
-
-  /// Arka plandan (method channel ile) çağrıldığında bir sonraki sayfaya geçişi tetikler
-  static void goToNextPageFromBackground() {
-    // TODO: Eğer kitap veya Kuran dinleme ekranı açıksa ilgili controller'a haber ver
-    // Bunu bir global event, provider, veya callback ile ilgili ekrana iletmek gerekir.
-    // Şimdilik sadece log basalım.
-    debugPrint(
-        'HomeScreen.goToNextPageFromBackground: Arka plandan bir sonraki sayfa çağrısı geldi.');
-    // Burada örneğin: BookPageScreen veya ModularQuranPageScreen'e bir event gönderebilirsin.
-    // Örn: BookPageScreen.nextPageFromBackground();
-    // veya: ModularQuranPageScreen.nextAyahFromBackground();
-  }
 }
 
 class BookScreenState extends State<BookScreen> {
@@ -627,21 +616,9 @@ class BookScreenState extends State<BookScreen> {
   @override
   Widget build(BuildContext context) {
     return ScaffoldLayout(
-      title: 'Kuran-ı Kerim ve Kitaplar',
+      title: AppLocalizations.of(context)!.booksTitle,
       actions: const [],
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          // Sadece renkli arka plan, blur yok
-          Container(
-            decoration: BoxDecoration(
-              color: Color(0xFF184C3A).withOpacity(0.15), // Daha açık ve blur'suz
-            ),
-          ),
-          // Main content
-          _buildBody(),
-        ],
-      ),
+      body: _buildBody(),
       background: true,
     );
   }

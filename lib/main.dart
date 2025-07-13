@@ -20,7 +20,6 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:namaz_vakti_app/books/features/book/audio/audio_player_service.dart';
 import 'package:namaz_vakti_app/pages/about.dart';
 import 'package:namaz_vakti_app/pages/kaza.dart';
 import 'package:namaz_vakti_app/l10n/l10n.dart';
@@ -43,7 +42,6 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:namaz_vakti_app/books/screens/book_screen.dart';
 import 'package:namaz_vakti_app/books/features/book/services/audio_page_service.dart';
-import 'package:namaz_vakti_app/books/features/book/audio/media_controller.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();

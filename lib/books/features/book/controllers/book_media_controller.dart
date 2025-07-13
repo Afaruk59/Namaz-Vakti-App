@@ -10,21 +10,6 @@ class BookMediaController {
     required this.bookCode,
   });
 
-  // Setup callbacks for media controller (lock screen controls)
-  void setupMediaControllerCallbacks({
-    required Function(int, int) onNextPage,
-    required Function(int) onPreviousPage,
-    required int currentPage,
-    required int totalPages,
-  }) {
-    audioManager.setupMediaControllerCallbacks(
-      onNextPage: onNextPage,
-      onPreviousPage: onPreviousPage,
-      currentPage: currentPage,
-      totalPages: totalPages,
-    );
-  }
-
   // Update current page info in media controller
   void updateCurrentPage(int currentPage, int totalPages) {
     audioManager.updateCurrentPage(currentPage, totalPages);

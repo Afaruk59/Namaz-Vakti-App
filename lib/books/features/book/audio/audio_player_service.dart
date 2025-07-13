@@ -6,10 +6,6 @@ class AudioPlayerService {
   // Singleton instance
   static AudioPlayerService? _instance;
 
-  // Method channel for Android communication
-  static const MethodChannel _platform =
-      MethodChannel('com.afaruk59.namaz_vakti_app/media_service');
-
   // AudioPlayer instance
   AudioPlayer? _audioPlayer;
   bool isPlaying = false;
@@ -89,12 +85,6 @@ class AudioPlayerService {
         // Hata durumunda completion handling'i sıfırla
         _isHandlingCompletion = false;
 
-        // Android servisine hata durumunu bildir
-        try {
-          _platform.invokeMethod('audio_error', {'error': 'Player stopped unexpectedly'});
-        } catch (e) {
-          print('AudioPlayerService: Failed to notify Android service about error: $e');
-        }
         return;
       }
 
@@ -155,15 +145,6 @@ class AudioPlayerService {
 
         if (!_completionController!.isClosed) {
           _completionController!.add(null); // Broadcast completion event
-        }
-
-        // Notify Android service about audio completion for background handling
-        // This should work even when bookCode is null (app in background)
-        try {
-          await _platform.invokeMethod('audio_completed');
-          print('AudioPlayerService: Audio completion notification sent to Android service');
-        } catch (e) {
-          print('AudioPlayerService: Failed to notify Android service about audio completion: $e');
         }
 
         // Reset the completion handling flag after a short delay
