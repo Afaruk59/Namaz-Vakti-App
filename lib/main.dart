@@ -60,15 +60,11 @@ void main() async {
   }
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Medya servisi için method channel'ı kur
   const platform = MethodChannel('com.afaruk59.namaz_vakti_app/media_service');
-
-  // AudioPlayerService'i başlat (singleton instance oluştur)
   final audioPlayerService = AudioPlayerService();
-  // MediaController'ı başlat
   final mediaController = MediaController(audioPlayerService: audioPlayerService);
-  // Initialize AudioPageService
   AudioPageService();
+
   tz.initializeTimeZones();
   tz.setLocalLocation(
       tz.getLocation(DateTime.now().timeZoneOffset.inHours >= 3 ? 'Europe/Istanbul' : 'UTC'));
@@ -108,13 +104,9 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // MethodChannel handler'ı burada kur
     if (platform != null) {
       platform!.setMethodCallHandler((call) async {
         if (call.method == 'next') {
-          // HomeScreen'e bir şekilde haber verilmeli
-          // En iyi yol: bir global event/callback veya state management ile
-          // Şimdilik: HomeScreen'e bir static method ekleyip çağırabiliriz
           print('main.dart: Androidden next çağrısı geldi.');
           BookScreen.goToNextPageFromBackground();
         }

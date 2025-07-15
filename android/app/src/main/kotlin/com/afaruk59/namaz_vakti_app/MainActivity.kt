@@ -70,11 +70,15 @@ class MainActivity : FlutterActivity() {
                         val prefs = context.getSharedPreferences("FlutterSharedPreferences", MODE_PRIVATE)
                         val isNotificationsEnabled = prefs.getBoolean("flutter.notifications", false)
                         
+                        Log.d("MainActivity", "Notification service start requested, enabled: $isNotificationsEnabled")
+                        
                         if (isNotificationsEnabled) {
                             PrayerNotificationService.startService(context)
+                            Log.d("MainActivity", "Prayer notification service started")
                             result.success(true)
                         } else {
                             PrayerNotificationService.stopService(context)
+                            Log.d("MainActivity", "Prayer notification service stopped (notifications disabled)")
                             result.success(false)
                         }
                     }

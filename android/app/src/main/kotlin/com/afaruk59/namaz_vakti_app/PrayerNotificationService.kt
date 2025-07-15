@@ -80,7 +80,7 @@ class PrayerNotificationService : Service() {
         private const val ACTION_CHECK_ALARMS = "com.afaruk59.namaz_vakti_app.ACTION_CHECK_ALARMS"
         private const val ACTION_UPDATE_TIMES = "com.afaruk59.namaz_vakti_app.ACTION_UPDATE_TIMES"
         private const val PREFS_NAME = "FlutterSharedPreferences"
-        private const val BASE_URL = "http://www.namazvakti.com/XML.php?cityID="
+        private const val BASE_URL = "https://www.namazvakti.com/XML.php?cityID="
         private const val ALARM_CHECK_INTERVAL = 60 * 1000L
         private const val TIME_UPDATE_INTERVAL = 60 * 60 * 1000L
         private val PRAYER_NAMES = arrayOf(
@@ -156,6 +156,9 @@ class PrayerNotificationService : Service() {
         alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         lastLocationId = prefs.getString("flutter.location", "") ?: ""
         lastCheckedDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+        
+        val isNotificationsEnabled = prefs.getBoolean("flutter.notifications", false)
+        Log.d(TAG, "Service created with notifications enabled: $isNotificationsEnabled")
         
         createNotificationChannels()
     }
@@ -709,11 +712,12 @@ class PrayerNotificationService : Service() {
             val mainChannel = NotificationChannel(
                 NOTIFICATION_CHANNEL_ID,
                 getString(R.string.notification_channel_name),
-                NotificationManager.IMPORTANCE_LOW
+                NotificationManager.IMPORTANCE_LOW // Kalıcı bildirim için düşük öncelik
             ).apply {
                 description = getString(R.string.notification_channel_desc)
                 enableVibration(false)
                 setSound(null, null)
+                setShowBadge(false)
             }
             notificationManager.createNotificationChannel(mainChannel)
             
