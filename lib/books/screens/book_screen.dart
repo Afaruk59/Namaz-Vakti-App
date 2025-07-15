@@ -11,7 +11,6 @@ import 'package:namaz_vakti_app/books/features/book/ui/color_extractor.dart';
 import 'package:namaz_vakti_app/books/features/book/widgets/book_bookmark_indicator.dart';
 import 'package:namaz_vakti_app/books/features/book/services/audio_page_service.dart';
 import 'no_internet_screen.dart';
-import 'package:namaz_vakti_app/books/features/book/services/bookmark_service.dart';
 import 'package:namaz_vakti_app/books/features/book/services/book_info_service.dart';
 import 'package:flutter/services.dart';
 
@@ -48,10 +47,6 @@ class BookScreenState extends State<BookScreen> {
   @override
   void initState() {
     super.initState();
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
     _hasInternetConnection = true;
     _isLoading = true;
 
