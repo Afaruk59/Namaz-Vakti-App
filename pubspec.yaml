@@ -1,7 +1,7 @@
 name: namaz_vakti_app
 description: "A new Flutter project."
 publish_to: "none"
-version: 1.4.5+32
+version: 1.5.0+33
 
 environment:
   sdk: ">=3.4.4 <4.0.0"
@@ -63,7 +63,6 @@ flutter:
     - assets/cities/
     - assets/svg/
     - assets/book_covers/
-    - assets/fonts/
     - assets/icon/
     - assets/images/
 

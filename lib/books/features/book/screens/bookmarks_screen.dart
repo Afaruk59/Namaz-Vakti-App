@@ -5,7 +5,6 @@ import 'package:namaz_vakti_app/books/features/book/screens/book_page_screen.dar
 import 'package:namaz_vakti_app/books/features/book/ui/color_extractor.dart';
 import 'package:namaz_vakti_app/books/shared/models/book_model.dart';
 import 'package:namaz_vakti_app/books/screens/book_screen.dart';
-import 'package:namaz_vakti_app/books/features/quran/screens/modular_quran_page_screen.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:provider/provider.dart';
 
@@ -182,7 +181,6 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
         (b) => b.code == bookCode,
         orElse: () => Book(
           code: bookCode,
-          isQuran: false,
         ),
       );
 
@@ -396,13 +394,6 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
       itemCount: bookmarks.length,
       itemBuilder: (context, index) {
         final bookmark = bookmarks[index];
-        final isQuran = bookCode == 'quran';
-        String? sureName;
-        String? ayetNumber;
-        if (isQuran) {
-          sureName = bookmark.surahName;
-          ayetNumber = bookmark.ayahNumber;
-        }
         return Card(
           color: Theme.of(context).cardColor,
           margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -411,19 +402,12 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
             children: [
               ListTile(
                 leading: CircleAvatar(
-                  child: isQuran
-                      ? Icon(Icons.menu_book)
-                      : Text(
-                          bookmark.pageNumber.toString(),
-                        ),
+                  child: Text(
+                    bookmark.pageNumber.toString(),
+                  ),
                 ),
-                title: isQuran ? Text('Kur\'an-ı Kerim') : Text('Sayfa ${bookmark.pageNumber}'),
-                subtitle: isQuran
-                    ? Text(
-                        'Sayfa: ${bookmark.pageNumber}${sureName != null ? ' | $sureName' : ''}${ayetNumber != null ? ' | $ayetNumber. Ayet' : ''}',
-                        style: TextStyle(fontSize: 13),
-                      )
-                    : Text(_bookTitles[bookCode] ?? bookCode),
+                title: Text('Sayfa ${bookmark.pageNumber}'),
+                subtitle: Text(_bookTitles[bookCode] ?? bookCode),
                 trailing: IconButton(
                   icon: Icon(Icons.delete),
                   onPressed: () async {
@@ -441,33 +425,19 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
                   },
                 ),
                 onTap: () {
-                  if (isQuran) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ModularQuranPageScreen(
-                          initialPage: bookmark.pageNumber,
-                          // İleride ayet vurgusu için ayetIndex parametresi eklenebilir
-                        ),
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => BookPageScreen(
+                        bookCode: bookCode,
+                        initialPage: bookmark.pageNumber,
+                        appBarColor: bookColor, // Kitabın kendi rengini kullan
+                        forceRefresh: true, // Vurgulamaları yeniden yükle
                       ),
-                    ).then((_) {
-                      _loadBookmarks();
-                    });
-                  } else {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => BookPageScreen(
-                          bookCode: bookCode,
-                          initialPage: bookmark.pageNumber,
-                          appBarColor: bookColor, // Kitabın kendi rengini kullan
-                          forceRefresh: true, // Vurgulamaları yeniden yükle
-                        ),
-                      ),
-                    ).then((_) {
-                      _loadBookmarks();
-                    });
-                  }
+                    ),
+                  ).then((_) {
+                    _loadBookmarks();
+                  });
                 },
               ),
               if (bookmark.selectedText != null && bookmark.selectedText!.isNotEmpty)
@@ -505,33 +475,19 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
                       SizedBox(height: 4),
                       GestureDetector(
                         onTap: () {
-                          if (isQuran) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ModularQuranPageScreen(
-                                  initialPage: bookmark.pageNumber,
-                                  // İleride ayet vurgusu için ayetIndex parametresi eklenebilir
-                                ),
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BookPageScreen(
+                                bookCode: bookCode,
+                                initialPage: bookmark.pageNumber,
+                                appBarColor: bookColor,
+                                forceRefresh: true,
                               ),
-                            ).then((_) {
-                              _loadBookmarks();
-                            });
-                          } else {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => BookPageScreen(
-                                  bookCode: bookCode,
-                                  initialPage: bookmark.pageNumber,
-                                  appBarColor: bookColor,
-                                  forceRefresh: true,
-                                ),
-                              ),
-                            ).then((_) {
-                              _loadBookmarks();
-                            });
-                          }
+                            ),
+                          ).then((_) {
+                            _loadBookmarks();
+                          });
                         },
                         child: Container(
                           padding: EdgeInsets.all(8),
@@ -539,26 +495,16 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
                             color: bookmark.highlightColor?.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: isQuran &&
-                                  bookmark.selectedText != null &&
-                                  bookmark.selectedText!.contains('[Terceme]:')
-                              ? _QuranBookmarkExpandable(
-                                  arabicText: bookmark.selectedText!.split('[Terceme]:')[0].trim(),
-                                  mealText: bookmark.selectedText!.split('[Terceme]:').length > 1
-                                      ? bookmark.selectedText!.split('[Terceme]:')[1].trim()
-                                      : null,
-                                  showMeal: widget.showMeal,
-                                )
-                              : Text(
-                                  bookmark.selectedText!,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontStyle: FontStyle.italic,
-                                    backgroundColor: bookmark.highlightColor?.withOpacity(0.2),
-                                  ),
-                                  maxLines: 3,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
+                          child: Text(
+                            bookmark.selectedText!,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontStyle: FontStyle.italic,
+                              backgroundColor: bookmark.highlightColor?.withOpacity(0.2),
+                            ),
+                            maxLines: 3,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                       ),
                     ],
@@ -568,57 +514,6 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
           ),
         );
       },
-    );
-  }
-}
-
-class _QuranBookmarkExpandable extends StatefulWidget {
-  final String arabicText;
-  final String? mealText;
-  final bool showMeal;
-  const _QuranBookmarkExpandable({required this.arabicText, this.mealText, required this.showMeal});
-
-  @override
-  State<_QuranBookmarkExpandable> createState() => _QuranBookmarkExpandableState();
-}
-
-class _QuranBookmarkExpandableState extends State<_QuranBookmarkExpandable> {
-  bool _expanded = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final hasMeal = widget.mealText != null && widget.mealText!.isNotEmpty;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Expanded(
-              child: Text(
-                widget.arabicText,
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-              ),
-            ),
-            if (widget.showMeal && hasMeal)
-              IconButton(
-                icon: Icon(_expanded ? Icons.expand_less : Icons.expand_more),
-                onPressed: () {
-                  setState(() {
-                    _expanded = !_expanded;
-                  });
-                },
-              ),
-          ],
-        ),
-        if (_expanded && widget.showMeal && hasMeal)
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: Text(
-              widget.mealText!,
-              style: TextStyle(fontSize: 14),
-            ),
-          ),
-      ],
     );
   }
 }

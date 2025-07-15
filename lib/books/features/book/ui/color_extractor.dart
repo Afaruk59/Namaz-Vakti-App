@@ -5,24 +5,13 @@ import 'dart:async'; // Add this import for Completer
 import 'dart:typed_data'; // Add this import for ByteData
 
 class ColorExtractor {
-  // Sadece Kuran için özel renk tanımlayalım
-  static final Map<String, Color> specialBookColors = {
-    'quran':
-        const Color(0xFF388E3C), // Kuran için koyu yeşil (Colors.green[700])
-  };
-
   // Varsayılan koyu mavi renk
   static const Color defaultBlue = Color(0xFF1976D2); // Colors.blue[700]
 
   /// Belirli bir kitap kodu için renk döndürür
-  /// Özel tanımlı renk varsa onu kullanır, yoksa resimden çıkarır
+  /// Kapak resminden renk çıkarır
   static Future<Color> getBookColor(String bookCode, ImageProvider? coverImage,
       {Color defaultColor = defaultBlue}) async {
-    // Özel tanımlı renk varsa onu kullan (sadece Kuran için)
-    if (specialBookColors.containsKey(bookCode)) {
-      return specialBookColors[bookCode]!;
-    }
-
     // Kapak resmi yoksa varsayılan rengi döndür
     if (coverImage == null) {
       return defaultColor;
@@ -41,8 +30,7 @@ class ColorExtractor {
       final ui.Image image = await _loadImage(imageProvider);
 
       // Sample the image to get color data
-      final ByteData? byteData =
-          await image.toByteData(format: ui.ImageByteFormat.rawRgba);
+      final ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.rawRgba);
       if (byteData == null) return defaultColor;
 
       // Process the image data to find dominant color
@@ -104,9 +92,7 @@ class ColorExtractor {
 
       // Rengi biraz koyulaştır (daha iyi görünüm için)
       HSLColor hslColor = HSLColor.fromColor(extractedColor);
-      return hslColor
-          .withLightness((hslColor.lightness - 0.1).clamp(0.2, 0.6))
-          .toColor();
+      return hslColor.withLightness((hslColor.lightness - 0.1).clamp(0.2, 0.6)).toColor();
     } catch (e) {
       print('Error extracting dominant color: $e');
       return defaultColor;

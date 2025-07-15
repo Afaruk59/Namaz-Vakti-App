@@ -13,9 +13,6 @@ class BookTitleService {
   BookTitleService._internal();
 
   Future<String> getTitle(String bookCode) async {
-    if (bookCode == 'quran') {
-      return "Kur'an-ı Kerim";
-    }
     if (_titleCache.containsKey(bookCode)) {
       return _titleCache[bookCode]!;
     }

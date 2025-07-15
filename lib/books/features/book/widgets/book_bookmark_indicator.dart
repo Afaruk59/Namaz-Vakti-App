@@ -83,17 +83,12 @@ class _BookBookmarkIndicatorState extends State<BookBookmarkIndicator> {
 
     return GestureDetector(
       onTap: () async {
-        bool showMeal = true;
-        if (widget.bookCode == 'quran') {
-          final prefs = await SharedPreferences.getInstance();
-          showMeal = prefs.getBool('quran_show_meal') ?? false;
-        }
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => BookmarksScreen(
               initialBookCode: widget.bookCode,
-              showMeal: showMeal,
+              showMeal: false,
             ),
           ),
         ).then((_) {

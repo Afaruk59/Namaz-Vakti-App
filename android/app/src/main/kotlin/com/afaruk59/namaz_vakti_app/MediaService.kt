@@ -41,7 +41,7 @@ class MediaService : Service() {
     private lateinit var packageManager: PackageManager
 
     companion object {
-        private const val NOTIFICATION_ID = 2 // PrayerNotificationService'ten farklı ID kullan
+        private const val NOTIFICATION_ID = 2
         private const val CHANNEL_ID = "media_playback_channel"
         private const val MEDIA_SESSION_TAG = "kitap_oku_media_session"
         var methodChannel: MethodChannel? = null
@@ -241,12 +241,9 @@ class MediaService : Service() {
             if (isPlaying || playbackState == PlaybackStateCompat.STATE_PAUSED) {
                 updateNotification()
             } else {
-                // Bildirimi kaldır ve servisi durdur
+                // Bildirimi kaldır
                 stopForeground(true)
                 notificationManager.cancel(NOTIFICATION_ID)
-                if (playbackState == PlaybackStateCompat.STATE_STOPPED) {
-                    stopSelf()
-                }
             }
         } catch (e: Exception) {
             println("Servis başlatma hatası: ${e.message}")
@@ -389,12 +386,10 @@ class MediaService : Service() {
             val channel = NotificationChannel(
                 CHANNEL_ID,
                 "Kitap Oku Medya Oynatma",
-                NotificationManager.IMPORTANCE_DEFAULT // Medya oynatma için daha yüksek öncelik
+                NotificationManager.IMPORTANCE_LOW
             ).apply {
                 description = "Kitap Oku uygulaması için medya oynatma bildirimleri"
                 setShowBadge(false)
-                enableVibration(false) // Medya bildirimleri için titreşim kapalı
-                setSound(null, null) // Medya bildirimleri için ses kapalı
             }
             
             val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -480,16 +475,13 @@ class MediaService : Service() {
             } else if (playbackState?.state == PlaybackStateCompat.STATE_STOPPED || playbackState?.state == PlaybackStateCompat.STATE_NONE) {
                 stopForeground(true) // Remove notification and detach service from foreground
                 notificationManager.cancel(NOTIFICATION_ID) // Explicitly cancel the notification
-                stopSelf() // Servis tamamen durduruldu, kendini kapat
             } else {
                 // For other states like BUFFERING, ERROR, etc., keep the notification but don't start foreground if not playing/paused
                 notificationManager.notify(NOTIFICATION_ID, notification)
             }
         } catch (e: Exception) {
             println("Bildirim gösterme hatası: ${e.message}")
-            // Hata durumunda da bildirim gösterme
-            stopForeground(true)
-            notificationManager.cancel(NOTIFICATION_ID)
+            notificationManager.notify(NOTIFICATION_ID, notification)
         }
     }
 

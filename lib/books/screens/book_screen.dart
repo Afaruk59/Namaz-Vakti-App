@@ -6,9 +6,7 @@ import 'package:android_intent_plus/android_intent.dart';
 import 'dart:io' show Platform;
 import 'package:namaz_vakti_app/books/shared/models/book_model.dart';
 import 'package:namaz_vakti_app/books/features/book/screens/book_page_screen.dart';
-import 'package:namaz_vakti_app/books/features/quran/screens/modular_quran_page_screen.dart';
 import 'package:namaz_vakti_app/books/features/book/services/book_progress_service.dart';
-import '../features/quran/services/quran_progress_service.dart';
 import 'package:namaz_vakti_app/books/features/book/ui/color_extractor.dart';
 import 'package:namaz_vakti_app/books/features/book/widgets/book_bookmark_indicator.dart';
 import 'package:namaz_vakti_app/books/features/book/services/audio_page_service.dart';
@@ -29,9 +27,8 @@ class BookScreen extends StatefulWidget {
     // Bunu bir global event, provider, veya callback ile ilgili ekrana iletmek gerekir.
     // Şimdilik sadece log basalım.
     print('BookScreen.goToNextPageFromBackground: Arka plandan bir sonraki sayfa çağrısı geldi.');
-    // Burada örneğin: BookPageScreen veya ModularQuranPageScreen'e bir event gönderebilirsin.
+    // Burada örneğin: BookPageScreen'e bir event gönderebilirsin.
     // Örn: BookPageScreen.nextPageFromBackground();
-    // veya: ModularQuranPageScreen.nextAyahFromBackground();
   }
 }
 
@@ -39,7 +36,6 @@ class BookScreenState extends State<BookScreen> {
   final List<Book> books = Book.samples();
   int _gridColumns = 3;
   final BookProgressService _progressService = BookProgressService();
-  final QuranProgressService _quranProgressService = QuranProgressService();
   bool _isProgressLoaded = false;
   bool _hasInternetConnection = true;
   bool _isLoading = true;
@@ -48,7 +44,6 @@ class BookScreenState extends State<BookScreen> {
   final Map<String, Color> _bookCoverColors = {};
   // Yer işareti göstergelerini yenilemek için key
   int _bookmarkRefreshCounter = 0;
-  int _quranHighlightCount = 0;
 
   @override
   void initState() {
@@ -64,7 +59,6 @@ class BookScreenState extends State<BookScreen> {
     AudioPageService().stopAudioAndClearPlayer();
 
     _initializeData();
-    _loadQuranHighlightCount();
   }
 
   @override
@@ -119,8 +113,6 @@ class BookScreenState extends State<BookScreen> {
   Future<void> _initializeProgressService() async {
     try {
       await _progressService.initialize();
-      // Kuran progress değerini de yükleyelim
-      await _quranProgressService.refreshProgressCache();
 
       if (mounted) {
         setState(() {
@@ -162,7 +154,6 @@ class BookScreenState extends State<BookScreen> {
 
           try {
             await _progressService.initialize();
-            await _quranProgressService.refreshProgressCache();
 
             if (mounted) {
               setState(() {
@@ -235,17 +226,8 @@ class BookScreenState extends State<BookScreen> {
       return 0.0;
     }
 
-    if (book.isQuran) {
-      // Quran için, ilerleme yüzdesini doğrudan almak yerine
-      // mevcut sayfayı asenkron olarak alıp toplam sayfa sayısına bölerek hesaplayalım
-      // Bu işlem her zaman güncel değeri gösterecektir
-      Future<int> currentPage = _quranProgressService.getCurrentPage();
-      // Bu değer FutureBuilder içinde kullanılacak, şimdi bir varsayılan değer döndürelim
-      return _quranProgressService.getProgress() ?? 0.0;
-    } else {
-      final progress = _progressService.getProgress(book.code);
-      return progress;
-    }
+    final progress = _progressService.getProgress(book.code);
+    return progress;
   }
 
   // Method to get or extract dominant color from book cover
@@ -259,12 +241,8 @@ class BookScreenState extends State<BookScreen> {
     Color defaultColor = Colors.blue;
     Color extractedColor = defaultColor;
 
-    // For Quran, use a predefined color
-    if (book.isQuran) {
-      extractedColor = Colors.green.shade700;
-    }
     // For books with cover images, extract the dominant color
-    else if (book.coverImageUrl.isNotEmpty) {
+    if (book.coverImageUrl.isNotEmpty) {
       try {
         extractedColor = await ColorExtractor.extractDominantColor(AssetImage(book.coverImageUrl),
             defaultColor: defaultColor);
@@ -301,8 +279,7 @@ class BookScreenState extends State<BookScreen> {
                           FutureBuilder<Color>(
                             future: _getBookCoverColor(book),
                             builder: (context, snapshot) {
-                              final bookCoverColor = snapshot.data ??
-                                  (book.isQuran ? Colors.green.shade700 : Colors.blue);
+                              final bookCoverColor = snapshot.data ?? Colors.blue;
                               return Positioned(
                                 top: 0,
                                 right: 6,
@@ -343,178 +320,163 @@ class BookScreenState extends State<BookScreen> {
                       height: 5.5,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(2.5),
-                        child: book.isQuran
-                            ? FutureBuilder<double>(
-                                future: _quranProgressService.getProgressAsync(),
-                                builder: (context, progressSnapshot) {
-                                  final progress = progressSnapshot.data ?? 0.0;
-                                  return LinearProgressIndicator(
-                                    value: progress,
-                                    backgroundColor: Colors.grey[200],
-                                    valueColor: AlwaysStoppedAnimation<Color>(bookCoverColor),
-                                  );
-                                },
-                              )
-                            : LinearProgressIndicator(
-                                value: _getBookProgress(book),
-                                backgroundColor: Colors.grey[200],
-                                valueColor: AlwaysStoppedAnimation<Color>(bookCoverColor),
-                              ),
+                        child: LinearProgressIndicator(
+                          value: _getBookProgress(book),
+                          backgroundColor: Colors.grey[200],
+                          valueColor: AlwaysStoppedAnimation<Color>(bookCoverColor),
+                        ),
                       ),
                     ),
                   ),
                   const SizedBox(width: 2),
-                  // Info butonu (Quran için daha küçük yer tutucu koy, çubuğu uzat)
-                  if (book.isQuran)
-                    SizedBox(width: 2, height: 20)
-                  else
-                    GestureDetector(
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            backgroundColor: Colors.white,
-                            title: FutureBuilder<String?>(
-                              future: BookInfoService.fetchBookTitle(
-                                  'https://www.hakikatkitabevi.net/book.php?bookCode=${book.code}'),
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return SizedBox(
-                                    height: 24,
-                                    child: Center(child: CircularProgressIndicator()),
-                                  );
-                                }
-                                // BookInfoService'den gelen başlık varsa onu, yoksa book.title'ı göster
-                                final title = (snapshot.hasData &&
-                                        snapshot.data != null &&
-                                        snapshot.data!.isNotEmpty)
-                                    ? snapshot.data!
-                                    : book.title;
-                                return Text(title,
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(fontWeight: FontWeight.bold));
-                              },
+                  // Info butonu
+
+                  GestureDetector(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          backgroundColor: Colors.white,
+                          title: FutureBuilder<String?>(
+                            future: BookInfoService.fetchBookTitle(
+                                'https://www.hakikatkitabevi.net/book.php?bookCode=${book.code}'),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                return SizedBox(
+                                  height: 24,
+                                  child: Center(child: CircularProgressIndicator()),
+                                );
+                              }
+                              // BookInfoService'den gelen başlık varsa onu, yoksa book.title'ı göster
+                              final title = (snapshot.hasData &&
+                                      snapshot.data != null &&
+                                      snapshot.data!.isNotEmpty)
+                                  ? snapshot.data!
+                                  : book.title;
+                              return Text(title,
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(fontWeight: FontWeight.bold));
+                            },
+                          ),
+                          content: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              minHeight: 0,
+                              maxHeight: MediaQuery.of(context).size.height * 0.7,
                             ),
-                            content: ConstrainedBox(
-                              constraints: BoxConstraints(
-                                minHeight: 0,
-                                maxHeight: MediaQuery.of(context).size.height * 0.7,
-                              ),
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                                  children: [
-                                    FutureBuilder<String?>(
-                                      future: BookInfoService.fetchBookDescription(
-                                          'https://www.hakikatkitabevi.net/book.php?bookCode=${book.code}'),
-                                      builder: (context, snapshot) {
-                                        if (snapshot.connectionState == ConnectionState.waiting) {
-                                          return SizedBox(
-                                            height: 60,
-                                            child: Center(child: CircularProgressIndicator()),
-                                          );
-                                        }
-                                        if (snapshot.hasError) {
-                                          return Padding(
-                                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                            child: Text('Açıklama yüklenemedi.',
-                                                textAlign: TextAlign.justify),
-                                          );
-                                        }
-                                        if (snapshot.data == null || snapshot.data!.isEmpty) {
-                                          return Padding(
-                                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                            child: Text('Açıklama bulunamadı.',
-                                                textAlign: TextAlign.justify),
-                                          );
-                                        }
+                            child: SingleChildScrollView(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  FutureBuilder<String?>(
+                                    future: BookInfoService.fetchBookDescription(
+                                        'https://www.hakikatkitabevi.net/book.php?bookCode=${book.code}'),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState == ConnectionState.waiting) {
+                                        return SizedBox(
+                                          height: 60,
+                                          child: Center(child: CircularProgressIndicator()),
+                                        );
+                                      }
+                                      if (snapshot.hasError) {
                                         return Padding(
                                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                          child: Text(
-                                            snapshot.data!,
-                                            textAlign: TextAlign.justify,
-                                          ),
+                                          child: Text('Açıklama yüklenemedi.',
+                                              textAlign: TextAlign.justify),
                                         );
-                                      },
-                                    ),
-                                    const SizedBox(height: 20),
-                                    Center(
-                                      child: GestureDetector(
-                                        onTap: () async {
-                                          try {
-                                            final url =
-                                                Uri.parse('https://www.hakikatkitabevi.net');
-                                            print('URL açılmaya çalışılıyor: $url');
+                                      }
+                                      if (snapshot.data == null || snapshot.data!.isEmpty) {
+                                        return Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                          child: Text('Açıklama bulunamadı.',
+                                              textAlign: TextAlign.justify),
+                                        );
+                                      }
+                                      return Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                        child: Text(
+                                          snapshot.data!,
+                                          textAlign: TextAlign.justify,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  const SizedBox(height: 20),
+                                  Center(
+                                    child: GestureDetector(
+                                      onTap: () async {
+                                        try {
+                                          final url = Uri.parse('https://www.hakikatkitabevi.net');
+                                          print('URL açılmaya çalışılıyor: $url');
 
-                                            // URL'yi doğrudan açmaya çalış
-                                            final launched = await launchUrl(
-                                              url,
-                                              mode: LaunchMode.externalApplication,
-                                            );
+                                          // URL'yi doğrudan açmaya çalış
+                                          final launched = await launchUrl(
+                                            url,
+                                            mode: LaunchMode.externalApplication,
+                                          );
 
-                                            if (launched) {
-                                              print('URL başarıyla açıldı');
-                                            } else {
-                                              print('URL açılamadı');
-                                              if (mounted) {
-                                                ScaffoldMessenger.of(context).showSnackBar(
-                                                  SnackBar(
-                                                    content: Text(
-                                                        'Site açılamadı. Lütfen tekrar deneyin.'),
-                                                    duration: Duration(seconds: 2),
-                                                  ),
-                                                );
-                                              }
-                                            }
-                                          } catch (e) {
-                                            print('URL açma hatası: $e');
+                                          if (launched) {
+                                            print('URL başarıyla açıldı');
+                                          } else {
+                                            print('URL açılamadı');
                                             if (mounted) {
                                               ScaffoldMessenger.of(context).showSnackBar(
                                                 SnackBar(
-                                                  content: Text('Link açılırken hata oluştu: $e'),
-                                                  duration: Duration(seconds: 3),
+                                                  content: Text(
+                                                      'Site açılamadı. Lütfen tekrar deneyin.'),
+                                                  duration: Duration(seconds: 2),
                                                 ),
                                               );
                                             }
                                           }
-                                        },
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 28, vertical: 8),
-                                          decoration: BoxDecoration(
-                                            color: Color(0xFFF2F6F8),
-                                            borderRadius: BorderRadius.circular(32),
+                                        } catch (e) {
+                                          print('URL açma hatası: $e');
+                                          if (mounted) {
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(
+                                                content: Text('Link açılırken hata oluştu: $e'),
+                                                duration: Duration(seconds: 3),
+                                              ),
+                                            );
+                                          }
+                                        }
+                                      },
+                                      child: Container(
+                                        padding:
+                                            const EdgeInsets.symmetric(horizontal: 28, vertical: 8),
+                                        decoration: BoxDecoration(
+                                          color: Color(0xFFF2F6F8),
+                                          borderRadius: BorderRadius.circular(32),
+                                        ),
+                                        child: const Text(
+                                          'www.hakikatkitabevi.net',
+                                          style: TextStyle(
+                                            color: Color(0xFF21748A),
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 14,
+                                            letterSpacing: 0.2,
                                           ),
-                                          child: const Text(
-                                            'www.hakikatkitabevi.net',
-                                            style: TextStyle(
-                                              color: Color(0xFF21748A),
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 14,
-                                              letterSpacing: 0.2,
-                                            ),
-                                            textAlign: TextAlign.center,
-                                          ),
+                                          textAlign: TextAlign.center,
                                         ),
                                       ),
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.of(context).pop(),
-                                child: const Text('Kapat'),
-                              ),
-                            ],
                           ),
-                        );
-                      },
-                      child: Icon(Icons.info_outline_rounded,
-                          size: 20, color: const Color.fromARGB(255, 120, 120, 120)),
-                    ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              child: const Text('Kapat'),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    child: Icon(Icons.info_outline_rounded,
+                        size: 20, color: const Color.fromARGB(255, 120, 120, 120)),
+                  ),
                 ],
               ),
             );
@@ -555,58 +517,24 @@ class BookScreenState extends State<BookScreen> {
               final bookCoverColor = snapshot.data ?? Colors.blue;
               return GestureDetector(
                 onTap: () async {
-                  // Always stop any audio playback when navigating to a new book or Quran
-                  if (!book.isQuran) {
-                    // Only stop audio if navigating to a regular book
-                    await AudioPageService().stopAudioAndClearPlayer();
-                  }
-
-                  if (book.isQuran) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => FutureBuilder<Map<String, dynamic>>(
-                          future: _loadQuranSettings(),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState == ConnectionState.waiting) {
-                              return const Center(child: CircularProgressIndicator());
-                            }
-
-                            final quranPage = snapshot.data?['page'] ?? 0;
-                            final quranFormat = snapshot.data?['format'] ?? 'Mukabele';
-
-                            return ModularQuranPageScreen(
-                              initialPage: quranPage,
-                              initialFormat: quranFormat,
-                            );
-                          },
-                        ),
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => BookPageScreen(
+                        bookCode: book.code,
+                        initialPage: getCurrentPage(book.code),
+                        appBarColor: bookCoverColor,
                       ),
-                    ).then((_) {
-                      if (mounted) {
-                        refreshBookmarkIndicators();
-                      }
-                    });
-                  } else {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => BookPageScreen(
-                          bookCode: book.code,
-                          initialPage: getCurrentPage(book.code),
-                          appBarColor: bookCoverColor,
-                        ),
-                      ),
-                    ).then((_) {
-                      if (mounted) {
-                        // Kitap sayfasından geri dönüldüğünde sadece ilgili kitabın yer işareti göstergesini güncelle
-                        setState(() {
-                          // Yer işareti göstergelerini yenilemek için sayacı artır
-                          _bookmarkRefreshCounter++;
-                        });
-                      }
-                    });
-                  }
+                    ),
+                  ).then((_) {
+                    if (mounted) {
+                      // Kitap sayfasından geri dönüldüğünde sadece ilgili kitabın yer işareti göstergesini güncelle
+                      setState(() {
+                        // Yer işareti göstergelerini yenilemek için sayacı artır
+                        _bookmarkRefreshCounter++;
+                      });
+                    }
+                  });
                 },
                 child: _buildBookCard(book),
               );
@@ -638,49 +566,6 @@ class BookScreenState extends State<BookScreen> {
         // Yer işareti göstergelerini yenilemek için sayacı artır
         _bookmarkRefreshCounter++;
       });
-      // Kuran badge'ini de güncelle
-      _loadQuranHighlightCount();
     }
-  }
-
-  // Kuran ayarlarını yükleyen yardımcı fonksiyon
-  Future<Map<String, dynamic>> _loadQuranSettings() async {
-    final page = await _quranProgressService.getCurrentPage();
-    final format = await _quranProgressService.getFormat();
-    return {
-      'page': page,
-      'format': format,
-    };
-  }
-
-  Future<void> _loadQuranHighlightCount() async {
-    final bookmarks = await BookmarkService().getBookmarks('quran');
-    setState(() {
-      _quranHighlightCount = bookmarks.where((b) => b.highlightColor != null).length;
-    });
-  }
-
-  Widget _buildQuranTile() {
-    return Stack(
-      children: [
-        // ... mevcut kutucuk ...
-        if (_quranHighlightCount > 0)
-          Positioned(
-            right: 8,
-            top: 8,
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: Colors.amber[700],
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Text(
-                '$_quranHighlightCount',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-              ),
-            ),
-          ),
-      ],
-    );
   }
 }

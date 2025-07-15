@@ -76,11 +76,7 @@ class _EdgeAwareBookPageViewState extends State<_EdgeAwareBookPageView> {
       child: PageView.builder(
         controller: widget.pageController,
         dragStartBehavior: DragStartBehavior.start,
-        physics: _blockSwipe
-            ? const NeverScrollableScrollPhysics()
-            : (widget.bookCode == 'quran'
-                ? const AlwaysScrollableScrollPhysics()
-                : const PageScrollPhysics()),
+        physics: _blockSwipe ? const NeverScrollableScrollPhysics() : const PageScrollPhysics(),
         onPageChanged: widget.onPageChanged,
         itemBuilder: widget.itemBuilder,
       ),
