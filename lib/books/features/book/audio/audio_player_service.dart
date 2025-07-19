@@ -1,5 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 class AudioPlayerService {
@@ -19,7 +20,6 @@ class AudioPlayerService {
   String? _playingBookCode; // Çalınan kitap kodu
   DateTime? _lastPositionUpdateTime; // Son pozisyon güncelleme zamanı
   bool _isHandlingCompletion = false; // Tamamlanma işlemi zaten yürütülüyor mu
-  int _seekSessionId = 0;
 
   // Convenience getter for playingBookCode
   String? get playingBookCode => _playingBookCode;
@@ -67,7 +67,7 @@ class AudioPlayerService {
       // Setup listeners
       _setupListeners();
     } catch (e) {
-      print('AudioPlayerService initialization error: $e');
+      debugPrint('AudioPlayerService initialization error: $e');
     }
   }
 
@@ -75,11 +75,11 @@ class AudioPlayerService {
     if (_audioPlayer == null) return;
 
     _audioPlayer!.onPlayerStateChanged.listen((state) {
-      print('AudioPlayerService: Player state changed to: $state');
+      debugPrint('AudioPlayerService: Player state changed to: $state');
 
       // Hata durumlarını kontrol et
       if (state == PlayerState.stopped && isPlaying) {
-        print('AudioPlayerService: Player stopped unexpectedly, treating as error');
+        debugPrint('AudioPlayerService: Player stopped unexpectedly, treating as error');
         // Beklenmeyen durma durumunu hata olarak değerlendir
         isPlaying = false;
         if (!_playingStateController!.isClosed) {
@@ -93,7 +93,7 @@ class AudioPlayerService {
         try {
           _platform.invokeMethod('audio_error', {'error': 'Player stopped unexpectedly'});
         } catch (e) {
-          print('AudioPlayerService: Failed to notify Android service about error: $e');
+          debugPrint('AudioPlayerService: Failed to notify Android service about error: $e');
         }
         return;
       }
@@ -104,29 +104,30 @@ class AudioPlayerService {
       }
     });
 
-    // Pozisyon güncellemelerini daha az sıklıkta yap
-    // Her 500ms'de bir pozisyon güncellemesi yeterli olacaktır
+    // Pozisyon güncellemelerini optimize et
     _audioPlayer!.onPositionChanged.listen((newPosition) {
-      // Pozisyon değişikliği çok küçükse (100ms'den az) güncelleme yapma
-      if ((newPosition - position).inMilliseconds.abs() < 100) {
+      // Geçerli bir pozisyon güncellemesi mi kontrol et
+      if (newPosition.inMilliseconds < 0) {
         return;
       }
 
-      // Yüksek hızda oynama durumunda daha az güncelleme yap (throttling)
-      if (playbackSpeed > 1.0) {
-        // Yüksek hızda daha az güncelleme yapalım
-        final now = DateTime.now();
-        if (_lastPositionUpdateTime != null) {
-          final elapsed = now.difference(_lastPositionUpdateTime!).inMilliseconds;
-          // Yüksek hızda daha fazla throttling uygula
-          final throttleInterval = (200 * playbackSpeed).round();
-          if (elapsed < throttleInterval) {
-            return;
-          }
+      // Throttling için zaman kontrolü
+      final now = DateTime.now();
+      if (_lastPositionUpdateTime != null) {
+        final elapsed = now.difference(_lastPositionUpdateTime!).inMilliseconds;
+        // Normal hızda 500ms, yüksek hızda 250ms throttling
+        final throttleInterval = playbackSpeed > 1.0 ? 250 : 500;
+        if (elapsed < throttleInterval) {
+          return;
         }
-        _lastPositionUpdateTime = now;
       }
 
+      // Pozisyon farkı çok küçükse güncelleme yapma (50ms'den az)
+      if ((newPosition - position).inMilliseconds.abs() < 50) {
+        return;
+      }
+
+      _lastPositionUpdateTime = now;
       position = newPosition;
       if (!_positionController!.isClosed) {
         _positionController!.add(position);
@@ -145,7 +146,7 @@ class AudioPlayerService {
 
       // Always notify Android service about audio completion, regardless of bookCode
       if (!_isHandlingCompletion) {
-        print(
+        debugPrint(
             'AudioPlayerService: Audio completed, triggering completion handler for book: $_playingBookCode');
         _isHandlingCompletion = true;
 
@@ -161,17 +162,18 @@ class AudioPlayerService {
         // This should work even when bookCode is null (app in background)
         try {
           await _platform.invokeMethod('audio_completed');
-          print('AudioPlayerService: Audio completion notification sent to Android service');
+          debugPrint('AudioPlayerService: Audio completion notification sent to Android service');
         } catch (e) {
-          print('AudioPlayerService: Failed to notify Android service about audio completion: $e');
+          debugPrint(
+              'AudioPlayerService: Failed to notify Android service about audio completion: $e');
         }
 
         // Reset the completion handling flag after a short delay
         // This prevents multiple completion events from being processed simultaneously
-        await Future.delayed(Duration(seconds: 1));
+        await Future.delayed(const Duration(seconds: 1));
         _isHandlingCompletion = false;
       } else {
-        print(
+        debugPrint(
             'AudioPlayerService: Audio completed but completion handling was suppressed. isHandlingCompletion: $_isHandlingCompletion, bookCode: $_playingBookCode');
 
         if (!_playingStateController!.isClosed) {
@@ -189,16 +191,16 @@ class AudioPlayerService {
 
       // URL'yi kontrol et ve düzelt
       if (!audioUrl.startsWith('http://') && !audioUrl.startsWith('https://')) {
-        audioUrl = 'https://www.hakikatkitabevi.net' + audioUrl;
+        audioUrl = 'https://www.hakikatkitabevi.net$audioUrl';
       }
 
-      print('Playing audio from URL: $audioUrl');
+      debugPrint('Playing audio from URL: $audioUrl');
 
       // Önce mevcut sesi durdur
       await stopAudio();
 
       // Kısa bir bekleme ekleyerek önceki ses dosyasının tamamen durmasını sağla
-      await Future.delayed(Duration(milliseconds: 100));
+      await Future.delayed(const Duration(milliseconds: 100));
 
       // Yeni ses dosyasını çal
       await _audioPlayer!.play(UrlSource(audioUrl));
@@ -213,26 +215,26 @@ class AudioPlayerService {
       }
 
       // Çalma başarılı olduğunu doğrula
-      print('Audio playback started successfully for URL: $audioUrl');
+      debugPrint('Audio playback started successfully for URL: $audioUrl');
 
       // Kısa bir gecikme sonra çalma durumunu tekrar kontrol et
-      await Future.delayed(Duration(milliseconds: 300));
+      await Future.delayed(const Duration(milliseconds: 300));
       if (_audioPlayer!.state != PlayerState.playing) {
-        print(
+        debugPrint(
             'Warning: Audio player state is not playing after 300ms. Current state: ${_audioPlayer!.state}');
         // Tekrar çalmayı dene
         await _audioPlayer!.play(UrlSource(audioUrl));
 
         // Ek bir 'resume' işlemi ile çalmasını zorla
-        await Future.delayed(Duration(milliseconds: 100));
+        await Future.delayed(const Duration(milliseconds: 100));
         await resumeAudio();
       }
 
       // Ek güvenlik: Ekran kilitleme durumlarında daha güvenli olması için
       // bir süre sonra durumu tekrar kontrol et
-      await Future.delayed(Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 2));
       if (_audioPlayer != null && _audioPlayer!.state == PlayerState.stopped && isPlaying) {
-        print(
+        debugPrint(
             'AudioPlayerService: Player stopped unexpectedly after 2 seconds, attempting recovery');
         // Beklenmeyen durma durumunda recovery dene
         try {
@@ -242,7 +244,7 @@ class AudioPlayerService {
             await _audioPlayer!.play(UrlSource(audioUrl));
           }
         } catch (recoveryError) {
-          print('AudioPlayerService: Recovery attempt failed: $recoveryError');
+          debugPrint('AudioPlayerService: Recovery attempt failed: $recoveryError');
           // Recovery başarısızsa durumu güncelle
           isPlaying = false;
           if (!_playingStateController!.isClosed) {
@@ -251,7 +253,7 @@ class AudioPlayerService {
         }
       }
     } catch (error) {
-      print('Error playing audio: $error');
+      debugPrint('Error playing audio: $error');
       // Hata durumunda durumu güncelle
       isPlaying = false;
       if (!_playingStateController!.isClosed) {
@@ -268,7 +270,8 @@ class AudioPlayerService {
   Future<void> pauseAudio() async {
     try {
       if (_audioPlayer != null) {
-        print('AudioPlayerService.pauseAudio called, current position: ${position.inSeconds}s');
+        debugPrint(
+            'AudioPlayerService.pauseAudio called, current position: ${position.inSeconds}s');
 
         // Mevcut pozisyonu kaydet
         position = await _audioPlayer!.getCurrentPosition() ?? position;
@@ -277,7 +280,7 @@ class AudioPlayerService {
         await _audioPlayer!.pause();
         isPlaying = false;
 
-        print(
+        debugPrint(
             'AudioPlayerService.pauseAudio completed, position preserved: ${position.inSeconds}s');
 
         if (!_playingStateController!.isClosed) {
@@ -285,10 +288,10 @@ class AudioPlayerService {
         }
 
         // Bildirim kontrollerinin kaybolmaması için kısa bir gecikme ekle
-        await Future.delayed(Duration(milliseconds: 100));
+        await Future.delayed(const Duration(milliseconds: 100));
       }
     } catch (e) {
-      print('Error pausing audio: $e');
+      debugPrint('Error pausing audio: $e');
       // Hata durumunda güvenli bir şekilde durumu güncelle
       isPlaying = false;
       if (!_playingStateController!.isClosed) {
@@ -300,15 +303,15 @@ class AudioPlayerService {
   /// Resume audio playback
   Future<void> resumeAudio() async {
     try {
-      print('AudioPlayerService.resumeAudio called');
+      debugPrint('AudioPlayerService.resumeAudio called');
 
       if (_audioPlayer != null) {
         await _audioPlayer!.resume();
 
         // Make sure it's actually playing
-        await Future.delayed(Duration(milliseconds: 50));
+        await Future.delayed(const Duration(milliseconds: 50));
         if (_audioPlayer!.state != PlayerState.playing) {
-          print('Resume didn\'t work on first attempt, trying play() instead');
+          debugPrint('Resume didn\'t work on first attempt, trying play() instead');
           // Get current source and play it again
           if (_audioPlayer!.source != null) {
             await _audioPlayer!.play(_audioPlayer!.source!);
@@ -319,12 +322,12 @@ class AudioPlayerService {
         if (!_playingStateController!.isClosed) {
           _playingStateController!.add(isPlaying);
         }
-        print('AudioPlayerService.resumeAudio completed successfully');
+        debugPrint('AudioPlayerService.resumeAudio completed successfully');
       } else {
-        print('Warning: AudioPlayer was null when trying to resume');
+        debugPrint('Warning: AudioPlayer was null when trying to resume');
       }
     } catch (e) {
-      print('Error resuming audio: $e');
+      debugPrint('Error resuming audio: $e');
       // Hata durumunda güvenli bir şekilde durumu güncelle
       isPlaying = false;
       if (!_playingStateController!.isClosed) {
@@ -336,7 +339,7 @@ class AudioPlayerService {
   Future<void> stopAudio() async {
     try {
       if (_audioPlayer != null) {
-        print('AudioPlayerService.stopAudio called from Flutter.');
+        debugPrint('AudioPlayerService.stopAudio called from Flutter.');
 
         // Önce pozisyonu sıfırla
         position = Duration.zero;
@@ -356,11 +359,11 @@ class AudioPlayerService {
         // Çalınan kitap kodunu temizle - bu bildirim kontrollerinin kaldırılmasına yardımcı olur
         await setPlayingBookCode(null);
 
-        print(
+        debugPrint(
             'AudioPlayerService.stopAudio completed - bildirim kontrollerini kaldırma tamamlandı');
       }
     } catch (e) {
-      print('Error stopping audio: $e');
+      debugPrint('Error stopping audio: $e');
       // Hata olsa bile durumu güncelle
       isPlaying = false;
       if (!_playingStateController!.isClosed) {
@@ -372,41 +375,44 @@ class AudioPlayerService {
   Future<void> seekTo(Duration position) async {
     try {
       if (_audioPlayer != null) {
-        _seekSessionId++;
-        final currentSession = _seekSessionId;
-        // print('AudioPlayerService: Seeking to position  [38;5;2m${position.inSeconds}s [0m');
+        debugPrint('AudioPlayerService: Seeking to position ${position.inSeconds}s');
 
-        // Önce yerel pozisyonu güncelle, böylece UI hemen tepki verir
+        // Geçerli pozisyon aralığında mı kontrol et
+        if (position.inMilliseconds < 0 ||
+            (duration.inMilliseconds > 0 && position.inMilliseconds > duration.inMilliseconds)) {
+          debugPrint('AudioPlayerService: Invalid seek position, ignoring');
+          return;
+        }
+
+        // Seek işlemini gerçekleştir
+        await _audioPlayer!.seek(position);
+
+        // Pozisyonu güncelle
         this.position = position;
         if (!_positionController!.isClosed) {
           _positionController!.add(position);
         }
 
-        // Sonra gerçek seek işlemini yap
-        await _audioPlayer!.seek(position);
-        // Seek sonrası pozisyonu tekrar güncelle ve stream'e zorla gönder
-        this.position = await _audioPlayer!.getCurrentPosition() ?? position;
-        forcePositionUpdate();
-
-        // --- SEEK SONRASI POLLING ---
-        for (int i = 0; i < 5; i++) {
-          await Future.delayed(Duration(milliseconds: 200));
-          if (currentSession != _seekSessionId) break;
-          final current = await _audioPlayer!.getCurrentPosition();
-          if (current != null) {
-            this.position = current;
-            forcePositionUpdate();
+        // Kısa bir gecikme sonra pozisyonu doğrula
+        await Future.delayed(const Duration(milliseconds: 100));
+        final actualPosition = await _audioPlayer!.getCurrentPosition();
+        if (actualPosition != null) {
+          this.position = actualPosition;
+          if (!_positionController!.isClosed) {
+            _positionController!.add(actualPosition);
           }
         }
+
+        debugPrint('AudioPlayerService: Seek completed to ${this.position.inSeconds}s');
       }
     } catch (e) {
-      print('Error seeking audio: $e');
+      debugPrint('Error seeking audio: $e');
     }
   }
 
   Future<void> setPlaybackSpeed(double speed) async {
     try {
-      print('AudioPlayerService: Setting playback speed to ${speed}x');
+      debugPrint('AudioPlayerService: Setting playback speed to ${speed}x');
 
       // Önce yerel değişkeni güncelle ve stream'e gönder
       // Böylece UI hemen tepki verebilir
@@ -414,7 +420,7 @@ class AudioPlayerService {
 
       // UI güncellemesi için küçük bir gecikme ekle
       // Bu, art arda çoklu güncelleme durumunda UI'ın stabilize olmasına yardımcı olur
-      await Future.delayed(Duration(milliseconds: 50));
+      await Future.delayed(const Duration(milliseconds: 50));
 
       if (!_playbackRateController!.isClosed) {
         _playbackRateController!.add(playbackSpeed);
@@ -428,9 +434,9 @@ class AudioPlayerService {
       // Pozisyon güncelleme zaman damgasını sıfırla
       _lastPositionUpdateTime = null;
 
-      print('AudioPlayerService: Playback speed set to ${speed}x');
+      debugPrint('AudioPlayerService: Playback speed set to ${speed}x');
     } catch (e) {
-      print('Error setting playback speed: $e');
+      debugPrint('Error setting playback speed: $e');
     }
   }
 
@@ -471,7 +477,7 @@ class AudioPlayerService {
         _durationController!.add(duration);
       }
     } catch (e) {
-      print('Error resetting audio player: $e');
+      debugPrint('Error resetting audio player: $e');
     }
   }
 
@@ -485,7 +491,7 @@ class AudioPlayerService {
           _audioPlayer = null;
         }
       } catch (e) {
-        print('AudioPlayer stop/dispose hatası: $e');
+        debugPrint('AudioPlayer stop/dispose hatası: $e');
       }
 
       // Stream controller'ları güvenli bir şekilde kapat
@@ -495,7 +501,7 @@ class AudioPlayerService {
           _playingStateController = null;
         }
       } catch (e) {
-        print('_playingStateController kapatma hatası: $e');
+        debugPrint('_playingStateController kapatma hatası: $e');
       }
 
       try {
@@ -504,7 +510,7 @@ class AudioPlayerService {
           _positionController = null;
         }
       } catch (e) {
-        print('_positionController kapatma hatası: $e');
+        debugPrint('_positionController kapatma hatası: $e');
       }
 
       try {
@@ -513,7 +519,7 @@ class AudioPlayerService {
           _durationController = null;
         }
       } catch (e) {
-        print('_durationController kapatma hatası: $e');
+        debugPrint('_durationController kapatma hatası: $e');
       }
 
       try {
@@ -522,7 +528,7 @@ class AudioPlayerService {
           _playbackRateController = null;
         }
       } catch (e) {
-        print('_playbackRateController kapatma hatası: $e');
+        debugPrint('_playbackRateController kapatma hatası: $e');
       }
 
       try {
@@ -531,20 +537,20 @@ class AudioPlayerService {
           _completionController = null;
         }
       } catch (e) {
-        print('_completionController kapatma hatası: $e');
+        debugPrint('_completionController kapatma hatası: $e');
       }
 
       // Singleton instance'ı sıfırla
       _instance = null;
     } catch (e) {
-      print('AudioPlayerService dispose genel hatası: $e');
+      debugPrint('AudioPlayerService dispose genel hatası: $e');
     }
   }
 
   // Çalınan kitap kodunu ayarla
   Future<void> setPlayingBookCode(String? bookCode) async {
     _playingBookCode = bookCode;
-    print('AudioPlayerService: Playing book code set to: $bookCode');
+    debugPrint('AudioPlayerService: Playing book code set to: $bookCode');
 
     if (bookCode == null) {
       _isHandlingCompletion = false; // Reset completion handling if book code is cleared
@@ -559,11 +565,11 @@ class AudioPlayerService {
   /// Prepare next audio file for seamless transition
   Future<void> prepareNextAudio(String audioUrl) async {
     try {
-      print('AudioPlayerService: Preparing next audio file: $audioUrl');
+      debugPrint('AudioPlayerService: Preparing next audio file: $audioUrl');
 
       // URL'yi kontrol et ve düzelt
       if (!audioUrl.startsWith('http://') && !audioUrl.startsWith('https://')) {
-        audioUrl = 'https://www.hakikatkitabevi.net' + audioUrl;
+        audioUrl = 'https://www.hakikatkitabevi.net$audioUrl';
       }
 
       // Create a new audio player for the next audio
@@ -575,7 +581,7 @@ class AudioPlayerService {
       // Remove any previous completion listeners to avoid multiple triggers
       StreamSubscription? completionSubscription;
       completionSubscription = _audioPlayer?.onPlayerComplete.listen((_) async {
-        print('AudioPlayerService: Current audio finished, switching to next audio');
+        debugPrint('AudioPlayerService: Current audio finished, switching to next audio');
 
         // Cancel this subscription to prevent memory leaks
         completionSubscription?.cancel();
@@ -592,10 +598,10 @@ class AudioPlayerService {
         // Start playing the new audio
         await _audioPlayer?.resume();
 
-        print('AudioPlayerService: Switched to next audio successfully');
+        debugPrint('AudioPlayerService: Switched to next audio successfully');
       });
     } catch (e) {
-      print('Error preparing next audio: $e');
+      debugPrint('Error preparing next audio: $e');
     }
   }
 
@@ -604,7 +610,7 @@ class AudioPlayerService {
     isPlaying = playing;
     if (_playingStateController != null && !_playingStateController!.isClosed) {
       _playingStateController!.add(playing);
-      print('Manually forced playing state to: $playing');
+      debugPrint('Manually forced playing state to: $playing');
     }
   }
 
@@ -612,8 +618,44 @@ class AudioPlayerService {
   void forcePositionUpdate() {
     if (_positionController != null && !_positionController!.isClosed) {
       _positionController!.add(position);
-      print(
-          'AudioPlayerService: forcePositionUpdate called, position=${position.inMilliseconds}ms');
     }
+  }
+
+  // State'i zorla güncelle - UI senkronizasyonu için
+  void forceStateSync() {
+    if (_playingStateController != null && !_playingStateController!.isClosed) {
+      _playingStateController!.add(isPlaying);
+    }
+    if (_positionController != null && !_positionController!.isClosed) {
+      _positionController!.add(position);
+    }
+    if (_durationController != null && !_durationController!.isClosed) {
+      _durationController!.add(duration);
+    }
+    if (_playbackRateController != null && !_playbackRateController!.isClosed) {
+      _playbackRateController!.add(playbackSpeed);
+    }
+  }
+
+  // Orientation change sonrası tam recovery için
+  void recoverAfterOrientationChange() {
+    debugPrint('AudioPlayerService: Recovering state after orientation change');
+
+    // Mevcut pozisyonu al ve force update
+    if (_audioPlayer != null) {
+      _audioPlayer!.getCurrentPosition().then((currentPos) {
+        if (currentPos != null) {
+          position = currentPos;
+          forcePositionUpdate();
+        }
+      }).catchError((e) {
+        debugPrint('Error getting current position during recovery: $e');
+      });
+    }
+
+    // Tüm state'i sync et
+    forceStateSync();
+
+    debugPrint('AudioPlayerService: Recovery completed');
   }
 }

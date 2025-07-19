@@ -1,4 +1,5 @@
 import 'package:namaz_vakti_app/books/features/book/services/api_service.dart';
+import 'package:flutter/material.dart';
 
 class BookTitleService {
   static final BookTitleService _instance = BookTitleService._internal();
@@ -26,7 +27,7 @@ class BookTitleService {
       }
       return 'Hakikat Kitabevi';
     } catch (e) {
-      print('Error loading book title: $e');
+      debugPrint('Error loading book title: $e');
       return 'Hakikat Kitabevi';
     }
   }
@@ -39,11 +40,11 @@ class BookTitleService {
 
     try {
       // Şu an için sabit bir değer döndürüyoruz, gerçek uygulamada API'den alınabilir
-      final author = "Hakikat Kitabevi";
+      const author = "Hakikat Kitabevi";
       _authorCache[bookCode] = author;
       return author;
     } catch (e) {
-      print('Error loading book author: $e');
+      debugPrint('Error loading book author: $e');
       return 'Hakikat Kitabevi';
     }
   }

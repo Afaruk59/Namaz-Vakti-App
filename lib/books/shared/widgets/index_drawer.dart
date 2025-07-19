@@ -136,7 +136,7 @@ class _IndexDrawerState extends State<IndexDrawer> with SingleTickerProviderStat
       });
       await _saveRecentSearch(query);
     } catch (e) {
-      print('Error searching book: $e');
+      debugPrint('Error searching book: $e');
       setState(() {
         _searchResults = [];
         _isLoading = false;

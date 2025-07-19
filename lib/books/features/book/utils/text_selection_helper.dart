@@ -51,8 +51,9 @@ class TextSelectionHelper {
             // Eğer seçim tamamen bir vurgulamanın içindeyse, bağlam menüsünün çalışması için seçimi kabul et
             if (isCompletelyInsideHighlight) {
               onSelectionChanged(selectedText, selectedStartIndex, selectedEndIndex);
-              print('Seçilen metin (vurgulanmış alanda): $selectedText');
-              print('Başlangıç indeksi: $selectedStartIndex, Bitiş indeksi: $selectedEndIndex');
+              debugPrint('Seçilen metin (vurgulanmış alanda): $selectedText');
+              debugPrint(
+                  'Başlangıç indeksi: $selectedStartIndex, Bitiş indeksi: $selectedEndIndex');
               return;
             }
 
@@ -67,12 +68,12 @@ class TextSelectionHelper {
           // Seçim geçerliyse (vurgulanmış alanlarla çakışmıyorsa) callback'i çağır
           onSelectionChanged(selectedText, selectedStartIndex, selectedEndIndex);
 
-          print('Seçilen metin: $selectedText');
-          print('Başlangıç indeksi: $selectedStartIndex, Bitiş indeksi: $selectedEndIndex');
+          debugPrint('Seçilen metin: $selectedText');
+          debugPrint('Başlangıç indeksi: $selectedStartIndex, Bitiş indeksi: $selectedEndIndex');
         }
       }
     } catch (e) {
-      print('Metin seçimi işlenirken hata: $e');
+      debugPrint('Metin seçimi işlenirken hata: $e');
     }
   }
 
@@ -91,7 +92,7 @@ class TextSelectionHelper {
         if (selectedStartIndex >= highlight.startIndex && selectedEndIndex <= highlight.endIndex) {
           // Vurgulanmış metnin tamamını paylaş
           textToShare = highlight.text;
-          print('Vurgulanmış metin paylaşılıyor: $textToShare');
+          debugPrint('Vurgulanmış metin paylaşılıyor: $textToShare');
           break;
         }
       }

@@ -107,7 +107,7 @@ class MainApp extends StatelessWidget {
     if (platform != null) {
       platform!.setMethodCallHandler((call) async {
         if (call.method == 'next') {
-          print('main.dart: Androidden next çağrısı geldi.');
+          debugPrint('main.dart: Androidden next çağrısı geldi.');
           BookScreen.goToNextPageFromBackground();
         }
         return null;

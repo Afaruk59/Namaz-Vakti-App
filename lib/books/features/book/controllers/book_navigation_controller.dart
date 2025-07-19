@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:namaz_vakti_app/books/features/book/controllers/book_page_controller.dart';
 import 'package:namaz_vakti_app/books/features/book/controllers/book_bookmark_controller.dart';
@@ -5,7 +6,6 @@ import 'package:namaz_vakti_app/books/features/book/controllers/book_media_contr
 import 'package:namaz_vakti_app/books/features/book/controllers/book_audio_controller.dart';
 import 'package:namaz_vakti_app/books/features/book/audio/audio_player_service.dart';
 import 'package:namaz_vakti_app/books/features/book/models/book_page_model.dart';
-import 'package:namaz_vakti_app/books/screens/book_screen.dart';
 import 'package:namaz_vakti_app/books/features/book/services/book_title_service.dart';
 import 'package:namaz_vakti_app/books/features/book/services/book_progress_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -47,7 +47,7 @@ class BookNavigationController {
   // Medya servis method channel'ını dinlemeye başla
   void _initMediaServiceListener() {
     platform.setMethodCallHandler((call) async {
-      print("BookNavigationController: Method channel çağrısı: ${call.method}");
+      debugPrint("BookNavigationController: Method channel çağrısı: ${call.method}");
 
       switch (call.method) {
         case 'next':
@@ -68,12 +68,12 @@ class BookNavigationController {
             // Ses çalmıyorsa, mevcut sayfadaki sesi başlat
             final currentPage = pageController.currentPage;
             final bookPage = await pageController.getPageFromCacheOrLoad(currentPage);
-            if (bookPage?.mp3.isNotEmpty ?? false) {
+            if (bookPage.mp3.isNotEmpty) {
               final bookTitle = await bookTitleService.getTitle(bookCode);
               final bookAuthor = await bookTitleService.getAuthor(bookCode);
 
               await audioController.handlePlayAudio(
-                currentBookPage: bookPage!,
+                currentBookPage: bookPage,
                 currentPage: currentPage,
                 fromBottomBar: true,
                 bookTitle: bookTitle,
@@ -94,12 +94,12 @@ class BookNavigationController {
   // Medya servisine sayfa durumunu bildir
   Future<void> _updateMediaPageState() async {
     try {
-      final firstPage = 1;
+      const firstPage = 1;
       final lastPage =
           pageController.isLastPage ? pageController.currentPage : pageController.currentPage + 1;
       final currentPage = pageController.currentPage;
 
-      print("BookNavigationController: Sayfa durumu güncelleniyor: $currentPage / $lastPage");
+      debugPrint("BookNavigationController: Sayfa durumu güncelleniyor: $currentPage / $lastPage");
 
       await platform.invokeMethod('updateAudioPageState', {
         'bookCode': bookCode,
@@ -108,7 +108,7 @@ class BookNavigationController {
         'lastPage': lastPage,
       });
     } catch (e) {
-      print("Medya servisi sayfa durumu güncelleme hatası: $e");
+      debugPrint("Medya servisi sayfa durumu güncelleme hatası: $e");
     }
   }
 
@@ -117,9 +117,9 @@ class BookNavigationController {
     try {
       await platform.invokeMethod('initMediaService');
       await _updateMediaPageState();
-      print("BookNavigationController: Medya servisi başlatıldı");
+      debugPrint("BookNavigationController: Medya servisi başlatıldı");
     } catch (e) {
-      print("Medya servisi başlatma hatası: $e");
+      debugPrint("Medya servisi başlatma hatası: $e");
     }
   }
 
@@ -136,19 +136,19 @@ class BookNavigationController {
       if (autoAdvanced) {
         // Flag'i hemen sıfırla ve ses başlatmayı atla
         await prefs.setBool('${bookCode}_auto_advanced', false);
-        print('goToNextPage: auto_advanced flag true, audio başlatılmayacak.');
+        debugPrint('goToNextPage: auto_advanced flag true, audio başlatılmayacak.');
       }
       // Store audio playback state
       final wasPlaying = audioPlayerService.isPlaying;
       final wasPaused = !audioPlayerService.isPlaying && audioPlayerService.position.inSeconds > 0;
       final shouldPlayAudio = wasPlaying || wasPaused;
 
-      print(
+      debugPrint(
           'goToNextPage: wasPlaying=$wasPlaying, wasPaused=$wasPaused, shouldPlayAudio=$shouldPlayAudio, fromAudioCompletion=$fromAudioCompletion');
 
       // Save current audio position for restoring if needed
       final currentPosition = audioPlayerService.position.inMilliseconds;
-      print('Current audio position: $currentPosition ms');
+      debugPrint('Current audio position: $currentPosition ms');
 
       // Mark this as auto-advanced only if it came from audio completion
       // which will make it start from the beginning of the next page
@@ -156,7 +156,7 @@ class BookNavigationController {
         await prefs.setBool('${bookCode}_auto_advanced', true);
         // Reset position to 0 for auto-advance
         await prefs.setInt('${bookCode}_audio_position', 0);
-        print('Auto-advanced flag set to true - will start from beginning of new page');
+        debugPrint('Auto-advanced flag set to true - will start from beginning of new page');
       } else {
         // This is manual navigation, so we'll keep the position within the page
         await prefs.setBool('${bookCode}_auto_advanced', false);
@@ -168,7 +168,7 @@ class BookNavigationController {
 
       // If audio is playing or paused, STOP it before changing page
       if (audioPlayerService.isPlaying || wasPaused) {
-        print('Stopping audio before changing to next page');
+        debugPrint('Stopping audio before changing to next page');
         await audioPlayerService.stopAudio();
       }
 
@@ -192,20 +192,20 @@ class BookNavigationController {
       onBookPageUpdated(bookPage);
 
       // If the page has audio and was playing/paused before, start playing audio
-      if ((bookPage?.mp3.isNotEmpty ?? false) && shouldPlayAudio && !autoAdvanced) {
+      if (bookPage.mp3.isNotEmpty && shouldPlayAudio && !autoAdvanced) {
         // Add delay to ensure page is fully loaded
-        await Future.delayed(Duration(milliseconds: 300));
+        await Future.delayed(const Duration(milliseconds: 300));
 
         // If from audio completion, keep audio progress visible
         if (fromAudioCompletion) {
           onAudioProgressVisibilityChanged(true);
         }
 
-        print('Playing audio for next page');
+        debugPrint('Playing audio for next page');
 
         // Play audio for the new page
         await audioController.handlePlayAudio(
-          currentBookPage: bookPage!,
+          currentBookPage: bookPage,
           currentPage: nextPage,
           fromBottomBar: false,
           afterPageChange: true,
@@ -227,14 +227,14 @@ class BookNavigationController {
       bool autoAdvanced = prefs.getBool('${bookCode}_auto_advanced') ?? false;
       if (autoAdvanced) {
         await prefs.setBool('${bookCode}_auto_advanced', false);
-        print('goToPreviousPage: auto_advanced flag true, audio başlatılmayacak.');
+        debugPrint('goToPreviousPage: auto_advanced flag true, audio başlatılmayacak.');
       }
       // Store audio playback state
       final wasPlaying = audioPlayerService.isPlaying;
       final wasPaused = !audioPlayerService.isPlaying && audioPlayerService.position.inSeconds > 0;
       final shouldPlayAudio = wasPlaying || wasPaused;
 
-      print(
+      debugPrint(
           'goToPreviousPage: wasPlaying=$wasPlaying, wasPaused=$wasPaused, shouldPlayAudio=$shouldPlayAudio');
 
       // Get book title and author first
@@ -243,14 +243,14 @@ class BookNavigationController {
 
       // Save current audio position for restoring if needed
       final currentPosition = audioPlayerService.position.inMilliseconds;
-      print('Current audio position: $currentPosition ms');
+      debugPrint('Current audio position: $currentPosition ms');
 
       // Mark this as manual navigation (not auto-advanced)
       await prefs.setBool('${bookCode}_auto_advanced', false);
 
       // If audio is playing, stop it before changing page
       if (audioPlayerService.isPlaying || wasPaused) {
-        print('Stopping audio before changing to previous page');
+        debugPrint('Stopping audio before changing to previous page');
         await audioPlayerService.stopAudio();
       }
 
@@ -274,15 +274,15 @@ class BookNavigationController {
       onBookPageUpdated(bookPage);
 
       // If audio was playing/paused and the new page has audio, play it
-      if (shouldPlayAudio && (bookPage?.mp3.isNotEmpty ?? false) && !autoAdvanced) {
+      if (shouldPlayAudio && bookPage.mp3.isNotEmpty && !autoAdvanced) {
         // Add delay to ensure page is fully loaded
-        await Future.delayed(Duration(milliseconds: 300));
+        await Future.delayed(const Duration(milliseconds: 300));
 
-        print('Playing audio for previous page');
+        debugPrint('Playing audio for previous page');
 
         // Play audio for the new page
         await audioController.handlePlayAudio(
-          currentBookPage: bookPage!,
+          currentBookPage: bookPage,
           currentPage: previousPage,
           fromBottomBar: false,
           afterPageChange: true,
@@ -323,13 +323,13 @@ class BookNavigationController {
     final prefs = await SharedPreferences.getInstance();
     final miniPlayerChangedPage = prefs.getBool('mini_player_changed_page') ?? false;
 
-    print(
+    debugPrint(
         'BookNavigationController.goToPage: pageNumber=$pageNumber, currentPage=$currentPage, wasPlaying=$wasPlaying, wasPaused=$wasPaused, shouldPlayAudio=$shouldPlayAudio, miniPlayerChangedPage=$miniPlayerChangedPage');
 
     try {
       // If audio is playing or paused, STOP it before changing page
       if (audioPlayerService.playingBookCode == bookCode && (wasPlaying || wasPaused)) {
-        print('Stopping audio before changing page');
+        debugPrint('Stopping audio before changing page');
         await audioPlayerService.stopAudio();
       }
 
@@ -353,24 +353,24 @@ class BookNavigationController {
       onBookPageUpdated(bookPage);
 
       // If the new page has audio, start playing it immediately if previous page was playing
-      if (bookPage?.mp3.isNotEmpty ?? false) {
+      if (bookPage.mp3.isNotEmpty) {
         final prefs = await SharedPreferences.getInstance();
         // --- AUTO ADVANCED KONTROLÜ ---
         bool autoAdvanced = prefs.getBool('${bookCode}_auto_advanced') ?? false;
         if (autoAdvanced) {
           await prefs.setBool('${bookCode}_auto_advanced', false);
-          print('goToPage: auto_advanced flag true, audio başlatılmayacak.');
+          debugPrint('goToPage: auto_advanced flag true, audio başlatılmayacak.');
         }
         // If previous audio was playing/paused, play this page's audio
         if (shouldPlayAudio && !autoAdvanced) {
-          print('Starting fresh audio for new page after navigation');
+          debugPrint('Starting fresh audio for new page after navigation');
 
           // Add delay to ensure page is fully loaded
-          await Future.delayed(Duration(milliseconds: 300));
+          await Future.delayed(const Duration(milliseconds: 300));
 
           // Play audio for the new page from beginning
           await audioController.handlePlayAudio(
-            currentBookPage: bookPage!,
+            currentBookPage: bookPage,
             currentPage: pageNumber,
             fromBottomBar: false,
             afterPageChange: true,
@@ -380,30 +380,7 @@ class BookNavigationController {
         }
       }
     } catch (error) {
-      print('Error navigating to page: $error');
-    }
-  }
-
-  /// Update the home screen with current book information
-  Future<void> _updateHomeScreenWithCurrentBook([String? bookTitle, String? bookAuthor]) async {
-    try {
-      // Get book title and author if not provided
-      final title = bookTitle ?? await bookTitleService.getTitle(bookCode);
-      final author = bookAuthor ?? await bookTitleService.getAuthor(bookCode);
-
-      // Update home screen mini player
-      // HomeScreen.updateCurrentAudioBook(
-      //   bookCode: bookCode,
-      //   bookTitle: title,
-      //   bookAuthor: author,
-      //   currentPage: currentPage,
-      //   isPlaying: false,
-      // );
-
-      print(
-          'BookNavigationController: HomeScreen updated with book info: $title, page: ${pageController.currentPage}');
-    } catch (e) {
-      print('Error updating home screen: $e');
+      debugPrint('Error navigating to page: $error');
     }
   }
 }

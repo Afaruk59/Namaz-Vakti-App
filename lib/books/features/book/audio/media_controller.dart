@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:flutter/services.dart';
 import 'package:namaz_vakti_app/books/features/book/audio/audio_player_service.dart';
 import 'package:namaz_vakti_app/books/features/book/models/book_page_model.dart';
@@ -5,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:namaz_vakti_app/books/features/book/services/book_progress_service.dart';
 import 'package:namaz_vakti_app/books/features/book/services/api_service.dart';
 import 'package:namaz_vakti_app/books/features/book/services/book_title_service.dart';
+import 'package:flutter/material.dart';
 
 /// Kilit ekranında medya kontrollerini yöneten sınıf
 class MediaController {
@@ -42,10 +45,10 @@ class MediaController {
         _isServiceRunning = true;
 
         // Servis başlatıldıktan sonra kısa bir gecikme ekle
-        await Future.delayed(Duration(milliseconds: 200));
+        await Future.delayed(const Duration(milliseconds: 200));
       }
     } catch (e) {
-      print('MediaController startService hatası: $e');
+      debugPrint('MediaController startService hatası: $e');
       // Hata durumunda servis durumunu güncelle
       _isServiceRunning = false;
     }
@@ -56,17 +59,17 @@ class MediaController {
     // Bildirim player'ı kesinlikle kaldırmak için agresif şekilde çağır
     try {
       await _channel.invokeMethod('updatePlaybackState', {'state': STATE_STOPPED});
-      await Future.delayed(Duration(milliseconds: 100));
+      await Future.delayed(const Duration(milliseconds: 100));
       await _channel.invokeMethod('stopService');
-      await Future.delayed(Duration(milliseconds: 100));
+      await Future.delayed(const Duration(milliseconds: 100));
       await _channel.invokeMethod('stopService');
       // Ekstra: tekrar playback state STOPPED gönder
       await _channel.invokeMethod('updatePlaybackState', {'state': STATE_STOPPED});
-      await Future.delayed(Duration(milliseconds: 100));
+      await Future.delayed(const Duration(milliseconds: 100));
       await _channel.invokeMethod('stopService');
       _isServiceRunning = false;
     } catch (e) {
-      print('MediaController stopService (agresif) hata: $e');
+      debugPrint('MediaController stopService (agresif) hata: $e');
       _isServiceRunning = false;
     }
   }
@@ -81,14 +84,14 @@ class MediaController {
       }
       if (!_isServiceRunning) {
         await startService();
-        await Future.delayed(Duration(milliseconds: 100));
+        await Future.delayed(const Duration(milliseconds: 100));
       }
       await _channel.invokeMethod('updatePlaybackState', {'state': state.toInt()});
       if (state == STATE_PLAYING) {
         await updatePosition(_audioPlayerService.position.inMilliseconds);
       }
     } catch (e) {
-      print('MediaController updatePlaybackState hatası: $e');
+      debugPrint('MediaController updatePlaybackState hatası: $e');
     }
   }
 
@@ -105,7 +108,7 @@ class MediaController {
       if (_audioPlayerService.isPlaying) {
         if (!_isServiceRunning) {
           await startService();
-          await Future.delayed(Duration(milliseconds: 200));
+          await Future.delayed(const Duration(milliseconds: 200));
         }
 
         // Başlığa sayfa numarasını ekle
@@ -120,7 +123,7 @@ class MediaController {
         });
 
         // Kısa bir gecikme ekle
-        await Future.delayed(Duration(milliseconds: 300));
+        await Future.delayed(const Duration(milliseconds: 300));
 
         // Metadata'yı tekrar güncelle
         await _channel.invokeMethod('updateMetadata', {
@@ -131,7 +134,7 @@ class MediaController {
         });
 
         // Son bir kez daha güncelle
-        await Future.delayed(Duration(milliseconds: 300));
+        await Future.delayed(const Duration(milliseconds: 300));
         await _channel.invokeMethod('updateMetadata', {
           'title': displayTitle,
           'author': author,
@@ -140,7 +143,7 @@ class MediaController {
         });
       }
     } catch (e) {
-      print('MediaController updateMetadata hatası: $e');
+      debugPrint('MediaController updateMetadata hatası: $e');
     }
   }
 
@@ -161,7 +164,7 @@ class MediaController {
       if (_audioPlayerService.isPlaying) {
         if (!_isServiceRunning) {
           await startService();
-          await Future.delayed(Duration(milliseconds: 200));
+          await Future.delayed(const Duration(milliseconds: 200));
         }
 
         // Metadata güncelle
@@ -185,7 +188,7 @@ class MediaController {
         }
 
         // Kısa bir gecikme ekle
-        await Future.delayed(Duration(milliseconds: 300));
+        await Future.delayed(const Duration(milliseconds: 300));
 
         // Metadata'yı tekrar güncelle
         await updateMetadata(
@@ -199,7 +202,7 @@ class MediaController {
         );
       }
     } catch (e) {
-      print('MediaController updateForBookPage hatası: $e');
+      debugPrint('MediaController updateForBookPage hatası: $e');
     }
   }
 
@@ -271,11 +274,11 @@ class MediaController {
         _firstPage = firstPage;
         _lastPage = lastPage;
 
-        print(
+        debugPrint(
             'MediaController: Kitap sınırları yüklendi - İlk sayfa: $_firstPage, Son sayfa: $_lastPage');
       }
     } catch (e) {
-      print('MediaController: Kitap sınırları yüklenirken hata: $e');
+      debugPrint('MediaController: Kitap sınırları yüklenirken hata: $e');
     }
   }
 
@@ -317,12 +320,12 @@ class MediaController {
                   // Sayfa değişiminden sonra playback state'i tekrar güncelle
                   updatePlaybackState(_audioPlayerService.isPlaying ? STATE_PLAYING : STATE_PAUSED);
                 } catch (e) {
-                  print('Sonraki sayfa işlemi hatası: $e');
+                  debugPrint('Sonraki sayfa işlemi hatası: $e');
                   // Hata durumunda playback state'i güncelle
                   updatePlaybackState(STATE_PAUSED);
                 }
               } else {
-                print('MediaController: Son sayfadayız, sonraki sayfaya geçilemez');
+                debugPrint('MediaController: Son sayfadayız, sonraki sayfaya geçilemez');
                 // Kullanıcıya geri bildirim ver (sayfa değişmeyecek)
                 updatePlaybackState(_audioPlayerService.isPlaying ? STATE_PLAYING : STATE_PAUSED);
               }
@@ -349,12 +352,12 @@ class MediaController {
                   // Sayfa değişiminden sonra playback state'i tekrar güncelle
                   updatePlaybackState(_audioPlayerService.isPlaying ? STATE_PLAYING : STATE_PAUSED);
                 } catch (e) {
-                  print('Önceki sayfa işlemi hatası: $e');
+                  debugPrint('Önceki sayfa işlemi hatası: $e');
                   // Hata durumunda playback state'i güncelle
                   updatePlaybackState(STATE_PAUSED);
                 }
               } else {
-                print('MediaController: İlk sayfadayız, önceki sayfaya geçilemez');
+                debugPrint('MediaController: İlk sayfadayız, önceki sayfaya geçilemez');
                 // Kullanıcıya geri bildirim ver (sayfa değişmeyecek)
                 updatePlaybackState(_audioPlayerService.isPlaying ? STATE_PLAYING : STATE_PAUSED);
               }
@@ -378,14 +381,14 @@ class MediaController {
             return true;
           case 'audio_error':
             // Audio error durumunda güvenli bir şekilde durumu güncelle
-            print('MediaController: Audio error received, updating playback state');
+            debugPrint('MediaController: Audio error received, updating playback state');
             updatePlaybackState(STATE_PAUSED);
             return true;
           default:
             return null;
         }
       } catch (e) {
-        print('MediaController method call hatası: $e');
+        debugPrint('MediaController method call hatası: $e');
         return false;
       }
     });
@@ -395,7 +398,7 @@ class MediaController {
   void _checkApplicationStateAndExecute(Function callback) {
     try {
       // Önce şu anki durumu kaydet (callback çağrılmadan önce)
-      Future.delayed(Duration(milliseconds: 50), () async {
+      Future.delayed(const Duration(milliseconds: 50), () async {
         try {
           // Mevcut kitap kodunu ve sayfa bilgisini kontrol et
           String? bookCode = await _audioPlayerService.getPlayingBookCode();
@@ -403,11 +406,11 @@ class MediaController {
             // Direkt SharedPreferences'ı kullanarak mevcut sayfa bilgisini kaydet
             var prefs = await SharedPreferences.getInstance();
             await prefs.setInt('current_audio_book_page', _currentPage);
-            print(
+            debugPrint(
                 'MediaController: Mevcut sayfa bilgisi kaydedildi: $_currentPage (callback öncesi)');
           }
         } catch (e) {
-          print('MediaController: Sayfa bilgisi kaydedilemedi (callback öncesi): $e');
+          debugPrint('MediaController: Sayfa bilgisi kaydedilemedi (callback öncesi): $e');
         }
       });
 
@@ -415,7 +418,7 @@ class MediaController {
       callback();
 
       // --- YENİ: Callback'ten sonra metadata güncelle ---
-      Future.delayed(Duration(milliseconds: 100), () async {
+      Future.delayed(const Duration(milliseconds: 100), () async {
         try {
           String? bookCode = await _audioPlayerService.getPlayingBookCode();
           if (bookCode != null && bookCode.isNotEmpty) {
@@ -432,7 +435,8 @@ class MediaController {
                 bookAuthor,
                 pageNumber: _currentPage,
               );
-              print('MediaController: Metadata güncellendi (lock screen sayfa değişimi sonrası)');
+              debugPrint(
+                  'MediaController: Metadata güncellendi (lock screen sayfa değişimi sonrası)');
 
               // --- YENİ: Flutter tarafına event gönder ---
               const MethodChannel lockScreenChannel = MethodChannel('lock_screen_events');
@@ -441,30 +445,30 @@ class MediaController {
                   'bookCode': bookCode,
                   'pageNumber': _currentPage,
                 });
-                print('MediaController: Flutter tarafına pageChanged event gönderildi');
+                debugPrint('MediaController: Flutter tarafına pageChanged event gönderildi');
               } catch (e) {
-                print('MediaController: Flutter event gönderilemedi: $e');
+                debugPrint('MediaController: Flutter event gönderilemedi: $e');
               }
               // --- YENİ SONU ---
             } catch (e) {
-              print('MediaController: Metadata güncellenemedi (lock screen): $e');
+              debugPrint('MediaController: Metadata güncellenemedi (lock screen): $e');
             }
           }
         } catch (e) {
-          print('MediaController: Metadata güncellenemedi (lock screen): $e');
+          debugPrint('MediaController: Metadata güncellenemedi (lock screen): $e');
         }
       });
       // --- YENİ SONU ---
 
       // Kilit ekranında yapılan sayfa değişikliklerini kaydetmek için
       // örneğin SharedPreferences'a kaydet
-      Future.delayed(Duration(milliseconds: 200), () async {
+      Future.delayed(const Duration(milliseconds: 200), () async {
         try {
           // Sayfa değişikliklerini AudioPlayerService üzerinden
           // SharedPreferences'a kaydetmeyi dene
           String? bookCode = await _audioPlayerService.getPlayingBookCode();
           if (bookCode != null && bookCode.isNotEmpty) {
-            print(
+            debugPrint(
                 'MediaController: Sayfa değişikliği, yeni sayfa: $_currentPage, bookCode: $bookCode');
             // Direkt SharedPreferences'ı kullanarak sayfa değişikliğini kaydet
             var prefs = await SharedPreferences.getInstance();
@@ -477,7 +481,7 @@ class MediaController {
             // Bu, arka plandayken de sayfa değişikliğinin algılanmasını sağlar
             await prefs.setBool('mini_player_changed_page', true);
 
-            print(
+            debugPrint(
                 'MediaController: Sayfa değişikliği ve mini_player_changed_page bayrağı SharedPreferences\'a kaydedildi: $_currentPage');
 
             // Arka planda otomatik sayfa güncelleme için broadcast channel ile mesaj gönder
@@ -486,22 +490,22 @@ class MediaController {
                 'bookCode': bookCode,
                 'pageNumber': _currentPage,
               });
-              print('MediaController: Sayfa değişikliği bildirimi gönderildi');
+              debugPrint('MediaController: Sayfa değişikliği bildirimi gönderildi');
             } catch (e) {
-              print('MediaController: Sayfa değişikliği bildirimi gönderilemedi: $e');
+              debugPrint('MediaController: Sayfa değişikliği bildirimi gönderilemedi: $e');
             }
 
             // Playback durumunu güncelle
             updatePlaybackState(_audioPlayerService.isPlaying ? STATE_PLAYING : STATE_PAUSED);
           }
         } catch (e) {
-          print('MediaController: Sayfa değişikliği kaydedilemedi: $e');
+          debugPrint('MediaController: Sayfa değişikliği kaydedilemedi: $e');
           // Hata oluşsa bile playback durumunu güncelle
           updatePlaybackState(_audioPlayerService.isPlaying ? STATE_PLAYING : STATE_PAUSED);
         }
       });
     } catch (e) {
-      print('MediaController: _checkApplicationStateAndExecute hatası: $e');
+      debugPrint('MediaController: _checkApplicationStateAndExecute hatası: $e');
     }
   }
 
@@ -516,7 +520,7 @@ class MediaController {
       if (!_isServiceRunning) {
         await startService();
         // Servis başlatıldıktan sonra kısa bir gecikme ekle
-        await Future.delayed(Duration(milliseconds: 100));
+        await Future.delayed(const Duration(milliseconds: 100));
       }
 
       // Flutter -> Native köprüsü üzerinden sayfa durumunu güncelle
@@ -527,10 +531,10 @@ class MediaController {
         'lastPage': lastPage,
       });
 
-      print(
+      debugPrint(
           'Sent audio page state to native. Book: $bookCode, Page: $currentPage, Boundaries: $firstPage-$lastPage');
     } catch (e) {
-      print('MediaController updateAudioPageState hatası: $e');
+      debugPrint('MediaController updateAudioPageState hatası: $e');
     }
   }
 
@@ -545,9 +549,9 @@ class MediaController {
           await updatePlaybackState(STATE_PLAYING);
 
           // Ek güvenlik: Arka plana geçerken ses durumunu tekrar kontrol et
-          await Future.delayed(Duration(milliseconds: 500));
+          await Future.delayed(const Duration(milliseconds: 500));
           if (!_audioPlayerService.isPlaying && _audioPlayerService.playingBookCode != null) {
-            print('MediaController: Audio stopped unexpectedly in background, updating state');
+            debugPrint('MediaController: Audio stopped unexpectedly in background, updating state');
             await updatePlaybackState(STATE_PAUSED);
           }
         } else if (_audioPlayerService.playingBookCode != null) {
@@ -556,7 +560,7 @@ class MediaController {
           await updatePlaybackState(STATE_PAUSED);
         } else {
           // Eğer ses çalmıyorsa ve kitap kodu yoksa (stop durumu), servisi durdur
-          print(
+          debugPrint(
               'MediaController: Uygulama arka planda ve ses durdurulmuş, bildirim kontrollerini kaldırıyorum');
           await updatePlaybackState(STATE_STOPPED);
           await stopService();
@@ -573,14 +577,14 @@ class MediaController {
           await updatePlaybackState(STATE_PAUSED);
         } else {
           // Eğer ses çalmıyorsa ve kitap kodu yoksa (stop durumu), servisi durdur
-          print(
+          debugPrint(
               'MediaController: Uygulama ön planda ve ses durdurulmuş, bildirim kontrollerini kaldırıyorum');
           await updatePlaybackState(STATE_STOPPED);
           await stopService();
         }
       }
     } catch (e) {
-      print('MediaController handleAppStateChange hatası: $e');
+      debugPrint('MediaController handleAppStateChange hatası: $e');
       // Hata durumunda güvenli bir şekilde durumu güncelle
       try {
         if (_audioPlayerService.isPlaying) {
@@ -591,7 +595,8 @@ class MediaController {
           await updatePlaybackState(STATE_STOPPED);
         }
       } catch (updateError) {
-        print('MediaController: Playback state update error in handleAppStateChange: $updateError');
+        debugPrint(
+            'MediaController: Playback state update error in handleAppStateChange: $updateError');
       }
     }
   }
@@ -603,7 +608,7 @@ class MediaController {
       await _channel.invokeMethod('updatePlaybackState', {'state': STATE_STOPPED});
 
       // Kısa bir gecikme ekle
-      await Future.delayed(Duration(milliseconds: 100));
+      await Future.delayed(const Duration(milliseconds: 100));
 
       // Servisi durdur
       await stopService();
@@ -613,7 +618,7 @@ class MediaController {
       _audioPlayerService.positionStream.drain();
       _audioPlayerService.durationStream.drain();
     } catch (e) {
-      print('MediaController dispose hatası: $e');
+      debugPrint('MediaController dispose hatası: $e');
     }
   }
 }

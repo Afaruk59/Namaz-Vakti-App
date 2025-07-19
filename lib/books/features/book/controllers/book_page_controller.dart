@@ -34,7 +34,7 @@ class BookPageController {
       bookProgressService: bookProgressService,
       onPageLoaded: (bookPage) {
         currentBookPage = bookPage as BookPageModel?;
-        onPageLoaded(bookPage as BookPageModel);
+        onPageLoaded(bookPage);
       },
       onPageChanged: onPageChanged,
     );
@@ -60,7 +60,7 @@ class BookPageController {
         return savedPage;
       }
     } catch (e) {
-      print('Error updating initial page: $e');
+      debugPrint('Error updating initial page: $e');
     }
 
     // Return the original page if no change

@@ -1,6 +1,7 @@
 import 'package:namaz_vakti_app/books/features/book/models/book_page_model.dart';
 import 'package:namaz_vakti_app/books/features/book/services/api_service.dart';
 import 'package:namaz_vakti_app/books/features/book/services/book_progress_service.dart';
+import 'package:flutter/material.dart';
 
 class BookPageManager {
   final String bookCode;
@@ -9,7 +10,7 @@ class BookPageManager {
   final Function(BookPageModel) onPageLoaded;
   final Function(int) onPageChanged;
 
-  Map<int, BookPageModel> _pageCache = {};
+  final Map<int, BookPageModel> _pageCache = {};
   bool _isLoadingPage = false;
   int _currentPage = 1;
 
@@ -34,19 +35,19 @@ class BookPageManager {
 
       // Eğer sayfa boşsa, geçerli bir sayfa bulmak için loadPage metodunu kullan
       if (bookPage.pageText.trim().isEmpty) {
-        print('İlk sayfa boş, geçerli bir sayfa aranıyor...');
+        debugPrint('İlk sayfa boş, geçerli bir sayfa aranıyor...');
         await loadPage(_currentPage + 1, isForward: true);
       } else {
         // Sayfa boş değilse, cache'e ekle ve kullan
         _pageCache[_currentPage] = bookPage;
         onPageLoaded(bookPage);
-        print('İlk sayfa yüklendi: $_currentPage');
+        debugPrint('İlk sayfa yüklendi: $_currentPage');
       }
 
       // Sonraki ve önceki sayfaları ön belleğe al
       preloadAdjacentPages(_currentPage);
     } catch (e) {
-      print('İlk sayfayı yükleme hatası: $e');
+      debugPrint('İlk sayfayı yükleme hatası: $e');
       // Hata durumunda bir sonraki sayfayı denemeyi dene
       await loadPage(_currentPage + 1, isForward: true);
     }
@@ -63,7 +64,7 @@ class BookPageManager {
           _pageCache[prevPage] = page;
         }
       } catch (e) {
-        print('Error preloading previous page: $e');
+        debugPrint('Error preloading previous page: $e');
       }
     }
 
@@ -74,7 +75,7 @@ class BookPageManager {
           _pageCache[nextPage] = page;
         }
       } catch (e) {
-        print('Error preloading next page: $e');
+        debugPrint('Error preloading next page: $e');
       }
     }
   }
@@ -112,11 +113,11 @@ class BookPageManager {
           if (nextPage.pageText.trim().isNotEmpty) {
             _pageCache[currentAttempt] = nextPage;
             // Boş sayfayı atlayıp geçerli sayfaya geçtiğimizi bildir
-            print('Skipped empty page $pageNumber, found valid page $currentAttempt');
+            debugPrint('Skipped empty page $pageNumber, found valid page $currentAttempt');
             return nextPage;
           }
         } catch (e) {
-          print('Error loading next page $currentAttempt: $e');
+          debugPrint('Error loading next page $currentAttempt: $e');
         }
 
         currentAttempt++;
@@ -126,7 +127,7 @@ class BookPageManager {
       // Eğer geçerli bir sayfa bulunamadıysa, orijinal boş sayfayı döndür
       return page;
     } catch (e) {
-      print('Error in getPageFromCacheOrLoad for page $pageNumber: $e');
+      debugPrint('Error in getPageFromCacheOrLoad for page $pageNumber: $e');
       // Hata durumunda boş bir sayfa modeli döndür
       return BookPageModel(
         audio: 0,
@@ -148,13 +149,14 @@ class BookPageManager {
 
       // Geçerli bir sayfa bulana kadar veya maksimum deneme sayısına ulaşana kadar dene
       while (attemptCount < maxAttempts) {
-        print('Attempting to load page $currentAttempt (attempt ${attemptCount + 1}/$maxAttempts)');
+        debugPrint(
+            'Attempting to load page $currentAttempt (attempt ${attemptCount + 1}/$maxAttempts)');
 
         // Önce cache'de var mı kontrol et
         if (_pageCache.containsKey(currentAttempt)) {
           bookPage = _pageCache[currentAttempt];
           if (bookPage!.pageText.trim().isNotEmpty) {
-            print('Found valid page $currentAttempt in cache');
+            debugPrint('Found valid page $currentAttempt in cache');
             break;
           }
         } else {
@@ -165,13 +167,13 @@ class BookPageManager {
             // Boş olmayan sayfaları cache'e ekle
             if (bookPage.pageText.trim().isNotEmpty) {
               _pageCache[currentAttempt] = bookPage;
-              print('Loaded valid page $currentAttempt from API');
+              debugPrint('Loaded valid page $currentAttempt from API');
               break;
             } else {
-              print('Page $currentAttempt is empty, trying next page');
+              debugPrint('Page $currentAttempt is empty, trying next page');
             }
           } catch (e) {
-            print('Error loading page $currentAttempt: $e');
+            debugPrint('Error loading page $currentAttempt: $e');
           }
         }
 
@@ -180,7 +182,7 @@ class BookPageManager {
 
         // Geçersiz sayfa numaralarını kontrol et
         if (currentAttempt < 1 || currentAttempt > bookProgressService.getTotalPages(bookCode)) {
-          print('Reached invalid page number: $currentAttempt');
+          debugPrint('Reached invalid page number: $currentAttempt');
           break;
         }
 
@@ -189,13 +191,13 @@ class BookPageManager {
 
       // Eğer geçerli bir sayfa bulunamadıysa, orijinal sayfada kal
       if (bookPage == null || bookPage.pageText.trim().isEmpty) {
-        print('No valid page found after $attemptCount attempts');
+        debugPrint('No valid page found after $attemptCount attempts');
         _isLoadingPage = false;
         return;
       }
 
       // Geçerli bir sayfa bulundu, sayfayı güncelle
-      print('Updating to valid page $currentAttempt');
+      debugPrint('Updating to valid page $currentAttempt');
       await bookProgressService.setCurrentPage(bookCode, currentAttempt);
       _currentPage = currentAttempt;
       onPageLoaded(bookPage);
@@ -204,7 +206,7 @@ class BookPageManager {
       // Sonraki ve önceki sayfaları ön belleğe al
       preloadAdjacentPages(currentAttempt);
     } catch (e) {
-      print('Error in loadPage method: $e');
+      debugPrint('Error in loadPage method: $e');
     } finally {
       _isLoadingPage = false;
     }

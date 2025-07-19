@@ -37,9 +37,6 @@ class BookDrawerBuilder {
           indexFuture: indexFuture,
           bookTitle: bookTitleText,
           onPageSelected: (page) {
-            // Ses çalma durumunu kontrol etmek için değişken
-            final wasPlaying = audioPlayerService.isPlaying;
-
             // Önce sayfayı yükle, sonra drawer'ı kapat
             try {
               onPageSelected(page);
@@ -49,7 +46,7 @@ class BookDrawerBuilder {
                 Navigator.of(context).pop();
               }
             } catch (e) {
-              print('Drawer kapatma veya sayfa güncelleme hatası: $e');
+              debugPrint('Drawer kapatma veya sayfa güncelleme hatası: $e');
               // Hata durumunda drawer'ı kapatmayı tekrar dene
               if (Navigator.canPop(context)) {
                 Navigator.pop(context);

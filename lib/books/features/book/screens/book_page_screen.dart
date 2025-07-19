@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:namaz_vakti_app/books/features/book/audio/audio_player_service.dart';
@@ -7,7 +9,6 @@ import 'package:namaz_vakti_app/books/features/book/services/api_service.dart';
 import 'package:namaz_vakti_app/books/features/book/models/book_page_model.dart';
 import 'package:namaz_vakti_app/books/features/book/services/book_title_service.dart';
 import 'package:namaz_vakti_app/books/features/book/services/bookmark_service.dart';
-import 'package:namaz_vakti_app/books/features/book/services/audio_page_service.dart';
 
 // Controllers
 import 'package:namaz_vakti_app/books/features/book/controllers/book_page_controller.dart';
@@ -20,7 +21,6 @@ import 'package:namaz_vakti_app/books/features/book/controllers/book_ui_componen
 
 // Widgets
 import 'package:namaz_vakti_app/books/features/book/widgets/book_page_view.dart';
-import 'package:namaz_vakti_app/books/features/book/widgets/book_controls_overlay.dart';
 
 // Legacy managers - will be removed eventually
 import 'package:namaz_vakti_app/books/features/book/services/audio_manager.dart';
@@ -37,7 +37,8 @@ class BookPageScreen extends StatefulWidget {
   final bool autoNavigateBack;
   final bool autoPlayOnReturn;
 
-  BookPageScreen({
+  const BookPageScreen({
+    super.key,
     required this.bookCode,
     this.initialPage = 1,
     this.appBarColor = Colors.blue,
@@ -47,6 +48,7 @@ class BookPageScreen extends StatefulWidget {
   });
 
   @override
+  // ignore: library_private_types_in_public_api
   _BookPageScreenState createState() => _BookPageScreenState();
 }
 
@@ -76,7 +78,7 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
 
   // State variables
   late Future<List<IndexItem>> _indexFuture;
-  bool _autoPlayNextPage = true;
+  final bool _autoPlayNextPage = true;
   String _bookTitleText = 'Hakikat Kitabevi';
   BookPageModel? _currentBookPage;
 
@@ -89,12 +91,8 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
     if (mounted) {
       setState(() {
         _bookTitleText = title;
-        if (_uiManager != null) {
-          _uiManager.bookTitleText = title;
-        }
-        if (_audioManager != null) {
-          _audioManager.updateBookInfo(title, "Hakikat Kitabevi");
-        }
+        _uiManager.bookTitleText = title;
+        _audioManager.updateBookInfo(title, "Hakikat Kitabevi");
       });
     }
   }
@@ -143,14 +141,14 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
       _lockScreenChannel = const MethodChannel('lock_screen_events');
       _lockScreenChannel!.setMethodCallHandler((call) async {
         if (call.method == 'pageChanged') {
-          print('BookPageScreen: lock_screen_events.pageChanged event alındı');
+          debugPrint('BookPageScreen: lock_screen_events.pageChanged event alındı');
           await _checkAndSyncCurrentAudioPage();
         }
         return null;
       });
       // --- YENİ SONU ---
     } catch (e) {
-      print('BookPageScreen initState error: $e');
+      debugPrint('BookPageScreen initState error: $e');
     }
   }
 
@@ -191,7 +189,7 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
   }
 
   void _initializeAudioAfterPageLoad() {
-    Future.delayed(Duration(milliseconds: 500), () async {
+    Future.delayed(const Duration(milliseconds: 500), () async {
       if (mounted && _currentBookPage != null) {
         _updateMediaControllerPageInfo();
 
@@ -205,21 +203,21 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
         // Get the saved audio position for this book if available
         final savedPosition = prefs.getInt('${widget.bookCode}_audio_position') ?? 0;
 
-        print(
+        debugPrint(
             'BookPageScreen: Initializing audio with saved position: $savedPosition ms, isPlaying=$isPlaying, isPaused=$isPaused, miniPlayerChangedPage=$miniPlayerChangedPage');
 
         // Only check if audio is playing for this book if it's not coming from an auto-navigate back
         if (!widget.autoNavigateBack) {
           await _audioController.checkIfAudioIsPlayingForThisBook();
 
-          print(
+          debugPrint(
               'BookPageScreen _initializeAudioAfterPageLoad: miniPlayerChangedPage=$miniPlayerChangedPage, isPlaying=$isPlaying, isPaused=$isPaused');
 
           // If mini player changed page and audio is playing/paused, don't restart audio
           if (miniPlayerChangedPage && (isPlaying || isPaused)) {
             // Reset the flag
             await prefs.setBool('mini_player_changed_page', false);
-            print(
+            debugPrint(
                 'BookPageScreen: Mini player changed page flag was true, reset and not restarting audio');
 
             // Make sure we're showing audio progress if needed
@@ -233,19 +231,19 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
 
           // If we have a saved position and audio was playing, restore it
           if (savedPosition > 0 && _audioPlayerService.playingBookCode == widget.bookCode) {
-            print('BookPageScreen: Restoring saved audio position: $savedPosition ms');
+            debugPrint('BookPageScreen: Restoring saved audio position: $savedPosition ms');
 
             // If the book is already playing but at beginning, seek to saved position
             if ((isPlaying || isPaused) && _audioPlayerService.position.inMilliseconds < 100) {
               await _audioPlayerService.seekTo(Duration(milliseconds: savedPosition));
-              print('BookPageScreen: Sought to saved position: $savedPosition ms');
+              debugPrint('BookPageScreen: Sought to saved position: $savedPosition ms');
             }
             // If not playing but we have position, start playback from saved position
             else if (!isPlaying &&
                 !isPaused &&
                 _currentBookPage != null &&
                 _currentBookPage!.mp3.isNotEmpty) {
-              print('BookPageScreen: Starting playback from saved position');
+              debugPrint('BookPageScreen: Starting playback from saved position');
               await _audioController.handlePlayAudio(
                   currentBookPage: _currentBookPage!,
                   currentPage: _pageController.currentPage,
@@ -266,7 +264,7 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
   }
 
   void _handleAutoNavigateBack() {
-    Future.delayed(Duration(milliseconds: 300), () async {
+    Future.delayed(const Duration(milliseconds: 300), () async {
       if (mounted) {
         try {
           await _audioPlayerService.setPlayingBookCode(widget.bookCode);
@@ -274,14 +272,14 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
             await _audioPlayerService.playAudio(_currentBookPage!.mp3[0]);
             await _audioController.saveAudioBookPreferencesWithPlayingState(
                 _pageController.currentPage, true, _bookTitleText, "Hakikat Kitabevi");
-            await Future.delayed(Duration(milliseconds: 500));
+            await Future.delayed(const Duration(milliseconds: 500));
             if (mounted) Navigator.of(context).pop();
           } else {
-            print('No audio file found, returning to home screen');
+            debugPrint('No audio file found, returning to home screen');
             if (mounted) Navigator.of(context).pop();
           }
         } catch (e) {
-          print('Error starting audio: $e');
+          debugPrint('Error starting audio: $e');
           if (mounted) Navigator.of(context).pop();
         }
       }
@@ -382,7 +380,7 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
     const mediaServiceChannel = MethodChannel('com.afaruk59.namaz_vakti_app/media_service');
 
     mediaServiceChannel.setMethodCallHandler((call) async {
-      print("BookPageScreen: Method channel çağrısı: ${call.method}");
+      debugPrint("BookPageScreen: Method channel çağrısı: ${call.method}");
 
       if (!mounted) return null;
 
@@ -416,12 +414,12 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       try {
         await mediaServiceChannel.invokeMethod('initMediaService');
-        print("BookPageScreen: Method channel servisi başlatıldı");
+        debugPrint("BookPageScreen: Method channel servisi başlatıldı");
 
         // Sayfa durumunu bildir
         await _updateMediaPageState();
       } catch (e) {
-        print("Method channel servis başlatma hatası: $e");
+        debugPrint("Method channel servis başlatma hatası: $e");
       }
     });
   }
@@ -432,7 +430,7 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
 
       final currentPage = _pageController.currentPage;
       final lastPage = _pageController.isLastPage ? currentPage : currentPage + 1;
-      final firstPage = 1;
+      const firstPage = 1;
 
       await mediaServiceChannel.invokeMethod('updateAudioPageState', {
         'bookCode': widget.bookCode,
@@ -441,9 +439,9 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
         'lastPage': lastPage,
       });
 
-      print("BookPageScreen: Sayfa durumu güncellendi: $currentPage / $lastPage");
+      debugPrint("BookPageScreen: Sayfa durumu güncellendi: $currentPage / $lastPage");
     } catch (e) {
-      print("Sayfa durumu güncelleme hatası: $e");
+      debugPrint("Sayfa durumu güncelleme hatası: $e");
     }
   }
 
@@ -499,11 +497,11 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
             _pageController.currentPage,
           );
         } catch (e) {
-          print('Error updating media metadata: $e');
+          debugPrint('Error updating media metadata: $e');
         }
       }
     }).catchError((error) {
-      print('Error updating media controller: $error');
+      debugPrint('Error updating media controller: $error');
     });
   }
 
@@ -537,9 +535,9 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
     if (_isExiting) return;
     try {
       // Log to help troubleshoot audio issues
-      print(
+      debugPrint(
           '_handlePlayAudio called: fromBottomBar= [38;5;2m$fromBottomBar [0m, afterPageChange=$afterPageChange');
-      print(
+      debugPrint(
           'Audio state: isPlaying=${_audioPlayerService.isPlaying}, position=${_audioPlayerService.position.inSeconds}s');
 
       // Uygulama yeniden açıldığında veya kullanıcı manuel başlattığında, startPosition her zaman 0 olmalı
@@ -569,12 +567,12 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
       //       'Mini player updated with book info: $_bookTitleText, page: ${_pageController.currentPage}');
       // }
     } catch (e) {
-      print('Error playing audio: $e');
+      debugPrint('Error playing audio: $e');
       if (mounted) setState(() => _uiManager.setShowAudioProgress(false));
 
       // Show a brief error message to the user
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Ses oynatılırken bir hata oluştu'),
           duration: Duration(seconds: 2),
           behavior: SnackBarBehavior.floating,
@@ -586,8 +584,8 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
   // Add new method for handling play/pause from audio progress bar
   void _handlePlayPauseFromProgressBar() async {
     try {
-      print('_handlePlayPauseFromProgressBar called');
-      print(
+      debugPrint('_handlePlayPauseFromProgressBar called');
+      debugPrint(
           'Current state: isPlaying=${_audioPlayerService.isPlaying}, showProgress=${_uiManager.showAudioProgress}');
 
       // Use the specialized method that keeps progress bar visible
@@ -598,11 +596,11 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
         bookAuthor: "Hakikat Kitabevi",
       );
     } catch (e) {
-      print('Error in play/pause toggle: $e');
+      debugPrint('Error in play/pause toggle: $e');
 
       // Show error but don't close progress bar
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Ses oynatma/duraklatma sırasında bir hata oluştu'),
           duration: Duration(seconds: 2),
           behavior: SnackBarBehavior.floating,
@@ -626,12 +624,13 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(isBookmarked ? 'Bookmark added' : 'Bookmark removed'),
-        duration: Duration(seconds: 1),
+        duration: const Duration(seconds: 1),
         behavior: SnackBarBehavior.floating,
       ),
     );
   }
 
+  // ignore: unused_element
   Future<void> _toggleBookmark() async {
     await _bookmarkController.toggleBookmark(_pageController.currentPage);
     _handleBookmarkToggled(_uiManager.isBookmarked);
@@ -641,7 +640,7 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
     await _bookmarkController.refreshBookmarkStatus(_pageController.currentPage);
 
     if (_audioPlayerService.isPlaying || _uiManager.showAudioProgress) {
-      print('Highlights not reloaded during audio playback');
+      debugPrint('Highlights not reloaded during audio playback');
       return;
     }
 
@@ -677,16 +676,34 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
             await _navigationController.goToPage(pageNumber);
           }
         } catch (e) {
-          print('Error handling page change: $e');
+          debugPrint('Error handling page change: $e');
         }
       });
     } catch (e) {
-      print('Page change error: $e');
+      debugPrint('Page change error: $e');
     }
   }
 
+  // Orientation tracking için state variables
+  Orientation? _lastOrientation;
+  bool _isRestoringAfterOrientationChange = false;
+
   @override
   Widget build(BuildContext context) {
+    // Orientation change detection ve state preservation
+    final currentOrientation = MediaQuery.of(context).orientation;
+
+    // İlk build veya orientation değişikliği kontrolü
+    if (_lastOrientation == null) {
+      _lastOrientation = currentOrientation;
+    } else if (_lastOrientation != currentOrientation && !_isRestoringAfterOrientationChange) {
+      debugPrint(
+          'BookPageScreen: Orientation changed from $_lastOrientation to $currentOrientation');
+      _handleOrientationChange(currentOrientation);
+      _lastOrientation = currentOrientation;
+    }
+
+    // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: () async {
         _isExiting = true;
@@ -694,40 +711,98 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
         await _audioManager.stopAllAudioAndNotification();
         return true;
       },
-      child: Scaffold(
-        extendBody: true,
-        key: _scaffoldKey,
-        drawer: _uiManager.buildDrawer(
-          searchFunction: _apiService.searchBook,
-          currentBookPage: _currentBookPage,
-        ),
-        appBar: _uiManager.buildAppBar(onBackgroundColorChanged: () {
-          if (mounted) setState(() {});
-        }),
-        body: Stack(
-          children: [
-            BookPageView(
-              pageController: _pageController,
-              uiManager: _uiManager,
-              bookCode: widget.bookCode,
-              onPageChanged: _onPageChanged,
-              onStateChanged: () => setState(() {}),
-              backgroundColor: _themeController.backgroundColor,
+      child: OrientationBuilder(
+        builder: (context, orientation) {
+          return Scaffold(
+            extendBody: true,
+            key: _scaffoldKey,
+            drawer: _uiManager.buildDrawer(
+              searchFunction: _apiService.searchBook,
+              currentBookPage: _currentBookPage,
             ),
-            // BookControlsOverlay widget'ı kaldırıldı
-          ],
-        ),
-        bottomNavigationBar: _uiManager.buildBottomBar(
-          onPlayAudio: () => _handlePlayAudio(fromBottomBar: true),
-          onPlayPauseProgress: _handlePlayPauseFromProgressBar,
-          onSeek: _handleSeek,
-          onSpeedChange: _handleSpeedChange,
-          refreshBookmarkStatus: _refreshBookmarkStatus,
-          onPageNumberEntered: (pageNumber) => _navigationController.goToPage(pageNumber),
-        ),
-        drawerEnableOpenDragGesture: false,
+            appBar: _uiManager.buildAppBar(onBackgroundColorChanged: () {
+              if (mounted) setState(() {});
+            }),
+            body: Stack(
+              children: [
+                BookPageView(
+                  pageController: _pageController,
+                  uiManager: _uiManager,
+                  bookCode: widget.bookCode,
+                  onPageChanged: _onPageChanged,
+                  onStateChanged: () => setState(() {}),
+                  backgroundColor: _themeController.backgroundColor,
+                ),
+                // BookControlsOverlay widget'ı kaldırıldı
+              ],
+            ),
+            bottomNavigationBar: _uiManager.buildBottomBar(
+              onPlayAudio: () => _handlePlayAudio(fromBottomBar: true),
+              onPlayPauseProgress: _handlePlayPauseFromProgressBar,
+              onSeek: _handleSeek,
+              onSpeedChange: _handleSpeedChange,
+              refreshBookmarkStatus: _refreshBookmarkStatus,
+              onPageNumberEntered: (pageNumber) => _navigationController.goToPage(pageNumber),
+            ),
+            drawerEnableOpenDragGesture: false,
+          );
+        },
       ),
     );
+  }
+
+  void _handleOrientationChange(Orientation newOrientation) async {
+    debugPrint('BookPageScreen: Handling orientation change to $newOrientation');
+
+    _isRestoringAfterOrientationChange = true;
+
+    // Mevcut audio state'i kaydet
+    final wasShowingProgress = _uiManager.showAudioProgress;
+    final currentPlayingBookCode = await _audioPlayerService.getPlayingBookCode();
+    final isPlaying = _audioPlayerService.isPlaying;
+
+    debugPrint(
+        'BookPageScreen: Pre-orientation state - showProgress: $wasShowingProgress, isPlaying: $isPlaying, bookCode: $currentPlayingBookCode');
+
+    // Orientation change sonrası state'i restore et
+    Future.delayed(const Duration(milliseconds: 200), () async {
+      if (!mounted) return;
+
+      debugPrint('BookPageScreen: Restoring state after orientation change');
+
+      // Audio service full recovery
+      _audioPlayerService.recoverAfterOrientationChange();
+
+      // Progress bar state restore
+      if (wasShowingProgress && currentPlayingBookCode == widget.bookCode) {
+        _uiManager.setShowAudioProgress(true);
+        _audioController.showAudioProgress = true;
+
+        debugPrint('BookPageScreen: Restored audio progress bar after orientation change');
+      }
+
+      // Force UI update
+      if (mounted) {
+        setState(() {});
+      }
+
+      // Kısa bir gecikme sonra daha da güçlendir
+      Future.delayed(const Duration(milliseconds: 300), () {
+        if (!mounted) return;
+
+        if (isPlaying && currentPlayingBookCode == widget.bookCode) {
+          _audioPlayerService.recoverAfterOrientationChange();
+          _uiManager.setShowAudioProgress(true);
+          _audioController.showAudioProgress = true;
+
+          debugPrint('BookPageScreen: Double-confirmed audio state after orientation change');
+
+          if (mounted) setState(() {});
+        }
+
+        _isRestoringAfterOrientationChange = false;
+      });
+    });
   }
 
   Future<int> _checkAndUpdateInitialPage() async {
@@ -737,7 +812,7 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
         return await _pageController.checkAndUpdateInitialPage(widget.initialPage);
       }
     } catch (e) {
-      print('Error updating initial page: $e');
+      debugPrint('Error updating initial page: $e');
     }
     return widget.initialPage;
   }
@@ -761,14 +836,14 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
     _backgroundCheckTimer?.cancel();
 
     // Always stop audio playback and notification when leaving the book screen
-    print('Stopping audio playback and notification when leaving book screen');
+    debugPrint('Stopping audio playback and notification when leaving book screen');
     await _audioManager.stopAllAudioAndNotification();
 
     try {
       _pageController.dispose();
       _audioManager.disposeWithoutStoppingAudio();
     } catch (e) {
-      print('BookPageScreen dispose error: $e');
+      debugPrint('BookPageScreen dispose error: $e');
     }
 
     // --- YENİ: Lock screen channel temizle ---
@@ -795,7 +870,7 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
   // Check if the page was changed from mini player and handle it
   Future<void> _checkMiniPlayerPageChangeFlag() async {
     try {
-      await Future.delayed(Duration(milliseconds: 300));
+      await Future.delayed(const Duration(milliseconds: 300));
       final prefs = await SharedPreferences.getInstance();
       final miniPlayerChangedPage = prefs.getBool('mini_player_changed_page') ?? false;
       final currentAudioPage = prefs.getInt('${widget.bookCode}_current_audio_page') ??
@@ -809,20 +884,20 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
       if (miniPlayerChangedPage &&
           currentAudioPage > 0 &&
           currentAudioPage != _pageController.currentPage) {
-        print(
+        debugPrint(
             'BookPageScreen: Detected page change from mini player, navigating to page $currentAudioPage (current: ${_pageController.currentPage})');
         await prefs.setBool('mini_player_changed_page', false);
-        print('BookPageScreen: Reset mini_player_changed_page flag before navigation');
+        debugPrint('BookPageScreen: Reset mini_player_changed_page flag before navigation');
         await _navigationController.goToPage(currentAudioPage);
         if (_audioPlayerService.isPlaying || _audioPlayerService.position.inSeconds > 0) {
-          print('BookPageScreen: Audio is already playing or paused, not restarting');
+          debugPrint('BookPageScreen: Audio is already playing or paused, not restarting');
         }
       } else if (miniPlayerChangedPage) {
         await prefs.setBool('mini_player_changed_page', false);
-        print('BookPageScreen: Reset mini_player_changed_page flag (already on correct page)');
+        debugPrint('BookPageScreen: Reset mini_player_changed_page flag (already on correct page)');
       }
     } catch (e) {
-      print('BookPageScreen: Error checking mini player page change flag: $e');
+      debugPrint('BookPageScreen: Error checking mini player page change flag: $e');
     }
   }
 
@@ -830,30 +905,94 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
 
-    print('BookPageScreen: App lifecycle state changed to $state');
+    debugPrint('BookPageScreen: App lifecycle state changed to $state');
 
-    if (state == AppLifecycleState.resumed) {
-      // App tekrar öne geldiğinde audio player'ın pozisyonunu ve durumunu UI'ya yansıt
-      _syncAudioProgressWithPlayer();
-      // Check for page changes when the app is resumed
-      print('BookPageScreen: App resumed, checking for page changes');
-      Future.delayed(Duration(milliseconds: 500), () {
-        if (mounted) {
-          _checkAndSyncCurrentAudioPage();
+    switch (state) {
+      case AppLifecycleState.resumed:
+        // App resumed - force state sync and restore media player
+        _handleAppResumed();
+        break;
+      case AppLifecycleState.paused:
+        // App paused - preserve state for background audio
+        _handleAppPaused();
+        break;
+      case AppLifecycleState.inactive:
+        // App inactive (orientation change, etc.) - preserve state
+        _handleAppInactive();
+        break;
+      case AppLifecycleState.detached:
+        // App detached - clean up if needed
+        _handleAppDetached();
+        break;
+      case AppLifecycleState.hidden:
+        // App hidden - maintain state
+        _handleAppHidden();
+        break;
+    }
+  }
+
+  void _handleAppResumed() async {
+    debugPrint('BookPageScreen: App resumed - syncing media player state');
+
+    // Force audio service state sync
+    _audioPlayerService.forceStateSync();
+
+    // Sync UI with current audio state
+    _syncAudioProgressWithPlayer();
+
+    // Check for page changes from background controls
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (mounted) {
+        _checkAndSyncCurrentAudioPage();
+      }
+    });
+
+    // Ensure media controller metadata is updated
+    if (_audioPlayerService.isPlaying) {
+      _updateMediaControllerPageInfo();
+    }
+  }
+
+  void _handleAppPaused() {
+    debugPrint('BookPageScreen: App paused - preserving media player state');
+
+    // Preserve audio playback for background
+    if (_audioPlayerService.isPlaying) {
+      _audioController.updateMetadataOnLockScreen(currentPage: _pageController.currentPage);
+    }
+
+    // Update media controller for background state
+    if (_audioPlayerService.isPlaying) {
+      _updateMediaControllerPageInfo();
+    }
+  }
+
+  void _handleAppInactive() {
+    debugPrint('BookPageScreen: App inactive (orientation change) - maintaining state');
+
+    // During orientation changes, maintain the media player state
+    // Force state preservation
+    if (_uiManager.showAudioProgress) {
+      // Ensure progress bar doesn't disappear during orientation change
+      Future.delayed(const Duration(milliseconds: 100), () {
+        if (mounted && _audioPlayerService.playingBookCode == widget.bookCode) {
+          _uiManager.setShowAudioProgress(true);
+          _audioPlayerService.forceStateSync();
         }
       });
-    } else if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive) {
-      // Kilit ekranında ses çalmaya devam etmesi için audio servisini durdurmuyoruz
-      // Sadece uygulamanın arkaplanda olduğunu logluyoruz
-      print('App paused/inactive: Audio playback continues in background');
-
-      // Eğer şu anda ses çalınıyorsa, kilit ekranı kontrollerinin görünmesini sağla
-      if (_audioPlayerService.isPlaying) {
-        // Mevcut kitap bilgilerini kullanarak metadata'yı güncelle
-        // Bu, kilit ekranında kontrollerin ve kitap bilgilerinin görünmesini sağlar
-        _audioController?.updateMetadataOnLockScreen(currentPage: _pageController.currentPage);
-      }
     }
+  }
+
+  void _handleAppDetached() {
+    debugPrint('BookPageScreen: App detached');
+    // App is being destroyed, but we don't want to stop audio
+    // Just ensure cleanup if needed
+  }
+
+  void _handleAppHidden() {
+    debugPrint('BookPageScreen: App hidden');
+    // Similar to paused, maintain state
+    _handleAppPaused();
   }
 
   // App resume olduğunda audio progress bar'ı ve pozisyonu güncelle
@@ -863,20 +1002,40 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
       bool isPaused = !isPlaying && _audioPlayerService.position.inSeconds > 0;
       String? playingBookCode = await _audioPlayerService.getPlayingBookCode();
 
-      print(
+      debugPrint(
           '_syncAudioProgressWithPlayer: isPlaying=$isPlaying, isPaused=$isPaused, playingBookCode=$playingBookCode, currentBookCode=${widget.bookCode}');
+
+      // Force state sync to ensure UI reflects actual audio service state
+      _audioPlayerService.forceStateSync();
 
       if ((isPlaying || isPaused) && playingBookCode == widget.bookCode) {
         if (!_uiManager.showAudioProgress) {
           _uiManager.setShowAudioProgress(true);
-          print('_syncAudioProgressWithPlayer: Showing audio progress bar');
+          debugPrint('_syncAudioProgressWithPlayer: Showing audio progress bar');
         }
-        // Pozisyon stream'ini tetikle
+
+        // Update audio controller state
+        _audioController.showAudioProgress = true;
+
+        // Force position update
         _audioPlayerService.forcePositionUpdate();
+
+        // Update media controller if needed
+        _updateMediaControllerPageInfo();
+      } else if (playingBookCode != null && playingBookCode != widget.bookCode) {
+        // Different book is playing, hide progress bar
+        if (_uiManager.showAudioProgress) {
+          _uiManager.setShowAudioProgress(false);
+          _audioController.showAudioProgress = false;
+        }
       }
-      if (mounted) setState(() {});
+
+      // Ensure UI updates
+      if (mounted) {
+        setState(() {});
+      }
     } catch (e) {
-      print('Error in _syncAudioProgressWithPlayer: $e');
+      debugPrint('Error in _syncAudioProgressWithPlayer: $e');
     }
   }
 
@@ -891,13 +1050,13 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
 
       // Get current audio position for restoration later
       final currentPosition = _audioPlayerService.position.inMilliseconds;
-      print('Current audio position before sync: $currentPosition ms');
+      debugPrint('Current audio position before sync: $currentPosition ms');
 
       // If audio is playing and the stored page is different from our current page,
       // this likely means the page was changed via media controls while the app was in background
       if (_audioPlayerService.isPlaying || _audioPlayerService.position.inSeconds > 0) {
         if (currentAudioPage > 0 && currentAudioPage != _pageController.currentPage) {
-          print('BookPageScreen: Detected page change while app was in background. ' +
+          debugPrint('BookPageScreen: Detected page change while app was in background. '
               'Stored page: $currentAudioPage, Current page: ${_pageController.currentPage}');
 
           // Instead of navigating with the navigation controller,
@@ -910,7 +1069,7 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
           await prefs.setInt('${widget.bookCode}_audio_position', currentPosition);
 
           // Only update the page in the UI, without changing audio
-          print('BookPageScreen: Updating page display without changing audio');
+          debugPrint('BookPageScreen: Updating page display without changing audio');
 
           // Jump to page and load content
           _pageController.jumpToPage(currentAudioPage);
@@ -922,35 +1081,33 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
 
           // Get page content and update UI
           BookPageModel? bookPage = await _pageController.getPageFromCacheOrLoad(currentAudioPage);
-          if (bookPage != null) {
-            setState(() {
-              _currentBookPage = bookPage;
-              _uiManager.updateCurrentBookPage(bookPage);
-            });
-          }
+          setState(() {
+            _currentBookPage = bookPage;
+            _uiManager.updateCurrentBookPage(bookPage);
+          });
 
           // Reset the flag
           await prefs.setBool('mini_player_changed_page', false);
 
-          print(
+          debugPrint(
               'BookPageScreen: Synced page UI to match audio page after resume (without changing audio)');
 
           // Restore the exact audio position if needed
           if (_audioPlayerService.position.inMilliseconds != currentPosition) {
             await _audioPlayerService.seekTo(Duration(milliseconds: currentPosition));
-            print('Restored audio position after page sync: $currentPosition ms');
+            debugPrint('Restored audio position after page sync: $currentPosition ms');
           }
         }
       }
     } catch (e) {
-      print('BookPageScreen: Error checking current audio page: $e');
+      debugPrint('BookPageScreen: Error checking current audio page: $e');
     }
   }
 
   // Start background page change listener
   void _startBackgroundPageChangeListener() {
     // Check every 2 seconds for page changes
-    _backgroundCheckTimer = Timer.periodic(Duration(seconds: 2), (timer) {
+    _backgroundCheckTimer = Timer.periodic(const Duration(seconds: 2), (timer) {
       if (mounted) {
         _checkForBackgroundPageChanges();
       } else {
@@ -978,18 +1135,19 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
       if (currentAudioPage > 0 &&
           currentAudioPage != _lastCheckedPage &&
           currentAudioPage != _pageController.currentPage) {
-        print(
+        debugPrint(
             'BookPageScreen: Detected background page change: $currentAudioPage (current: ${_pageController.currentPage})');
         _lastCheckedPage = currentAudioPage;
         await prefs.setBool('mini_player_changed_page', true);
-        print('BookPageScreen: Updating page display without changing audio (background check)');
+        debugPrint(
+            'BookPageScreen: Updating page display without changing audio (background check)');
         if (mounted) {
           _pageController.jumpToPage(currentAudioPage);
           await _pageController.loadPage(currentAudioPage,
               isForward: currentAudioPage > _pageController.currentPage);
           await _bookmarkController.checkBookmarkStatus(currentAudioPage);
           BookPageModel? bookPage = await _pageController.getPageFromCacheOrLoad(currentAudioPage);
-          if (bookPage != null && mounted) {
+          if (mounted) {
             setState(() {
               _currentBookPage = bookPage;
               _uiManager.updateCurrentBookPage(bookPage);
@@ -997,13 +1155,13 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
           }
         }
         await prefs.setBool('mini_player_changed_page', false);
-        print(
+        debugPrint(
             'BookPageScreen: Synced page UI to match audio page in background (without changing audio)');
       } else if (currentAudioPage > 0) {
         _lastCheckedPage = currentAudioPage;
       }
     } catch (e) {
-      print('BookPageScreen: Error checking for background page changes: $e');
+      debugPrint('BookPageScreen: Error checking for background page changes: $e');
     }
   }
 }

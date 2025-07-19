@@ -27,9 +27,9 @@ class BookThemeController {
         fontSize = savedFontSize;
         onFontSizeChanged(fontSize);
       }
-      print('Font size loaded: $fontSize');
+      debugPrint('Font size loaded: $fontSize');
     } catch (e) {
-      print('Error loading font size: $e');
+      debugPrint('Error loading font size: $e');
     }
   }
 
@@ -43,7 +43,7 @@ class BookThemeController {
         onBackgroundColorChanged?.call(_backgroundColor);
       }
     } catch (e) {
-      print('Error loading background color: $e');
+      debugPrint('Error loading background color: $e');
     }
   }
 
@@ -54,9 +54,9 @@ class BookThemeController {
       await prefs.setDouble('global_font_size', newFontSize);
       fontSize = newFontSize;
       onFontSizeChanged(fontSize);
-      print('Font size saved: $fontSize');
+      debugPrint('Font size saved: $fontSize');
     } catch (e) {
-      print('Error saving font size: $e');
+      debugPrint('Error saving font size: $e');
     }
   }
 
@@ -66,9 +66,10 @@ class BookThemeController {
     onBackgroundColorChanged?.call(_backgroundColor);
     try {
       final prefs = await SharedPreferences.getInstance();
+      // ignore: deprecated_member_use
       await prefs.setInt('book_background_color', color.value);
     } catch (e) {
-      print('Error saving background color: $e');
+      debugPrint('Error saving background color: $e');
     }
   }
 

@@ -18,7 +18,7 @@ class TextProcessor {
 
       return buffer.toString();
     } catch (e) {
-      print('Metin çıkarma hatası: $e');
+      debugPrint('Metin çıkarma hatası: $e');
       return '';
     }
   }

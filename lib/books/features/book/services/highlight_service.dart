@@ -29,7 +29,7 @@ class HighlightService {
 
       return highlights;
     } catch (e) {
-      print('Vurgulanmış metinleri yükleme hatası: $e');
+      debugPrint('Vurgulanmış metinleri yükleme hatası: $e');
       return []; // Hata durumunda boş liste döndür
     }
   }
@@ -38,13 +38,14 @@ class HighlightService {
   Future<bool> addHighlightedBookmark(String bookCode, int pageNumber, String selectedText,
       Color color, int startIndex, int endIndex) async {
     if (selectedText.isEmpty || startIndex < 0 || endIndex < startIndex) {
-      print(
+      debugPrint(
           'Geçersiz vurgulama parametreleri: metin=$selectedText, başlangıç=$startIndex, bitiş=$endIndex');
       return false;
     }
 
     try {
-      print('Vurgulama ekleniyor: metin=$selectedText, başlangıç=$startIndex, bitiş=$endIndex');
+      debugPrint(
+          'Vurgulama ekleniyor: metin=$selectedText, başlangıç=$startIndex, bitiş=$endIndex');
 
       // Yer işaretini ekle
       await _bookmarkService.addBookmark(
@@ -58,7 +59,7 @@ class HighlightService {
 
       return true;
     } catch (e) {
-      print('Vurgulu yer işareti ekleme hatası: $e');
+      debugPrint('Vurgulu yer işareti ekleme hatası: $e');
       return false;
     }
   }
@@ -80,7 +81,7 @@ class HighlightService {
 
       return true;
     } catch (e) {
-      print('Vurgulama kaldırılırken hata: $e');
+      debugPrint('Vurgulama kaldırılırken hata: $e');
       return false;
     }
   }

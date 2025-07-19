@@ -1,5 +1,6 @@
 import 'package:namaz_vakti_app/books/features/book/services/api_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/material.dart';
 
 class BookProgressService {
   static final BookProgressService _instance = BookProgressService._internal();
@@ -53,7 +54,7 @@ class BookProgressService {
         await _findFirstValidPage(bookCode);
       }
     } catch (e) {
-      print('Error fetching total pages for book $bookCode: $e');
+      debugPrint('Error fetching total pages for book $bookCode: $e');
       try {
         final indexItems = await _apiService.getBookIndex(bookCode);
         if (indexItems.isNotEmpty) {
@@ -65,7 +66,7 @@ class BookProgressService {
           }
         }
       } catch (e) {
-        print('Error fetching index for book $bookCode: $e');
+        debugPrint('Error fetching index for book $bookCode: $e');
       }
     }
   }
@@ -85,7 +86,7 @@ class BookProgressService {
         }
       }
     } catch (e) {
-      print('Error finding first valid page for book $bookCode: $e');
+      debugPrint('Error finding first valid page for book $bookCode: $e');
       _firstValidPages[bookCode] = 1;
     }
   }

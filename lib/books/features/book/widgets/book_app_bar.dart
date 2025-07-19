@@ -82,20 +82,18 @@ class _BookAppBarState extends State<BookAppBar> {
       ),
       centerTitle: true,
       leading: IconButton(
-        icon: Icon(Icons.arrow_back),
+        icon: const Icon(Icons.arrow_back, color: Colors.white),
         onPressed: () => Navigator.of(context).pop(),
       ),
       title: Text(
         widget.title,
         style: const TextStyle(
-          fontFamily: 'Arial',
-          fontWeight: FontWeight.bold,
-          fontSize: 22,
+          color: Colors.white,
         ),
       ),
       actions: [
         PopupMenuButton<Map<String, dynamic>>(
-          icon: Icon(Icons.format_size),
+          icon: const Icon(Icons.format_size, color: Colors.white),
           itemBuilder: (BuildContext context) => [
             PopupMenuItem<Map<String, dynamic>>(
               value: {'type': 'settings'},

@@ -135,7 +135,7 @@ class BookUIComponentsManager {
       future: pageController.getPageFromCacheOrLoad(index),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (snapshot.hasData) {
@@ -150,7 +150,7 @@ class BookUIComponentsManager {
             onSearch: onSearch,
           );
         } else {
-          return Center(child: Text('No data available.'));
+          return const Center(child: Text('No data available.'));
         }
       },
     );

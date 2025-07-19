@@ -27,6 +27,7 @@ class _AudioPlayerControlsState extends State<AudioPlayerControls>
   bool _isDragging = false;
   double _dragValue = 0.0;
   Timer? _debounceTimer;
+  Timer? _stateRecoveryTimer;
 
   // For debugging
   int _rebuildCounter = 0;
@@ -36,9 +37,14 @@ class _AudioPlayerControlsState extends State<AudioPlayerControls>
   double _lastPlaybackRate = 1.0;
   bool _lastPlaybackState = false;
 
+  // Orientation ve state recovery için
+  Orientation? _lastOrientation;
+  bool _needsStateRecovery = false;
+
   @override
   void dispose() {
     _debounceTimer?.cancel();
+    _stateRecoveryTimer?.cancel();
     super.dispose();
   }
 
@@ -48,9 +54,45 @@ class _AudioPlayerControlsState extends State<AudioPlayerControls>
     _debounceTimer = Timer(Duration(milliseconds: 50), action);
   }
 
+  // State recovery scheduling after orientation change
+  void _scheduleStateRecovery() {
+    _stateRecoveryTimer?.cancel();
+    _stateRecoveryTimer = Timer(Duration(milliseconds: 200), () {
+      if (mounted && _needsStateRecovery) {
+        debugPrint('AudioPlayerControls: Executing state recovery');
+
+        // Full recovery after orientation change
+        widget.audioPlayerService.recoverAfterOrientationChange();
+
+        // Reset dragging state if needed
+        if (_isDragging) {
+          setState(() {
+            _isDragging = false;
+          });
+        }
+
+        // Force rebuild to ensure streams are properly connected
+        if (mounted) {
+          setState(() {
+            _needsStateRecovery = false;
+          });
+        }
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     _rebuildCounter++;
+
+    // Orientation change detection ve state recovery
+    final currentOrientation = MediaQuery.of(context).orientation;
+    if (_lastOrientation != null && _lastOrientation != currentOrientation) {
+      debugPrint('AudioPlayerControls: Orientation changed, triggering state recovery');
+      _needsStateRecovery = true;
+      _scheduleStateRecovery();
+    }
+    _lastOrientation = currentOrientation;
 
     return StreamBuilder<bool>(
       stream: widget.audioPlayerService.playingStateStream,
@@ -60,7 +102,7 @@ class _AudioPlayerControlsState extends State<AudioPlayerControls>
 
         // Log if playback state changed
         if (_lastPlaybackState != isPlaying) {
-          print(
+          debugPrint(
               'AudioPlayerControls: Playback state changed to $isPlaying (rebuild #$_rebuildCounter)');
           _lastPlaybackState = isPlaying;
         }
@@ -75,7 +117,7 @@ class _AudioPlayerControlsState extends State<AudioPlayerControls>
             final now = DateTime.now();
             if (now.difference(_lastPosition).inSeconds >= 1 &&
                 (position.inSeconds != _lastPositionValue.inSeconds)) {
-              print(
+              debugPrint(
                   'AudioPlayerControls: Position updated to ${position.inSeconds}s (rebuild #$_rebuildCounter)');
               _lastPosition = now;
               _lastPositionValue = position;
@@ -89,7 +131,7 @@ class _AudioPlayerControlsState extends State<AudioPlayerControls>
 
                 // Log if duration changed
                 if (_lastDurationValue != duration) {
-                  print(
+                  debugPrint(
                       'AudioPlayerControls: Duration updated to ${duration.inSeconds}s (rebuild #$_rebuildCounter)');
                   _lastDurationValue = duration;
                 }
@@ -109,7 +151,7 @@ class _AudioPlayerControlsState extends State<AudioPlayerControls>
 
                     // Log if playback rate changed
                     if (_lastPlaybackRate != playbackRate) {
-                      print(
+                      debugPrint(
                           'AudioPlayerControls: Playback rate changed to ${playbackRate}x (rebuild #$_rebuildCounter)');
                       _lastPlaybackRate = playbackRate;
                     }
@@ -145,7 +187,7 @@ class _AudioPlayerControlsState extends State<AudioPlayerControls>
                                       color: Colors.white,
                                     ),
                                     onPressed: () {
-                                      print(
+                                      debugPrint(
                                           'AudioPlayerControls: Play/Pause button pressed, current state: $isPlaying');
                                       if (widget.onPlayPauseProgress != null) {
                                         widget.onPlayPauseProgress!();
@@ -203,14 +245,14 @@ class _AudioPlayerControlsState extends State<AudioPlayerControls>
                                           _dragValue =
                                               value.clamp(0.0, duration.inMilliseconds.toDouble());
                                         });
-                                        print(
+                                        debugPrint(
                                             'AudioPlayerControls: Seeking started at ${value / 1000}s');
                                       },
                                       onChangeEnd: (value) {
                                         // Clamp the value to ensure it's within valid range
                                         final clampedValue =
                                             value.clamp(0.0, duration.inMilliseconds.toDouble());
-                                        print(
+                                        debugPrint(
                                             'AudioPlayerControls: Seeking to position ${clampedValue / 1000}s');
                                         widget.onSeek(clampedValue);
                                         setState(() {
@@ -238,7 +280,8 @@ class _AudioPlayerControlsState extends State<AudioPlayerControls>
                                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                     ),
                                     onPressed: () {
-                                      print('AudioPlayerControls: Speed change button pressed');
+                                      debugPrint(
+                                          'AudioPlayerControls: Speed change button pressed');
                                       widget.onSpeedChange();
                                     },
                                     child: Text(

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:namaz_vakti_app/books/features/book/services/bookmark_service.dart';
 import 'package:namaz_vakti_app/books/features/book/screens/bookmarks_screen.dart';
 import 'package:namaz_vakti_app/books/screens/book_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class BookBookmarkIndicator extends StatefulWidget {
   final String bookCode;
@@ -10,13 +9,14 @@ class BookBookmarkIndicator extends StatefulWidget {
   final Key? refreshKey;
 
   const BookBookmarkIndicator({
-    Key? key,
+    super.key,
     required this.bookCode,
     this.color = Colors.red,
     this.refreshKey,
-  }) : super(key: key);
+  });
 
   @override
+  // ignore: library_private_types_in_public_api
   _BookBookmarkIndicatorState createState() => _BookBookmarkIndicatorState();
 }
 
@@ -64,7 +64,7 @@ class _BookBookmarkIndicatorState extends State<BookBookmarkIndicator> {
         });
       }
     } catch (e) {
-      print('Yer işareti sayısı yüklenirken hata: $e');
+      debugPrint('Yer işareti sayısı yüklenirken hata: $e');
       if (mounted) {
         setState(() {
           _bookmarkCount = 0; // Hata durumunda yer işareti sayısını sıfırla
@@ -78,7 +78,7 @@ class _BookBookmarkIndicatorState extends State<BookBookmarkIndicator> {
   Widget build(BuildContext context) {
     // Eğer yer işareti yoksa veya yükleme devam ediyorsa gösterme
     if (_isLoading || _bookmarkCount == 0) {
-      return SizedBox.shrink();
+      return const SizedBox.shrink();
     }
 
     return GestureDetector(
@@ -97,6 +97,7 @@ class _BookBookmarkIndicatorState extends State<BookBookmarkIndicator> {
 
           // Ana ekrandaki tüm bookmark göstergelerini yenilemek için
           // HomeScreen'deki refreshBookmarkIndicators metodunu çağır
+          // ignore: use_build_context_synchronously
           final homeScreenState = context.findAncestorStateOfType<BookScreenState>();
           if (homeScreenState != null) {
             homeScreenState.refreshBookmarkIndicators();
@@ -108,11 +109,11 @@ class _BookBookmarkIndicatorState extends State<BookBookmarkIndicator> {
         height: 32,
         decoration: BoxDecoration(
           color: widget.color,
-          borderRadius: BorderRadius.only(
+          borderRadius: const BorderRadius.only(
             bottomLeft: Radius.circular(7),
             bottomRight: Radius.circular(7),
           ),
-          boxShadow: [
+          boxShadow: const [
             BoxShadow(
               color: Colors.black26,
               blurRadius: 4,
@@ -123,15 +124,15 @@ class _BookBookmarkIndicatorState extends State<BookBookmarkIndicator> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               Icons.bookmark,
               color: Colors.white,
               size: 14,
             ),
-            SizedBox(height: 1),
+            const SizedBox(height: 1),
             Text(
               '$_bookmarkCount',
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
                 fontSize: 10,

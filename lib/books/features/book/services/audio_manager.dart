@@ -1,6 +1,7 @@
 import 'package:namaz_vakti_app/books/features/book/audio/audio_player_service.dart';
 import 'package:namaz_vakti_app/books/features/book/audio/media_controller.dart';
 import 'package:namaz_vakti_app/books/features/book/models/book_page_model.dart';
+import 'package:flutter/material.dart';
 
 /// Ses oynatma işlemlerini yöneten servis sınıfı
 class AudioManager {
@@ -44,14 +45,14 @@ class AudioManager {
               pageNumber: pageNumber,
             );
           } catch (e) {
-            print('Ses oynatma hatası: $e');
+            debugPrint('Ses oynatma hatası: $e');
             // Hata durumunda progress bar'ı gizle
             onShowAudioProgressChanged(false);
           }
         }
       }
     } catch (e) {
-      print('Ses oynatma/durdurma hatası: $e');
+      debugPrint('Ses oynatma/durdurma hatası: $e');
     }
   }
 
@@ -79,14 +80,14 @@ class AudioManager {
         await _mediaController.updatePosition(_audioPlayerService.position.inMilliseconds);
 
         // Kısa bir gecikme sonra tekrar güncelle
-        await Future.delayed(Duration(milliseconds: 200));
+        await Future.delayed(const Duration(milliseconds: 200));
         if (_audioPlayerService.isPlaying) {
           await _mediaController.updatePlaybackState(MediaController.STATE_PLAYING);
           await _mediaController.updatePosition(_audioPlayerService.position.inMilliseconds);
         }
       }
     } catch (e) {
-      print('Ses oynatma/duraklatma hatası: $e');
+      debugPrint('Ses oynatma/duraklatma hatası: $e');
     }
   }
 
@@ -97,7 +98,7 @@ class AudioManager {
       if (_audioPlayerService.isPlaying) {
         await _audioPlayerService.stopAudio();
         // Kısa bir gecikme ekleyerek ses dosyasının tamamen durmasını sağla
-        await Future.delayed(Duration(milliseconds: 100));
+        await Future.delayed(const Duration(milliseconds: 100));
       }
 
       if (currentBookPage != null && currentBookPage.mp3.isNotEmpty) {
@@ -117,7 +118,7 @@ class AudioManager {
         await _mediaController.updatePlaybackState(MediaController.STATE_PLAYING);
 
         // Kısa bir gecikme sonra metadata'yı tekrar güncelle
-        await Future.delayed(Duration(milliseconds: 300));
+        await Future.delayed(const Duration(milliseconds: 300));
 
         // Ses çalma durumunu tekrar kontrol et ve güncelle
         if (_audioPlayerService.isPlaying) {
@@ -137,12 +138,12 @@ class AudioManager {
         onShowAudioProgressChanged(false);
       }
     } catch (e) {
-      print('Ses çalma hatası: $e');
+      debugPrint('Ses çalma hatası: $e');
       // Hata durumunda ses çalmayı durdur ve UI'ı güncelle
       try {
         await _audioPlayerService.stopAudio();
       } catch (stopError) {
-        print('Hata sonrası ses durdurma hatası: $stopError');
+        debugPrint('Hata sonrası ses durdurma hatası: $stopError');
       }
       onShowAudioProgressChanged(false);
     }
@@ -151,7 +152,7 @@ class AudioManager {
   /// Seek to position in milliseconds
   Future<void> seekTo(double milliseconds) async {
     try {
-      print('AudioManager: Seeking to $milliseconds ms');
+      debugPrint('AudioManager: Seeking to $milliseconds ms');
 
       // Ensure value is within valid range
       final Duration position = Duration(milliseconds: milliseconds.toInt());
@@ -161,8 +162,8 @@ class AudioManager {
       Duration safeDuration = position;
       if (maxDuration.inMilliseconds > 0 && position.inMilliseconds >= maxDuration.inMilliseconds) {
         // If seeking beyond max duration, go to a slightly earlier position
-        safeDuration = maxDuration - Duration(milliseconds: 500);
-        print(
+        safeDuration = maxDuration - const Duration(milliseconds: 500);
+        debugPrint(
             'AudioManager: Adjusted seek position to ${safeDuration.inMilliseconds} ms (before end)');
       }
 
@@ -170,15 +171,13 @@ class AudioManager {
       await _audioPlayerService.seekTo(safeDuration);
 
       // Update the media controller position
-      if (_mediaController != null) {
-        _mediaController.updatePosition(safeDuration.inMilliseconds);
-      }
+      _mediaController.updatePosition(safeDuration.inMilliseconds);
 
-      print(
+      debugPrint(
           'AudioManager: Seek successful to ${safeDuration.inSeconds}.${safeDuration.inMilliseconds % 1000} seconds');
       return;
     } catch (e) {
-      print('AudioManager: Error during seek: $e');
+      debugPrint('AudioManager: Error during seek: $e');
     }
   }
 
@@ -212,7 +211,7 @@ class AudioManager {
         onPageChanged(nextPage);
 
         // Kısa bir gecikme ekleyerek sayfa yüklenmesinin tamamlanmasını bekle
-        await Future.delayed(Duration(milliseconds: 500));
+        await Future.delayed(const Duration(milliseconds: 500));
 
         if (currentBookPage != null && currentBookPage.mp3.isNotEmpty) {
           // Ses dosyasını çalmadan önce durumu güncelle
@@ -230,7 +229,7 @@ class AudioManager {
               pageNumber: nextPage,
             );
           } catch (error) {
-            print('Otomatik sayfa geçişinde ses dosyası çalma hatası: $error');
+            debugPrint('Otomatik sayfa geçişinde ses dosyası çalma hatası: $error');
             // Hata durumunda _showAudioProgress'i false yap
             onShowAudioProgressChanged(false);
           }
@@ -243,12 +242,12 @@ class AudioManager {
         onShowAudioProgressChanged(false);
       }
     } catch (e) {
-      print('Sonraki sayfaya geçiş hatası: $e');
+      debugPrint('Sonraki sayfaya geçiş hatası: $e');
       // Hata durumunda ses çalmayı durdur ve UI'ı güncelle
       try {
         await _audioPlayerService.stopAudio();
       } catch (stopError) {
-        print('Hata sonrası ses durdurma hatası: $stopError');
+        debugPrint('Hata sonrası ses durdurma hatası: $stopError');
       }
       onShowAudioProgressChanged(false);
     }
@@ -275,7 +274,7 @@ class AudioManager {
         onPageChanged(previousPage);
 
         // Kısa bir gecikme ekleyerek sayfa yüklenmesinin tamamlanmasını bekle
-        await Future.delayed(Duration(milliseconds: 500));
+        await Future.delayed(const Duration(milliseconds: 500));
 
         if (currentBookPage != null && currentBookPage.mp3.isNotEmpty) {
           // Ses dosyasını çalmadan önce durumu güncelle
@@ -293,7 +292,7 @@ class AudioManager {
               pageNumber: previousPage,
             );
           } catch (error) {
-            print('Otomatik sayfa geçişinde ses dosyası çalma hatası: $error');
+            debugPrint('Otomatik sayfa geçişinde ses dosyası çalma hatası: $error');
             // Hata durumunda _showAudioProgress'i false yap
             onShowAudioProgressChanged(false);
           }
@@ -303,12 +302,12 @@ class AudioManager {
         }
       }
     } catch (e) {
-      print('Önceki sayfaya geçiş hatası: $e');
+      debugPrint('Önceki sayfaya geçiş hatası: $e');
       // Hata durumunda ses çalmayı durdur ve UI'ı güncelle
       try {
         await _audioPlayerService.stopAudio();
       } catch (stopError) {
-        print('Hata sonrası ses durdurma hatası: $stopError');
+        debugPrint('Hata sonrası ses durdurma hatası: $stopError');
       }
       onShowAudioProgressChanged(false);
     }
@@ -340,7 +339,7 @@ class AudioManager {
         pageNumber: pageNumber,
       );
     } catch (e) {
-      print('Medya metadata güncelleme hatası: $e');
+      debugPrint('Medya metadata güncelleme hatası: $e');
     }
   }
 
@@ -349,7 +348,7 @@ class AudioManager {
     try {
       await _mediaController.updatePosition(positionMs);
     } catch (e) {
-      print('Medya pozisyon güncelleme hatası: $e');
+      debugPrint('Medya pozisyon güncelleme hatası: $e');
     }
   }
 
@@ -369,10 +368,10 @@ class AudioManager {
         firstPage: firstPage,
         lastPage: lastPage,
       );
-      print(
+      debugPrint(
           'Updated audio page state in native. Book: $bookCode, Page: $currentPage, Boundaries: $firstPage-$lastPage');
     } catch (e) {
-      print('Error updating audio page state: $e');
+      debugPrint('Error updating audio page state: $e');
     }
   }
 
@@ -393,7 +392,7 @@ class AudioManager {
         try {
           onNextPage(currentPage, totalPages);
         } catch (e) {
-          print('Sonraki sayfa callback hatası: $e');
+          debugPrint('Sonraki sayfa callback hatası: $e');
         }
       },
       onPreviousPage: (currentPage) {
@@ -401,7 +400,7 @@ class AudioManager {
         try {
           onPreviousPage(currentPage);
         } catch (e) {
-          print('Önceki sayfa callback hatası: $e');
+          debugPrint('Önceki sayfa callback hatası: $e');
         }
       },
       currentPage: currentPage,
@@ -419,7 +418,7 @@ class AudioManager {
           // Burada stopAudio kullanıyoruz çünkü ekrandan çıkıldığında
           // ses tamamen durdurulmalı
         } catch (e) {
-          print('Ses durdurma hatası: $e');
+          debugPrint('Ses durdurma hatası: $e');
         }
       }
 
@@ -430,10 +429,10 @@ class AudioManager {
         // MediaController'ı durdur
         _mediaController.stopService();
       } catch (e) {
-        print('AudioPlayerService reset hatası: $e');
+        debugPrint('AudioPlayerService reset hatası: $e');
       }
     } catch (e) {
-      print('AudioManager reset hatası: $e');
+      debugPrint('AudioManager reset hatası: $e');
     }
   }
 
@@ -452,7 +451,7 @@ class AudioManager {
       // Sadece MediaController'ı dispose et
       _mediaController.dispose();
     } catch (e) {
-      print('AudioManager disposeWithoutStoppingAudio hatası: $e');
+      debugPrint('AudioManager disposeWithoutStoppingAudio hatası: $e');
     }
   }
 
@@ -460,14 +459,14 @@ class AudioManager {
   Future<void> stopAllAudioAndNotification() async {
     try {
       await _mediaController.updatePlaybackState(MediaController.STATE_STOPPED);
-      await Future.delayed(Duration(milliseconds: 100));
+      await Future.delayed(const Duration(milliseconds: 100));
       await _mediaController.stopService();
-      await Future.delayed(Duration(milliseconds: 100));
+      await Future.delayed(const Duration(milliseconds: 100));
       await _mediaController.stopService();
       await _audioPlayerService.stopAudio();
       onShowAudioProgressChanged(false);
     } catch (e) {
-      print('stopAllAudioAndNotification hata: $e');
+      debugPrint('stopAllAudioAndNotification hata: $e');
     }
   }
 
@@ -491,9 +490,9 @@ class AudioManager {
     try {
       // MediaController aracılığıyla native medya servisini başlat
       await _mediaController.startService();
-      print('MediaController service started');
+      debugPrint('MediaController service started');
     } catch (e) {
-      print('Error starting media service: $e');
+      debugPrint('Error starting media service: $e');
     }
   }
 
@@ -506,7 +505,7 @@ class AudioManager {
         await _mediaController.startService();
 
         // Kısa bir gecikme ekle
-        await Future.delayed(Duration(milliseconds: 200));
+        await Future.delayed(const Duration(milliseconds: 200));
 
         // Metadata'yı güncelle (her zaman başlığa sayfa numarasını ekle)
         await _mediaController.updateMetadata(
@@ -528,7 +527,7 @@ class AudioManager {
         await _mediaController.updatePosition(_audioPlayerService.position.inMilliseconds);
       }
     } catch (e) {
-      print('Error updating lock screen: $e');
+      debugPrint('Error updating lock screen: $e');
     }
   }
 }

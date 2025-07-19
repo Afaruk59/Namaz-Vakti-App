@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:namaz_vakti_app/books/features/book/services/audio_manager.dart';
 import 'package:namaz_vakti_app/books/features/book/models/book_page_model.dart';
 
@@ -41,7 +42,7 @@ class BookMediaController {
         currentPage,
       );
     } catch (e) {
-      print('Error updating media metadata: $e');
+      debugPrint('Error updating media metadata: $e');
     }
   }
 

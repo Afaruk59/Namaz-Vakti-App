@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:namaz_vakti_app/books/features/book/audio/audio_player_service.dart';
+import 'package:flutter/material.dart';
 
 class BookNavigationController {
   // Property declarations to fix the undefined variables
@@ -16,7 +17,7 @@ class BookNavigationController {
   void updateFromMediaControls(String action) {
     if (currentBookCode.isEmpty) return;
 
-    print("BookNavigationController: Medya kontrolünden gelen aksiyon: $action");
+    debugPrint("BookNavigationController: Medya kontrolünden gelen aksiyon: $action");
 
     switch (action) {
       case 'next':
@@ -64,7 +65,7 @@ class BookNavigationController {
         'lastPage': lastPage,
       });
     } catch (e) {
-      print("Medya servisi sayfa durumu güncelleme hatası: $e");
+      debugPrint("Medya servisi sayfa durumu güncelleme hatası: $e");
     }
   }
 
@@ -77,7 +78,7 @@ class BookNavigationController {
       platform.invokeMethod('initMediaService');
       _updateMediaPageState();
     } catch (e) {
-      print("Medya servisi başlatma hatası: $e");
+      debugPrint("Medya servisi başlatma hatası: $e");
     }
   }
 

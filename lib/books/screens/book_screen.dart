@@ -25,7 +25,8 @@ class BookScreen extends StatefulWidget {
     // TODO: Eğer kitap veya Kuran dinleme ekranı açıksa ilgili controller'a haber ver
     // Bunu bir global event, provider, veya callback ile ilgili ekrana iletmek gerekir.
     // Şimdilik sadece log basalım.
-    print('BookScreen.goToNextPageFromBackground: Arka plandan bir sonraki sayfa çağrısı geldi.');
+    debugPrint(
+        'BookScreen.goToNextPageFromBackground: Arka plandan bir sonraki sayfa çağrısı geldi.');
     // Burada örneğin: BookPageScreen'e bir event gönderebilirsin.
     // Örn: BookPageScreen.nextPageFromBackground();
   }
@@ -63,12 +64,6 @@ class BookScreenState extends State<BookScreen> {
 
   @override
   void dispose() {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-    ]);
     super.dispose();
   }
 
@@ -115,7 +110,7 @@ class BookScreenState extends State<BookScreen> {
         });
       }
     } catch (e) {
-      print('Error initializing progress service: $e');
+      debugPrint('Error initializing progress service: $e');
       if (mounted) {
         setState(() {
           _isProgressLoaded = false;
@@ -129,7 +124,7 @@ class BookScreenState extends State<BookScreen> {
       var connectivityResult = await Connectivity().checkConnectivity();
       return connectivityResult != ConnectivityResult.none;
     } catch (e) {
-      print('Connectivity check error: $e');
+      debugPrint('Connectivity check error: $e');
       return true; // Hata durumunda varsayılan olarak bağlantı var kabul edelim
     }
   }
@@ -157,7 +152,7 @@ class BookScreenState extends State<BookScreen> {
               });
             }
           } catch (e) {
-            print('Error reinitializing services: $e');
+            debugPrint('Error reinitializing services: $e');
             if (mounted) {
               setState(() {
                 _isLoading = false;
@@ -242,7 +237,7 @@ class BookScreenState extends State<BookScreen> {
         extractedColor = await ColorExtractor.extractDominantColor(AssetImage(book.coverImageUrl),
             defaultColor: defaultColor);
       } catch (e) {
-        print('Error extracting color: $e');
+        debugPrint('Error extracting color: $e');
       }
     }
 
@@ -331,7 +326,6 @@ class BookScreenState extends State<BookScreen> {
                       showDialog(
                         context: context,
                         builder: (context) => AlertDialog(
-                          backgroundColor: Colors.white,
                           title: FutureBuilder<String?>(
                             future: BookInfoService.fetchBookTitle(
                                 'https://www.hakikatkitabevi.net/book.php?bookCode=${book.code}'),
@@ -374,15 +368,15 @@ class BookScreenState extends State<BookScreen> {
                                         );
                                       }
                                       if (snapshot.hasError) {
-                                        return Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                        return const Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: 8.0),
                                           child: Text('Açıklama yüklenemedi.',
                                               textAlign: TextAlign.justify),
                                         );
                                       }
                                       if (snapshot.data == null || snapshot.data!.isEmpty) {
-                                        return Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                        return const Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: 8.0),
                                           child: Text('Açıklama bulunamadı.',
                                               textAlign: TextAlign.justify),
                                         );
@@ -398,64 +392,46 @@ class BookScreenState extends State<BookScreen> {
                                   ),
                                   const SizedBox(height: 20),
                                   Center(
-                                    child: GestureDetector(
-                                      onTap: () async {
-                                        try {
-                                          final url = Uri.parse('https://www.hakikatkitabevi.net');
-                                          print('URL açılmaya çalışılıyor: $url');
+                                      child: FilledButton.tonal(
+                                          onPressed: () async {
+                                            try {
+                                              final url =
+                                                  Uri.parse('https://www.hakikatkitabevi.net');
+                                              debugPrint('URL açılmaya çalışılıyor: $url');
 
-                                          // URL'yi doğrudan açmaya çalış
-                                          final launched = await launchUrl(
-                                            url,
-                                            mode: LaunchMode.externalApplication,
-                                          );
-
-                                          if (launched) {
-                                            print('URL başarıyla açıldı');
-                                          } else {
-                                            print('URL açılamadı');
-                                            if (mounted) {
-                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                SnackBar(
-                                                  content: Text(
-                                                      'Site açılamadı. Lütfen tekrar deneyin.'),
-                                                  duration: Duration(seconds: 2),
-                                                ),
+                                              // URL'yi doğrudan açmaya çalış
+                                              final launched = await launchUrl(
+                                                url,
+                                                mode: LaunchMode.externalApplication,
                                               );
+
+                                              if (launched) {
+                                                debugPrint('URL başarıyla açıldı');
+                                              } else {
+                                                debugPrint('URL açılamadı');
+                                                if (mounted) {
+                                                  ScaffoldMessenger.of(context).showSnackBar(
+                                                    const SnackBar(
+                                                      content: Text(
+                                                          'Site açılamadı. Lütfen tekrar deneyin.'),
+                                                      duration: Duration(seconds: 2),
+                                                    ),
+                                                  );
+                                                }
+                                              }
+                                            } catch (e) {
+                                              debugPrint('URL açma hatası: $e');
+                                              if (mounted) {
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                  SnackBar(
+                                                    content: Text('Link açılırken hata oluştu: $e'),
+                                                    duration: const Duration(seconds: 3),
+                                                  ),
+                                                );
+                                              }
                                             }
-                                          }
-                                        } catch (e) {
-                                          print('URL açma hatası: $e');
-                                          if (mounted) {
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              SnackBar(
-                                                content: Text('Link açılırken hata oluştu: $e'),
-                                                duration: Duration(seconds: 3),
-                                              ),
-                                            );
-                                          }
-                                        }
-                                      },
-                                      child: Container(
-                                        padding:
-                                            const EdgeInsets.symmetric(horizontal: 28, vertical: 8),
-                                        decoration: BoxDecoration(
-                                          color: Color(0xFFF2F6F8),
-                                          borderRadius: BorderRadius.circular(32),
-                                        ),
-                                        child: const Text(
-                                          'www.hakikatkitabevi.net',
-                                          style: TextStyle(
-                                            color: Color(0xFF21748A),
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 14,
-                                            letterSpacing: 0.2,
-                                          ),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                                          },
+                                          child: const Text('www.hakikatkitabevi.net'))),
                                 ],
                               ),
                             ),
@@ -469,8 +445,7 @@ class BookScreenState extends State<BookScreen> {
                         ),
                       );
                     },
-                    child: Icon(Icons.info_outline_rounded,
-                        size: 20, color: const Color.fromARGB(255, 120, 120, 120)),
+                    child: const Icon(Icons.info_outline_rounded, size: 20),
                   ),
                 ],
               ),
@@ -547,8 +522,8 @@ class BookScreenState extends State<BookScreen> {
   @override
   Widget build(BuildContext context) {
     return ScaffoldLayout(
-      title: 'Kuran-ı Kerim ve Kitaplar',
-      actions: [],
+      title: 'Kaynak Kitaplar',
+      actions: const [],
       background: true,
       body: _buildBody(),
     );

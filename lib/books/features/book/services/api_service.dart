@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'dart:async'; // Add this for TimeoutException
 import 'package:http/http.dart' as http;
+import 'package:flutter/material.dart';
 
 // Özel transformer sınıfı - otomatik JSON dönüşümünü devre dışı bırakır
 class _NoTransformer extends Transformer {
@@ -49,11 +50,11 @@ class ApiService {
 
     _dio.interceptors.add(InterceptorsWrapper(
       onError: (DioException e, handler) {
-        print('API Error: ${e.message}');
+        debugPrint('API Error: ${e.message}');
         if (e.type == DioExceptionType.connectionTimeout ||
             e.type == DioExceptionType.receiveTimeout ||
             e.type == DioExceptionType.sendTimeout) {
-          print('Connection timeout - retrying request');
+          debugPrint('Connection timeout - retrying request');
           // Retry the request once
           return handler.resolve(e.response ?? Response(requestOptions: e.requestOptions));
         }
@@ -84,7 +85,7 @@ class ApiService {
           if (responseStr.trim().startsWith('<!DOCTYPE html>') ||
               responseStr.trim().startsWith('<html') ||
               responseStr.contains('<body')) {
-            print("Sunucu HTML yanıtı döndürdü, boş sayfa döndürülüyor");
+            debugPrint("Sunucu HTML yanıtı döndürdü, boş sayfa döndürülüyor");
             // HTML yanıtı durumunda boş bir sayfa modeli döndür
             return BookPageModel(
               audio: 0,
@@ -96,7 +97,7 @@ class ApiService {
           final Map<String, dynamic> jsonData = jsonDecode(responseStr);
           return BookPageModel.fromJson(jsonData);
         } catch (e) {
-          print("JSON parsing error: $e");
+          debugPrint("JSON parsing error: $e");
           // JSON ayrıştırma hatası durumunda boş bir sayfa modeli döndür
           return BookPageModel(
             audio: 0,
@@ -105,7 +106,7 @@ class ApiService {
           );
         }
       } else {
-        print("API Error: ${response.statusCode}");
+        debugPrint("API Error: ${response.statusCode}");
         return BookPageModel(
           audio: 0,
           pageText: 'Sayfa yüklenirken bir hata oluştu: HTTP ${response.statusCode}',
@@ -113,7 +114,7 @@ class ApiService {
         );
       }
     } catch (error) {
-      print("Dio Error: $error");
+      debugPrint("Dio Error: $error");
       return BookPageModel(
         audio: 0,
         pageText: 'Sayfa yüklenirken bir hata oluştu: $error',
@@ -145,14 +146,14 @@ class ApiService {
         throw Exception('Failed to load index: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error loading index for book $bookCode: $e');
+      debugPrint('Error loading index for book $bookCode: $e');
       rethrow;
     }
   }
 
   Future<List<Map<String, dynamic>>> searchBook(String bookCode, String searchText) async {
     try {
-      print("Arama isteği gönderiliyor: $bookCode, $searchText");
+      debugPrint("Arama isteği gönderiliyor: $bookCode, $searchText");
       final response = await _dio.post(
         '$baseUrl/public/json.booksearch.php',
         data: {
@@ -164,40 +165,40 @@ class ApiService {
         ),
       );
 
-      print("Arama yanıtı alındı: ${response.statusCode}");
+      debugPrint("Arama yanıtı alındı: ${response.statusCode}");
 
       if (response.statusCode == 200) {
         try {
           final String responseStr = response.data.toString();
-          print(
+          debugPrint(
               "Yanıt içeriği (ilk 100 karakter): ${responseStr.substring(0, min(100, responseStr.length))}...");
 
           // HTML yanıtı kontrolü
           if (responseStr.trim().startsWith('<!DOCTYPE html>') ||
               responseStr.trim().startsWith('<html') ||
               responseStr.contains('<body')) {
-            print("Sunucu HTML yanıtı döndürdü, boş arama sonucu döndürülüyor");
+            debugPrint("Sunucu HTML yanıtı döndürdü, boş arama sonucu döndürülüyor");
             return [];
           }
 
           final Map<String, dynamic> jsonData = jsonDecode(responseStr);
           if (jsonData['rows'] != null && jsonData['rows'] is List) {
             final results = List<Map<String, dynamic>>.from(jsonData['rows']);
-            print("Arama sonuçları: ${results.length} sonuç bulundu");
+            debugPrint("Arama sonuçları: ${results.length} sonuç bulundu");
             return results;
           }
-          print("Arama sonuçları boş veya geçersiz format");
+          debugPrint("Arama sonuçları boş veya geçersiz format");
           return [];
         } catch (e) {
-          print("JSON ayrıştırma hatası: $e");
+          debugPrint("JSON ayrıştırma hatası: $e");
           return [];
         }
       } else {
-        print("API Hatası: ${response.statusCode}");
+        debugPrint("API Hatası: ${response.statusCode}");
         return [];
       }
     } catch (error) {
-      print("Dio Hatası: $error");
+      debugPrint("Dio Hatası: $error");
       return [];
     }
   }
@@ -230,7 +231,7 @@ class ApiService {
         throw Exception('Failed to load max page: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error loading max page for book $bookCode: $e');
+      debugPrint('Error loading max page for book $bookCode: $e');
       rethrow;
     }
   }

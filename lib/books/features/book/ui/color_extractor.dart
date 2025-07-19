@@ -94,7 +94,7 @@ class ColorExtractor {
       HSLColor hslColor = HSLColor.fromColor(extractedColor);
       return hslColor.withLightness((hslColor.lightness - 0.1).clamp(0.2, 0.6)).toColor();
     } catch (e) {
-      print('Error extracting dominant color: $e');
+      debugPrint('Error extracting dominant color: $e');
       return defaultColor;
     }
   }

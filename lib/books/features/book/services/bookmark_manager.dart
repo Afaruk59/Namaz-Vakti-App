@@ -1,4 +1,5 @@
 import 'package:namaz_vakti_app/books/features/book/services/bookmark_service.dart';
+import 'package:flutter/material.dart';
 
 /// Yer işareti işlemlerini yöneten servis sınıfı
 class BookmarkManager {
@@ -20,7 +21,7 @@ class BookmarkManager {
 
       onBookmarkStatusChanged(isBookmarked);
     } catch (e) {
-      print('Yer işareti durumu kontrol edilirken hata: $e');
+      debugPrint('Yer işareti durumu kontrol edilirken hata: $e');
     }
   }
 
@@ -30,7 +31,7 @@ class BookmarkManager {
       final bookmarks = await _bookmarkService.getBookmarks(bookCode);
       onHasBookmarksChanged(bookmarks.isNotEmpty);
     } catch (e) {
-      print('Kitap yer işaretleri kontrol edilirken hata: $e');
+      debugPrint('Kitap yer işaretleri kontrol edilirken hata: $e');
     }
   }
 

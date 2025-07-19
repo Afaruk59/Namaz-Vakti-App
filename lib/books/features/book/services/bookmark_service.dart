@@ -1,6 +1,8 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter/painting.dart';
+import 'package:flutter/material.dart';
 
 // Yer işareti modeli
 class Bookmark {
@@ -94,7 +96,7 @@ class BookmarkService {
       _cachedBookmarks = result;
       return result;
     } catch (e) {
-      print('Yer işaretleri yüklenirken hata: $e');
+      debugPrint('Yer işaretleri yüklenirken hata: $e');
       _cachedBookmarks = {};
       return {};
     }
@@ -109,8 +111,7 @@ class BookmarkService {
     final Map<String, List<dynamic>> serializedBookmarks = {};
 
     bookmarks.forEach((key, value) {
-      serializedBookmarks[key] =
-          value.map((bookmark) => bookmark.toJson()).toList();
+      serializedBookmarks[key] = value.map((bookmark) => bookmark.toJson()).toList();
     });
 
     final String bookmarksJson = json.encode(serializedBookmarks);
@@ -188,8 +189,7 @@ class BookmarkService {
       } else if (selectedText != null) {
         // Belirli bir metni kaldır (eski uyumluluk için)
         bookmarks[bookCode]!.removeWhere((bookmark) =>
-            bookmark.pageNumber == pageNumber &&
-            bookmark.selectedText == selectedText);
+            bookmark.pageNumber == pageNumber && bookmark.selectedText == selectedText);
       } else {
         // Sadece sayfa numarasına göre yer işaretini kaldır
         bookmarks[bookCode]!.removeWhere((bookmark) =>
@@ -304,9 +304,7 @@ class BookmarkService {
   Future<int> getBookmarkCount(String bookCode) async {
     // Önbellekte veri varsa, doğrudan kullan
     if (_cachedBookmarks != null) {
-      return _cachedBookmarks!.containsKey(bookCode)
-          ? _cachedBookmarks![bookCode]!.length
-          : 0;
+      return _cachedBookmarks!.containsKey(bookCode) ? _cachedBookmarks![bookCode]!.length : 0;
     }
 
     final bookmarks = await getBookmarks(bookCode);
@@ -319,26 +317,21 @@ class BookmarkService {
   }
 
   // Sayfada belirli bir metin için yer işareti olup olmadığını kontrol et
-  Future<bool> isTextBookmarked(
-      String bookCode, int pageNumber, String selectedText) async {
+  Future<bool> isTextBookmarked(String bookCode, int pageNumber, String selectedText) async {
     final bookmarks = await getBookmarks(bookCode);
-    return bookmarks.any((bookmark) =>
-        bookmark.pageNumber == pageNumber &&
-        bookmark.selectedText == selectedText);
+    return bookmarks.any(
+        (bookmark) => bookmark.pageNumber == pageNumber && bookmark.selectedText == selectedText);
   }
 
   // Sayfadaki tüm yer işaretlerini getir
-  Future<List<Bookmark>> getPageBookmarks(
-      String bookCode, int pageNumber) async {
+  Future<List<Bookmark>> getPageBookmarks(String bookCode, int pageNumber) async {
     final bookmarks = await getBookmarks(bookCode);
-    return bookmarks
-        .where((bookmark) => bookmark.pageNumber == pageNumber)
-        .toList();
+    return bookmarks.where((bookmark) => bookmark.pageNumber == pageNumber).toList();
   }
 
   // Sayfada belirli bir metne ve konuma ait yer işaretini getir
-  Future<Bookmark?> getTextBookmarkWithPosition(String bookCode, int pageNumber,
-      String selectedText, int startIndex, int endIndex) async {
+  Future<Bookmark?> getTextBookmarkWithPosition(
+      String bookCode, int pageNumber, String selectedText, int startIndex, int endIndex) async {
     final bookmarks = await getBookmarks(bookCode);
     try {
       return bookmarks.firstWhere((bookmark) =>
