@@ -13,14 +13,14 @@ class BookPageView extends StatelessWidget {
   final Color backgroundColor;
 
   const BookPageView({
-    Key? key,
+    super.key,
     required this.pageController,
     required this.uiManager,
     required this.bookCode,
     required this.onPageChanged,
     this.onStateChanged,
     required this.backgroundColor,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

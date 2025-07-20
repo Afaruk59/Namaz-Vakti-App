@@ -25,9 +25,7 @@ class ThemeManager {
   void updateAutoBackground(BuildContext context) {
     if (_isAutoBackground) {
       final newBackgroundColor =
-          Theme.of(context).brightness == Brightness.light
-              ? Colors.white
-              : Color(0xFF1E1E1E);
+          Theme.of(context).brightness == Brightness.light ? Colors.white : const Color(0xFF1E1E1E);
 
       // Sadece renk değiştiyse güncelle
       if (_backgroundColor != newBackgroundColor) {

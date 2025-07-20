@@ -102,7 +102,7 @@ class ColorExtractor {
   /// Helper method to load an image from an ImageProvider
   static Future<ui.Image> _loadImage(ImageProvider provider) {
     final completer = Completer<ui.Image>();
-    final ImageStream stream = provider.resolve(ImageConfiguration());
+    final ImageStream stream = provider.resolve(const ImageConfiguration());
 
     late ImageStreamListener listener;
     listener = ImageStreamListener((ImageInfo info, bool synchronousCall) {

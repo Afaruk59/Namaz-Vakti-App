@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 /*
 Copyright [2024-2025] [Afaruk59]
 

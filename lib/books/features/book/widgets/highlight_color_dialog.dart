@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 
 class HighlightColorDialog extends StatelessWidget {
@@ -14,12 +16,12 @@ class HighlightColorDialog extends StatelessWidget {
   final double maxWidth;
 
   const HighlightColorDialog({
-    Key? key,
+    super.key,
     required this.onColorSelected,
     this.position,
     this.onClose,
     this.maxWidth = 320,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -62,20 +64,20 @@ class HighlightColorDialog extends StatelessWidget {
                 if (!openUp)
                   Row(
                     children: [
-                      SizedBox(width: 24),
+                      const SizedBox(width: 24),
                       CustomPaint(
-                        size: Size(24, 12),
+                        size: const Size(24, 12),
                         painter: _BubbleArrowPainter(),
                       ),
                     ],
                   ),
                 Container(
                   constraints: BoxConstraints(maxWidth: maxWidth),
-                  padding: EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
+                    boxShadow: const [
                       BoxShadow(
                         color: Colors.black26,
                         blurRadius: 8,
@@ -84,52 +86,53 @@ class HighlightColorDialog extends StatelessWidget {
                     ],
                   ),
                   child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-                      Text('Vurgu Rengi Seçin', style: TextStyle(fontWeight: FontWeight.bold)),
-                      SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: defaultColors.map((color) {
-              return GestureDetector(
-                onTap: () {
-                  onColorSelected(color);
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text('Vurgu Rengi Seçin',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 12),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: defaultColors.map((color) {
+                          return GestureDetector(
+                            onTap: () {
+                              onColorSelected(color);
                               if (onClose != null) {
                                 onClose!();
                               } else {
-                  Navigator.of(context).pop();
+                                Navigator.of(context).pop();
                               }
-                },
-                child: Container(
+                            },
+                            child: Container(
                               width: 44,
                               height: 44,
-                  decoration: BoxDecoration(
-                    color: color,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.grey.shade300, width: 2),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 4,
-                        offset: Offset(0, 2),
+                              decoration: BoxDecoration(
+                                color: color,
+                                shape: BoxShape.circle,
+                                border: Border.all(color: Colors.grey.shade300, width: 2),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.1),
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }).toList(),
                       ),
                     ],
                   ),
                 ),
-              );
-            }).toList(),
-          ),
-        ],
-      ),
-                ),
                 if (openUp)
                   Row(
                     children: [
-                      SizedBox(width: 24),
+                      const SizedBox(width: 24),
                       Transform.rotate(
                         angle: 3.1416, // 180 derece döndür
                         child: CustomPaint(
-                          size: Size(24, 12),
+                          size: const Size(24, 12),
                           painter: _BubbleArrowPainter(),
                         ),
                       ),
@@ -159,6 +162,7 @@ class _BubbleArrowPainter extends CustomPainter {
     canvas.drawShadow(path, Colors.black26, 4, true);
     canvas.drawPath(path, paint);
   }
+
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

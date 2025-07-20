@@ -10,13 +10,13 @@ class BookControlsOverlay extends StatelessWidget {
   final List<Widget> additionalControls;
 
   const BookControlsOverlay({
-    Key? key,
+    super.key,
     required this.isBookmarked,
     required this.appBarColor,
     required this.onBookmarkToggle,
     this.isFullScreen = false,
     this.additionalControls = const [],
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

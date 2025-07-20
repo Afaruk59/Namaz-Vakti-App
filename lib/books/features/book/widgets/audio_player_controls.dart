@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:namaz_vakti_app/books/features/book/audio/audio_player_service.dart';
@@ -10,13 +12,13 @@ class AudioPlayerControls extends StatefulWidget {
   final Color appBarColor; // yeni parametre
 
   const AudioPlayerControls({
-    Key? key,
+    super.key,
     required this.audioPlayerService,
     required this.onSeek,
     required this.onSpeedChange,
     this.onPlayPauseProgress,
     required this.appBarColor, // yeni parametre
-  }) : super(key: key);
+  });
 
   @override
   State<AudioPlayerControls> createState() => _AudioPlayerControlsState();
@@ -51,13 +53,13 @@ class _AudioPlayerControlsState extends State<AudioPlayerControls>
   // Debounce function to limit the frequency of UI updates
   void _debounceAction(VoidCallback action) {
     _debounceTimer?.cancel();
-    _debounceTimer = Timer(Duration(milliseconds: 50), action);
+    _debounceTimer = Timer(const Duration(milliseconds: 50), action);
   }
 
   // State recovery scheduling after orientation change
   void _scheduleStateRecovery() {
     _stateRecoveryTimer?.cancel();
-    _stateRecoveryTimer = Timer(Duration(milliseconds: 200), () {
+    _stateRecoveryTimer = Timer(const Duration(milliseconds: 200), () {
       if (mounted && _needsStateRecovery) {
         debugPrint('AudioPlayerControls: Executing state recovery');
 
@@ -158,7 +160,7 @@ class _AudioPlayerControlsState extends State<AudioPlayerControls>
 
                     return Container(
                       height: 42,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         image: DecorationImage(
                           image: AssetImage('assets/images/appbar3.png'),
                           fit: BoxFit.cover,
@@ -181,7 +183,7 @@ class _AudioPlayerControlsState extends State<AudioPlayerControls>
                                     iconSize: 24,
                                     visualDensity: VisualDensity.compact,
                                     padding: EdgeInsets.zero,
-                                    constraints: BoxConstraints(minWidth: 32, minHeight: 32),
+                                    constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                                     icon: Icon(
                                       isPlaying ? Icons.pause : Icons.play_arrow,
                                       color: Colors.white,
@@ -197,7 +199,7 @@ class _AudioPlayerControlsState extends State<AudioPlayerControls>
                                 ),
 
                                 // Add spacing
-                                SizedBox(width: 4),
+                                const SizedBox(width: 4),
 
                                 // Current position
                                 RepaintBoundary(
@@ -214,8 +216,10 @@ class _AudioPlayerControlsState extends State<AudioPlayerControls>
                                   child: SliderTheme(
                                     data: SliderTheme.of(context).copyWith(
                                       trackHeight: 2.0,
-                                      thumbShape: RoundSliderThumbShape(enabledThumbRadius: 6.0),
-                                      overlayShape: RoundSliderOverlayShape(overlayRadius: 12.0),
+                                      thumbShape:
+                                          const RoundSliderThumbShape(enabledThumbRadius: 6.0),
+                                      overlayShape:
+                                          const RoundSliderOverlayShape(overlayRadius: 12.0),
                                       activeTrackColor: Colors.white,
                                       inactiveTrackColor: Colors.white.withOpacity(0.3),
                                       thumbColor: Colors.white,
@@ -275,8 +279,8 @@ class _AudioPlayerControlsState extends State<AudioPlayerControls>
                                 RepaintBoundary(
                                   child: TextButton(
                                     style: TextButton.styleFrom(
-                                      minimumSize: Size(32, 32),
-                                      padding: EdgeInsets.symmetric(horizontal: 8),
+                                      minimumSize: const Size(32, 32),
+                                      padding: const EdgeInsets.symmetric(horizontal: 8),
                                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                     ),
                                     onPressed: () {

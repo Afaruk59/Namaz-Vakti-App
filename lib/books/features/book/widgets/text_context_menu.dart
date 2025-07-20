@@ -15,7 +15,7 @@ class TextContextMenu extends StatelessWidget {
   final Function(String) onShareText;
 
   const TextContextMenu({
-    Key? key,
+    super.key,
     required this.editableTextState,
     required this.selectedText,
     required this.selectedStartIndex,
@@ -25,7 +25,7 @@ class TextContextMenu extends StatelessWidget {
     required this.onShowColorPicker,
     this.onSearch,
     required this.onShareText,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -55,8 +55,8 @@ class TextContextMenu extends StatelessWidget {
         // Kopyala butonu
         if (selectedText.isNotEmpty)
           TextButton.icon(
-            icon: Icon(Icons.copy, size: 18),
-            label: Text('Kopyala'),
+            icon: const Icon(Icons.copy, size: 18),
+            label: const Text('Kopyala'),
             onPressed: () {
               // Eğer seçilen metin bir vurgulamanın içindeyse, tüm vurgulanmış metni kopyala
               String textToCopy = selectedText;
@@ -75,8 +75,8 @@ class TextContextMenu extends StatelessWidget {
         if (selectedText.isNotEmpty)
           TextButton.icon(
             icon: isAlreadyHighlighted
-                ? Icon(Icons.highlight_off, size: 18)
-                : Icon(Icons.highlight, size: 18),
+                ? const Icon(Icons.highlight_off, size: 18)
+                : const Icon(Icons.highlight, size: 18),
             label: Text(isAlreadyHighlighted ? 'Vurgulamayı Kaldır' : 'Vurgula'),
             onPressed: () {
               editableTextState.hideToolbar();
@@ -93,8 +93,8 @@ class TextContextMenu extends StatelessWidget {
         // Ara butonu
         if (selectedText.isNotEmpty && onSearch != null)
           TextButton.icon(
-            icon: Icon(Icons.search, size: 18),
-            label: Text('Ara'),
+            icon: const Icon(Icons.search, size: 18),
+            label: const Text('Ara'),
             onPressed: () {
               // Seçilen metni arama için callback'e ilet
               onSearch!(selectedText);
@@ -105,8 +105,8 @@ class TextContextMenu extends StatelessWidget {
         // Paylaş butonu
         if (selectedText.isNotEmpty)
           TextButton.icon(
-            icon: Icon(Icons.share, size: 18),
-            label: Text('Paylaş'),
+            icon: const Icon(Icons.share, size: 18),
+            label: const Text('Paylaş'),
             onPressed: () {
               onShareText(selectedText);
               editableTextState.hideToolbar();

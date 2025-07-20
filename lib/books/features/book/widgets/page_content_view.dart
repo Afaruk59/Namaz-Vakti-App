@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:namaz_vakti_app/books/features/book/services/html_parser.dart';
 import 'package:namaz_vakti_app/books/features/book/models/book_page_model.dart';
@@ -23,7 +25,7 @@ class PageContentView extends StatefulWidget {
   final Function(String)? onSearch;
 
   const PageContentView({
-    Key? key,
+    super.key,
     required this.bookPage,
     required this.backgroundColor,
     required this.fontSize,
@@ -34,7 +36,7 @@ class PageContentView extends StatefulWidget {
     this.onBookmarkAdded,
     this.onBookmarkRemoved,
     this.onSearch,
-  }) : super(key: key);
+  });
 
   @override
   _PageContentViewState createState() => _PageContentViewState();
@@ -44,7 +46,7 @@ class _PageContentViewState extends State<PageContentView> {
   // ScrollController'ı sınıf seviyesinde tanımlayalım
   late ScrollController _scrollController;
   // Resim tam ekran modunda mı kontrolü için state ekle
-  bool _isImageFullScreen = false;
+  final bool _isImageFullScreen = false;
   // Vurgulama servisi
   final HighlightService _highlightService = HighlightService();
   // Yer işareti servisi
@@ -114,7 +116,7 @@ class _PageContentViewState extends State<PageContentView> {
         });
       }
     } catch (e) {
-      print('Vurgulanmış metinleri yükleme hatası: $e');
+      debugPrint('Vurgulanmış metinleri yükleme hatası: $e');
 
       // Hata durumunda boş bir vurgulama listesi göster
       if (mounted) {
@@ -180,7 +182,7 @@ class _PageContentViewState extends State<PageContentView> {
       // Kullanıcıya bilgi ver
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Metin vurgulandı ve yer işareti olarak eklendi'),
             duration: Duration(seconds: 2),
             behavior: SnackBarBehavior.floating,
@@ -196,7 +198,7 @@ class _PageContentViewState extends State<PageContentView> {
       // Hata durumunda kullanıcıya bilgi ver
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Yer işareti eklenirken bir hata oluştu'),
             duration: Duration(seconds: 2),
             behavior: SnackBarBehavior.floating,
@@ -242,7 +244,7 @@ class _PageContentViewState extends State<PageContentView> {
       // Kullanıcıya bilgi ver
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Vurgulama kaldırıldı'),
             duration: Duration(seconds: 2),
             behavior: SnackBarBehavior.floating,
@@ -253,7 +255,7 @@ class _PageContentViewState extends State<PageContentView> {
       // Hata durumunda kullanıcıya bilgi ver
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Vurgulama kaldırılırken bir hata oluştu'),
             duration: Duration(seconds: 2),
             behavior: SnackBarBehavior.floating,
@@ -341,7 +343,7 @@ class _PageContentViewState extends State<PageContentView> {
             ),
             child: SingleChildScrollView(
               controller: _scrollController,
-              padding: EdgeInsets.only(
+              padding: const EdgeInsets.only(
                   right: 0.0, // Removed right padding to align with scrollbar
                   left: 4.0,
                   top: 4.0,
@@ -381,7 +383,7 @@ class _PageContentViewState extends State<PageContentView> {
                 color: widget.backgroundColor,
               ),
               child: Padding(
-                padding: EdgeInsets.only(
+                padding: const EdgeInsets.only(
                     right:
                         4.0), // Increased padding to create more space between text and scrollbar
                 child: ContentViewBuilder.buildTextView(

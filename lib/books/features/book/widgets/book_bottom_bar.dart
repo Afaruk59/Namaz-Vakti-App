@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:namaz_vakti_app/books/features/book/screens/bookmarks_screen.dart';
 import 'package:namaz_vakti_app/books/features/book/services/bookmark_service.dart';
@@ -20,7 +22,7 @@ class BookBottomBar extends StatelessWidget {
   final bool hasBookmarks;
 
   const BookBottomBar({
-    Key? key,
+    super.key,
     required this.appBarColor,
     required this.currentPage,
     required this.isFirstPage,
@@ -36,7 +38,7 @@ class BookBottomBar extends StatelessWidget {
     required this.onPageNumberEntered,
     this.onBookmarksReturn,
     this.hasBookmarks = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +79,7 @@ class BookBottomBar extends StatelessWidget {
                         size: 30),
                     onPressed: isFirstPage ? null : onPreviousPage,
                     padding: EdgeInsets.zero,
-                    constraints: BoxConstraints(minWidth: 36, minHeight: 36),
+                    constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
                     visualDensity: VisualDensity.compact,
                   ),
                   Padding(
@@ -87,10 +89,10 @@ class BookBottomBar extends StatelessWidget {
                         _showPageInputDialog(context);
                       },
                       child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         child: Text(
                           '$currentPage',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 20,
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -104,7 +106,7 @@ class BookBottomBar extends StatelessWidget {
                         color: isLastPage ? Colors.white.withOpacity(0.3) : Colors.white, size: 30),
                     onPressed: isLastPage ? null : onNextPage,
                     padding: EdgeInsets.zero,
-                    constraints: BoxConstraints(minWidth: 36, minHeight: 36),
+                    constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
                     visualDensity: VisualDensity.compact,
                   ),
                 ],
@@ -120,10 +122,10 @@ class BookBottomBar extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(left: 8.0),
                     child: IconButton(
-                      icon: Icon(Icons.menu, color: Colors.white, size: 26),
+                      icon: const Icon(Icons.menu, color: Colors.white, size: 26),
                       onPressed: onMenuPressed,
                       padding: EdgeInsets.zero,
-                      constraints: BoxConstraints(minWidth: 40, minHeight: 40),
+                      constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
                       visualDensity: VisualDensity.compact,
                     ),
                   ),
@@ -131,7 +133,7 @@ class BookBottomBar extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(left: 8.0),
                       child: IconButton(
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.bookmarks_outlined,
                           color: Colors.white,
                           size: 24,
@@ -151,7 +153,7 @@ class BookBottomBar extends StatelessWidget {
                           }
                         },
                         padding: EdgeInsets.zero,
-                        constraints: BoxConstraints(minWidth: 40, minHeight: 40),
+                        constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
                         visualDensity: VisualDensity.compact,
                       ),
                     ),
@@ -172,7 +174,7 @@ class BookBottomBar extends StatelessWidget {
                     ),
                     onPressed: onPlayAudio,
                     padding: EdgeInsets.zero,
-                    constraints: BoxConstraints(minWidth: 40, minHeight: 40),
+                    constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
                     visualDensity: VisualDensity.compact,
                   ),
                 ),
@@ -190,7 +192,7 @@ class BookBottomBar extends StatelessWidget {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Sayfa Numarası Gir'),
+          title: const Text('Sayfa Numarası Gir'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -209,7 +211,7 @@ class BookBottomBar extends StatelessWidget {
                   }
                 },
                 autofocus: true,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: 'Sayfa numarası',
                 ),
               ),
@@ -220,7 +222,7 @@ class BookBottomBar extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('İptal'),
+              child: const Text('İptal'),
             ),
             TextButton(
               onPressed: () {
@@ -234,7 +236,7 @@ class BookBottomBar extends StatelessWidget {
                   Navigator.of(context).pop();
                 }
               },
-              child: Text('Gir'),
+              child: const Text('Gir'),
             ),
           ],
         );

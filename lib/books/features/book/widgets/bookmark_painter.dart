@@ -17,7 +17,7 @@ class BookmarkPainter extends CustomPainter {
     // Gölge efekti için
     final shadowPaint = Paint()
       ..color = Colors.black12
-      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 3);
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3);
 
     // Standart bookmark ikonu şekli - tek parça
     final path = Path();

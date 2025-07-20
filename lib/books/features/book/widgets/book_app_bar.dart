@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api, deprecated_member_use
+
 import 'package:flutter/material.dart';
 
 class BookAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -14,7 +16,7 @@ class BookAppBar extends StatefulWidget implements PreferredSizeWidget {
   final Function(bool) onBookmarkToggled;
 
   const BookAppBar({
-    Key? key,
+    super.key,
     required this.title,
     required this.appBarColor,
     required this.fontSize,
@@ -26,10 +28,10 @@ class BookAppBar extends StatefulWidget implements PreferredSizeWidget {
     required this.bookCode,
     required this.currentPage,
     required this.onBookmarkToggled,
-  }) : super(key: key);
+  });
 
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 
   @override
   _BookAppBarState createState() => _BookAppBarState();
@@ -96,14 +98,14 @@ class _BookAppBarState extends State<BookAppBar> {
           icon: const Icon(Icons.format_size, color: Colors.white),
           itemBuilder: (BuildContext context) => [
             PopupMenuItem<Map<String, dynamic>>(
-              value: {'type': 'settings'},
+              value: const {'type': 'settings'},
               child: SizedBox(
                 width: 300,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     _buildFontSizeSection(context),
-                    Divider(),
+                    const Divider(),
                     _buildBackgroundSection(context),
                   ],
                 ),
@@ -121,16 +123,16 @@ class _BookAppBarState extends State<BookAppBar> {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
+            const Padding(
+              padding: EdgeInsets.all(8.0),
               child: Text('Yazı Boyutu', style: TextStyle(fontWeight: FontWeight.bold)),
             ),
             Column(
               children: [
                 SliderTheme(
                   data: SliderTheme.of(context).copyWith(
-                    thumbShape: RoundSliderThumbShape(enabledThumbRadius: 10.0),
-                    overlayShape: RoundSliderOverlayShape(overlayRadius: 20.0),
+                    thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 10.0),
+                    overlayShape: const RoundSliderOverlayShape(overlayRadius: 20.0),
                     trackHeight: 4.0,
                   ),
                   child: Slider(
@@ -148,7 +150,7 @@ class _BookAppBarState extends State<BookAppBar> {
                     },
                   ),
                 ),
-                Row(
+                const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('T', style: TextStyle(fontSize: 14.0)),
@@ -169,8 +171,8 @@ class _BookAppBarState extends State<BookAppBar> {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
+            const Padding(
+              padding: EdgeInsets.all(8.0),
               child: Text('Arka Plan', style: TextStyle(fontWeight: FontWeight.bold)),
             ),
             Column(
@@ -181,7 +183,7 @@ class _BookAppBarState extends State<BookAppBar> {
                     Column(
                       children: [
                         Row(
-                          children: [Colors.white, Color(0xFFF5E6D3), Color(0xFFE5F9E0)]
+                          children: [Colors.white, const Color(0xFFF5E6D3), const Color(0xFFE5F9E0)]
                               .map(
                                 (color) => GestureDetector(
                                   onTap: () async {
@@ -194,7 +196,7 @@ class _BookAppBarState extends State<BookAppBar> {
                                   child: Container(
                                     width: 40,
                                     height: 40,
-                                    margin: EdgeInsets.all(4),
+                                    margin: const EdgeInsets.all(4),
                                     decoration: BoxDecoration(
                                       color: color,
                                       shape: BoxShape.circle,
@@ -212,7 +214,11 @@ class _BookAppBarState extends State<BookAppBar> {
                               .toList(),
                         ),
                         Row(
-                          children: [Color(0xFFE0F1F9), Color(0xFF2C3E50), Color(0xFF2E1810)]
+                          children: [
+                            const Color(0xFFE0F1F9),
+                            const Color(0xFF2C3E50),
+                            const Color(0xFF2E1810)
+                          ]
                               .map(
                                 (color) => GestureDetector(
                                   onTap: () async {
@@ -225,7 +231,7 @@ class _BookAppBarState extends State<BookAppBar> {
                                   child: Container(
                                     width: 40,
                                     height: 40,
-                                    margin: EdgeInsets.all(4),
+                                    margin: const EdgeInsets.all(4),
                                     decoration: BoxDecoration(
                                       color: color,
                                       shape: BoxShape.circle,

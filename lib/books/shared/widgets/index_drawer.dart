@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:namaz_vakti_app/books/shared/models/index_item_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,7 +15,7 @@ class IndexDrawer extends StatefulWidget {
   final String? initialSearchText;
 
   const IndexDrawer({
-    Key? key,
+    super.key,
     required this.indexFuture,
     required this.bookTitle,
     required this.onPageSelected,
@@ -22,7 +24,7 @@ class IndexDrawer extends StatefulWidget {
     this.searchFunction,
     this.juzIndex,
     this.initialSearchText,
-  }) : super(key: key);
+  });
 
   @override
   _IndexDrawerState createState() => _IndexDrawerState();
@@ -153,12 +155,12 @@ class _IndexDrawerState extends State<IndexDrawer> with SingleTickerProviderStat
             ? TextField(
                 controller: _searchController,
                 autofocus: widget.initialSearchText == null,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: 'Ara...',
                   hintStyle: TextStyle(color: Colors.white70),
                   border: InputBorder.none,
                 ),
-                style: TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.white),
                 onChanged: _filterItems,
                 onSubmitted: _searchInBook,
               )
@@ -184,12 +186,12 @@ class _IndexDrawerState extends State<IndexDrawer> with SingleTickerProviderStat
                 controller: _tabController,
                 indicatorColor: Colors.white,
                 indicatorWeight: 3,
-                labelStyle: TextStyle(
+                labelStyle: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
                   color: Colors.white,
                 ),
-                unselectedLabelStyle: TextStyle(
+                unselectedLabelStyle: const TextStyle(
                   fontWeight: FontWeight.normal,
                   fontSize: 16,
                   color: Colors.white70,
@@ -219,13 +221,13 @@ class _IndexDrawerState extends State<IndexDrawer> with SingleTickerProviderStat
 
   Widget _buildJuzList() {
     if (widget.juzIndex == null || widget.juzIndex!.isEmpty) {
-      return Center(child: Text('Cüz listesi bulunamadı'));
+      return const Center(child: Text('Cüz listesi bulunamadı'));
     }
 
     return Scrollbar(
       controller: _juzScrollController,
       thickness: 6.0,
-      radius: Radius.circular(3.0),
+      radius: const Radius.circular(3.0),
       child: ListView.builder(
         controller: _juzScrollController,
         itemCount: widget.juzIndex!.length,
@@ -240,9 +242,9 @@ class _IndexDrawerState extends State<IndexDrawer> with SingleTickerProviderStat
               ),
             ),
             trailing: Container(
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceVariant,
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Text(
@@ -266,7 +268,7 @@ class _IndexDrawerState extends State<IndexDrawer> with SingleTickerProviderStat
 
   Widget _buildMainContent() {
     if (_isLoading) {
-      return Center(child: CircularProgressIndicator());
+      return const Center(child: CircularProgressIndicator());
     }
 
     if (_showSearchResults) {
@@ -274,7 +276,7 @@ class _IndexDrawerState extends State<IndexDrawer> with SingleTickerProviderStat
     }
 
     if (_searchText.isNotEmpty && _filteredItems.isEmpty) {
-      return Center(child: Text('Sonuç bulunamadı'));
+      return const Center(child: Text('Sonuç bulunamadı'));
     }
 
     return Column(
@@ -284,7 +286,7 @@ class _IndexDrawerState extends State<IndexDrawer> with SingleTickerProviderStat
           child: Scrollbar(
             controller: _suresScrollController,
             thickness: 6.0,
-            radius: Radius.circular(3.0),
+            radius: const Radius.circular(3.0),
             child: ListView.builder(
               controller: _suresScrollController,
               itemCount: _filteredItems.length,
@@ -299,9 +301,9 @@ class _IndexDrawerState extends State<IndexDrawer> with SingleTickerProviderStat
                     ),
                   ),
                   trailing: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surfaceVariant,
+                      color: Theme.of(context).colorScheme.surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: Text(
@@ -328,11 +330,11 @@ class _IndexDrawerState extends State<IndexDrawer> with SingleTickerProviderStat
 
   Widget _buildSearchResults() {
     if (_isLoading) {
-      return Center(child: CircularProgressIndicator());
+      return const Center(child: CircularProgressIndicator());
     }
 
     if (_searchResults.isEmpty) {
-      return Center(
+      return const Center(
         child: Text('Sonuç bulunamadı'),
       );
     }
@@ -340,7 +342,7 @@ class _IndexDrawerState extends State<IndexDrawer> with SingleTickerProviderStat
     return Scrollbar(
       controller: _searchScrollController,
       thickness: 6.0,
-      radius: Radius.circular(3.0),
+      radius: const Radius.circular(3.0),
       child: ListView.builder(
         controller: _searchScrollController,
         itemCount: _searchResults.length,
@@ -368,9 +370,9 @@ class _IndexDrawerState extends State<IndexDrawer> with SingleTickerProviderStat
               ),
             ),
             trailing: Container(
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceVariant,
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Text(
@@ -440,14 +442,14 @@ class _IndexDrawerState extends State<IndexDrawer> with SingleTickerProviderStat
 
   Widget _buildRecentSearches() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
+              const Text(
                 'Son Aramalar',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
@@ -456,7 +458,7 @@ class _IndexDrawerState extends State<IndexDrawer> with SingleTickerProviderStat
               ),
               TextButton(
                 onPressed: _clearRecentSearches,
-                child: Text('Temizle'),
+                child: const Text('Temizle'),
               ),
             ],
           ),
@@ -478,8 +480,8 @@ class _IndexDrawerState extends State<IndexDrawer> with SingleTickerProviderStat
                     _prefs?.setStringList('recent_searches_${widget.bookCode}', _recentSearches);
                   },
                   backgroundColor: Colors.grey[200],
-                  labelStyle: TextStyle(fontSize: 12),
-                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  labelStyle: const TextStyle(fontSize: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
               );

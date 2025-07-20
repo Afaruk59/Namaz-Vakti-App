@@ -1,3 +1,5 @@
+// ignore_for_file: unrelated_type_equality_checks, use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:namaz_vakti_app/components/scaffold_layout.dart';
@@ -12,17 +14,15 @@ import 'package:namaz_vakti_app/books/features/book/widgets/book_bookmark_indica
 import 'package:namaz_vakti_app/books/features/book/services/audio_page_service.dart';
 import 'no_internet_screen.dart';
 import 'package:namaz_vakti_app/books/features/book/services/book_info_service.dart';
-import 'package:flutter/services.dart';
 
 class BookScreen extends StatefulWidget {
-  const BookScreen({Key? key}) : super(key: key);
+  const BookScreen({super.key});
 
   @override
   BookScreenState createState() => BookScreenState();
 
   /// Arka plandan (method channel ile) çağrıldığında bir sonraki sayfaya geçişi tetikler
   static void goToNextPageFromBackground() {
-    // TODO: Eğer kitap veya Kuran dinleme ekranı açıksa ilgili controller'a haber ver
     // Bunu bir global event, provider, veya callback ile ilgili ekrana iletmek gerekir.
     // Şimdilik sadece log basalım.
     debugPrint(
@@ -34,7 +34,7 @@ class BookScreen extends StatefulWidget {
 
 class BookScreenState extends State<BookScreen> {
   final List<Book> books = Book.samples();
-  int _gridColumns = 3;
+  final int _gridColumns = 3;
   final BookProgressService _progressService = BookProgressService();
   bool _isProgressLoaded = false;
   bool _hasInternetConnection = true;
@@ -306,7 +306,7 @@ class BookScreenState extends State<BookScreen> {
                   const SizedBox(width: 8),
                   // İlerleme çubuğu
                   Expanded(
-                    child: Container(
+                    child: SizedBox(
                       height: 5.5,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(2.5),
@@ -331,7 +331,7 @@ class BookScreenState extends State<BookScreen> {
                                 'https://www.hakikatkitabevi.net/book.php?bookCode=${book.code}'),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState == ConnectionState.waiting) {
-                                return SizedBox(
+                                return const SizedBox(
                                   height: 24,
                                   child: Center(child: CircularProgressIndicator()),
                                 );
@@ -362,7 +362,7 @@ class BookScreenState extends State<BookScreen> {
                                         'https://www.hakikatkitabevi.net/book.php?bookCode=${book.code}'),
                                     builder: (context, snapshot) {
                                       if (snapshot.connectionState == ConnectionState.waiting) {
-                                        return SizedBox(
+                                        return const SizedBox(
                                           height: 60,
                                           child: Center(child: CircularProgressIndicator()),
                                         );

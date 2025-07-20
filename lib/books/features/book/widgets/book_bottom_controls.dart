@@ -24,7 +24,7 @@ class BookBottomControls extends StatelessWidget {
   final Function() onMenuPressed;
 
   const BookBottomControls({
-    Key? key,
+    super.key,
     required this.pageController,
     required this.audioPlayerService,
     required this.appBarColor,
@@ -40,7 +40,7 @@ class BookBottomControls extends StatelessWidget {
     required this.refreshBookmarkStatus,
     required this.onPageNumberEntered,
     required this.onMenuPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -65,13 +65,13 @@ class BookBottomControls extends StatelessWidget {
                 isLastPage: pageController.isLastPage,
                 onPreviousPage: () {
                   pageController.previousPage(
-                    duration: Duration(milliseconds: 300),
+                    duration: const Duration(milliseconds: 300),
                     curve: Curves.easeInOut,
                   );
                 },
                 onNextPage: () {
                   pageController.nextPage(
-                    duration: Duration(milliseconds: 300),
+                    duration: const Duration(milliseconds: 300),
                     curve: Curves.easeInOut,
                   );
                 },

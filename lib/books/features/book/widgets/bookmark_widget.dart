@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:namaz_vakti_app/books/features/book/services/bookmark_service.dart';
 
@@ -8,12 +10,12 @@ class BookmarkWidget extends StatefulWidget {
   final Function(bool) onBookmarkToggled;
 
   const BookmarkWidget({
-    Key? key,
+    super.key,
     required this.bookCode,
     required this.pageNumber,
     this.bookmarkColor = Colors.red,
     required this.onBookmarkToggled,
-  }) : super(key: key);
+  });
 
   @override
   _BookmarkWidgetState createState() => _BookmarkWidgetState();
@@ -92,11 +94,11 @@ class _BookmarkWidgetState extends State<BookmarkWidget> with SingleTickerProvid
             height: 20 + _animation.value * 80, // Animasyon ile uzunluğu değişir
             decoration: BoxDecoration(
               color: widget.bookmarkColor,
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(10),
                 bottomRight: Radius.circular(10),
               ),
-              boxShadow: [
+              boxShadow: const [
                 BoxShadow(
                   color: Colors.black26,
                   blurRadius: 4,
@@ -110,7 +112,7 @@ class _BookmarkWidgetState extends State<BookmarkWidget> with SingleTickerProvid
                 if (_animation.value > 0.5) // Sadece ayraç uzadığında ikonu göster
                   Opacity(
                     opacity: (_animation.value - 0.5) * 2, // Yavaşça görünür ol
-                    child: Icon(
+                    child: const Icon(
                       Icons.bookmark,
                       color: Colors.white,
                       size: 20,

@@ -11,7 +11,7 @@ class Book {
     String? title,
     String? author,
     String? description,
-  })  : coverImageUrl = coverImageUrl ?? 'assets/book_covers/${code}.png',
+  })  : coverImageUrl = coverImageUrl ?? 'assets/book_covers/$code.png',
         title = title ?? "Kitap $code",
         author = author ?? "Hakikat Kitabevi",
         description = description ?? "Bu kitap $code numaralı kitaptır. Açıklama eklenmedi.";

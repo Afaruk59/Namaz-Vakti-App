@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:namaz_vakti_app/books/features/book/widgets/bookmark_painter.dart';
 
@@ -9,17 +11,17 @@ class BookmarkButton extends StatelessWidget {
   final bool visible;
 
   const BookmarkButton({
-    Key? key,
+    super.key,
     required this.isBookmarked,
     required this.appBarColor,
     required this.onToggle,
     this.visible = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     if (!visible) {
-      return SizedBox();
+      return const SizedBox();
     }
 
     return Positioned(
@@ -28,7 +30,7 @@ class BookmarkButton extends StatelessWidget {
       child: GestureDetector(
         onTap: onToggle,
         child: AnimatedContainer(
-          duration: Duration(milliseconds: 300),
+          duration: const Duration(milliseconds: 300),
           width: 30,
           height: isBookmarked ? 50 : 40, // Make longer when bookmarked
           child: CustomPaint(
@@ -38,7 +40,7 @@ class BookmarkButton extends StatelessWidget {
             ),
             child: Center(
               child: Padding(
-                padding: EdgeInsets.only(bottom: 8),
+                padding: const EdgeInsets.only(bottom: 8),
                 child: Icon(
                   isBookmarked ? Icons.bookmark : Icons.bookmark_border,
                   color: Colors.white,

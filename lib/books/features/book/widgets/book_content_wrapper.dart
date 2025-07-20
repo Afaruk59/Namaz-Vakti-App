@@ -16,7 +16,7 @@ class BookContentWrapper extends StatelessWidget {
   final Function(String) onSearch;
 
   const BookContentWrapper({
-    Key? key,
+    super.key,
     required this.bookPage,
     required this.themeController,
     required this.bookmarkController,
@@ -25,7 +25,7 @@ class BookContentWrapper extends StatelessWidget {
     required this.isFullScreen,
     required this.onFullScreenChanged,
     required this.onSearch,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

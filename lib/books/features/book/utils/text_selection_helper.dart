@@ -106,6 +106,7 @@ class TextSelectionHelper {
     final shareText = '$textToShare\n\n$pageUrl';
 
     // Metni paylaş
+    // ignore: deprecated_member_use
     Share.share(shareText);
   }
 }

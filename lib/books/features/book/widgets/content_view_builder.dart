@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:photo_view/photo_view.dart';
@@ -47,7 +49,7 @@ class ContentViewBuilder {
 
       // Add paragraph spacing if not the first element
       if (i > 0) {
-        allTextSpans.add(TextSpan(text: '\n\n'));
+        allTextSpans.add(const TextSpan(text: '\n\n'));
       }
 
       // Add the text spans for this element
@@ -64,7 +66,7 @@ class ContentViewBuilder {
         if (allTextSpans.isNotEmpty)
           Container(
             width: double.infinity,
-            padding: EdgeInsets.symmetric(vertical: 4),
+            padding: const EdgeInsets.symmetric(vertical: 4),
             child: SelectableText.rich(
               TextSpan(
                 style: TextStyle(
@@ -89,11 +91,11 @@ class ContentViewBuilder {
           // Resim elementi
           String imageUrl = element['src'] ?? '';
           if (!imageUrl.startsWith('http://') && !imageUrl.startsWith('https://')) {
-            imageUrl = 'https://www.hakikatkitabevi.net' + imageUrl;
+            imageUrl = 'https://www.hakikatkitabevi.net$imageUrl';
           }
 
           return Container(
-            margin: EdgeInsets.symmetric(vertical: 16),
+            margin: const EdgeInsets.symmetric(vertical: 16),
             height: isImageFullScreen ? 500 : 300,
             child: PhotoView(
               imageProvider: CachedNetworkImageProvider(imageUrl),
@@ -117,8 +119,8 @@ class ContentViewBuilder {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.error, color: Colors.red, size: 48),
-                    SizedBox(height: 16),
+                    const Icon(Icons.error, color: Colors.red, size: 48),
+                    const SizedBox(height: 16),
                     Text(
                       'Resim yüklenemedi',
                       style: TextStyle(
@@ -147,7 +149,7 @@ class ContentViewBuilder {
               },
             ),
           );
-        }).toList(),
+        }),
       ],
     );
   }
@@ -183,7 +185,7 @@ class ContentViewBuilder {
 
       // Add paragraph spacing if not the first element
       if (i > 0) {
-        allTextSpans.add(TextSpan(text: '\n\n'));
+        allTextSpans.add(const TextSpan(text: '\n\n'));
       }
 
       // Add the text spans for this element
@@ -196,10 +198,10 @@ class ContentViewBuilder {
     return Theme(
       data: ThemeData(
         scrollbarTheme: ScrollbarThemeData(
-          thickness: MaterialStateProperty.all(6.0),
-          thumbColor: MaterialStateProperty.all(Colors.grey.withOpacity(0.6)),
-          radius: Radius.circular(3.0),
-          thumbVisibility: MaterialStateProperty.all(true),
+          thickness: WidgetStateProperty.all(6.0),
+          thumbColor: WidgetStateProperty.all(Colors.grey.withOpacity(0.6)),
+          radius: const Radius.circular(3.0),
+          thumbVisibility: WidgetStateProperty.all(true),
           mainAxisMargin: 4.0,
           crossAxisMargin:
               1.0, // Increased from 1.0 to create more space between text and scrollbar
@@ -209,12 +211,12 @@ class ContentViewBuilder {
         controller: scrollController,
         child: SingleChildScrollView(
           controller: scrollController,
-          padding: EdgeInsets.only(
+          padding: const EdgeInsets.only(
               right: 10.0, // Increased from 8.0 to create more space between text and scrollbar
               left: 4.0,
               top: 4.0,
               bottom: 4.0),
-          child: Container(
+          child: SizedBox(
             width: double.infinity,
             child: SelectableText.rich(
               TextSpan(
