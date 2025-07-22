@@ -1,231 +1,206 @@
 {
-    "@@locale": "en",
-
-    "lang": "English",
-    "appName": "Prayer Times App",
-
-    "timesPageTitle": "Times",
-    "qiblaPageTitle": "Prayer Compass",
-    "zikirPageTitle": "Dhikr",
-    "morePageTitle": "More",
-    "settingsPageTitle": "Settings",
-    "datesTitle": "Holy Days",
-    "datesTitleShort": "Holy Days",
-    "kazaTitle": "Missed Prayers",
-    "booksTitle": "Sourcebooks",
-    "aboutTitle": "About",
-    "githubTitle": "Github Page",
-    "licenseTitle": "License",
-    "searchTitle": "Location Search",
-    "rate": "Rate the App",
-
-    "nav1": "Times",
-    "nav2": "Qibla",
-    "nav3": "Dhikr",
-    "nav4": "More",
-    "nav5": "Settings",
-
-    "locationButtonText": "Synchronization",
-    "yes": "Yes",
-    "leave": "Leave",
-    "ok": "OK",
-    "remove": "Remove",
-
-    "imsak": "Fajr",
-    "sabah": "Morning",
-    "gunes": "Tulu",
-    "ogle": "Zuhr",
-    "ikindi": "Asr",
-    "aksam": "Maghrib",
-    "yatsi": "Isha",
-    "israk": "Ishrâq",
-    "kerahat": "Karahat",
-    "asrisani": "Asr-i Thâni",
-    "isfirar": "Isfirâr",
-    "istibak": "Ishtibâk",
-    "isaisani": "Ishâ-i Thani",
-    "kible": "Qibla Time",
-    "vitir": "Witr",
-    "oruc": "Fast",
-
-    "timeLeftImsak": "Remaining Time for Fajr",
-    "timeLeftSabah": "Remaining Time for Morning",
-    "timeLeftGunes": "Remaining Time for Tulu",
-    "timeLeftOgle": "Remaining Time for Zuhr",
-    "timeLeftIkindi": "Remaining Time for Asr",
-    "timeLeftAksam": "Remaining Time for Maghrib",
-    "timeLeftYatsi": "Remaining Time for Isha",
-
-    "calendarTitle1": "Word of the Day:",
-    "calendarTitle2": "Back Page:",
-
-    "qiblaTargetText": "Goal:",
-
-    "zikirCount": "Dhikr Count",
-    "popupInfo1": "Finished:",
-    "popupInfo2": "Run-on:",
-    "resetMessageTitle": "Reset Dhikr",
-    "resetMessageBody": "Do you really want to reset?",
-    "zikirMessageTitle": "Dhikr Count:",
-    "defaultProf": "Default",
-    "profileMessageTitle": "New Profile",
-    "removeMessageTitle": "Remove Profile",
-    "removeMessageBody": "Do you really want to remove?",
-
-    "ln": "Language",
-    "languageMessageBody": "It will change when the app is restarted.",
-    "otoLocal": "Location Tracking",
-    "darkMode": "Dark Mode",
-    "gradient": "Gradient Background",
-    "themeColor": "Theme Color",
-    "colorPaletteTitle": "Color Selection",
-
-    "startupTitle": "Welcome.",
-    "startupDescription": "Prayer times are taken from Namazvakti.com",
-    "tenbih": "Important Notice Regarding Prayer Times",
-
-    "loading": "Searching",
-
-    "locationMessageTitle": "Location Access Required",
-    "locationMessageBody": "Please turn on location to continue.",
-    "openLoc": "Turn on",
-
-    "permissionMessageTitle": "Location Permission Required",
-    "permissionMessageBody": "Location permission is required for this app to work properly.",
-    "retry": "Retry",
-    "permissionDeniedBody": "Location permission has been permanently denied. Please allow permission from settings to continue.",
-    "openSettings": "Open Settings",
-    
-    "wifiMessageTitle": "Internet Connection Required",
-    "wifiMessageBody": "Please enable Wi-Fi or Mobile Data to continue.",
-    "wifiMessageBody2": "(The app will not work properly without internet.)",
-
-    "kazaMessageTitle": "Missed Prayer Count:",
-
-    "search": "Search",
-    "enterLoc": "Enter Location...",
-
-    "locationButtonTextonStart": "Find location",
-    "layout": "Layout",
-    "rounded": "Round",
-    "sharp": "Sharp",
-
-    "ilmihal": "Seâdet-i Ebediyye Endless Bliss",
-    "mektubat": "Mektûbat Tercemesi",
-    "islam": "İslâm Ahlâkı",
-    "kiyamet": "Kıyâmet ve Âhıret",
-    "namaz": "Namâz Kitâbı",
-    "cevab": "Cevâb Veremedi",
-    "eshabikiram": "Eshâb-ı Kirâm",
-    "faideli": "Fâideli Bilgiler",
-    "haksoz": "Hak Sözün Vesîkaları",
-    "iman": "Herkese Lâzım Olan Îmân",
-    "ingiliz": "İngiliz Câsûsunun İ`tirâfları",
-    "kiymetsiz": "Kıymetsiz Yazılar",
-    "menakib": "Menâkıb-ı Çihâr Yâr-i Güzîn",
-    "sevahid": "Şevâhid-ün Nübüvve",
-
-    "ilmihalInfo": "(Tam İlmihâl-Se'âdet-i Ebediyye) kitâbı, üç kısımdan meydâna gelmişdir: I. kısımda; İslâm dînine nasıl inanılacağı, ehl-i sünnet i'tikâdı, İslâm dinine iftirâ edenlere cevâblar, Kur'ân-ı kerîm ve tefsîrler, kur'ân-ı kerîmdeki ilmlerin sınıflandırılması, Nemâzın ehemmiyyeti, farzları, abdest, gusl, nemâz ile ilgili bütün husûslar, kaza nemâzları, Cum'a ve bayram nemâzları, Zekât, Ramezân Orucu, Sadaka-i Fıtr, Yemîn ve Yemîn Keffâreti, Adak, Kurban Kesmek, Hac, Mübârek Geceler, Hicrî ve Mîlâdî Senelerin birbirine çevrilmeleri, Selâmlaşmak, Muhammed aleyhisselâmın hayâtı, Mübârek ahlâkı, anne, baba ve dedelerinin mü'min oluşu, Sübhâne Rabbîke âyeti hakkında bilgiler... yer almakdadır. II. kısımda; Îmân, Akl, Kaza-Kader, Tefsîr ve Hadîs kitâbları, Hadîs âlimleri, Allahü teâlânın ismleri, Mezheb, Fıkh, İmâm-ı A'zam hazretleri, Vehhâbîlere Ehl-i Sünnetin cevâbı, Evliyâ rûhlarından faydalanma, Bozuk dinler, hurûfîlik, Sosyalizm ve Sosyâl adâlet, İslâmiyyetde nikâh, Talâk, Süt kardeşlik, Nafaka, Komşu hakkı, Halâl ve Harâmlar, İsrâf ve Fâiz, Fen Bilgileri, Tevekkül, Müzik ve Tegannî, Cin hakkında bilgi, Bir Müslimân babanın kızına nasîhatları, Mu'cîze, kerâmet, firâset, istidrâc ... gibi konular yer almakdadır. III. kısımda, İslâmiyyetde kesb ve ticâret, Bey' ve Şirâ', Alış-verişde muhayyerlik, Bâtıl, Fâsid ve Mekrûh Satışlar, Ticârette adâlet ve ihtikâr, dinini kayırmak, ihsân, Banka ve Fâiz, Şirketler, Cezâlar, Ölüm ve Ölüme Hâzırlık, Meyyite Hizmetler, Ferâiz, Meyyit için İskât ... gibi konular yer almakdadır. Ayrıca konular arasında, İmâm-ı Rabbânî hazretlerinin ve oğlu Muhammed Ma'sûm hazretlerinin (MEKTÛBÂT) kitâblarından çeşitli mektûblar vardır. Son bölümde (1020) zâtın hâl tercemesi yer almakdadır. Fihrist bölümünde zâtlar, kitâblar, mevzû'lar fihristleri vardır. Bine yakın eserden uzun bir zemânda hâzırlanan bu nâdîde eserde; insanı se'âdete kavuşduracak bütün husûslar yer almakdadır.",
-    "mektubatInfo": "971 [m.1563] de doğan ve 1034 [m.1624] de vefât eden, ikinci bin yılın müceddîdi, İmâm-ı Rabbânî Ahmed Fârûkî Serhendi hazretleri, Kur'ân-ı kerîm ve Hadîs-i Şerîflerden sonra, en kıymetli üçüncü kitâb olan (MEKTÛBÂT) kitâbını yazmışdır. İnsanoğlunun rûhî hastalıklarının tedâvî yollarını göstermiş, islâm dînine nasıl inanılacağı, ibâdetlerin ehemmiyyeti, Evliyâlık, Resûlullahın güzel ahlâkı, islâmiyyet, tarîkat ve hakîkatin ayrı ayrı şeyler olmadıklarını îzâh etmişdir. Üç cild ve aslı fârisî olan mektûbât kitâbında (536) mektûb vardır.",
-    "islamInfo": "İslâm dîninin güzel ahlâkına ulaşmak için kurtulmak gereken 40 kötü ahlak ve bunlardan kurtulma çarelerinin anlatıldığı bu kitâbda aynı zamanda (Mızraklı İlmihâl) diye bilinen Muhammed bin Kutbüddîn İznîki hazretlerinin kitâbı esas alınarak yazılan Îmân ve ibâdet bilgilerini içeren Cennet Yolu İlmihâli bulunmaktadır.",
-    "kiyametInfo": "Kıyâmet ve Âhıret kitâbında insanın ölümü, rûhun bedenden ayrılması, kabr hayâtı, kabr süâlleri, kıyâmet günü insanların hesâba çekilmesi, Cennet ve Cehenneme nasıl gidileceği büyük islâm âlimi, İmâm-ı Gazâlî hazretlerinin kitâblarından terceme edilerek geniş olarak açıklanmakda ve vehhâbîliğe cevap vererek evliyâlığın ne olduğu, kıyâmet günü herkesin sevdiğinin yanında olacağı konuları açıklanmakdadır.",
-    "namazInfo": "Küçük bir ilmihal niteliğinde olan bu kitâbda her müslümanın bilmesi zaruri olan Ehl-i sünnet i'tikâdı, namaz, abdest, gusl, teyemmüm, oruç, hac ve zekât bilgileri anlatılmaktadır. Namâz kitâbının sonunda, namâzın içinde ve dışında okunacak duâlar arabî olarak yer almaktadır. Namâz ve Namâzla ilgili bilgileri detaylıca içeren dokuz kısımdan oluşmaktadır.",
-    "cevabInfo": "Îsâ aleyhisselâma gönderilen ve hak kitâb olan İncîlin tahrîf edilmesi ile ortaya çıkan dört kitâb [Matta İncîli, Markos İncîli, Luka İncîli, Yuhannâ İncîli] hakkında bilgi vermekde, aralarındaki ihtilâfları açıklamakdadır. Kur'ân-ı kerîm ile İncîl karşılaştırılmakda, İncîlin tahrîf edildiği, hükümlerinin yürürlükden kalkdığı, Kur'ân-ı kerîmin bütün semâvî kitâbların hükümlerini yürürlükden kaldırdığı îzâh edilmekdedir. Îsevîlikdeki teslîs (üç tanrı) inancının yanlış olduğu, Allahü teâlânın bir olduğu, ilim ve kudret sıfâtları ilmî olarak açıklanmakdadır. Îsâ aleyhisselâmın insan ve Peygamber olduğu, ona tapılmıyacağı îzâh edilmekdedir. Yehûdîlik, Tevrât ve Talmud hakkında da bilgi verilmekdedir.",
-    "eshabikiramInfo": "Eshâb-ı Kirâm kitâbının başında, Peygamberimiz Muhammed aleyhisselâmın Eshâbının üstünlüğünü, Eshâb-ı kirâm arasındaki hâdiseler, Eshâb-ı kirâma dil uzatanların haksız ve câhil oldukları anlatılmakda, ayrıca; (İctihâd) ın ne olduğu açıklanmakdadır.",
-    "faideliInfo": "İslâm dîni ve Ehl-i Sünnet i'tikâdı hakkında öz bilgiler verilen kitâbda, islâmî ilimlerin ve fıkh âlimlerinin sınıflandırılması, İmâm-ı A'zam Ebû Hanîfe hazretlerinin hayâtı anlatılmaktadır. Üç kısımdan meydâna gelen Fâideli Bilgiler kitâbında dinde reform yapmak isteyenlere, İslâm dinini bozan zararlı cereyân ve fikirlere ve cebriyye, mu'tezîle, vehhâbîlik gibi sapık fırkalara cevâb verilmektedir.",
-    "haksozInfo": "Hak sözün vesîkaları kitabı Şî'îlik, Ehl-i Beyt, Eshâb-ı kirâm ve Ehl-i Sünnet hakkında bilgiler vermekde, Ehl-i beyt ile Eshâb-ı kirâmın birbirlerini çok sevdiklerini açıklamakda ve şî'îlerin kitablarını ve iftirâlarını gâyet ilmî olarak cevâblamakdadır. Komünistlik ve din düşmanlığı hakkında bilgiler de veren kitâbda İmâm-ı Gazâlî hazretlerinin (Eyyühel-Veled) tercemesi ve İmâm-ı Rabbânî hazretlerinin hâl tercemesi de bulunmaktadır.",
-    "imanInfo": "İslâm dîninin bilinmesi gereken îmân esaslarını ve îmânın altı şartını kaynak kitaplardan aktararak detaylı bir şekilde açıklayan bu kitâb, aynı zamanda diğer dînler hakkında bilgiler de verip İslâmiyyet ile karşılaşdırmakdadır.",
-    "ingilizInfo": "1700'lü yıllarda İstanbul'a gelen ve orada çeşidli islâmi ilimleri ve lîsanları öğrenen İngiliz casusu Hempher'in, İslâm dünyâsını ve müslimânları parçalamak için yaptığı casusluk faaliyetlerini ve vehhâbîliği nasıl kurduğunu anlattığı hatıratının tercümesini içeren bu kitâb 3 bölümden oluşmaktadır.",
-    "kiymetsizInfo": "İmâm-ı Rabbânî Müceddîd-i Elf-i sânî Ahmed Fârûkî Serhendi hazretlerinin üç cild (MEKTÛBÂT) kitâbından ve oğulları Muhammed Ma'sûm-i Fârûkî hazretlerinin de üç cild (MEKTÛBÂT) kitâbından, çıkarılan kıymetli cümleler, Elif-ba sırasına göre tanzîm edilmiş, Seyyid Abdülhakîm Arvâsî hazretlerine okunmuşdur. Dikkat ile dinledikden sonra, bunun adı (Kıymetsiz Yazılar) olsun demişdir. Okuyanın hayreti üzere, anlamadın mı, (Bunun kıymetine karşılık olabilecek birşey bulunabilir mi?) buyurmuşdur. Son sayfasında şu cümleler yer almakdadır: (Fırsat ganîmetdir. Ömrün temâmını fâidesiz işlerle telef ve sarf etmemek lâzımdır. Belki temâm ömrü, Hak celle ve a'lânın rızâsına muvâfık ve mutâbık şeylere sarf etmek lâzımdır....)",
-    "menakibInfo": "Dört halîfenin ve Eshâb-ı Kirâmın bütününün büyüklüklerini, kıymetlerini menkıbeler ile çok uzun ve çok güzel anlatan bu kitâb, türkçe olup, ilk defa 1325 senesinde basılmıştır. Kitabevimiz yeniden 1998'de basdırmıştır. Bu kitâbı Seyyid Eyyûb hazretleri yazmıştır. On iki bâb dan oluşmakdadır.",
-    "sevahidInfo": "Shevahid-un Nubuvve (Prophecy Heralds) book is the translation of the book 'SHEVAHID-UN NUBUVVE LI-TAKVIYET-I EHLIL-FUTUVVE' by the deep scholar and great saint Mevlana Abdurrahman Jami. It is about the signs and miracles that prove the prophethood of Muhammad (peace be upon him). The book consists of an introduction, seven chapters, and a conclusion.",
-
-    "notificationsPageTitle": "Notifications",
-    "enableNotifications": "Enable Notifications",
-    "notificationsSubtitle": "Enable/disable prayer time notifications",
-    "imsakAlarm": "Fajr Alarm",
-    "morningAlarm": "Morning Alarm",
-    "sunriseAlarm": "Tulu Alarm",
-    "noonAlarm": "Zuhr Alarm",
-    "afternoonAlarm": "Asr Alarm",
-    "sunsetAlarm": "Maghrib Alarm",
-    "nightAlarm": "Isha Alarm",
-    "minuteAbbreviation": "min",
-
-    "calendarListTitle": "Calendars",
-
-    "disableBatteryOptimization": "Disable Battery Optimization",
-    "batteryOptimizationSubtitle": "Disable battery optimization for notifications to work properly.",
-    
-    "selectCalendarTitle": "Select Calendar",
-    "calendarPermissionDenied": "Calendar permission denied",
-    "calendarNotFound": "No calendars found",
-    "calendarAddSuccess": "{eventName} added to calendar",
-    "calendarAddError": "Failed to add to calendar: {errorMessage}",
-    "generalError": "An error occurred: {errorMessage}",
-    "lockScreen": "Prayer Times on Lock Screen",
-    "@lockScreen": {
-        "description": "Setting for showing prayer times on lock screen"
-    },
-    "lockScreenDesc": "Enables showing prayer times on the lock screen",
-    "@lockScreenDesc": {
-        "description": "Description of the lock screen prayer times setting"
-    },
-    "notificationSoundTitle": "Prayer Notification Sound",
-    "@notificationSoundTitle": {
-        "description": "Notification sound setting title"
-    },
-    "defaultNotificationSound": "Default Notification Sound",
-    "@defaultNotificationSound": {
-        "description": "Default notification sound option"
-    },
-    "defaultAlarmSound": "Default Alarm Sound",
-    "@defaultAlarmSound": {
-        "description": "Default alarm sound option"
-    },
-    "ezanSound": "Adhan Sound",
-    "@ezanSound": {
-        "description": "Adhan sound option"
-    },
-    "imsakSunriseNotificationInfo": "Default notification sound will be played for Fajr and Sunrise times.",
-    "@imsakSunriseNotificationInfo": {
-        "description": "Info about default notification sound being played for Fajr and Sunrise times instead of Adhan"
-    },
-
-    "on": "On",
-    "@on":{
-        "description": "On switch title"
-    },
-    "off": "Off",
-    "@off":{
-        "description": "Off switch title"
-    },
-    "gapSliderTitle": "Time Gap",
-    "@gapSliderTitle":{
-        "description": "Gap slider title"
-    },
-    "enableAllAlarms": "Enable All",
-    "@enableAllAlarms":{
-        "description": "Enable all alarms button title"
-    },
-    "disableAllAlarms": "Disable All",
-    "@disableAllAlarms":{
-        "description": "Disable all alarms button title"
-    },
-    "allAlarmsEnabled": "All alarms enabled.",
-    "@allAlarmsEnabled":{
-        "description": "All alarms enabled message"
-    },
-    "allAlarmsDisabled": "All alarms disabled.",
-    "@allAlarmsDisabled":{
-        "description": "All alarms disabled message"
-    },
-    "compassOptimizationTitle": "Compass Optimization",
-    "@compassOptimizationTitle": {
-        "description": "Title for compass optimization dialog"
-    },
-    "compassOptimizationMessage": "Calibrate your compass for more accurate results.",
-    "@compassOptimizationMessage": {
-        "description": "Message for compass optimization dialog"
-    }
+  "@@locale": "en",
+  "lang": "English",
+  "appName": "Prayer Times App",
+  "timesPageTitle": "Times",
+  "qiblaPageTitle": "Prayer Compass",
+  "zikirPageTitle": "Dhikr",
+  "morePageTitle": "More",
+  "settingsPageTitle": "Settings",
+  "datesTitle": "Holy Days",
+  "datesTitleShort": "Holy Days",
+  "kazaTitle": "Missed Prayers",
+  "booksTitle": "Sourcebooks",
+  "aboutTitle": "About",
+  "githubTitle": "Github Page",
+  "licenseTitle": "License",
+  "searchTitle": "Location Search",
+  "rate": "Rate the App",
+  "nav1": "Times",
+  "nav2": "Qibla",
+  "nav3": "Dhikr",
+  "nav4": "More",
+  "nav5": "Books",
+  "locationButtonText": "Synchronization",
+  "yes": "Yes",
+  "leave": "Leave",
+  "ok": "OK",
+  "remove": "Remove",
+  "imsak": "Fajr",
+  "sabah": "Morning",
+  "gunes": "Tulu",
+  "ogle": "Zuhr",
+  "ikindi": "Asr",
+  "aksam": "Maghrib",
+  "yatsi": "Isha",
+  "israk": "Ishrâq",
+  "kerahat": "Karahat",
+  "asrisani": "Asr-i Thâni",
+  "isfirar": "Isfirâr",
+  "istibak": "Ishtibâk",
+  "isaisani": "Ishâ-i Thani",
+  "kible": "Qibla Time",
+  "vitir": "Witr",
+  "oruc": "Fast",
+  "timeLeftImsak": "Remaining Time for Fajr",
+  "timeLeftSabah": "Remaining Time for Morning",
+  "timeLeftGunes": "Remaining Time for Tulu",
+  "timeLeftOgle": "Remaining Time for Zuhr",
+  "timeLeftIkindi": "Remaining Time for Asr",
+  "timeLeftAksam": "Remaining Time for Maghrib",
+  "timeLeftYatsi": "Remaining Time for Isha",
+  "calendarTitle1": "Word of the Day:",
+  "calendarTitle2": "Back Page:",
+  "qiblaTargetText": "Goal:",
+  "zikirCount": "Dhikr Count",
+  "popupInfo1": "Finished:",
+  "popupInfo2": "Run-on:",
+  "resetMessageTitle": "Reset Dhikr",
+  "resetMessageBody": "Do you really want to reset?",
+  "zikirMessageTitle": "Dhikr Count:",
+  "defaultProf": "Default",
+  "profileMessageTitle": "New Profile",
+  "removeMessageTitle": "Remove Profile",
+  "removeMessageBody": "Do you really want to remove?",
+  "ln": "Language",
+  "languageMessageBody": "It will change when the app is restarted.",
+  "otoLocal": "Location Tracking",
+  "darkMode": "Dark Mode",
+  "gradient": "Gradient Background",
+  "themeColor": "Theme Color",
+  "colorPaletteTitle": "Color Selection",
+  "startupTitle": "Welcome.",
+  "startupDescription": "Prayer times are taken from Namazvakti.com",
+  "tenbih": "Important Notice Regarding Prayer Times",
+  "loading": "Searching",
+  "locationMessageTitle": "Location Access Required",
+  "locationMessageBody": "Please turn on location to continue.",
+  "openLoc": "Turn on",
+  "permissionMessageTitle": "Location Permission Required",
+  "permissionMessageBody": "Location permission is required for this app to work properly.",
+  "retry": "Retry",
+  "permissionDeniedBody": "Location permission has been permanently denied. Please allow permission from settings to continue.",
+  "openSettings": "Open Settings",
+  "wifiMessageTitle": "Internet Connection Required",
+  "wifiMessageBody": "Please enable Wi-Fi or Mobile Data to continue.",
+  "wifiMessageBody2": "(The app will not work properly without internet.)",
+  "kazaMessageTitle": "Missed Prayer Count:",
+  "search": "Search",
+  "enterLoc": "Enter Location...",
+  "locationButtonTextonStart": "Find location",
+  "layout": "Layout",
+  "rounded": "Round",
+  "sharp": "Sharp",
+  "ilmihal": "Seâdet-i Ebediyye Endless Bliss",
+  "mektubat": "Mektûbat Tercemesi",
+  "islam": "İslâm Ahlâkı",
+  "kiyamet": "Kıyâmet ve Âhıret",
+  "namaz": "Namâz Kitâbı",
+  "cevab": "Cevâb Veremedi",
+  "eshabikiram": "Eshâb-ı Kirâm",
+  "faideli": "Fâideli Bilgiler",
+  "haksoz": "Hak Sözün Vesîkaları",
+  "iman": "Herkese Lâzım Olan Îmân",
+  "ingiliz": "İngiliz Câsûsunun İ`tirâfları",
+  "kiymetsiz": "Kıymetsiz Yazılar",
+  "menakib": "Menâkıb-ı Çihâr Yâr-i Güzîn",
+  "sevahid": "Şevâhid-ün Nübüvve",
+  "ilmihalInfo": "(Tam İlmihâl-Se'âdet-i Ebediyye) kitâbı, üç kısımdan meydâna gelmişdir: I. kısımda; İslâm dînine nasıl inanılacağı, ehl-i sünnet i'tikâdı, İslâm dinine iftirâ edenlere cevâblar, Kur'ân-ı kerîm ve tefsîrler, kur'ân-ı kerîmdeki ilmlerin sınıflandırılması, Nemâzın ehemmiyyeti, farzları, abdest, gusl, nemâz ile ilgili bütün husûslar, kaza nemâzları, Cum'a ve bayram nemâzları, Zekât, Ramezân Orucu, Sadaka-i Fıtr, Yemîn ve Yemîn Keffâreti, Adak, Kurban Kesmek, Hac, Mübârek Geceler, Hicrî ve Mîlâdî Senelerin birbirine çevrilmeleri, Selâmlaşmak, Muhammed aleyhisselâmın hayâtı, Mübârek ahlâkı, anne, baba ve dedelerinin mü'min oluşu, Sübhâne Rabbîke âyeti hakkında bilgiler... yer almakdadır. II. kısımda; Îmân, Akl, Kaza-Kader, Tefsîr ve Hadîs kitâbları, Hadîs âlimleri, Allahü teâlânın ismleri, Mezheb, Fıkh, İmâm-ı A'zam hazretleri, Vehhâbîlere Ehl-i Sünnetin cevâbı, Evliyâ rûhlarından faydalanma, Bozuk dinler, hurûfîlik, Sosyalizm ve Sosyâl adâlet, İslâmiyyetde nikâh, Talâk, Süt kardeşlik, Nafaka, Komşu hakkı, Halâl ve Harâmlar, İsrâf ve Fâiz, Fen Bilgileri, Tevekkül, Müzik ve Tegannî, Cin hakkında bilgi, Bir Müslimân babanın kızına nasîhatları, Mu'cîze, kerâmet, firâset, istidrâc ... gibi konular yer almakdadır. III. kısımda, İslâmiyyetde kesb ve ticâret, Bey' ve Şirâ', Alış-verişde muhayyerlik, Bâtıl, Fâsid ve Mekrûh Satışlar, Ticârette adâlet ve ihtikâr, dinini kayırmak, ihsân, Banka ve Fâiz, Şirketler, Cezâlar, Ölüm ve Ölüme Hâzırlık, Meyyite Hizmetler, Ferâiz, Meyyit için İskât ... gibi konular yer almakdadır. Ayrıca konular arasında, İmâm-ı Rabbânî hazretlerinin ve oğlu Muhammed Ma'sûm hazretlerinin (MEKTÛBÂT) kitâblarından çeşitli mektûblar vardır. Son bölümde (1020) zâtın hâl tercemesi yer almakdadır. Fihrist bölümünde zâtlar, kitâblar, mevzû'lar fihristleri vardır. Bine yakın eserden uzun bir zemânda hâzırlanan bu nâdîde eserde; insanı se'âdete kavuşduracak bütün husûslar yer almakdadır.",
+  "mektubatInfo": "971 [m.1563] de doğan ve 1034 [m.1624] de vefât eden, ikinci bin yılın müceddîdi, İmâm-ı Rabbânî Ahmed Fârûkî Serhendi hazretleri, Kur'ân-ı kerîm ve Hadîs-i Şerîflerden sonra, en kıymetli üçüncü kitâb olan (MEKTÛBÂT) kitâbını yazmışdır. İnsanoğlunun rûhî hastalıklarının tedâvî yollarını göstermiş, islâm dînine nasıl inanılacağı, ibâdetlerin ehemmiyyeti, Evliyâlık, Resûlullahın güzel ahlâkı, islâmiyyet, tarîkat ve hakîkatin ayrı ayrı şeyler olmadıklarını îzâh etmişdir. Üç cild ve aslı fârisî olan mektûbât kitâbında (536) mektûb vardır.",
+  "islamInfo": "İslâm dîninin güzel ahlâkına ulaşmak için kurtulmak gereken 40 kötü ahlak ve bunlardan kurtulma çarelerinin anlatıldığı bu kitâbda aynı zamanda (Mızraklı İlmihâl) diye bilinen Muhammed bin Kutbüddîn İznîki hazretlerinin kitâbı esas alınarak yazılan Îmân ve ibâdet bilgilerini içeren Cennet Yolu İlmihâli bulunmaktadır.",
+  "kiyametInfo": "Kıyâmet ve Âhıret kitâbında insanın ölümü, rûhun bedenden ayrılması, kabr hayâtı, kabr süâlleri, kıyâmet günü insanların hesâba çekilmesi, Cennet ve Cehenneme nasıl gidileceği büyük islâm âlimi, İmâm-ı Gazâlî hazretlerinin kitâblarından terceme edilerek geniş olarak açıklanmakda ve vehhâbîliğe cevap vererek evliyâlığın ne olduğu, kıyâmet günü herkesin sevdiğinin yanında olacağı konuları açıklanmakdadır.",
+  "namazInfo": "Küçük bir ilmihal niteliğinde olan bu kitâbda her müslümanın bilmesi zaruri olan Ehl-i sünnet i'tikâdı, namaz, abdest, gusl, teyemmüm, oruç, hac ve zekât bilgileri anlatılmaktadır. Namâz kitâbının sonunda, namâzın içinde ve dışında okunacak duâlar arabî olarak yer almaktadır. Namâz ve Namâzla ilgili bilgileri detaylıca içeren dokuz kısımdan oluşmaktadır.",
+  "cevabInfo": "Îsâ aleyhisselâma gönderilen ve hak kitâb olan İncîlin tahrîf edilmesi ile ortaya çıkan dört kitâb [Matta İncîli, Markos İncîli, Luka İncîli, Yuhannâ İncîli] hakkında bilgi vermekde, aralarındaki ihtilâfları açıklamakdadır. Kur'ân-ı kerîm ile İncîl karşılaştırılmakda, İncîlin tahrîf edildiği, hükümlerinin yürürlükden kalkdığı, Kur'ân-ı kerîmin bütün semâvî kitâbların hükümlerini yürürlükden kaldırdığı îzâh edilmekdedir. Îsevîlikdeki teslîs (üç tanrı) inancının yanlış olduğu, Allahü teâlânın bir olduğu, ilim ve kudret sıfâtları ilmî olarak açıklanmakdadır. Îsâ aleyhisselâmın insan ve Peygamber olduğu, ona tapılmıyacağı îzâh edilmekdedir. Yehûdîlik, Tevrât ve Talmud hakkında da bilgi verilmekdedir.",
+  "eshabikiramInfo": "Eshâb-ı Kirâm kitâbının başında, Peygamberimiz Muhammed aleyhisselâmın Eshâbının üstünlüğünü, Eshâb-ı kirâm arasındaki hâdiseler, Eshâb-ı kirâma dil uzatanların haksız ve câhil oldukları anlatılmakda, ayrıca; (İctihâd) ın ne olduğu açıklanmakdadır.",
+  "faideliInfo": "İslâm dîni ve Ehl-i Sünnet i'tikâdı hakkında öz bilgiler verilen kitâbda, islâmî ilimlerin ve fıkh âlimlerinin sınıflandırılması, İmâm-ı A'zam Ebû Hanîfe hazretlerinin hayâtı anlatılmaktadır. Üç kısımdan meydâna gelen Fâideli Bilgiler kitâbında dinde reform yapmak isteyenlere, İslâm dinini bozan zararlı cereyân ve fikirlere ve cebriyye, mu'tezîle, vehhâbîlik gibi sapık fırkalara cevâb verilmektedir.",
+  "haksozInfo": "Hak sözün vesîkaları kitabı Şî'îlik, Ehl-i Beyt, Eshâb-ı kirâm ve Ehl-i Sünnet hakkında bilgiler vermekde, Ehl-i beyt ile Eshâb-ı kirâmın birbirlerini çok sevdiklerini açıklamakda ve şî'îlerin kitablarını ve iftirâlarını gâyet ilmî olarak cevâblamakdadır. Komünistlik ve din düşmanlığı hakkında bilgiler de veren kitâbda İmâm-ı Gazâlî hazretlerinin (Eyyühel-Veled) tercemesi ve İmâm-ı Rabbânî hazretlerinin hâl tercemesi de bulunmaktadır.",
+  "imanInfo": "İslâm dîninin bilinmesi gereken îmân esaslarını ve îmânın altı şartını kaynak kitaplardan aktararak detaylı bir şekilde açıklayan bu kitâb, aynı zamanda diğer dînler hakkında bilgiler de verip İslâmiyyet ile karşılaşdırmakdadır.",
+  "ingilizInfo": "1700'lü yıllarda İstanbul'a gelen ve orada çeşidli islâmi ilimleri ve lîsanları öğrenen İngiliz casusu Hempher'in, İslâm dünyâsını ve müslimânları parçalamak için yaptığı casusluk faaliyetlerini ve vehhâbîliği nasıl kurduğunu anlattığı hatıratının tercümesini içeren bu kitâb 3 bölümden oluşmaktadır.",
+  "kiymetsizInfo": "İmâm-ı Rabbânî Müceddîd-i Elf-i sânî Ahmed Fârûkî Serhendi hazretlerinin üç cild (MEKTÛBÂT) kitâbından ve oğulları Muhammed Ma'sûm-i Fârûkî hazretlerinin de üç cild (MEKTÛBÂT) kitâbından, çıkarılan kıymetli cümleler, Elif-ba sırasına göre tanzîm edilmiş, Seyyid Abdülhakîm Arvâsî hazretlerine okunmuşdur. Dikkat ile dinledikden sonra, bunun adı (Kıymetsiz Yazılar) olsun demişdir. Okuyanın hayreti üzere, anlamadın mı, (Bunun kıymetine karşılık olabilecek birşey bulunabilir mi?) buyurmuşdur. Son sayfasında şu cümleler yer almakdadır: (Fırsat ganîmetdir. Ömrün temâmını fâidesiz işlerle telef ve sarf etmemek lâzımdır. Belki temâm ömrü, Hak celle ve a'lânın rızâsına muvâfık ve mutâbık şeylere sarf etmek lâzımdır....)",
+  "menakibInfo": "Dört halîfenin ve Eshâb-ı Kirâmın bütününün büyüklüklerini, kıymetlerini menkıbeler ile çok uzun ve çok güzel anlatan bu kitâb, türkçe olup, ilk defa 1325 senesinde basılmıştır. Kitabevimiz yeniden 1998'de basdırmıştır. Bu kitâbı Seyyid Eyyûb hazretleri yazmıştır. On iki bâb dan oluşmakdadır.",
+  "sevahidInfo": "Shevahid-un Nubuvve (Prophecy Heralds) book is the translation of the book 'SHEVAHID-UN NUBUVVE LI-TAKVIYET-I EHLIL-FUTUVVE' by the deep scholar and great saint Mevlana Abdurrahman Jami. It is about the signs and miracles that prove the prophethood of Muhammad (peace be upon him). The book consists of an introduction, seven chapters, and a conclusion.",
+  "notificationsPageTitle": "Notifications",
+  "enableNotifications": "Enable Notifications",
+  "notificationsSubtitle": "Enable/disable prayer time notifications",
+  "imsakAlarm": "Fajr Alarm",
+  "morningAlarm": "Morning Alarm",
+  "sunriseAlarm": "Tulu Alarm",
+  "noonAlarm": "Zuhr Alarm",
+  "afternoonAlarm": "Asr Alarm",
+  "sunsetAlarm": "Maghrib Alarm",
+  "nightAlarm": "Isha Alarm",
+  "minuteAbbreviation": "min",
+  "calendarListTitle": "Calendars",
+  "disableBatteryOptimization": "Disable Battery Optimization",
+  "batteryOptimizationSubtitle": "Disable battery optimization for notifications to work properly.",
+  "selectCalendarTitle": "Select Calendar",
+  "calendarPermissionDenied": "Calendar permission denied",
+  "calendarNotFound": "No calendars found",
+  "calendarAddSuccess": "{eventName} added to calendar",
+  "calendarAddError": "Failed to add to calendar: {errorMessage}",
+  "generalError": "An error occurred: {errorMessage}",
+  "lockScreen": "Prayer Times on Lock Screen",
+  "@lockScreen": {
+    "description": "Setting for showing prayer times on lock screen"
+  },
+  "lockScreenDesc": "Enables showing prayer times on the lock screen",
+  "@lockScreenDesc": {
+    "description": "Description of the lock screen prayer times setting"
+  },
+  "notificationSoundTitle": "Prayer Notification Sound",
+  "@notificationSoundTitle": {
+    "description": "Notification sound setting title"
+  },
+  "defaultNotificationSound": "Default Notification Sound",
+  "@defaultNotificationSound": {
+    "description": "Default notification sound option"
+  },
+  "defaultAlarmSound": "Default Alarm Sound",
+  "@defaultAlarmSound": {
+    "description": "Default alarm sound option"
+  },
+  "ezanSound": "Adhan Sound",
+  "@ezanSound": {
+    "description": "Adhan sound option"
+  },
+  "imsakSunriseNotificationInfo": "Default notification sound will be played for Fajr and Sunrise times.",
+  "@imsakSunriseNotificationInfo": {
+    "description": "Info about default notification sound being played for Fajr and Sunrise times instead of Adhan"
+  },
+  "on": "On",
+  "@on": {
+    "description": "On switch title"
+  },
+  "off": "Off",
+  "@off": {
+    "description": "Off switch title"
+  },
+  "gapSliderTitle": "Time Gap",
+  "@gapSliderTitle": {
+    "description": "Gap slider title"
+  },
+  "enableAllAlarms": "Enable All",
+  "@enableAllAlarms": {
+    "description": "Enable all alarms button title"
+  },
+  "disableAllAlarms": "Disable All",
+  "@disableAllAlarms": {
+    "description": "Disable all alarms button title"
+  },
+  "allAlarmsEnabled": "All alarms enabled.",
+  "@allAlarmsEnabled": {
+    "description": "All alarms enabled message"
+  },
+  "allAlarmsDisabled": "All alarms disabled.",
+  "@allAlarmsDisabled": {
+    "description": "All alarms disabled message"
+  },
+  "compassOptimizationTitle": "Compass Optimization",
+  "@compassOptimizationTitle": {
+    "description": "Title for compass optimization dialog"
+  },
+  "compassOptimizationMessage": "Calibrate your compass for more accurate results.",
+  "@compassOptimizationMessage": {
+    "description": "Message for compass optimization dialog"
+  }
 }

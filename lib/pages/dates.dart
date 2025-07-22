@@ -506,8 +506,10 @@ class _DatesCardState extends State<DatesCard> {
                                     if (result?.isSuccess == true) {
                                       ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
-                                          content: Text(AppLocalizations.of(context)!
-                                              .calendarAddSuccess(_list[index + 2])),
+                                          content: Text(
+                                            AppLocalizations.of(context)!.calendarAddSuccess(
+                                                getTranslation(_list[index + 2])),
+                                          ),
                                         ),
                                       );
                                     } else {

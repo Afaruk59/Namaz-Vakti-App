@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:namaz_vakti_app/components/scaffold_layout.dart';
+import 'package:namaz_vakti_app/data/change_settings.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:android_intent_plus/android_intent.dart';
 import 'dart:io' show Platform;
@@ -12,8 +14,10 @@ import 'package:namaz_vakti_app/books/features/book/services/book_progress_servi
 import 'package:namaz_vakti_app/books/features/book/ui/color_extractor.dart';
 import 'package:namaz_vakti_app/books/features/book/widgets/book_bookmark_indicator.dart';
 import 'package:namaz_vakti_app/books/features/book/services/audio_page_service.dart';
+import 'package:namaz_vakti_app/books/features/book/screens/bookmarks_screen.dart';
 import 'no_internet_screen.dart';
 import 'package:namaz_vakti_app/books/features/book/services/book_info_service.dart';
+import 'package:namaz_vakti_app/l10n/app_localization.dart';
 
 class BookScreen extends StatefulWidget {
   const BookScreen({super.key});
@@ -39,6 +43,11 @@ class BookScreenState extends State<BookScreen> {
   bool _isProgressLoaded = false;
   bool _hasInternetConnection = true;
   bool _isLoading = true;
+
+  // Cache için static değişkenler - ilk açılış kontrolü için
+  static bool _isInitializedOnce = false;
+  static bool _cachedInternetConnection = true;
+  static bool _cachedProgressLoaded = false;
 
   // Cache for extracted colors
   final Map<String, Color> _bookCoverColors = {};
@@ -69,19 +78,37 @@ class BookScreenState extends State<BookScreen> {
 
   Future<void> _initializeData() async {
     try {
-      // Connectivity kontrolü ve servislerin başlatılmasını paralel olarak yapalım
+      // Eğer daha önce initialize edilmişse, cache'lenmiş değerleri kullan
+      if (_isInitializedOnce) {
+        setState(() {
+          _hasInternetConnection = _cachedInternetConnection;
+          _isProgressLoaded = _cachedProgressLoaded;
+          _isLoading = false;
+        });
+
+        // Connectivity stream'i her zaman başlat (gerçek zamanlı güncellemeler için)
+        _setupConnectivityStream();
+        return;
+      }
+
+      // İlk açılış - tam initialization yap
       final results = await Future.wait([
         _checkConnectivitySilently(),
         _initializeProgressService(),
       ]);
 
-      bool isConnected = results[0] as bool; // _checkConnectivitySilently'den dönen değer
+      bool isConnected = results[0] as bool;
 
       if (mounted) {
         setState(() {
           _hasInternetConnection = isConnected;
           _isProgressLoaded = true;
         });
+
+        // Cache'e kaydet
+        _cachedInternetConnection = isConnected;
+        _cachedProgressLoaded = true;
+        _isInitializedOnce = true;
 
         // Sadece internet yoksa dialog gösterelim
         if (!isConnected) {
@@ -135,34 +162,41 @@ class BookScreenState extends State<BookScreen> {
         bool isConnected = result != ConnectivityResult.none;
 
         if (isConnected && !_hasInternetConnection) {
-          // İnternet bağlantısı yeni geldi, servisleri yeniden başlat
+          // İnternet bağlantısı yeni geldi
           setState(() {
             _hasInternetConnection = true;
-            _isProgressLoaded = false; // Progress'i yeniden yükleyeceğiz
-            _isLoading = true; // Yükleme durumunu göster
+            _cachedInternetConnection = true; // Cache'i güncelle
           });
 
-          try {
-            await _progressService.initialize();
+          // Eğer progress yüklenmemişse, yeniden yüklemeye çalış
+          if (!_isProgressLoaded) {
+            setState(() {
+              _isLoading = true;
+            });
 
-            if (mounted) {
-              setState(() {
-                _isProgressLoaded = true;
-                _isLoading = false;
-              });
-            }
-          } catch (e) {
-            debugPrint('Error reinitializing services: $e');
-            if (mounted) {
-              setState(() {
-                _isLoading = false;
-              });
+            try {
+              await _progressService.initialize();
+
+              if (mounted) {
+                setState(() {
+                  _isProgressLoaded = true;
+                  _cachedProgressLoaded = true; // Cache'i güncelle
+                  _isLoading = false;
+                });
+              }
+            } catch (e) {
+              debugPrint('Error reinitializing services: $e');
+              if (mounted) {
+                setState(() {
+                  _isLoading = false;
+                });
+              }
             }
           }
         } else if (!isConnected) {
           setState(() {
             _hasInternetConnection = false;
-            _isProgressLoaded = false;
+            _cachedInternetConnection = false; // Cache'i güncelle
           });
         }
       }
@@ -522,10 +556,64 @@ class BookScreenState extends State<BookScreen> {
   @override
   Widget build(BuildContext context) {
     return ScaffoldLayout(
-      title: 'Kaynak Kitaplar',
-      actions: const [],
-      background: true,
-      body: _buildBody(),
+      title: AppLocalizations.of(context)!.booksTitle,
+      actions: [
+        Provider.of<ChangeSettings>(context).langCode == 'tr'
+            ? IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const BookmarksScreen(),
+                      ),
+                    );
+                  },
+                  icon: const Icon(
+                    Icons.bookmark_rounded,
+                    size: 24,
+                  ),
+                ),
+              )
+            : const SizedBox.shrink(),
+        const SizedBox(
+          width: 20,
+        ),
+      ],
+      background: false,
+      body: Provider.of<ChangeSettings>(context).langCode == 'tr'
+          ? _buildBody()
+          : Center(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Card(
+                  color: Theme.of(context).cardColor,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          FilledButton.tonal(
+                            onPressed: () async {
+                              final code =
+                                  Provider.of<ChangeSettings>(context, listen: false).langCode;
+                              final Uri url = Uri.parse(
+                                  'https://www.hakikatkitabevi.net/books.php?listBook=$code');
+                              await launchUrl(url);
+                            },
+                            child: const Text('www.hakikatkitabevi.net'),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
     );
   }
 

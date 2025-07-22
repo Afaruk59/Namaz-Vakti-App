@@ -67,7 +67,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get nav4 => 'Daha Fazla';
 
   @override
-  String get nav5 => 'Ayarlar';
+  String get nav5 => 'Kitaplar';
 
   @override
   String get locationButtonText => 'Güncelle';

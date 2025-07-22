@@ -45,11 +45,6 @@ class More extends StatelessWidget {
             icon: const Icon(Icons.note_alt),
             route: '/kaza',
           ),
-          BooksCard(
-            title: AppLocalizations.of(context)!.booksTitle,
-            icon: const Icon(Icons.local_library_rounded),
-            route: '/books',
-          ),
           Padding(
             padding: EdgeInsets.symmetric(
                 horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
@@ -60,6 +55,11 @@ class More extends StatelessWidget {
             title: AppLocalizations.of(context)!.aboutTitle,
             icon: const Icon(Icons.info),
             route: '/about',
+          ),
+          MoreCard(
+            title: AppLocalizations.of(context)!.settingsPageTitle,
+            icon: const Icon(Icons.settings_rounded),
+            route: '/settings',
           ),
         ],
       ),
@@ -132,62 +132,6 @@ class MoreCard extends StatelessWidget {
             trailing: FilledButton.tonal(
               onPressed: () {
                 Navigator.pushNamed(context, route);
-              },
-              child: icon,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class BooksCard extends StatelessWidget {
-  const BooksCard({
-    super.key,
-    required this.title,
-    required this.icon,
-    required this.route,
-  });
-
-  final String title;
-  final Icon icon;
-  final String route;
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(
-          horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
-      child: Card(
-        color: Theme.of(context).cardColor,
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
-          child: ListTile(
-            splashColor: Colors.transparent,
-            onTap: () async {
-              final String code =
-                  Provider.of<ChangeSettings>(context, listen: false).langCode ?? 'tr';
-              if (code == 'tr') {
-                Navigator.pushNamed(context, route);
-              } else {
-                final Uri url =
-                    Uri.parse('https://www.hakikatkitabevi.net/books.php?listBook=$code');
-                await launchUrl(url);
-              }
-            },
-            title: Text(title),
-            trailing: FilledButton.tonal(
-              onPressed: () async {
-                final String code =
-                    Provider.of<ChangeSettings>(context, listen: false).langCode ?? 'tr';
-                if (code == 'tr') {
-                  Navigator.pushNamed(context, route);
-                } else {
-                  final Uri url =
-                      Uri.parse('https://www.hakikatkitabevi.net/books.php?listBook=$code');
-                  await launchUrl(url);
-                }
               },
               child: icon,
             ),

@@ -230,7 +230,7 @@ abstract class AppLocalizations {
   /// Navbar text
   ///
   /// In tr, this message translates to:
-  /// **'Ayarlar'**
+  /// **'Kitaplar'**
   String get nav5;
 
   /// Button text

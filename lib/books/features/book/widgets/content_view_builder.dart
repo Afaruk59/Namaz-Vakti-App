@@ -35,27 +35,24 @@ class ContentViewBuilder {
     String combinedText = '';
     int textOffset = 0;
 
-    // First pass: collect all text and calculate offsets
-    for (var element in textElements) {
-      final fullText = TextProcessor.extractFullText(element);
-      combinedText += fullText;
-    }
-
-    // Second pass: build text spans with proper formatting
+    // Build combined text and spans in a single pass to maintain consistency
     for (int i = 0; i < textElements.length; i++) {
       var element = textElements[i];
       final fullText = TextProcessor.extractFullText(element);
-      final currentOffset = textOffset;
 
       // Add paragraph spacing if not the first element
       if (i > 0) {
         allTextSpans.add(const TextSpan(text: '\n\n'));
+        combinedText += '\n\n';
+        textOffset += 2; // Account for the added newlines
       }
 
       // Add the text spans for this element
       allTextSpans.addAll(TextProcessor.buildHighlightedTextSpans(
-          element['segments'], fullText, currentOffset, highlights, fontSize, backgroundColor));
+          element['segments'], fullText, textOffset, highlights, fontSize, backgroundColor));
 
+      // Update combined text and offset
+      combinedText += fullText;
       textOffset += fullText.length;
     }
 
@@ -164,34 +161,29 @@ class ContentViewBuilder {
     required Function(TextSelection, SelectionChangedCause?, String, int) onSelectionChanged,
     required Widget Function(BuildContext, EditableTextState) contextMenuBuilder,
   }) {
-    // Reset offset for building spans
+    // Initialize variables for building spans
     int textOffset = 0;
-
-    // Reset combinedText and allTextSpans
     String combinedText = '';
     List<InlineSpan> allTextSpans = [];
 
-    // First pass: collect all text and calculate offsets
-    for (var element in parsedElements) {
-      final fullText = TextProcessor.extractFullText(element);
-      combinedText += fullText;
-    }
-
-    // Second pass: build text spans with proper formatting
+    // Build combined text and spans in a single pass to maintain consistency
     for (int i = 0; i < parsedElements.length; i++) {
       var element = parsedElements[i];
       final fullText = TextProcessor.extractFullText(element);
-      final currentOffset = textOffset;
 
       // Add paragraph spacing if not the first element
       if (i > 0) {
         allTextSpans.add(const TextSpan(text: '\n\n'));
+        combinedText += '\n\n';
+        textOffset += 2; // Account for the added newlines
       }
 
       // Add the text spans for this element
       allTextSpans.addAll(TextProcessor.buildHighlightedTextSpans(
-          element['segments'], fullText, currentOffset, highlights, fontSize, backgroundColor));
+          element['segments'], fullText, textOffset, highlights, fontSize, backgroundColor));
 
+      // Update combined text and offset
+      combinedText += fullText;
       textOffset += fullText.length;
     }
 

@@ -67,7 +67,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get nav4 => 'المزيد';
 
   @override
-  String get nav5 => 'الإعدادات';
+  String get nav5 => 'الكتب';
 
   @override
   String get locationButtonText => 'تحديد الموقع';

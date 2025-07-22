@@ -67,7 +67,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get nav4 => 'Altro';
 
   @override
-  String get nav5 => 'Impostazioni';
+  String get nav5 => 'Libri';
 
   @override
   String get locationButtonText => 'Sincronizza';

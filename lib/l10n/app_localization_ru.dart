@@ -67,7 +67,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get nav4 => 'Больше';
 
   @override
-  String get nav5 => 'Настройки';
+  String get nav5 => 'Книги';
 
   @override
   String get locationButtonText => 'Синхронизировать';

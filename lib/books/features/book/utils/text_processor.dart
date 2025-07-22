@@ -33,10 +33,12 @@ class TextProcessor {
 
     for (var segment in segments) {
       if (segment is Map && segment.containsKey('text')) {
-        String segmentText = segment['text'] + ' ';
+        String segmentOriginalText = segment['text'];
+        String segmentTextWithSpace =
+            segmentOriginalText + ' '; // extractFullText ile tutarlılık için boşluk ekle
         bool isBold = segment['bold'] ?? false;
         int segmentStartOffset = currentOffset;
-        int segmentEndOffset = currentOffset + segmentText.length;
+        int segmentEndOffset = currentOffset + segmentTextWithSpace.length;
 
         // Bu segment içinde vurgulanmış metin var mı kontrol et
         List<HighlightInfo> segmentHighlights = [];
@@ -58,7 +60,7 @@ class TextProcessor {
         // Eğer bu segmentte vurgulama yoksa, tüm segmenti normal olarak ekle
         if (segmentHighlights.isEmpty) {
           textSpans.add(TextSpan(
-            text: segmentText,
+            text: segmentTextWithSpace,
             style: TextStyle(
               fontSize: fontSize,
               fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
@@ -76,14 +78,14 @@ class TextProcessor {
           for (var highlight in segmentHighlights) {
             // Vurgulamanın segment içindeki göreceli pozisyonlarını hesapla
             int highlightStartInSegment =
-                (highlight.startIndex - segmentStartOffset).clamp(0, segmentText.length);
+                (highlight.startIndex - segmentStartOffset).clamp(0, segmentTextWithSpace.length);
             int highlightEndInSegment =
-                (highlight.endIndex - segmentStartOffset).clamp(0, segmentText.length);
+                (highlight.endIndex - segmentStartOffset).clamp(0, segmentTextWithSpace.length);
 
             // Vurgulamadan önceki normal metni ekle
             if (highlightStartInSegment > currentPos) {
               textSpans.add(TextSpan(
-                text: segmentText.substring(currentPos, highlightStartInSegment),
+                text: segmentTextWithSpace.substring(currentPos, highlightStartInSegment),
                 style: TextStyle(
                   fontSize: fontSize,
                   fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
@@ -97,7 +99,8 @@ class TextProcessor {
             // Vurgulanmış metni ekle
             if (highlightStartInSegment < highlightEndInSegment) {
               textSpans.add(TextSpan(
-                text: segmentText.substring(highlightStartInSegment, highlightEndInSegment),
+                text:
+                    segmentTextWithSpace.substring(highlightStartInSegment, highlightEndInSegment),
                 style: TextStyle(
                   fontSize: fontSize,
                   fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
@@ -113,9 +116,9 @@ class TextProcessor {
           }
 
           // Vurgulamalardan sonraki normal metni ekle
-          if (currentPos < segmentText.length) {
+          if (currentPos < segmentTextWithSpace.length) {
             textSpans.add(TextSpan(
-              text: segmentText.substring(currentPos),
+              text: segmentTextWithSpace.substring(currentPos),
               style: TextStyle(
                 fontSize: fontSize,
                 fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
@@ -127,8 +130,8 @@ class TextProcessor {
           }
         }
 
-        // Offset'i güncelle
-        currentOffset += segmentText.length;
+        // Offset'i güncelle (boşluk dahil)
+        currentOffset += segmentTextWithSpace.length;
       }
     }
 

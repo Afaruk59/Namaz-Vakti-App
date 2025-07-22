@@ -16,13 +16,12 @@ limitations under the License.
 
 import 'dart:async';
 import 'dart:io';
-// import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:in_app_update/in_app_update.dart';
+import 'package:namaz_vakti_app/books/screens/book_screen.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:namaz_vakti_app/pages/more.dart';
 import 'package:namaz_vakti_app/pages/qibla.dart';
-import 'package:namaz_vakti_app/pages/settings.dart';
 import 'package:namaz_vakti_app/pages/timesPage/times.dart';
 import 'package:namaz_vakti_app/pages/zikir.dart';
 import 'package:namaz_vakti_app/l10n/app_localization.dart';
@@ -146,11 +145,11 @@ class _HomePageState extends State<HomePage> {
                 ),
                 SafeArea(
                   top: false,
-                  child: More(),
+                  child: BookScreen(),
                 ),
                 SafeArea(
                   top: false,
-                  child: Settings(),
+                  child: More(),
                 ),
               ],
             ),
@@ -198,14 +197,14 @@ class _HomePageState extends State<HomePage> {
                       ),
               ),
               NavigationDestination(
+                selectedIcon: const Icon(Icons.book_rounded),
+                icon: const Icon(Icons.book_outlined),
+                label: AppLocalizations.of(context)!.nav5,
+              ),
+              NavigationDestination(
                 selectedIcon: const Icon(Icons.more_horiz),
                 icon: const Icon(Icons.more_horiz),
                 label: AppLocalizations.of(context)!.nav4,
-              ),
-              NavigationDestination(
-                selectedIcon: const Icon(Icons.settings),
-                icon: const Icon(Icons.settings_outlined),
-                label: AppLocalizations.of(context)!.nav5,
               ),
             ],
           ),

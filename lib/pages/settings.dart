@@ -30,7 +30,7 @@ class Settings extends StatelessWidget {
     return ScaffoldLayout(
       title: AppLocalizations.of(context)!.settingsPageTitle,
       actions: const [],
-      background: false,
+      background: true,
       body: const SettingsCard(),
     );
   }
