@@ -18,6 +18,7 @@ import 'package:namaz_vakti_app/books/features/book/screens/bookmarks_screen.dar
 import 'no_internet_screen.dart';
 import 'package:namaz_vakti_app/books/features/book/services/book_info_service.dart';
 import 'package:namaz_vakti_app/l10n/app_localization.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class BookScreen extends StatefulWidget {
   const BookScreen({super.key});
@@ -54,6 +55,9 @@ class BookScreenState extends State<BookScreen> {
   // Yer işareti göstergelerini yenilemek için key
   int _bookmarkRefreshCounter = 0;
 
+  // WebView controller
+  late final WebViewController _webViewController;
+
   @override
   void initState() {
     super.initState();
@@ -63,7 +67,51 @@ class BookScreenState extends State<BookScreen> {
     // Stop any audio playback when returning to the home screen
     AudioPageService().stopAudioAndClearPlayer();
 
+    // Initialize WebView controller
+    _initializeWebView();
+
     _initializeData();
+  }
+
+  void _initializeWebView() {
+    _webViewController = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onProgress: (int progress) {
+            debugPrint('WebView loading progress: $progress%');
+          },
+          onPageStarted: (String url) {
+            debugPrint('Page started loading: $url');
+          },
+          onPageFinished: (String url) async {
+            debugPrint('Page finished loading: $url');
+            // Sayfa yüklendikten sonra zoom seviyesini küçült
+            await Future.delayed(const Duration(milliseconds: 500));
+            await _webViewController.runJavaScript('''
+              document.body.style.zoom = "0.45";
+              var viewportMeta = document.querySelector('meta[name="viewport"]');
+              if (viewportMeta) {
+                viewportMeta.setAttribute('content', 'width=device-width, initial-scale=0.75, maximum-scale=3.0, user-scalable=yes');
+              } else {
+                var meta = document.createElement('meta');
+                meta.name = "viewport";
+                meta.content = "width=device-width, initial-scale=0.75, maximum-scale=3.0, user-scalable=yes";
+                document.getElementsByTagName('head')[0].appendChild(meta);
+              }
+            ''');
+          },
+          onWebResourceError: (WebResourceError error) {
+            debugPrint('Page resource error: ${error.description}');
+          },
+        ),
+      );
+  }
+
+  Future<void> _loadWebView() async {
+    final code = Provider.of<ChangeSettings>(context, listen: false).langCode;
+    final url = 'https://www.hakikatkitabevi.net/?listBook=$code';
+    await _webViewController.loadRequest(Uri.parse(url));
   }
 
   @override
@@ -583,33 +631,14 @@ class BookScreenState extends State<BookScreen> {
       background: false,
       body: Provider.of<ChangeSettings>(context).langCode == 'tr'
           ? _buildBody()
-          : Center(
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Card(
-                  color: Theme.of(context).cardColor,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          FilledButton.tonal(
-                            onPressed: () async {
-                              final code =
-                                  Provider.of<ChangeSettings>(context, listen: false).langCode;
-                              final Uri url = Uri.parse(
-                                  'https://www.hakikatkitabevi.net/books.php?listBook=$code');
-                              await launchUrl(url);
-                            },
-                            child: const Text('www.hakikatkitabevi.net'),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+          : FutureBuilder<void>(
+              future: _loadWebView(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                return WebViewWidget(controller: _webViewController);
+              },
             ),
     );
   }
