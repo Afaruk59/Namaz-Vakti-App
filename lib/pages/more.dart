@@ -21,7 +21,6 @@ import 'package:namaz_vakti_app/components/scaffold_layout.dart';
 import 'package:namaz_vakti_app/components/tenbih_card.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class More extends StatelessWidget {
   const More({super.key});

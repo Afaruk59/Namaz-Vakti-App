@@ -504,7 +504,7 @@ class BookScreenState extends State<BookScreen> {
     }
 
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(10.0),
       child: GridView.builder(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: _gridColumns,
@@ -572,15 +572,12 @@ class BookScreenState extends State<BookScreen> {
                       ),
                     );
                   },
-                  icon: const Icon(
-                    Icons.bookmark_rounded,
-                    size: 24,
-                  ),
+                  icon: const Icon(Icons.bookmark_rounded, size: 24),
                 ),
               )
             : const SizedBox.shrink(),
         const SizedBox(
-          width: 20,
+          width: 10,
         ),
       ],
       background: false,

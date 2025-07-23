@@ -197,8 +197,8 @@ class _HomePageState extends State<HomePage> {
                       ),
               ),
               NavigationDestination(
-                selectedIcon: const Icon(Icons.book_rounded),
-                icon: const Icon(Icons.book_outlined),
+                selectedIcon: const Icon(Icons.menu_book_rounded),
+                icon: const Icon(Icons.menu_book_rounded),
                 label: AppLocalizations.of(context)!.nav5,
               ),
               NavigationDestination(

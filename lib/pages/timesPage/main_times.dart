@@ -32,6 +32,15 @@ class BottomTimesCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TextStyle textStyleBold = TextStyle(
+      color: Theme.of(context).colorScheme.primary,
+      fontSize: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 20 : 25,
+      fontWeight: FontWeight.bold,
+    );
+    TextStyle textStyle = TextStyle(
+      fontSize: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 16 : 20,
+      fontWeight: FontWeight.normal,
+    );
     return Center(
       child: Card(
         child: Provider.of<TimeData>(context).isLoading
@@ -60,87 +69,45 @@ class BottomTimesCard extends StatelessWidget {
                                 children: [
                                   Text(
                                     AppLocalizations.of(context)!.imsak,
-                                    style: TextStyle(
-                                        fontWeight: Provider.of<TimeData>(context).pray == 1
-                                            ? FontWeight.bold
-                                            : FontWeight.normal,
-                                        fontSize:
-                                            Provider.of<ChangeSettings>(context).currentHeight! <
-                                                    700
-                                                ? 16
-                                                : 20),
+                                    style: Provider.of<TimeData>(context).pray == 1
+                                        ? textStyleBold
+                                        : textStyle,
                                   ),
                                   Text(
                                     AppLocalizations.of(context)!.sabah,
-                                    style: TextStyle(
-                                        fontWeight: Provider.of<TimeData>(context).pray == 2
-                                            ? FontWeight.bold
-                                            : FontWeight.normal,
-                                        fontSize:
-                                            Provider.of<ChangeSettings>(context).currentHeight! <
-                                                    700
-                                                ? 16
-                                                : 20),
+                                    style: Provider.of<TimeData>(context).pray == 2
+                                        ? textStyleBold
+                                        : textStyle,
                                   ),
                                   Text(
                                     AppLocalizations.of(context)!.gunes,
-                                    style: TextStyle(
-                                        fontWeight: Provider.of<TimeData>(context).pray == 3
-                                            ? FontWeight.bold
-                                            : FontWeight.normal,
-                                        fontSize:
-                                            Provider.of<ChangeSettings>(context).currentHeight! <
-                                                    700
-                                                ? 16
-                                                : 20),
+                                    style: Provider.of<TimeData>(context).pray == 3
+                                        ? textStyleBold
+                                        : textStyle,
                                   ),
                                   Text(
                                     AppLocalizations.of(context)!.ogle,
-                                    style: TextStyle(
-                                        fontWeight: Provider.of<TimeData>(context).pray == 4
-                                            ? FontWeight.bold
-                                            : FontWeight.normal,
-                                        fontSize:
-                                            Provider.of<ChangeSettings>(context).currentHeight! <
-                                                    700
-                                                ? 16
-                                                : 20),
+                                    style: Provider.of<TimeData>(context).pray == 4
+                                        ? textStyleBold
+                                        : textStyle,
                                   ),
                                   Text(
                                     AppLocalizations.of(context)!.ikindi,
-                                    style: TextStyle(
-                                        fontWeight: Provider.of<TimeData>(context).pray == 5
-                                            ? FontWeight.bold
-                                            : FontWeight.normal,
-                                        fontSize:
-                                            Provider.of<ChangeSettings>(context).currentHeight! <
-                                                    700
-                                                ? 16
-                                                : 20),
+                                    style: Provider.of<TimeData>(context).pray == 5
+                                        ? textStyleBold
+                                        : textStyle,
                                   ),
                                   Text(
                                     AppLocalizations.of(context)!.aksam,
-                                    style: TextStyle(
-                                        fontWeight: Provider.of<TimeData>(context).pray == 6
-                                            ? FontWeight.bold
-                                            : FontWeight.normal,
-                                        fontSize:
-                                            Provider.of<ChangeSettings>(context).currentHeight! <
-                                                    700
-                                                ? 16
-                                                : 20),
+                                    style: Provider.of<TimeData>(context).pray == 6
+                                        ? textStyleBold
+                                        : textStyle,
                                   ),
                                   Text(
                                     AppLocalizations.of(context)!.yatsi,
-                                    style: TextStyle(
-                                        fontWeight: Provider.of<TimeData>(context).pray == 7
-                                            ? FontWeight.bold
-                                            : FontWeight.normal,
-                                        fontSize:
-                                            Provider.of<ChangeSettings>(context).currentHeight! <
-                                                    700
-                                                ? 16
-                                                : 20),
+                                    style: Provider.of<TimeData>(context).pray == 7
+                                        ? textStyleBold
+                                        : textStyle,
                                   ),
                                 ],
                               ),
@@ -155,93 +122,51 @@ class BottomTimesCard extends StatelessWidget {
                                   Text(
                                     DateFormat('HH:mm').format(
                                         Provider.of<TimeData>(context).imsak ?? DateTime.now()),
-                                    style: TextStyle(
-                                        fontWeight: Provider.of<TimeData>(context).pray == 1
-                                            ? FontWeight.bold
-                                            : FontWeight.normal,
-                                        fontSize:
-                                            Provider.of<ChangeSettings>(context).currentHeight! <
-                                                    700
-                                                ? 16
-                                                : 20),
+                                    style: Provider.of<TimeData>(context).pray == 1
+                                        ? textStyleBold
+                                        : textStyle,
                                   ),
                                   Text(
                                     DateFormat('HH:mm').format(
                                         Provider.of<TimeData>(context).sabah ?? DateTime.now()),
-                                    style: TextStyle(
-                                        fontWeight: Provider.of<TimeData>(context).pray == 2
-                                            ? FontWeight.bold
-                                            : FontWeight.normal,
-                                        fontSize:
-                                            Provider.of<ChangeSettings>(context).currentHeight! <
-                                                    700
-                                                ? 16
-                                                : 20),
+                                    style: Provider.of<TimeData>(context).pray == 2
+                                        ? textStyleBold
+                                        : textStyle,
                                   ),
                                   Text(
                                     DateFormat('HH:mm').format(
                                         Provider.of<TimeData>(context).gunes ?? DateTime.now()),
-                                    style: TextStyle(
-                                        fontWeight: Provider.of<TimeData>(context).pray == 3
-                                            ? FontWeight.bold
-                                            : FontWeight.normal,
-                                        fontSize:
-                                            Provider.of<ChangeSettings>(context).currentHeight! <
-                                                    700
-                                                ? 16
-                                                : 20),
+                                    style: Provider.of<TimeData>(context).pray == 3
+                                        ? textStyleBold
+                                        : textStyle,
                                   ),
                                   Text(
                                     DateFormat('HH:mm').format(
                                         Provider.of<TimeData>(context).ogle ?? DateTime.now()),
-                                    style: TextStyle(
-                                        fontWeight: Provider.of<TimeData>(context).pray == 4
-                                            ? FontWeight.bold
-                                            : FontWeight.normal,
-                                        fontSize:
-                                            Provider.of<ChangeSettings>(context).currentHeight! <
-                                                    700
-                                                ? 16
-                                                : 20),
+                                    style: Provider.of<TimeData>(context).pray == 4
+                                        ? textStyleBold
+                                        : textStyle,
                                   ),
                                   Text(
                                     DateFormat('HH:mm').format(
                                         Provider.of<TimeData>(context).ikindi ?? DateTime.now()),
-                                    style: TextStyle(
-                                        fontWeight: Provider.of<TimeData>(context).pray == 5
-                                            ? FontWeight.bold
-                                            : FontWeight.normal,
-                                        fontSize:
-                                            Provider.of<ChangeSettings>(context).currentHeight! <
-                                                    700
-                                                ? 16
-                                                : 20),
+                                    style: Provider.of<TimeData>(context).pray == 5
+                                        ? textStyleBold
+                                        : textStyle,
                                   ),
                                   Text(
                                     DateFormat('HH:mm').format(
                                         Provider.of<TimeData>(context).aksam ?? DateTime.now()),
-                                    style: TextStyle(
-                                        fontWeight: Provider.of<TimeData>(context).pray == 6
-                                            ? FontWeight.bold
-                                            : FontWeight.normal,
-                                        fontSize:
-                                            Provider.of<ChangeSettings>(context).currentHeight! <
-                                                    700
-                                                ? 16
-                                                : 20),
+                                    style: Provider.of<TimeData>(context).pray == 6
+                                        ? textStyleBold
+                                        : textStyle,
                                   ),
                                   Text(
                                     DateFormat('HH:mm').format(
                                         Provider.of<TimeData>(context).yatsi ?? DateTime.now()),
-                                    style: TextStyle(
-                                        fontWeight: Provider.of<TimeData>(context).pray == 7
-                                            ? FontWeight.bold
-                                            : FontWeight.normal,
-                                        fontSize:
-                                            Provider.of<ChangeSettings>(context).currentHeight! <
-                                                    700
-                                                ? 16
-                                                : 20),
+                                    style: Provider.of<TimeData>(context).pray == 7
+                                        ? textStyleBold
+                                        : textStyle,
                                   ),
                                 ],
                               ),
