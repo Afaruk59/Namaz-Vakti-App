@@ -59,6 +59,78 @@ class ChangeSettings with ChangeNotifier {
 
   List<int> alarmVoices = [0, 0, 0, 0, 0, 0, 0];
 
+  //LOAD PROFILE
+  void loadProfileFromSharedPref(BuildContext context) {
+    //LOCATION
+    cityID = _settings.getString('location') ?? '16741';
+    cityName = _settings.getString('name') ?? 'Merkez';
+    cityState = _settings.getString('state') ?? 'İstanbul';
+    otoLocal = _settings.getBool('otoLocation') ?? false;
+
+    //COLOR
+    color = _settings.getString('Color')?.toColor() ?? Colors.blueGrey[500]!;
+
+    //THEME
+    themeIndex = _settings.getInt('themeIndex') ?? 0;
+    switch (themeIndex) {
+      case 0:
+        try {
+          if (Platform.isIOS) {
+            final brightness = WidgetsBinding.instance.platformDispatcher.platformBrightness;
+            isDark = brightness == Brightness.dark;
+          } else {
+            isDark = PlatformDispatcher.instance.platformBrightness == Brightness.dark;
+          }
+        } catch (e) {
+          isDark = false;
+        }
+        break;
+      case 1:
+        isDark = true;
+        break;
+      case 2:
+        isDark = false;
+        break;
+    }
+
+    //STARTUP
+    isfirst = _settings.getBool('startup') ?? true;
+
+    //LANGUAGE
+    String defaultLang;
+    try {
+      if (Platform.isIOS) {
+        defaultLang = PlatformDispatcher.instance.locale.languageCode;
+      } else {
+        defaultLang = PlatformDispatcher.instance.locale.languageCode;
+      }
+    } catch (e) {
+      defaultLang = 'en';
+    }
+    if (!['tr', 'en', 'ar', 'de', 'es', 'fr', 'it', 'ru'].contains(defaultLang)) {
+      defaultLang = 'en';
+    }
+    locale = Locale(_settings.getString('lang') ?? defaultLang);
+    langCode = _settings.getString('lang') ?? defaultLang;
+
+    //ALARMS
+    for (int i = 0; i < 7; i++) {
+      alarmList[i] = _settings.getBool('$i') ?? false;
+      alarmVoices[i] = _settings.getInt('${i}voice') ?? 0;
+      gaps[i] = _settings.getInt('${i}gap') ?? 0;
+    }
+
+    //SHAPE
+    rounded = _settings.getBool('Shape') ?? true;
+
+    //NOTIFICATIONS
+    notificationsEnabled = _settings.getBool('notifications') ?? false;
+    lockScreenEnabled = _settings.getBool('lockScreen') ?? false;
+
+    //HEIGHT
+    currentHeight = MediaQuery.of(context).size.height;
+  }
+
   //SHAPE
   void toggleShape() {
     rounded = !rounded;
@@ -66,40 +138,8 @@ class ChangeSettings with ChangeNotifier {
     notifyListeners();
   }
 
-  void loadShape() {
-    rounded = _settings.getBool('Shape') ?? true;
-  }
-
   void saveShape(bool value) {
     _settings.setBool('Shape', value);
-  }
-
-  //HEIGHT
-  void changeHeight(context) {
-    currentHeight = MediaQuery.of(context).size.height;
-  }
-
-  //LANGUAGE
-  void loadLanguage() {
-    String defaultLang;
-
-    // iOS ve Android için platform-safe dil tespiti
-    try {
-      if (Platform.isIOS) {
-        // iOS için daha güvenilir dil tespiti
-        defaultLang = PlatformDispatcher.instance.locale.languageCode;
-      } else {
-        defaultLang = PlatformDispatcher.instance.locale.languageCode;
-      }
-    } catch (e) {
-      defaultLang = 'en'; // Fallback
-    }
-
-    if (!['tr', 'en', 'ar', 'de', 'es', 'fr', 'it', 'ru'].contains(defaultLang)) {
-      defaultLang = 'en';
-    }
-    locale = Locale(_settings.getString('lang') ?? defaultLang);
-    langCode = _settings.getString('lang') ?? defaultLang;
   }
 
   void saveLanguage(int val) {
@@ -159,23 +199,6 @@ class ChangeSettings with ChangeNotifier {
     notifyListeners();
   }
 
-  void loadAlarmVoices() {
-    for (int i = 0; i < 7; i++) {
-      alarmVoices[i] = _settings.getInt('${i}voice') ?? 0;
-    }
-  }
-
-  void loadNotifications() {
-    notificationsEnabled = _settings.getBool('notifications') ?? false;
-    lockScreenEnabled = _settings.getBool('lockScreen') ?? false;
-  }
-
-  void loadGaps() {
-    for (int i = 0; i < 7; i++) {
-      gaps[i] = _settings.getInt('${i}gap') ?? 0;
-    }
-  }
-
   void saveGap(int index, int gap) {
     gaps[index] = gap;
     _settings.setInt('${index}gap', gap);
@@ -186,12 +209,6 @@ class ChangeSettings with ChangeNotifier {
     alarmList[index] = !alarmList[index];
     _settings.setBool('$index', alarmList[index]);
     notifyListeners();
-  }
-
-  void loadAlarm() {
-    for (int i = 0; i < 7; i++) {
-      alarmList[i] = _settings.getBool('$i') ?? false;
-    }
   }
 
   void enableAllAlarms() {
@@ -211,7 +228,6 @@ class ChangeSettings with ChangeNotifier {
   }
 
   //THEME SETTINGS
-
   void toggleTheme(int index) {
     themeIndex = index;
     switch (index) {
@@ -245,33 +261,6 @@ class ChangeSettings with ChangeNotifier {
     _settings = await SharedPreferences.getInstance();
   }
 
-  void loadThemeFromSharedPref() {
-    themeIndex = _settings.getInt('themeIndex') ?? 0;
-    switch (themeIndex) {
-      case 0:
-        // iOS ve Android için platform-safe tema tespiti
-        try {
-          if (Platform.isIOS) {
-            // iOS için UIUserInterfaceStyle izni ile tema tespiti
-            final brightness = WidgetsBinding.instance.platformDispatcher.platformBrightness;
-            isDark = brightness == Brightness.dark;
-          } else {
-            isDark = PlatformDispatcher.instance.platformBrightness == Brightness.dark;
-          }
-        } catch (e) {
-          // Fallback: varsayılan olarak açık tema
-          isDark = false;
-        }
-        break;
-      case 1:
-        isDark = true;
-        break;
-      case 2:
-        isDark = false;
-        break;
-    }
-  }
-
   void saveThemetoSharedPref(int index) {
     _settings.setInt('themeIndex', index);
   }
@@ -281,21 +270,11 @@ class ChangeSettings with ChangeNotifier {
     notifyListeners();
   }
 
-  void loadCol() {
-    color = _settings.getString('Color')?.toColor() ?? Colors.blueGrey[500]!;
-  }
-
   void saveCol(Color color) {
     _settings.setString('Color', color.toHexString());
   }
 
   //LOCATION SETTINGS
-  void loadLocalFromSharedPref() {
-    cityID = _settings.getString('location') ?? '16741';
-    cityName = _settings.getString('name') ?? 'Merkez';
-    cityState = _settings.getString('state') ?? 'İstanbul';
-  }
-
   void saveLocaltoSharedPref(String value, String name, String state) {
     _settings.setString('location', value);
     _settings.setString('name', name);
@@ -322,15 +301,7 @@ class ChangeSettings with ChangeNotifier {
     _settings.setBool('otoLocation', val);
   }
 
-  void loadOtoLoc() {
-    otoLocal = _settings.getBool('otoLocation') ?? false;
-  }
-
   //STARTUP SETTINGS
-  void loadFirstFromSharedPref() {
-    isfirst = _settings.getBool('startup') ?? true;
-  }
-
   saveFirsttoSharedPref(bool value) {
     _settings.setBool('startup', value);
     notifyListeners();

@@ -22,6 +22,8 @@ import 'package:hijri/hijri_calendar.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:namaz_vakti_app/books/features/book/audio/audio_player_service.dart';
 import 'package:namaz_vakti_app/books/features/book/audio/media_controller.dart';
+import 'package:namaz_vakti_app/books/features/book/screens/book_page_screen.dart';
+import 'package:namaz_vakti_app/books/features/book/screens/bookmarks_screen.dart';
 import 'package:namaz_vakti_app/pages/about.dart';
 import 'package:namaz_vakti_app/pages/kaza.dart';
 import 'package:namaz_vakti_app/l10n/l10n.dart';
@@ -70,7 +72,6 @@ void main() async {
       tz.getLocation(DateTime.now().timeZoneOffset.inHours >= 3 ? 'Europe/Istanbul' : 'UTC'));
 
   await ChangeSettings().createSharedPrefObject();
-  ChangeSettings().loadLocalFromSharedPref();
 
   initializeDateFormatting().then((_) {
     runApp(
@@ -90,7 +91,7 @@ void main() async {
 }
 
 class MainApp extends StatelessWidget {
-  static String version = '1.5.0';
+  static String version = '1.5.1';
   final MediaController mediaController;
   final AudioPlayerService audioPlayerService;
   final MethodChannel? platform;
@@ -113,21 +114,10 @@ class MainApp extends StatelessWidget {
         return null;
       });
     }
-    Provider.of<ChangeSettings>(context, listen: false).loadLocalFromSharedPref();
-    Provider.of<ChangeSettings>(context, listen: false).changeHeight(context);
-    Provider.of<ChangeSettings>(context, listen: false).loadCol();
-    Provider.of<ChangeSettings>(context, listen: false).loadThemeFromSharedPref();
-    Provider.of<ChangeSettings>(context, listen: false).loadFirstFromSharedPref();
-    Provider.of<ChangeSettings>(context, listen: false).loadLanguage();
-    Provider.of<ChangeSettings>(context, listen: false).loadOtoLoc();
+    Provider.of<ChangeSettings>(context, listen: false).loadProfileFromSharedPref(context);
     Provider.of<ChangeSettings>(context).locale == const Locale('ar')
         ? HijriCalendar.setLocal('ar')
         : HijriCalendar.setLocal('en');
-    Provider.of<ChangeSettings>(context, listen: false).loadAlarm();
-    Provider.of<ChangeSettings>(context, listen: false).loadGaps();
-    Provider.of<ChangeSettings>(context, listen: false).loadAlarmVoices();
-    Provider.of<ChangeSettings>(context, listen: false).loadShape();
-    Provider.of<ChangeSettings>(context, listen: false).loadNotifications();
     return MaterialApp(
       supportedLocales: L10n.all,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -180,6 +170,14 @@ class MainApp extends StatelessWidget {
             break;
           case '/search':
             page = const Search();
+            break;
+          case '/bookmarks':
+            page = const BookmarksScreen();
+            break;
+          case '/bookPage':
+            page = const BookPageScreen(
+              bookCode: '',
+            );
             break;
         }
 

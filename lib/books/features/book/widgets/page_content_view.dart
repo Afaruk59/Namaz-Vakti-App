@@ -327,6 +327,10 @@ class _PageContentViewState extends State<PageContentView> {
   }
 
   Widget _buildCombinedView(List<Map<String, dynamic>> parsedElements) {
+    // Navigation bar için bottom padding hesapla
+    final bottomPadding =
+        MediaQuery.of(context).padding.bottom + 80.0; // Navigation bar yüksekliği + extra padding
+
     return Stack(
       children: [
         GestureDetector(
@@ -338,7 +342,7 @@ class _PageContentViewState extends State<PageContentView> {
             padding: EdgeInsets.only(
               left: widget.isFullScreen ? 12.0 : 12.0,
               top: widget.isFullScreen ? 24.0 : 16.0,
-              bottom: widget.isFullScreen ? 24.0 : 16.0,
+              bottom: widget.isFullScreen ? 24.0 : bottomPadding,
               right: widget.isFullScreen ? 12.0 : 12.0,
             ),
             child: SingleChildScrollView(
@@ -376,7 +380,7 @@ class _PageContentViewState extends State<PageContentView> {
             padding: EdgeInsets.only(
               left: widget.isFullScreen ? 12.0 : 12.0,
               top: widget.isFullScreen ? 24.0 : 16.0,
-              bottom: widget.isFullScreen ? 24.0 : 16.0,
+              bottom: widget.isFullScreen ? 24.0 : MediaQuery.of(context).padding.bottom,
             ),
             child: Container(
               decoration: BoxDecoration(
