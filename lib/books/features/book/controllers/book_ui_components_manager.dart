@@ -164,6 +164,8 @@ class BookUIComponentsManager {
     required Function() onSpeedChange,
     required Function() refreshBookmarkStatus,
     required Function(int) onPageNumberEntered,
+    Function()? onNextPage,
+    Function()? onPreviousPage,
   }) {
     return BookBottomControls(
       pageController: pageController,
@@ -180,6 +182,8 @@ class BookUIComponentsManager {
       onSpeedChange: onSpeedChange,
       refreshBookmarkStatus: refreshBookmarkStatus,
       onPageNumberEntered: onPageNumberEntered,
+      onNextPage: onNextPage,
+      onPreviousPage: onPreviousPage,
       onMenuPressed: () {
         scaffoldKey.currentState?.openDrawer();
       },

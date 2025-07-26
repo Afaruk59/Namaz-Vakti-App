@@ -126,12 +126,14 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
 
       // Setup initial page and load content
       _checkAndUpdateInitialPage().then((initialPage) {
-        _setupInitialPage(initialPage);
-        _loadInitialData();
-        _initializeAudioAfterPageLoad();
+        _setupInitialPage(initialPage).then((_) {
+          _loadInitialData().then((_) {
+            _initializeAudioAfterPageLoad();
 
-        // Check if page was changed from mini player and handle accordingly
-        _checkMiniPlayerPageChangeFlag();
+            // Check if page was changed from mini player and handle accordingly
+            _checkMiniPlayerPageChangeFlag();
+          });
+        });
       });
 
       // Start the background page change listener
@@ -159,15 +161,12 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
     _indexFuture = _apiService.getBookIndex(widget.bookCode);
   }
 
-  void _setupInitialPage(int initialPage) {
+  Future<void> _setupInitialPage(int initialPage) async {
     if (initialPage > 1) {
       _bookProgressService.setCurrentPage(widget.bookCode, initialPage);
-      if (_pageController.hasClients) {
-        _pageController.jumpToPage(initialPage);
-      }
-      _pageController.loadPage(initialPage, isForward: initialPage > widget.initialPage);
+      await _pageController.loadPage(initialPage, isForward: initialPage > widget.initialPage);
     }
-    _bookmarkController.checkBookmarkStatus(_pageController.currentPage);
+    await _bookmarkController.checkBookmarkStatus(_pageController.currentPage);
   }
 
   void _initializeUIManager() {
@@ -505,7 +504,7 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
     });
   }
 
-  void _loadInitialData() async {
+  Future<void> _loadInitialData() async {
     await _pageController.initializeFirstPage();
     await _loadBookTitle();
     await _bookmarkController.initializeBookmarkStatus(_pageController.currentPage);
@@ -663,8 +662,9 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
 
   void _onPageChanged(int pageNumber) {
     if (_isExiting) return;
-    _pageController.onPageChanged(pageNumber);
 
+    // Since we no longer use PageView, this method is mainly for manual navigation
+    // triggered by navigation buttons or external page changes
     try {
       Future.microtask(() async {
         try {
@@ -743,6 +743,8 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
               onSpeedChange: _handleSpeedChange,
               refreshBookmarkStatus: _refreshBookmarkStatus,
               onPageNumberEntered: (pageNumber) => _navigationController.goToPage(pageNumber),
+              onNextPage: () => _navigationController.goToNextPage(),
+              onPreviousPage: () => _navigationController.goToPreviousPage(),
             ),
             drawerEnableOpenDragGesture: false,
           );
@@ -1072,7 +1074,7 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
           debugPrint('BookPageScreen: Updating page display without changing audio');
 
           // Jump to page and load content
-          _pageController.jumpToPage(currentAudioPage);
+          await _pageController.jumpToPage(currentAudioPage);
           await _pageController.loadPage(currentAudioPage,
               isForward: currentAudioPage > _pageController.currentPage);
 
@@ -1142,7 +1144,7 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
         debugPrint(
             'BookPageScreen: Updating page display without changing audio (background check)');
         if (mounted) {
-          _pageController.jumpToPage(currentAudioPage);
+          await _pageController.jumpToPage(currentAudioPage);
           await _pageController.loadPage(currentAudioPage,
               isForward: currentAudioPage > _pageController.currentPage);
           await _bookmarkController.checkBookmarkStatus(currentAudioPage);

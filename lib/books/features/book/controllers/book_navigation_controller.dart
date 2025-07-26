@@ -172,9 +172,6 @@ class BookNavigationController {
         await audioPlayerService.stopAudio();
       }
 
-      // Navigate to the next page
-      pageController.jumpToPage(nextPage);
-
       // Load the next page
       await pageController.loadPage(nextPage, isForward: true);
 
@@ -254,9 +251,6 @@ class BookNavigationController {
         await audioPlayerService.stopAudio();
       }
 
-      // Navigate to the previous page
-      pageController.jumpToPage(previousPage);
-
       // Load the previous page
       await pageController.loadPage(previousPage, isForward: false);
 
@@ -332,9 +326,6 @@ class BookNavigationController {
         debugPrint('Stopping audio before changing page');
         await audioPlayerService.stopAudio();
       }
-
-      // Navigate to the specified page
-      pageController.jumpToPage(pageNumber);
 
       // Load the page content
       await pageController.loadPage(pageNumber, isForward: isForward);

@@ -10,7 +10,6 @@ class BookPageController {
   final ApiService apiService;
   final BookProgressService bookProgressService;
   late BookPageManager pageManager;
-  late PageController pageController;
   BookPageModel? currentBookPage;
 
   // Callback when the current page changes
@@ -38,9 +37,6 @@ class BookPageController {
       },
       onPageChanged: onPageChanged,
     );
-
-    // Initialize the page controller with the current page from page manager
-    pageController = PageController(initialPage: pageManager.currentPage);
   }
 
   // Check if audio is playing and navigate to the correct page
@@ -55,6 +51,9 @@ class BookPageController {
       if (savedPage > 0 && savedPage != initialPage) {
         // Update the progress service
         bookProgressService.setCurrentPage(bookCode, savedPage);
+
+        // Load the saved page
+        await pageManager.loadPage(savedPage, isForward: savedPage > initialPage);
 
         // Return the updated page number
         return savedPage;
@@ -78,45 +77,23 @@ class BookPageController {
   }
 
   // Navigate to the next page
-  void goToNextPage(Function() beforeNavigation, Function(bool) afterNavigation) {
+  Future<void> goToNextPage() async {
     final currentPage = pageManager.currentPage;
     final totalPages = bookProgressService.getTotalPages(bookCode);
 
     if (currentPage < totalPages) {
       final nextPage = currentPage + 1;
-
-      // Run before navigation callback
-      beforeNavigation();
-
-      // Update page controller
-      pageController.jumpToPage(nextPage);
-
-      // Update page manager
-      pageManager.loadPage(nextPage, isForward: true).then((_) {
-        // Run after navigation callback
-        afterNavigation(true);
-      });
+      await pageManager.loadPage(nextPage, isForward: true);
     }
   }
 
   // Navigate to the previous page
-  void goToPreviousPage(Function() beforeNavigation, Function(bool) afterNavigation) {
+  Future<void> goToPreviousPage() async {
     final currentPage = pageManager.currentPage;
 
     if (currentPage > 1) {
       final previousPage = currentPage - 1;
-
-      // Run before navigation callback
-      beforeNavigation();
-
-      // Update page controller
-      pageController.jumpToPage(previousPage);
-
-      // Update page manager
-      pageManager.loadPage(previousPage, isForward: false).then((_) {
-        // Run after navigation callback
-        afterNavigation(false);
-      });
+      await pageManager.loadPage(previousPage, isForward: false);
     }
   }
 
@@ -130,25 +107,26 @@ class BookPageController {
     return pageManager.getPageFromCacheOrLoad(pageNumber);
   }
 
-  // PageView navigation methods (forwarding to the internal pageController)
-  Future<void> previousPage({required Duration duration, required Curve curve}) {
-    return pageController.previousPage(duration: duration, curve: curve);
+  // Jump to a specific page (for compatibility with existing code)
+  Future<void> jumpToPage(int page) async {
+    // Simply load the page since we don't have PageController anymore
+    await pageManager.loadPage(page, isForward: page > pageManager.currentPage);
   }
 
-  Future<void> nextPage({required Duration duration, required Curve curve}) {
-    return pageController.nextPage(duration: duration, curve: curve);
-  }
-
-  void jumpToPage(int page) {
-    pageController.jumpToPage(page);
-  }
-
-  // Expose PageController properties
-  bool get hasClients => pageController.hasClients;
+  // Check if there are clients (for compatibility with existing code)
+  bool get hasClients => true; // Always true since we don't use PageController
 
   // Dispose resources
   void dispose() {
-    pageController.dispose();
+    // No need to dispose PageController anymore
+  }
+
+  // Called when page is changed externally
+  void handleExternalPageChange(int pageNumber) {
+    // This method can be used to handle page changes from external sources
+    if (pageNumber != pageManager.currentPage) {
+      loadPage(pageNumber, isForward: pageNumber > pageManager.currentPage);
+    }
   }
 
   // Helper properties

@@ -22,6 +22,8 @@ class BookBottomControls extends StatelessWidget {
   final Function() refreshBookmarkStatus;
   final Function(int) onPageNumberEntered;
   final Function() onMenuPressed;
+  final Function()? onNextPage;
+  final Function()? onPreviousPage;
 
   const BookBottomControls({
     super.key,
@@ -40,12 +42,14 @@ class BookBottomControls extends StatelessWidget {
     required this.refreshBookmarkStatus,
     required this.onPageNumberEntered,
     required this.onMenuPressed,
+    this.onNextPage,
+    this.onPreviousPage,
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.only(bottom: 15),
+        padding: const EdgeInsets.only(bottom: 5),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -63,18 +67,14 @@ class BookBottomControls extends StatelessWidget {
                 currentPage: pageController.currentPage,
                 isFirstPage: pageController.isFirstPage,
                 isLastPage: pageController.isLastPage,
-                onPreviousPage: () {
-                  pageController.previousPage(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
-                  );
-                },
-                onNextPage: () {
-                  pageController.nextPage(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
-                  );
-                },
+                onPreviousPage: onPreviousPage ??
+                    () {
+                      pageController.goToPreviousPage();
+                    },
+                onNextPage: onNextPage ??
+                    () {
+                      pageController.goToNextPage();
+                    },
                 onMenuPressed: onMenuPressed,
                 onPlayAudio: onPlayAudio,
                 hasAudio: hasAudio,
