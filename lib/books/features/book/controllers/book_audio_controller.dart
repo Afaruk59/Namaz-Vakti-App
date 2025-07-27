@@ -377,7 +377,11 @@ class BookAudioController {
       // Seek using the audio manager
       await audioManager.seekTo(safeDuration.inMilliseconds.toDouble());
 
-      debugPrint('BookAudioController: Seek completed');
+      // Seek tamamlandıktan sonra pozisyonu senkronize et
+      await Future.delayed(const Duration(milliseconds: 100));
+      await audioPlayerService.forcePositionSync();
+
+      debugPrint('BookAudioController: Seek completed and position synced');
     } catch (e) {
       debugPrint('BookAudioController: Error in handleSeek: $e');
     }

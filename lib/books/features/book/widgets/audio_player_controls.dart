@@ -27,9 +27,11 @@ class AudioPlayerControls extends StatefulWidget {
 class _AudioPlayerControlsState extends State<AudioPlayerControls>
     with SingleTickerProviderStateMixin {
   bool _isDragging = false;
+  bool _isSeeking = false; // Yeni: seek işlemi durumu
   double _dragValue = 0.0;
   Timer? _debounceTimer;
   Timer? _stateRecoveryTimer;
+  Timer? _seekRecoveryTimer; // Yeni: seek sonrası recovery timer
 
   // For debugging
   int _rebuildCounter = 0;
@@ -47,13 +49,26 @@ class _AudioPlayerControlsState extends State<AudioPlayerControls>
   void dispose() {
     _debounceTimer?.cancel();
     _stateRecoveryTimer?.cancel();
+    _seekRecoveryTimer?.cancel(); // Yeni timer'ı temizle
     super.dispose();
   }
 
   // Debounce function to limit the frequency of UI updates
-  void _debounceAction(VoidCallback action) {
-    _debounceTimer?.cancel();
-    _debounceTimer = Timer(const Duration(milliseconds: 50), action);
+  // void _debounceAction(VoidCallback action) {
+  //   _debounceTimer?.cancel();
+  //   _debounceTimer = Timer(const Duration(milliseconds: 50), action);
+  // }
+
+  // Yeni: Seek işlemi sonrası recovery
+  void _scheduleSeekRecovery() {
+    _seekRecoveryTimer?.cancel();
+    _seekRecoveryTimer = Timer(const Duration(milliseconds: 300), () {
+      if (mounted) {
+        setState(() {
+          _isSeeking = false;
+        });
+      }
+    });
   }
 
   // State recovery scheduling after orientation change
@@ -138,8 +153,8 @@ class _AudioPlayerControlsState extends State<AudioPlayerControls>
                   _lastDurationValue = duration;
                 }
 
-                // Initialize drag value if not dragging
-                if (!_isDragging) {
+                // Initialize drag value if not dragging or seeking
+                if (!_isDragging && !_isSeeking) {
                   _dragValue = position.inMilliseconds
                       .toDouble()
                       .clamp(0.0, duration.inMilliseconds.toDouble());
@@ -204,7 +219,7 @@ class _AudioPlayerControlsState extends State<AudioPlayerControls>
                                 // Current position
                                 RepaintBoundary(
                                   child: Text(
-                                    _formatDuration(_isDragging
+                                    _formatDuration((_isDragging || _isSeeking)
                                         ? Duration(milliseconds: _dragValue.toInt())
                                         : position),
                                     style: const TextStyle(fontSize: 12, color: Colors.white),
@@ -225,7 +240,7 @@ class _AudioPlayerControlsState extends State<AudioPlayerControls>
                                       thumbColor: Colors.white,
                                     ),
                                     child: Slider(
-                                      value: _isDragging
+                                      value: (_isDragging || _isSeeking)
                                           ? _dragValue
                                           : position.inMilliseconds
                                               .toDouble()
@@ -235,17 +250,18 @@ class _AudioPlayerControlsState extends State<AudioPlayerControls>
                                           ? duration.inMilliseconds.toDouble()
                                           : 1,
                                       onChanged: (value) {
-                                        _debounceAction(() {
-                                          setState(() {
-                                            _isDragging = true;
-                                            _dragValue = value.clamp(
-                                                0.0, duration.inMilliseconds.toDouble());
-                                          });
+                                        // Debounce kaldırıldı - daha responsive drag
+                                        setState(() {
+                                          _isDragging = true;
+                                          _isSeeking = false; // Drag sırasında seeking'i iptal et
+                                          _dragValue =
+                                              value.clamp(0.0, duration.inMilliseconds.toDouble());
                                         });
                                       },
                                       onChangeStart: (value) {
                                         setState(() {
                                           _isDragging = true;
+                                          _isSeeking = false; // Drag başlarken seeking'i iptal et
                                           _dragValue =
                                               value.clamp(0.0, duration.inMilliseconds.toDouble());
                                         });
@@ -258,10 +274,17 @@ class _AudioPlayerControlsState extends State<AudioPlayerControls>
                                             value.clamp(0.0, duration.inMilliseconds.toDouble());
                                         debugPrint(
                                             'AudioPlayerControls: Seeking to position ${clampedValue / 1000}s');
-                                        widget.onSeek(clampedValue);
+
                                         setState(() {
                                           _isDragging = false;
+                                          _isSeeking = true; // Seek işlemi başlatıldı
                                         });
+
+                                        // Seek işlemini başlat
+                                        widget.onSeek(clampedValue);
+
+                                        // Seek tamamlandıktan sonra recovery başlat
+                                        _scheduleSeekRecovery();
                                       },
                                     ),
                                   ),
@@ -270,7 +293,7 @@ class _AudioPlayerControlsState extends State<AudioPlayerControls>
                                 // Remaining time
                                 RepaintBoundary(
                                   child: Text(
-                                    "- ${_formatDuration(_isDragging ? Duration(milliseconds: (duration.inMilliseconds - _dragValue.toInt())) : duration - position)}",
+                                    "- ${_formatDuration((_isDragging || _isSeeking) ? Duration(milliseconds: (duration.inMilliseconds - _dragValue.toInt())) : duration - position)}",
                                     style: const TextStyle(fontSize: 12, color: Colors.white),
                                   ),
                                 ),

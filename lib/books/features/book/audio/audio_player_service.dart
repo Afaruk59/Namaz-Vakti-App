@@ -387,17 +387,23 @@ class AudioPlayerService {
         // Seek işlemini gerçekleştir
         await _audioPlayer!.seek(position);
 
-        // Pozisyonu güncelle
+        // Hemen pozisyonu güncelle
         this.position = position;
         if (!_positionController!.isClosed) {
           _positionController!.add(position);
         }
 
-        // Kısa bir gecikme sonra pozisyonu doğrula
-        await Future.delayed(const Duration(milliseconds: 100));
+        // Seek işlemi tamamlanması için biraz bekle ve pozisyonu doğrula
+        await Future.delayed(const Duration(milliseconds: 150));
         final actualPosition = await _audioPlayer!.getCurrentPosition();
         if (actualPosition != null) {
           this.position = actualPosition;
+          if (!_positionController!.isClosed) {
+            _positionController!.add(actualPosition);
+          }
+
+          // İkinci bir güncelleme ile emin ol
+          await Future.delayed(const Duration(milliseconds: 50));
           if (!_positionController!.isClosed) {
             _positionController!.add(actualPosition);
           }
@@ -618,6 +624,24 @@ class AudioPlayerService {
   void forcePositionUpdate() {
     if (_positionController != null && !_positionController!.isClosed) {
       _positionController!.add(position);
+    }
+  }
+
+  // Seek işleminden sonra pozisyonu senkronize eden fonksiyon
+  Future<void> forcePositionSync() async {
+    if (_audioPlayer != null) {
+      try {
+        final currentPosition = await _audioPlayer!.getCurrentPosition();
+        if (currentPosition != null) {
+          position = currentPosition;
+          if (_positionController != null && !_positionController!.isClosed) {
+            _positionController!.add(currentPosition);
+          }
+          debugPrint('AudioPlayerService: Position synced to ${currentPosition.inSeconds}s');
+        }
+      } catch (e) {
+        debugPrint('AudioPlayerService: Error syncing position: $e');
+      }
     }
   }
 
