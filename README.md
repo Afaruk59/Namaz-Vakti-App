@@ -12,21 +12,19 @@ A comprehensive Islamic prayer companion app built with Flutter, providing accur
   <table>
     <tr>
       <td align="center">
-        <img src="screenshots/2.png" width="200" alt="Prayer Times Interface"/>
+        <img src="screenshots/2.png" width="180" alt="Prayer Times Interface"/>
       </td>
       <td align="center">
-        <img src="screenshots/4.png" width="200" alt="Qibla Compass"/>
+        <img src="screenshots/4.png" width="180" alt="Qibla Compass"/>
       </td>
       <td align="center">
-        <img src="screenshots/5.png" width="200" alt="Dhikr Counter"/>
-      </td>
-    </tr>
-    <tr>
-      <td align="center">
-        <img src="screenshots/6.png" width="200" alt="Islamic Books Library"/>
+        <img src="screenshots/5.png" width="180" alt="Dhikr Counter"/>
       </td>
       <td align="center">
-        <img src="screenshots/7.png" width="200" alt="Settings & Customization"/>
+        <img src="screenshots/6.png" width="180" alt="Islamic Books Library"/>
+      </td>
+      <td align="center">
+        <img src="screenshots/7.png" width="180" alt="Settings & Customization"/>
       </td>
     </tr>
   </table>
