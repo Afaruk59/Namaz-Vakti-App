@@ -67,7 +67,8 @@ class BookNavigationController {
           } else {
             // Ses çalmıyorsa, mevcut sayfadaki sesi başlat
             final currentPage = pageController.currentPage;
-            final bookPage = await pageController.getPageFromCacheOrLoad(currentPage);
+            final bookPage =
+                await pageController.getPageFromCacheOrLoad(currentPage, isForward: true);
             if (bookPage.mp3.isNotEmpty) {
               final bookTitle = await bookTitleService.getTitle(bookCode);
               final bookAuthor = await bookTitleService.getAuthor(bookCode);
@@ -185,7 +186,8 @@ class BookNavigationController {
       _updateMediaPageState();
 
       // Get the book page content
-      BookPageModel? bookPage = await pageController.getPageFromCacheOrLoad(nextPage);
+      BookPageModel? bookPage =
+          await pageController.getPageFromCacheOrLoad(nextPage, isForward: true);
       onBookPageUpdated(bookPage);
 
       // If the page has audio and was playing/paused before, start playing audio
@@ -264,7 +266,8 @@ class BookNavigationController {
       _updateMediaPageState();
 
       // Get the book page content
-      BookPageModel? bookPage = await pageController.getPageFromCacheOrLoad(previousPage);
+      BookPageModel? bookPage =
+          await pageController.getPageFromCacheOrLoad(previousPage, isForward: false);
       onBookPageUpdated(bookPage);
 
       // If audio was playing/paused and the new page has audio, play it
@@ -340,7 +343,8 @@ class BookNavigationController {
       _updateMediaPageState();
 
       // Get the new page content
-      BookPageModel? bookPage = await pageController.getPageFromCacheOrLoad(pageNumber);
+      BookPageModel? bookPage =
+          await pageController.getPageFromCacheOrLoad(pageNumber, isForward: isForward);
       onBookPageUpdated(bookPage);
 
       // If the new page has audio, start playing it immediately if previous page was playing

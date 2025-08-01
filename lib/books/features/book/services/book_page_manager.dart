@@ -80,7 +80,7 @@ class BookPageManager {
     }
   }
 
-  Future<BookPageModel> getPageFromCacheOrLoad(int pageNumber) async {
+  Future<BookPageModel> getPageFromCacheOrLoad(int pageNumber, {bool isForward = true}) async {
     // Önce cache'de var mı kontrol et
     if (_pageCache.containsKey(pageNumber)) {
       return _pageCache[pageNumber]!;
@@ -96,18 +96,18 @@ class BookPageManager {
         return page;
       }
 
-      // Eğer sayfa boşsa, bir sonraki sayfayı dene (maksimum 5 deneme)
-      int currentAttempt = pageNumber + 1;
+      // Eğer sayfa boşsa, yön belirleyerek geçerli bir sayfa dene (maksimum 5 deneme)
+      int currentAttempt = isForward ? pageNumber + 1 : pageNumber - 1;
       int maxAttempts = 5;
       int attemptCount = 0;
 
       while (attemptCount < maxAttempts) {
         // Geçersiz sayfa numaralarını kontrol et
-        if (currentAttempt > bookProgressService.getTotalPages(bookCode)) {
+        if (currentAttempt < 1 || currentAttempt > bookProgressService.getTotalPages(bookCode)) {
           break;
         }
 
-        // Sonraki sayfayı yüklemeyi dene
+        // Sonraki/önceki sayfayı yüklemeyi dene
         try {
           final nextPage = await apiService.getBookPage(bookCode, currentAttempt);
           if (nextPage.pageText.trim().isNotEmpty) {
@@ -117,10 +117,10 @@ class BookPageManager {
             return nextPage;
           }
         } catch (e) {
-          debugPrint('Error loading next page $currentAttempt: $e');
+          debugPrint('Error loading ${isForward ? "next" : "previous"} page $currentAttempt: $e');
         }
 
-        currentAttempt++;
+        currentAttempt = isForward ? currentAttempt + 1 : currentAttempt - 1;
         attemptCount++;
       }
 
@@ -146,6 +146,7 @@ class BookPageManager {
       int currentAttempt = pageNumber;
       int maxAttempts = 10; // Maksimum deneme sayısını artırıyorum (5'ten 10'a)
       int attemptCount = 0;
+      int? foundValidPageNumber;
 
       // Geçerli bir sayfa bulana kadar veya maksimum deneme sayısına ulaşana kadar dene
       while (attemptCount < maxAttempts) {
@@ -157,6 +158,7 @@ class BookPageManager {
           bookPage = _pageCache[currentAttempt];
           if (bookPage!.pageText.trim().isNotEmpty) {
             debugPrint('Found valid page $currentAttempt in cache');
+            foundValidPageNumber = currentAttempt;
             break;
           }
         } else {
@@ -168,6 +170,7 @@ class BookPageManager {
             if (bookPage.pageText.trim().isNotEmpty) {
               _pageCache[currentAttempt] = bookPage;
               debugPrint('Loaded valid page $currentAttempt from API');
+              foundValidPageNumber = currentAttempt;
               break;
             } else {
               debugPrint('Page $currentAttempt is empty, trying next page');
@@ -197,14 +200,14 @@ class BookPageManager {
       }
 
       // Geçerli bir sayfa bulundu, sayfayı güncelle
-      debugPrint('Updating to valid page $currentAttempt');
-      await bookProgressService.setCurrentPage(bookCode, currentAttempt);
-      _currentPage = currentAttempt;
+      debugPrint('Updating to valid page $foundValidPageNumber');
+      await bookProgressService.setCurrentPage(bookCode, foundValidPageNumber!);
+      _currentPage = foundValidPageNumber;
       onPageLoaded(bookPage);
-      onPageChanged(currentAttempt);
+      onPageChanged(foundValidPageNumber);
 
       // Sonraki ve önceki sayfaları ön belleğe al
-      preloadAdjacentPages(currentAttempt);
+      preloadAdjacentPages(foundValidPageNumber);
     } catch (e) {
       debugPrint('Error in loadPage method: $e');
     } finally {

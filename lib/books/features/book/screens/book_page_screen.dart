@@ -1082,7 +1082,8 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
           await _bookmarkController.checkBookmarkStatus(currentAudioPage);
 
           // Get page content and update UI
-          BookPageModel? bookPage = await _pageController.getPageFromCacheOrLoad(currentAudioPage);
+          BookPageModel? bookPage = await _pageController.getPageFromCacheOrLoad(currentAudioPage,
+              isForward: currentAudioPage > _pageController.currentPage);
           setState(() {
             _currentBookPage = bookPage;
             _uiManager.updateCurrentBookPage(bookPage);
@@ -1148,7 +1149,8 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
           await _pageController.loadPage(currentAudioPage,
               isForward: currentAudioPage > _pageController.currentPage);
           await _bookmarkController.checkBookmarkStatus(currentAudioPage);
-          BookPageModel? bookPage = await _pageController.getPageFromCacheOrLoad(currentAudioPage);
+          BookPageModel? bookPage = await _pageController.getPageFromCacheOrLoad(currentAudioPage,
+              isForward: currentAudioPage > _pageController.currentPage);
           if (mounted) {
             setState(() {
               _currentBookPage = bookPage;

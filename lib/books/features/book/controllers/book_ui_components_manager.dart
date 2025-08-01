@@ -132,7 +132,8 @@ class BookUIComponentsManager {
     }
 
     return FutureBuilder<BookPageModel>(
-      future: pageController.getPageFromCacheOrLoad(index),
+      future: pageController.getPageFromCacheOrLoad(index,
+          isForward: index > pageController.currentPage),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());

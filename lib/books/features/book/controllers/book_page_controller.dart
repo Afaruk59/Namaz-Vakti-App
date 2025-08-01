@@ -103,8 +103,8 @@ class BookPageController {
   }
 
   // Get a page from cache or load it
-  Future<BookPageModel> getPageFromCacheOrLoad(int pageNumber) {
-    return pageManager.getPageFromCacheOrLoad(pageNumber);
+  Future<BookPageModel> getPageFromCacheOrLoad(int pageNumber, {bool isForward = true}) {
+    return pageManager.getPageFromCacheOrLoad(pageNumber, isForward: isForward);
   }
 
   // Jump to a specific page (for compatibility with existing code)
