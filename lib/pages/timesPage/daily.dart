@@ -18,7 +18,7 @@ class Daily extends StatelessWidget {
     return Card(
       color: Theme.of(context).cardColor,
       child: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.symmetric(horizontal: 10.0),
         child: Center(
           child: Wrap(
             alignment: WrapAlignment.center,

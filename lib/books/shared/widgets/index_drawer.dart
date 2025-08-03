@@ -70,7 +70,8 @@ class _IndexDrawerState extends State<IndexDrawer> with SingleTickerProviderStat
     widget.indexFuture.then((items) {
       setState(() {
         _indexItems = items;
-        _filteredItems = items;
+        // 0. sayfayı filtrele (sayfa numarası 0 olmayanları al)
+        _filteredItems = items.where((item) => item.pageNumber > 0).toList();
       });
     });
 
@@ -112,11 +113,13 @@ class _IndexDrawerState extends State<IndexDrawer> with SingleTickerProviderStat
     setState(() {
       _searchText = query;
       if (query.isEmpty) {
-        _filteredItems = _indexItems;
+        // 0. sayfayı filtrele (sayfa numarası 0 olmayanları al)
+        _filteredItems = _indexItems.where((item) => item.pageNumber > 0).toList();
         _showSearchResults = false;
       } else {
         _filteredItems = _indexItems
-            .where((item) => item.title.toLowerCase().contains(query.toLowerCase()))
+            .where((item) =>
+                item.title.toLowerCase().contains(query.toLowerCase()) && item.pageNumber > 0)
             .toList();
       }
     });
@@ -339,15 +342,27 @@ class _IndexDrawerState extends State<IndexDrawer> with SingleTickerProviderStat
       );
     }
 
+    // 0. sayfayı filtrele (sayfa numarası 0 olmayanları al)
+    final filteredResults = _searchResults.where((result) {
+      final pageNumber = result['page'] as int;
+      return pageNumber > 0;
+    }).toList();
+
+    if (filteredResults.isEmpty) {
+      return const Center(
+        child: Text('Sonuç bulunamadı'),
+      );
+    }
+
     return Scrollbar(
       controller: _searchScrollController,
       thickness: 6.0,
       radius: const Radius.circular(3.0),
       child: ListView.builder(
         controller: _searchScrollController,
-        itemCount: _searchResults.length,
+        itemCount: filteredResults.length,
         itemBuilder: (context, index) {
-          final result = _searchResults[index];
+          final result = filteredResults[index];
           final pageNumber = result['page'] as int;
 
           // Öncelikle shortdesc alanını kontrol et, yoksa text alanını kullan

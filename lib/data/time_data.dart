@@ -51,11 +51,15 @@ class TimeData extends ChangeSettings {
   Duration difference = const Duration(minutes: 1);
   int pray = 0;
   DateTime soontime = DateTime.now();
-  bool hour = true;
-  bool minute = true;
   DateTime preTime = DateTime.now();
   Duration mainDifference = const Duration(minutes: 1);
   bool isClockEnabled = true;
+
+  Duration detailedDifference = const Duration(minutes: 1);
+  int detailedPray = 0;
+  DateTime detailedSoontime = DateTime.now();
+  DateTime detailedPreTime = DateTime.now();
+  Duration detailedMainDifference = const Duration(minutes: 1);
 
   String miladi = DateFormat('dd MMMM yyyy').format(DateTime.now());
 
@@ -323,6 +327,108 @@ class TimeData extends ChangeSettings {
       } else {
         mainDifference = soontime.difference(preTime);
         difference = soontime.difference(DateTime(1970, 1, 1, now.hour, now.minute, now.second));
+      }
+      notifyListeners();
+    }
+  }
+
+  void updateDetailedTime() {
+    DateTime now = DateTime.now();
+    clock = DateFormat('HH:mm:ss').format(now);
+
+    if (isTimeLoading == false && imsak != null) {
+      if (DateTime(now.year, now.month, now.day, imsak!.hour, imsak!.minute, 0).difference(now) >
+          DateTime.now().difference(now)) {
+        detailedPray = 0;
+        detailedSoontime = imsak!;
+        detailedPreTime = yatsi2!;
+      } else if (DateTime(now.year, now.month, now.day, sabah!.hour, sabah!.minute, 0).difference(now) >
+          DateTime.now().difference(now)) {
+        detailedPray = 1;
+        detailedSoontime = sabah!;
+        detailedPreTime = imsak!;
+      } else if (DateTime(now.year, now.month, now.day, gunes!.hour, gunes!.minute, 0).difference(now) >
+          DateTime.now().difference(now)) {
+        detailedPray = 2;
+        detailedSoontime = gunes!;
+        detailedPreTime = sabah!;
+      } else if (DateTime(now.year, now.month, now.day, israk!.hour, israk!.minute, 0).difference(now) >
+          DateTime.now().difference(now)) {
+        detailedPray = 3;
+        detailedSoontime = israk!;
+        detailedPreTime = gunes!;
+      } else if (DateTime(now.year, now.month, now.day, kerahat!.hour, kerahat!.minute, 0).difference(now) >
+          DateTime.now().difference(now)) {
+        detailedPray = 4;
+        detailedSoontime = kerahat!;
+        detailedPreTime = israk!;
+      } else if (DateTime(now.year, now.month, now.day, ogle!.hour, ogle!.minute, 0).difference(now) >
+          DateTime.now().difference(now)) {
+        detailedPray = 5;
+        detailedSoontime = ogle!;
+        detailedPreTime = kerahat!;
+      } else if (DateTime(now.year, now.month, now.day, ikindi!.hour, ikindi!.minute, 0).difference(now) >
+          DateTime.now().difference(now)) {
+        detailedPray = 6;
+        detailedSoontime = ikindi!;
+        detailedPreTime = ogle!;
+      } else if (DateTime(now.year, now.month, now.day, asrisani!.hour, asrisani!.minute, 0)
+              .difference(now) >
+          DateTime.now().difference(now)) {
+        detailedPray = 7;
+        detailedSoontime = asrisani!;
+        detailedPreTime = ikindi!;
+      } else if (DateTime(now.year, now.month, now.day, isfirar!.hour, isfirar!.minute, 0).difference(now) >
+          DateTime.now().difference(now)) {
+        detailedPray = 8;
+        detailedSoontime = isfirar!;
+        detailedPreTime = asrisani!;
+      } else if (DateTime(now.year, now.month, now.day, aksam!.hour, aksam!.minute, 0).difference(now) >
+          DateTime.now().difference(now)) {
+        detailedPray = 9;
+        detailedSoontime = aksam!;
+        detailedPreTime = isfirar!;
+      } else if (DateTime(now.year, now.month, now.day, istibak!.hour, istibak!.minute, 0)
+              .difference(now) >
+          DateTime.now().difference(now)) {
+        detailedPray = 10;
+        detailedSoontime = istibak!;
+        detailedPreTime = aksam!;
+      } else if (DateTime(now.year, now.month, now.day, yatsi!.hour, yatsi!.minute, 0).difference(now) >
+          DateTime.now().difference(now)) {
+        detailedPray = 11;
+        detailedSoontime = yatsi!;
+        detailedPreTime = istibak!;
+      } else if (DateTime(now.year, now.month, now.day, isaisani!.hour, isaisani!.minute, 0)
+              .difference(now) >
+          DateTime.now().difference(now)) {
+        detailedPray = 12;
+        detailedSoontime = isaisani!;
+        detailedPreTime = yatsi!;
+      } else {
+        detailedPray = 13;
+        detailedSoontime = imsak2!;
+        detailedPreTime = isaisani!;
+      }
+
+      if (detailedSoontime == imsak2 &&
+          DateTime(1970, 1, 1, now.hour, now.minute, now.second, now.millisecond)
+              .isAfter(isaisani!)) {
+        detailedMainDifference = DateTime(
+                1970, 1, 2, detailedSoontime.hour, detailedSoontime.minute, detailedSoontime.second)
+            .difference(preTime);
+        detailedDifference =
+            detailedSoontime.difference(DateTime(1969, 12, 31, now.hour, now.minute, now.second));
+      } else if (detailedSoontime == imsak) {
+        detailedMainDifference = DateTime(
+                1970, 1, 2, detailedSoontime.hour, detailedSoontime.minute, detailedSoontime.second)
+            .difference(preTime);
+        detailedDifference =
+            detailedSoontime.difference(DateTime(1970, 1, 1, now.hour, now.minute, now.second));
+      } else {
+        detailedMainDifference = detailedSoontime.difference(preTime);
+        detailedDifference =
+            detailedSoontime.difference(DateTime(1970, 1, 1, now.hour, now.minute, now.second));
       }
       notifyListeners();
     }

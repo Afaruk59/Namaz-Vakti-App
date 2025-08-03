@@ -39,8 +39,7 @@ class DetailedTimesBtn extends StatelessWidget {
   static DateTime? _isaisani;
   static DateTime? _kible;
   static String? _time;
-  final TextStyle style = const TextStyle(fontSize: 18.0);
-
+  static int? _detailedPray;
   @override
   Widget build(BuildContext context) {
     _imsak = Provider.of<TimeData>(context).imsak;
@@ -58,6 +57,16 @@ class DetailedTimesBtn extends StatelessWidget {
     _isaisani = Provider.of<TimeData>(context).isaisani;
     _kible = Provider.of<TimeData>(context).kible;
     _time = Provider.of<TimeData>(context).miladi;
+    _detailedPray = Provider.of<TimeData>(context).detailedPray;
+    TextStyle textStyleBold = TextStyle(
+      color: Theme.of(context).colorScheme.primary,
+      fontSize: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 20 : 22,
+      fontWeight: FontWeight.bold,
+    );
+    TextStyle textStyle = TextStyle(
+      fontSize: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 16 : 18,
+      fontWeight: FontWeight.normal,
+    );
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
       child: SizedBox.expand(
@@ -119,59 +128,61 @@ class DetailedTimesBtn extends StatelessWidget {
                                       children: [
                                         Text(
                                           AppLocalizations.of(context)!.imsak,
-                                          style: style,
+                                          style: _detailedPray == 1 ? textStyleBold : textStyle,
                                         ),
                                         Text(
                                           AppLocalizations.of(context)!.sabah,
-                                          style: style,
+                                          style: _detailedPray == 2 ? textStyleBold : textStyle,
                                         ),
                                         Text(
                                           AppLocalizations.of(context)!.gunes,
-                                          style: style,
+                                          style: _detailedPray == 3 ? textStyleBold : textStyle,
                                         ),
                                         Text(
                                           AppLocalizations.of(context)!.israk,
-                                          style: style,
+                                          style: _detailedPray == 4 ? textStyleBold : textStyle,
                                         ),
                                         Text(
                                           AppLocalizations.of(context)!.kerahat,
-                                          style: style,
+                                          style: _detailedPray == 5 ? textStyleBold : textStyle,
                                         ),
                                         Text(
                                           AppLocalizations.of(context)!.ogle,
-                                          style: style,
+                                          style: _detailedPray == 6 ? textStyleBold : textStyle,
                                         ),
                                         Text(
                                           AppLocalizations.of(context)!.ikindi,
-                                          style: style,
+                                          style: _detailedPray == 7 ? textStyleBold : textStyle,
                                         ),
                                         Text(
                                           AppLocalizations.of(context)!.asrisani,
-                                          style: style,
+                                          style: _detailedPray == 8 ? textStyleBold : textStyle,
                                         ),
                                         Text(
                                           AppLocalizations.of(context)!.isfirar,
-                                          style: style,
+                                          style: _detailedPray == 9 ? textStyleBold : textStyle,
                                         ),
                                         Text(
                                           AppLocalizations.of(context)!.aksam,
-                                          style: style,
+                                          style: _detailedPray == 10 ? textStyleBold : textStyle,
                                         ),
                                         Text(
                                           AppLocalizations.of(context)!.istibak,
-                                          style: style,
+                                          style: _detailedPray == 11 ? textStyleBold : textStyle,
                                         ),
                                         Text(
                                           AppLocalizations.of(context)!.yatsi,
-                                          style: style,
+                                          style: _detailedPray == 12 ? textStyleBold : textStyle,
                                         ),
                                         Text(
                                           AppLocalizations.of(context)!.isaisani,
-                                          style: style,
+                                          style: _detailedPray == 13 || _detailedPray == 0
+                                              ? textStyleBold
+                                              : textStyle,
                                         ),
                                         Text(
                                           AppLocalizations.of(context)!.kible,
-                                          style: style,
+                                          style: textStyle,
                                         ),
                                       ],
                                     ),
@@ -198,61 +209,63 @@ class DetailedTimesBtn extends StatelessWidget {
                                       children: [
                                         Text(
                                           DateFormat('HH:mm').format(_imsak!),
-                                          style: style,
+                                          style: _detailedPray == 1 ? textStyleBold : textStyle,
                                         ),
                                         Text(
                                           DateFormat('HH:mm').format(_sabah!),
-                                          style: style,
+                                          style: _detailedPray == 2 ? textStyleBold : textStyle,
                                         ),
                                         Text(
                                           DateFormat('HH:mm').format(_gunes!),
-                                          style: style,
+                                          style: _detailedPray == 3 ? textStyleBold : textStyle,
                                         ),
                                         Text(
                                           DateFormat('HH:mm').format(_israk!),
-                                          style: style,
+                                          style: _detailedPray == 4 ? textStyleBold : textStyle,
                                         ),
                                         Text(
                                           DateFormat('HH:mm').format(_kerahat!),
-                                          style: style,
+                                          style: _detailedPray == 5 ? textStyleBold : textStyle,
                                         ),
                                         Text(
                                           DateFormat('HH:mm').format(_ogle!),
-                                          style: style,
+                                          style: _detailedPray == 6 ? textStyleBold : textStyle,
                                         ),
                                         Text(
                                           DateFormat('HH:mm').format(_ikindi!),
-                                          style: style,
+                                          style: _detailedPray == 7 ? textStyleBold : textStyle,
                                         ),
                                         Text(
                                           DateFormat('HH:mm').format(_asrisani!),
-                                          style: style,
+                                          style: _detailedPray == 8 ? textStyleBold : textStyle,
                                         ),
                                         Text(
                                           DateFormat('HH:mm').format(_isfirar!),
-                                          style: style,
+                                          style: _detailedPray == 9 ? textStyleBold : textStyle,
                                         ),
                                         Text(
                                           DateFormat('HH:mm').format(_aksam!),
-                                          style: style,
+                                          style: _detailedPray == 10 ? textStyleBold : textStyle,
                                         ),
                                         Text(
                                           DateFormat('HH:mm').format(_istibak!),
-                                          style: style,
+                                          style: _detailedPray == 11 ? textStyleBold : textStyle,
                                         ),
                                         Text(
                                           DateFormat('HH:mm').format(_yatsi!),
-                                          style: style,
+                                          style: _detailedPray == 12 ? textStyleBold : textStyle,
                                         ),
                                         Text(
                                           DateFormat('HH:mm').format(_isaisani!),
-                                          style: style,
+                                          style: _detailedPray == 13 || _detailedPray == 0
+                                              ? textStyleBold
+                                              : textStyle,
                                         ),
                                         Text(
                                           _kible != null
                                               ? DateFormat('HH:mm').format(_kible!)
                                               : '-',
-                                          style: style,
+                                          style: textStyle,
                                         ),
                                       ],
                                     ),

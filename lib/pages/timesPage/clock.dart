@@ -37,6 +37,7 @@ class _ClockState extends State<Clock> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<TimeData>(context, listen: false).updateTime();
+      Provider.of<TimeData>(context, listen: false).updateDetailedTime();
     });
 
     Timer.periodic(const Duration(seconds: 1), (Timer t) {
@@ -47,6 +48,7 @@ class _ClockState extends State<Clock> {
           Navigator.popAndPushNamed(context, '/');
         }
         Provider.of<TimeData>(context, listen: false).updateTime();
+        Provider.of<TimeData>(context, listen: false).updateDetailedTime();
       }
     });
   }

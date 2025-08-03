@@ -91,7 +91,7 @@ void main() async {
 }
 
 class MainApp extends StatelessWidget {
-  static String version = '1.5.0';
+  static String version = '1.5.1';
   final MediaController mediaController;
   final AudioPlayerService audioPlayerService;
   final MethodChannel? platform;

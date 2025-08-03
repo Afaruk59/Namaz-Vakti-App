@@ -105,7 +105,8 @@ class BottomTimesCard extends StatelessWidget {
                                   ),
                                   Text(
                                     AppLocalizations.of(context)!.yatsi,
-                                    style: Provider.of<TimeData>(context).pray == 7
+                                    style: Provider.of<TimeData>(context).pray == 7 ||
+                                            Provider.of<TimeData>(context).pray == 0
                                         ? textStyleBold
                                         : textStyle,
                                   ),
@@ -164,7 +165,8 @@ class BottomTimesCard extends StatelessWidget {
                                   Text(
                                     DateFormat('HH:mm').format(
                                         Provider.of<TimeData>(context).yatsi ?? DateTime.now()),
-                                    style: Provider.of<TimeData>(context).pray == 7
+                                    style: Provider.of<TimeData>(context).pray == 7 ||
+                                            Provider.of<TimeData>(context).pray == 0
                                         ? textStyleBold
                                         : textStyle,
                                   ),
