@@ -46,6 +46,8 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:namaz_vakti_app/books/screens/book_screen.dart';
 import 'package:namaz_vakti_app/books/features/book/services/audio_page_service.dart';
+import 'package:namaz_vakti_app/sualler/Search_page.dart';
+import 'package:namaz_vakti_app/sualler/favorites_page.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -178,6 +180,12 @@ class MainApp extends StatelessWidget {
             page = const BookPageScreen(
               bookCode: '',
             );
+            break;
+          case '/sual':
+            page = const SualPage();
+            break;
+          case '/favorites':
+            page = const FavoritesPage();
             break;
         }
 
