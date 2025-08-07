@@ -315,7 +315,7 @@ class _DatesCardState extends State<DatesCard> {
                         horizontal:
                             Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 10.0),
                     child: Card(
-                      color: Theme.of(context).cardColor,
+                      color: Theme.of(context).colorScheme.surfaceContainerHighest,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: ListTile(

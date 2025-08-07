@@ -87,7 +87,7 @@ class _ClockState extends State<Clock> {
             children: [
               Card(
                 clipBehavior: Clip.hardEdge,
-                color: Theme.of(context).cardColor,
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
                 child: SizedBox.expand(
                   child: LinearProgressIndicator(
                     value: (Provider.of<TimeData>(context).mainDifference.inSeconds -

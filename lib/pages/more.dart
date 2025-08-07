@@ -34,11 +34,13 @@ class More extends StatelessWidget {
       body: ListView(
         children: [
           SizedBox(height: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
-          const MoreCard(
-            title: 'Dini ve Tarihi Sualler',
-            icon: Icon(Icons.question_answer),
-            route: '/sual',
-          ),
+          Provider.of<ChangeSettings>(context).langCode == 'tr'
+              ? const MoreCard(
+                  title: 'Dini ve Tarihi Sualler',
+                  icon: Icon(Icons.question_answer),
+                  route: '/sual',
+                )
+              : const SizedBox.shrink(),
           MoreCard(
             title: AppLocalizations.of(context)!.datesTitle,
             icon: const Icon(Icons.calendar_month),
@@ -80,7 +82,7 @@ class ReviewCard extends StatelessWidget {
       padding: EdgeInsets.symmetric(
           horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
       child: Card(
-        color: Theme.of(context).cardColor,
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
         child: Padding(
           padding: EdgeInsets.symmetric(
               horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
@@ -123,7 +125,7 @@ class MoreCard extends StatelessWidget {
       padding: EdgeInsets.symmetric(
           horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
       child: Card(
-        color: Theme.of(context).cardColor,
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
         child: Padding(
           padding: EdgeInsets.symmetric(
               horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),

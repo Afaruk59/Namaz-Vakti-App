@@ -153,7 +153,7 @@ class _AlarmsBodyState extends State<AlarmsBody> with WidgetsBindingObserver {
             padding: EdgeInsets.symmetric(
                 horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
             child: Card(
-              color: Theme.of(context).cardColor,
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
                 child: SwitchListTile(
@@ -172,7 +172,7 @@ class _AlarmsBodyState extends State<AlarmsBody> with WidgetsBindingObserver {
             padding: EdgeInsets.symmetric(
                 horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
             child: Card(
-              color: Theme.of(context).cardColor,
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
                 child: SwitchListTile(

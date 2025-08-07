@@ -68,6 +68,24 @@ class _SearchState extends State<Search> {
     });
   }
 
+  void _openLocation(int index) {
+    Provider.of<ChangeSettings>(context, listen: false).changeOtoLoc(false);
+    String cityId = column1Data[filteredItems[index - 1]].toString();
+    String cityName = column2Data[filteredItems[index - 1]].toString();
+    String stateName = column3Data[filteredItems[index - 1]].toString();
+
+    Navigator.pop(context);
+    Provider.of<ChangeSettings>(context, listen: false)
+        .saveLocaltoSharedPref(cityId, cityName, stateName);
+    Provider.of<ChangeSettings>(context, listen: false).saveFirsttoSharedPref(false);
+    if (Provider.of<ChangeSettings>(context, listen: false).isfirst == true) {
+      Navigator.pop(context);
+      Navigator.popAndPushNamed(context, '/');
+    } else {
+      Navigator.popAndPushNamed(context, '/');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -91,63 +109,47 @@ class _SearchState extends State<Search> {
           ? const Center(
               child: CircularProgressIndicator(),
             )
-          : Padding(
-              padding: EdgeInsets.all(
-                  Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
-              child: ListView.builder(
-                itemCount: filteredItems.length + 1,
-                itemBuilder: (context, index) {
-                  if (index == 0) {
-                    return Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: Card(
-                        color: Theme.of(context).cardColor,
-                        child: TextField(
-                          controller: searchController,
-                          decoration: InputDecoration(
-                            labelText: AppLocalizations.of(context)!.search,
-                            hintText: AppLocalizations.of(context)!.enterLoc,
-                            prefixIcon: const Icon(Icons.search),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(
-                                  Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
-                            ),
-                          ),
+          : ListView.builder(
+              itemCount: filteredItems.length + 1,
+              itemBuilder: (context, index) {
+                if (index == 0) {
+                  return Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: TextField(
+                      controller: searchController,
+                      decoration: InputDecoration(
+                        filled: true,
+                        labelText: AppLocalizations.of(context)!.search,
+                        hintText: AppLocalizations.of(context)!.enterLoc,
+                        prefixIcon: const Icon(Icons.search),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(
+                              Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
                         ),
                       ),
-                    );
-                  }
-                  return Card(
-                    color: Theme.of(context).cardColor,
+                    ),
+                  );
+                }
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Card(
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
                     child: ListTile(
                       leading: const Icon(Icons.location_city_rounded),
                       title: Text(column2Data[filteredItems[index - 1]]),
                       subtitle: Text(column3Data[filteredItems[index - 1]]),
+                      onTap: () {
+                        _openLocation(index);
+                      },
                       trailing: FilledButton.tonal(
                           onPressed: () {
-                            Provider.of<ChangeSettings>(context, listen: false).changeOtoLoc(false);
-                            String cityId = column1Data[filteredItems[index - 1]].toString();
-                            String cityName = column2Data[filteredItems[index - 1]].toString();
-                            String stateName = column3Data[filteredItems[index - 1]].toString();
-
-                            Navigator.pop(context);
-                            Provider.of<ChangeSettings>(context, listen: false)
-                                .saveLocaltoSharedPref(cityId, cityName, stateName);
-                            Provider.of<ChangeSettings>(context, listen: false)
-                                .saveFirsttoSharedPref(false);
-                            if (Provider.of<ChangeSettings>(context, listen: false).isfirst ==
-                                true) {
-                              Navigator.pop(context);
-                              Navigator.popAndPushNamed(context, '/');
-                            } else {
-                              Navigator.popAndPushNamed(context, '/');
-                            }
+                            _openLocation(index);
                           },
                           child: const Icon(Icons.arrow_circle_right_rounded)),
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             ),
     );
   }

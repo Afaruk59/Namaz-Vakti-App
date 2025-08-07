@@ -27,7 +27,7 @@ class TenbihCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Theme.of(context).cardColor,
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
       child: Padding(
         padding: EdgeInsets.symmetric(
             horizontal: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),

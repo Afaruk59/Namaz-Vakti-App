@@ -96,7 +96,7 @@ class _SettingsCardState extends State<SettingsCard> {
         children: [
           const LangSelector(),
           Card(
-            color: Theme.of(context).cardColor,
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15.0),
               child: SwitchListTile(
@@ -108,7 +108,7 @@ class _SettingsCardState extends State<SettingsCard> {
             ),
           ),
           Card(
-            color: Theme.of(context).cardColor,
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15.0),
               child: Padding(
@@ -138,7 +138,7 @@ class _SettingsCardState extends State<SettingsCard> {
             ),
           ),
           Card(
-            color: Theme.of(context).cardColor,
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15.0),
               child: SwitchListTile(
@@ -152,7 +152,7 @@ class _SettingsCardState extends State<SettingsCard> {
             ),
           ),
           Card(
-            color: Theme.of(context).cardColor,
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15.0),
               child: ListTile(

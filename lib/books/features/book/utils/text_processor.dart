@@ -35,7 +35,7 @@ class TextProcessor {
       if (segment is Map && segment.containsKey('text')) {
         String segmentOriginalText = segment['text'];
         String segmentTextWithSpace =
-            segmentOriginalText + ' '; // extractFullText ile tutarlılık için boşluk ekle
+            '$segmentOriginalText '; // extractFullText ile tutarlılık için boşluk ekle
         bool isBold = segment['bold'] ?? false;
         int segmentStartOffset = currentOffset;
         int segmentEndOffset = currentOffset + segmentTextWithSpace.length;

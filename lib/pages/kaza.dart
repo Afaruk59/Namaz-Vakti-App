@@ -109,7 +109,7 @@ class _PrayCardState extends State<PrayCard> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0),
       child: Card(
-        color: Theme.of(context).cardColor,
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [

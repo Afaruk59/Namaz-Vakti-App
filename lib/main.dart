@@ -334,9 +334,6 @@ class MainApp extends StatelessWidget {
                 Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
           ),
         ),
-        cardColor: Provider.of<ChangeSettings>(context).isDark == false
-            ? const Color.fromARGB(255, 216, 216, 216)
-            : const Color.fromARGB(255, 45, 45, 45),
         navigationBarTheme: NavigationBarThemeData(
           elevation: 0,
           backgroundColor: Colors.transparent,

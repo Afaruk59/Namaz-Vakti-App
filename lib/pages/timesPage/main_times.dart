@@ -63,7 +63,7 @@ class BottomTimesCard extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Card(
-                              color: Theme.of(context).cardColor,
+                              color: Theme.of(context).colorScheme.surfaceContainerHighest,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [
@@ -116,7 +116,7 @@ class BottomTimesCard extends StatelessWidget {
                           ),
                           Expanded(
                             child: Card(
-                              color: Theme.of(context).cardColor,
+                              color: Theme.of(context).colorScheme.surfaceContainerHighest,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [

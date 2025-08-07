@@ -105,7 +105,7 @@ class _SualPageState extends State<SualPage> {
             16 +
             56, // AppBar + padding + TextField height
         child: Card(
-          color: Theme.of(context).cardColor,
+          color: Theme.of(context).colorScheme.surfaceContainerHighest,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -327,7 +327,7 @@ class _SualPageState extends State<SualPage> {
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 5),
                 child: Card(
-                  color: Theme.of(context).cardColor,
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
                   child: InkWell(
                     onTap: () async {
                       await Navigator.push(
@@ -343,7 +343,10 @@ class _SualPageState extends State<SualPage> {
                       padding: const EdgeInsets.symmetric(horizontal: 5),
                       child: ListTile(
                         leading: const Icon(Icons.help_rounded),
-                        subtitle: Text(article.title),
+                        title: Text(
+                          article.title,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
                       ),
                     ),
                   ),

@@ -24,7 +24,7 @@ class TimeNote extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Theme.of(context).cardColor,
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
       child: ListTile(
         title: Text(
           AppLocalizations.of(context)!.startupDescription,

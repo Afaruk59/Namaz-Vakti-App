@@ -86,8 +86,8 @@ class _KeywordSearchPageState extends State<KeywordSearchPage> {
       final url =
           'https://www.ekrembugraekinci.com/keywordsearch/?text=$encodedKeyword&page=$_currentPage';
 
-      print('DEBUG: Fetching URL: $url');
-      print('DEBUG: Keyword: ${widget.keyword}');
+      debugPrint('DEBUG: Fetching URL: $url');
+      debugPrint('DEBUG: Keyword: ${widget.keyword}');
 
       final response = await http.get(
         Uri.parse(url),
@@ -102,8 +102,8 @@ class _KeywordSearchPageState extends State<KeywordSearchPage> {
         },
       );
 
-      print('DEBUG: Response status: ${response.statusCode}');
-      print('DEBUG: Response body length: ${response.body.length}');
+      debugPrint('DEBUG: Response status: ${response.statusCode}');
+      debugPrint('DEBUG: Response body length: ${response.body.length}');
 
       if (response.statusCode == 200) {
         // UTF-8 olarak decode et
@@ -113,7 +113,7 @@ class _KeywordSearchPageState extends State<KeywordSearchPage> {
 
         // Tüm div.col-12.col-lg-8 elementlerini bul
         final resultContainers = document.querySelectorAll('div.col-12.col-lg-8');
-        print('DEBUG: Results containers found: ${resultContainers.length}');
+        debugPrint('DEBUG: Results containers found: ${resultContainers.length}');
 
         final List<dom.Element> allListItems = [];
 
@@ -125,10 +125,10 @@ class _KeywordSearchPageState extends State<KeywordSearchPage> {
           }
         }
 
-        print('DEBUG: Total list items found: ${allListItems.length}');
+        debugPrint('DEBUG: Total list items found: ${allListItems.length}');
 
         if (allListItems.isNotEmpty) {
-          print('DEBUG: Processing ${allListItems.length} list items');
+          debugPrint('DEBUG: Processing ${allListItems.length} list items');
 
           for (final item in allListItems) {
             final linkElem = item.querySelector('a[href]');
@@ -171,7 +171,7 @@ class _KeywordSearchPageState extends State<KeywordSearchPage> {
           }
         }
 
-        print('DEBUG: Total questions parsed: ${questions.length}');
+        debugPrint('DEBUG: Total questions parsed: ${questions.length}');
 
         if (mounted) {
           setState(() {
@@ -189,7 +189,7 @@ class _KeywordSearchPageState extends State<KeywordSearchPage> {
         throw Exception('Failed to load questions: ${response.statusCode}');
       }
     } catch (e) {
-      print('DEBUG: Error loading questions: $e');
+      debugPrint('DEBUG: Error loading questions: $e');
       if (mounted) {
         setState(() {
           _isLoading = false;
@@ -243,7 +243,7 @@ class _KeywordSearchPageState extends State<KeywordSearchPage> {
 
                           final question = _questions[index];
                           return Card(
-                            color: Theme.of(context).cardColor,
+                            color: Theme.of(context).colorScheme.surfaceContainerHighest,
                             child: InkWell(
                               onTap: () {
                                 Navigator.push(
@@ -258,7 +258,10 @@ class _KeywordSearchPageState extends State<KeywordSearchPage> {
                                 padding: const EdgeInsets.symmetric(horizontal: 5),
                                 child: ListTile(
                                   leading: const Icon(Icons.help_rounded),
-                                  subtitle: Text(question.title),
+                                  title: Text(
+                                    question.title,
+                                    style: Theme.of(context).textTheme.bodyMedium,
+                                  ),
                                 ),
                               ),
                             ),

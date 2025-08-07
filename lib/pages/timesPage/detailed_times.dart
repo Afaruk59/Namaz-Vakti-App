@@ -90,7 +90,7 @@ class DetailedTimesBtn extends StatelessWidget {
                       : false,
               builder: (BuildContext context) {
                 return Card(
-                  color: Theme.of(context).cardColor,
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
                   child: Column(
                     children: [
                       const SizedBox(

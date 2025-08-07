@@ -149,7 +149,7 @@ class _RandomQuestionsWidgetState extends State<RandomQuestionsWidget> {
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 5),
                 child: Card(
-                  color: Theme.of(context).cardColor,
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
                   child: InkWell(
                     onTap: () {
                       Navigator.push(
@@ -165,7 +165,10 @@ class _RandomQuestionsWidgetState extends State<RandomQuestionsWidget> {
                       padding: const EdgeInsets.symmetric(horizontal: 5),
                       child: ListTile(
                         leading: const Icon(Icons.help_rounded),
-                        subtitle: Text(question.title),
+                        title: Text(
+                          question.title,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
                       ),
                     ),
                   ),

@@ -146,7 +146,33 @@ class _QiblaCardState extends State<QiblaCard> {
               Center(
                 child: Transform.rotate(
                   angle: ((_direction ?? 0) * (3.14159265358979323846 / 180) * -1),
-                  child: Image.asset('assets/img/compass.png'),
+                  child: Provider.of<ChangeSettings>(context).isDark
+                      ? ColorFiltered(
+                          colorFilter: const ColorFilter.matrix([
+                            -1,
+                            0,
+                            0,
+                            0,
+                            255,
+                            0,
+                            -1,
+                            0,
+                            0,
+                            255,
+                            0,
+                            0,
+                            -1,
+                            0,
+                            255,
+                            0,
+                            0,
+                            0,
+                            1,
+                            0,
+                          ]),
+                          child: Image.asset('assets/img/compass.png'),
+                        )
+                      : Image.asset('assets/img/compass.png'),
                 ),
               ),
               Center(
@@ -187,7 +213,7 @@ class _QiblaCardState extends State<QiblaCard> {
                 Expanded(
                   flex: 4,
                   child: Card(
-                    color: Theme.of(context).cardColor,
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
                     child: Center(
                       child: _buildCompass(),
                     ),
@@ -202,7 +228,7 @@ class _QiblaCardState extends State<QiblaCard> {
                         children: [
                           Expanded(
                             child: Card(
-                              color: Theme.of(context).cardColor,
+                              color: Theme.of(context).colorScheme.surfaceContainerHighest,
                               child: Center(
                                   child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -236,7 +262,7 @@ class _QiblaCardState extends State<QiblaCard> {
                           ),
                           Expanded(
                             child: Card(
-                              color: Theme.of(context).cardColor,
+                              color: Theme.of(context).colorScheme.surfaceContainerHighest,
                               child: Center(
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,

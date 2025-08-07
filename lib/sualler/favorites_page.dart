@@ -194,7 +194,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                           _removeFavorite(favoriteUrl);
                         },
                         child: Card(
-                          color: Theme.of(context).cardColor,
+                          color: Theme.of(context).colorScheme.surfaceContainerHighest,
                           child: InkWell(
                             onTap: () {
                               Navigator.push(
@@ -210,7 +210,10 @@ class _FavoritesPageState extends State<FavoritesPage> {
                               padding: const EdgeInsets.symmetric(horizontal: 5),
                               child: ListTile(
                                 leading: const Icon(Icons.help_rounded),
-                                subtitle: Text(title),
+                                title: Text(
+                                  title,
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
                               ),
                             ),
                           ),

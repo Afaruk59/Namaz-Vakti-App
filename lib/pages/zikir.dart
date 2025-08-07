@@ -90,7 +90,7 @@ class _ZikirCardState extends State<ZikirCard> {
                           Expanded(
                             flex: 1,
                             child: Card(
-                              color: Theme.of(context).cardColor,
+                              color: Theme.of(context).colorScheme.surfaceContainerHighest,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [
@@ -164,7 +164,7 @@ class _ZikirCardState extends State<ZikirCard> {
                           Expanded(
                             flex: 2,
                             child: Card(
-                              color: Theme.of(context).cardColor,
+                              color: Theme.of(context).colorScheme.surfaceContainerHighest,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -182,7 +182,9 @@ class _ZikirCardState extends State<ZikirCard> {
                                                     ? 5.0
                                                     : 10.0),
                                             child: Card(
-                                              color: Theme.of(context).cardColor,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .surfaceContainerHighest,
                                               child: Column(
                                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                 children: [
@@ -372,7 +374,7 @@ class _ZikirCardState extends State<ZikirCard> {
                             RotatedBox(
                               quarterTurns: 3,
                               child: Card(
-                                color: Theme.of(context).cardColor,
+                                color: Theme.of(context).colorScheme.surfaceContainerHighest,
                                 clipBehavior: Clip.hardEdge,
                                 child: SizedBox.expand(
                                   child: Directionality(
@@ -409,7 +411,7 @@ class _ZikirCardState extends State<ZikirCard> {
                               right: 20,
                               top: 20,
                               child: Card(
-                                color: Theme.of(context).cardColor,
+                                color: Theme.of(context).colorScheme.surfaceContainerHighest,
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
@@ -451,7 +453,7 @@ class _ZikirCardState extends State<ZikirCard> {
                               return PopupMenuItem<String>(
                                 value: item,
                                 child: Card(
-                                  color: Theme.of(context).cardColor,
+                                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
                                   child: Padding(
                                     padding: const EdgeInsets.all(5.0),
                                     child: Column(
@@ -483,8 +485,9 @@ class _ZikirCardState extends State<ZikirCard> {
                                                           listen: false)
                                                       .loadZikirSet(item), // İlerleme yüzdesi
                                               minHeight: 4.0, // Göstergenin yüksekliği
-                                              backgroundColor:
-                                                  Theme.of(context).cardColor, // Arka plan rengi
+                                              backgroundColor: Theme.of(context)
+                                                  .colorScheme
+                                                  .surfaceContainerHighest,
                                               valueColor: AlwaysStoppedAnimation<Color>(
                                                   Theme.of(context)
                                                       .cardTheme

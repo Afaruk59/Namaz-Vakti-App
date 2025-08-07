@@ -58,7 +58,7 @@ class CalendarBtn extends StatelessWidget {
               builder: (context) {
                 return Scrollbar(
                   child: Card(
-                    color: Theme.of(context).cardColor,
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
                     child: Padding(
                       padding: EdgeInsets.all(
                           Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5.0 : 15.0),

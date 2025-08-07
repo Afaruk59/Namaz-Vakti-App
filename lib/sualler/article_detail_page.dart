@@ -265,7 +265,7 @@ Kaynak: ${widget.articleUrl}''';
                         children: [
                           // Sual bölümü
                           Card(
-                            color: Theme.of(context).cardColor,
+                            color: Theme.of(context).colorScheme.surfaceContainerHighest,
                             child: ListTile(
                               leading: Icon(
                                 Icons.help_rounded,
@@ -286,7 +286,7 @@ Kaynak: ${widget.articleUrl}''';
                           ),
                           // Cevap bölümü
                           Card(
-                            color: Theme.of(context).cardColor,
+                            color: Theme.of(context).colorScheme.surfaceContainerHighest,
                             child: Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15),
                               child: Column(
@@ -320,7 +320,7 @@ Kaynak: ${widget.articleUrl}''';
                           // Alakalı konular bölümü
                           if (_articleDetail!.relatedTopics.isNotEmpty) ...[
                             Card(
-                              color: Theme.of(context).cardColor,
+                              color: Theme.of(context).colorScheme.surfaceContainerHighest,
                               child: ListTile(
                                 leading: Icon(
                                   Icons.topic_rounded,

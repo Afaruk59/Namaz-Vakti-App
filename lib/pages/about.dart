@@ -55,7 +55,7 @@ class AboutPage extends StatelessWidget {
             height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 10 : 40,
           ),
           Card(
-            color: Theme.of(context).cardColor,
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
             child: Padding(
               padding: EdgeInsets.symmetric(
                   horizontal:
@@ -77,7 +77,7 @@ class AboutPage extends StatelessWidget {
             ),
           ),
           Card(
-            color: Theme.of(context).cardColor,
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
             child: Padding(
               padding: EdgeInsets.symmetric(
                   horizontal:
