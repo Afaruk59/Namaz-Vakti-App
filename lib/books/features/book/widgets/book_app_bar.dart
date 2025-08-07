@@ -74,7 +74,7 @@ class _BookAppBarState extends State<BookAppBar> {
         fit: StackFit.expand,
         children: [
           Image.asset(
-            'assets/images/appbar3.png',
+            'assets/img/appbar3.png',
             fit: BoxFit.cover,
           ),
           Container(

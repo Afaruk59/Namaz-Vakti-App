@@ -55,7 +55,7 @@ class BookBottomBar extends StatelessWidget {
           children: [
             // Desen arka plan
             Image.asset(
-              'assets/images/appbar3.png',
+              'assets/img/appbar3.png',
               fit: BoxFit.cover,
             ),
             // Renk overlay

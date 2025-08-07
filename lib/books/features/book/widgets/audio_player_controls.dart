@@ -177,7 +177,7 @@ class _AudioPlayerControlsState extends State<AudioPlayerControls>
                       height: 42,
                       decoration: const BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage('assets/images/appbar3.png'),
+                          image: AssetImage('assets/img/appbar3.png'),
                           fit: BoxFit.cover,
                         ),
                         borderRadius: BorderRadius.zero,
