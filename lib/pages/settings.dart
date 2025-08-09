@@ -66,21 +66,47 @@ class _SettingsCardState extends State<SettingsCard> {
           ),
         ),
         actions: <Widget>[
-          TextButton(
-            onPressed: () {
-              setState(() {
-                pickerColor = Colors.blueGrey[500]!;
-              });
-              Provider.of<ChangeSettings>(context, listen: false).changeCol(pickerColor);
-              Provider.of<ChangeSettings>(context, listen: false).saveCol(pickerColor);
-            },
-            child: Text(AppLocalizations.of(context)!.retry),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: Text(AppLocalizations.of(context)!.ok),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              FilledButton(
+                style: FilledButton.styleFrom(
+                  backgroundColor: Provider.of<ChangeSettings>(context, listen: false).isDark
+                      ? const Color.fromARGB(255, 134, 100, 80)
+                      : const Color.fromARGB(255, 170, 126, 101),
+                ),
+                onPressed: () {
+                  setState(() {
+                    Provider.of<ChangeSettings>(context, listen: false).isDark
+                        ? pickerColor = const Color.fromARGB(255, 134, 100, 80)
+                        : pickerColor = const Color.fromARGB(255, 170, 126, 101);
+                  });
+                  Provider.of<ChangeSettings>(context, listen: false).changeCol(pickerColor);
+                  Provider.of<ChangeSettings>(context, listen: false).saveCol(pickerColor);
+                },
+                child: const Icon(Icons.colorize_rounded),
+              ),
+              const SizedBox(width: 5),
+              FilledButton(
+                style: FilledButton.styleFrom(
+                  backgroundColor: Colors.blueGrey[500],
+                ),
+                onPressed: () {
+                  setState(() {
+                    pickerColor = Colors.blueGrey[500]!;
+                  });
+                  Provider.of<ChangeSettings>(context, listen: false).changeCol(pickerColor);
+                  Provider.of<ChangeSettings>(context, listen: false).saveCol(pickerColor);
+                },
+                child: const Icon(Icons.colorize_rounded),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text(AppLocalizations.of(context)!.ok),
+              ),
+            ],
           ),
         ],
       ),
@@ -156,9 +182,11 @@ class _SettingsCardState extends State<SettingsCard> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15.0),
               child: ListTile(
-                leading: CircleAvatar(
-                  radius: 18,
-                  backgroundColor: Provider.of<ChangeSettings>(context, listen: false).color,
+                leading: Card(
+                  color: Provider.of<ChangeSettings>(context, listen: false).color,
+                  child: const SizedBox.square(
+                    dimension: 30,
+                  ),
                 ),
                 title: Text(AppLocalizations.of(context)!.themeColor),
                 onTap: () {

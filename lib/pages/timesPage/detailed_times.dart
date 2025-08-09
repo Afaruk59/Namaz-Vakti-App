@@ -114,9 +114,7 @@ class DetailedTimesBtn extends StatelessWidget {
                                   child: Container(
                                     decoration: BoxDecoration(
                                       border: Border.all(
-                                        color: Provider.of<ChangeSettings>(context).isDark
-                                            ? Colors.grey.withValues(alpha: 0.5)
-                                            : Colors.white.withValues(alpha: 0.5),
+                                        color: Colors.grey.withValues(alpha: 0.5),
                                       ),
                                       borderRadius: BorderRadius.circular(
                                           Provider.of<ChangeSettings>(context).rounded == true
@@ -195,9 +193,7 @@ class DetailedTimesBtn extends StatelessWidget {
                                   child: Container(
                                     decoration: BoxDecoration(
                                       border: Border.all(
-                                        color: Provider.of<ChangeSettings>(context).isDark
-                                            ? Colors.grey.withValues(alpha: 0.5)
-                                            : Colors.white.withValues(alpha: 0.5),
+                                        color: Colors.grey.withValues(alpha: 0.5),
                                       ),
                                       borderRadius: BorderRadius.circular(
                                           Provider.of<ChangeSettings>(context).rounded == true

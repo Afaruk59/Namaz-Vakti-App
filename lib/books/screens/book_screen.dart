@@ -352,8 +352,8 @@ class BookScreenState extends State<BookScreen> {
                             builder: (context, snapshot) {
                               final bookCoverColor = snapshot.data ?? Colors.blue;
                               return Positioned(
-                                top: 0,
-                                right: 6,
+                                top: 1,
+                                left: 10,
                                 child: BookBookmarkIndicator(
                                   bookCode: book.code,
                                   color: bookCoverColor,

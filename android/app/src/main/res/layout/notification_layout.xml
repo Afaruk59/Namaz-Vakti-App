@@ -5,17 +5,36 @@
     android:orientation="vertical"
     android:padding="1dp">
 
-    <TextView
-        android:id="@+id/location_text"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:textSize="14sp"
-        android:layout_marginBottom="2dp"
-        android:layout_marginLeft="2dp"
-        android:singleLine="true"
-        android:ellipsize="end"
-        android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"/>
+        android:orientation="horizontal"
+        android:layout_marginBottom="2dp">
+        
+        <TextView
+            android:id="@+id/location_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:layout_marginLeft="2dp"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"/>
+            
+        <TextView
+            android:id="@+id/countdown_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:layout_marginRight="2dp"
+            android:singleLine="true"
+            android:text=""
+            android:textAppearance="@android:style/TextAppearance.Material.Notification"/>
+            
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -37,7 +56,17 @@
                 android:textSize="11sp"
                 android:singleLine="true"
                 android:ellipsize="end"
-                
+                android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"/>
+            <TextView
+                android:id="@+id/imsak_text_bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/imsak"
+                android:textSize="12sp"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:textStyle="bold"
+                android:visibility="gone"
                 android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"/>
             <TextView
                 android:id="@+id/imsak_time"
@@ -45,6 +74,15 @@
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
                 android:singleLine="true"
+                android:textAppearance="@android:style/TextAppearance.Material.Notification"/>
+            <TextView
+                android:id="@+id/imsak_time_bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:singleLine="true"
+                android:textStyle="bold"
+                android:visibility="gone"
                 android:textAppearance="@android:style/TextAppearance.Material.Notification"/>
         </LinearLayout>
 
@@ -62,7 +100,17 @@
                 android:textSize="11sp"
                 android:singleLine="true"
                 android:ellipsize="end"
-                
+                android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"/>
+            <TextView
+                android:id="@+id/gunes_text_bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/gunes"
+                android:textSize="12sp"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:textStyle="bold"
+                android:visibility="gone"
                 android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"/>
             <TextView
                 android:id="@+id/gunes_time"
@@ -70,6 +118,15 @@
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
                 android:singleLine="true"
+                android:textAppearance="@android:style/TextAppearance.Material.Notification"/>
+            <TextView
+                android:id="@+id/gunes_time_bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:singleLine="true"
+                android:textStyle="bold"
+                android:visibility="gone"
                 android:textAppearance="@android:style/TextAppearance.Material.Notification"/>
         </LinearLayout>
 
@@ -87,7 +144,17 @@
                 android:textSize="11sp"
                 android:singleLine="true"
                 android:ellipsize="end"
-                
+                android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"/>
+            <TextView
+                android:id="@+id/ogle_text_bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ogle"
+                android:textSize="12sp"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:textStyle="bold"
+                android:visibility="gone"
                 android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"/>
             <TextView
                 android:id="@+id/ogle_time"
@@ -95,6 +162,15 @@
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
                 android:singleLine="true"
+                android:textAppearance="@android:style/TextAppearance.Material.Notification"/>
+            <TextView
+                android:id="@+id/ogle_time_bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:singleLine="true"
+                android:textStyle="bold"
+                android:visibility="gone"
                 android:textAppearance="@android:style/TextAppearance.Material.Notification"/>
         </LinearLayout>
 
@@ -112,7 +188,17 @@
                 android:textSize="11sp"
                 android:singleLine="true"
                 android:ellipsize="end"
-                
+                android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"/>
+            <TextView
+                android:id="@+id/ikindi_text_bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ikindi"
+                android:textSize="12sp"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:textStyle="bold"
+                android:visibility="gone"
                 android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"/>
             <TextView
                 android:id="@+id/ikindi_time"
@@ -120,6 +206,15 @@
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
                 android:singleLine="true"
+                android:textAppearance="@android:style/TextAppearance.Material.Notification"/>
+            <TextView
+                android:id="@+id/ikindi_time_bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:singleLine="true"
+                android:textStyle="bold"
+                android:visibility="gone"
                 android:textAppearance="@android:style/TextAppearance.Material.Notification"/>
         </LinearLayout>
 
@@ -137,7 +232,17 @@
                 android:textSize="11sp"
                 android:singleLine="true"
                 android:ellipsize="end"
-                
+                android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"/>
+            <TextView
+                android:id="@+id/aksam_text_bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/aksam"
+                android:textSize="12sp"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:textStyle="bold"
+                android:visibility="gone"
                 android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"/>
             <TextView
                 android:id="@+id/aksam_time"
@@ -145,6 +250,15 @@
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
                 android:singleLine="true"
+                android:textAppearance="@android:style/TextAppearance.Material.Notification"/>
+            <TextView
+                android:id="@+id/aksam_time_bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:singleLine="true"
+                android:textStyle="bold"
+                android:visibility="gone"
                 android:textAppearance="@android:style/TextAppearance.Material.Notification"/>
         </LinearLayout>
 
@@ -162,7 +276,17 @@
                 android:textSize="11sp"
                 android:singleLine="true"
                 android:ellipsize="end"
-                
+                android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"/>
+            <TextView
+                android:id="@+id/yatsi_text_bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/yatsi"
+                android:textSize="12sp"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:textStyle="bold"
+                android:visibility="gone"
                 android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"/>
             <TextView
                 android:id="@+id/yatsi_time"
@@ -170,6 +294,15 @@
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
                 android:singleLine="true"
+                android:textAppearance="@android:style/TextAppearance.Material.Notification"/>
+            <TextView
+                android:id="@+id/yatsi_time_bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:singleLine="true"
+                android:textStyle="bold"
+                android:visibility="gone"
                 android:textAppearance="@android:style/TextAppearance.Material.Notification"/>
         </LinearLayout>
     </LinearLayout>

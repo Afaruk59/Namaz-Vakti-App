@@ -23,6 +23,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:namaz_vakti_app/components/scaffold_layout.dart';
 import 'package:namaz_vakti_app/pages/timesPage/city_names.dart';
+import 'package:namaz_vakti_app/pages/timesPage/daily.dart';
 import 'package:namaz_vakti_app/pages/timesPage/location.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:namaz_vakti_app/pages/timesPage/main_times.dart';
@@ -164,9 +165,9 @@ class _TimesBodyState extends State<TimesBody> {
       child: MediaQuery.of(context).orientation == Orientation.portrait
           ? Column(
               children: [
-                Expanded(
-                  flex: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 6 : 5,
-                  child: const Row(
+                const Expanded(
+                  flex: 5,
+                  child: Row(
                     children: [
                       Expanded(
                         child: TopTimesCard(),
@@ -181,7 +182,11 @@ class _TimesBodyState extends State<TimesBody> {
                     ],
                   ),
                 ),
-                const Expanded(flex: 11, child: BottomTimesCard()),
+                Provider.of<ChangeSettings>(context).langCode == 'tr' &&
+                        Provider.of<ChangeSettings>(context).currentHeight! > 700
+                    ? const Expanded(flex: 2, child: Daily())
+                    : const SizedBox.shrink(),
+                const Expanded(flex: 10, child: BottomTimesCard()),
               ],
             )
           : Row(
@@ -287,7 +292,7 @@ class _TopTimesCardState extends State<TopTimesCard> {
     return Column(
       children: [
         Expanded(
-          flex: 4,
+          flex: 5,
           child: Card(
             child: Center(
               child: Stack(
@@ -332,7 +337,7 @@ class _TopTimesCardState extends State<TopTimesCard> {
                                 day,
                                 style: const TextStyle(
                                   fontWeight: FontWeight.normal,
-                                  fontSize: 12,
+                                  fontSize: 14,
                                 ),
                               ),
                             ],
@@ -409,7 +414,7 @@ class _TopTimesCardState extends State<TopTimesCard> {
           ),
         ),
         Expanded(
-          flex: 4,
+          flex: 5,
           child: Card(
             child: Center(
               child: Padding(
@@ -430,7 +435,7 @@ class _TopTimesCardState extends State<TopTimesCard> {
           ),
         ),
         Expanded(
-          flex: 3,
+          flex: 4,
           child: Card(
             color: Theme.of(context).colorScheme.secondaryContainer,
             child: Row(

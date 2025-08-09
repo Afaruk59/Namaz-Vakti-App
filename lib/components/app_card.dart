@@ -17,7 +17,6 @@ limitations under the License.
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
-import 'package:namaz_vakti_app/main.dart';
 import 'package:provider/provider.dart';
 import 'package:namaz_vakti_app/l10n/app_localization.dart';
 
@@ -45,7 +44,7 @@ class AppCard extends StatelessWidget {
                   color: Theme.of(context).primaryColor),
             ),
             Text(
-              '${MainApp.version} - by Afaruk59',
+              '${Provider.of<ChangeSettings>(context).version} - by Afaruk59',
               style: GoogleFonts.ubuntu(
                 fontWeight: FontWeight.bold,
                 fontSize: 15,

@@ -93,7 +93,6 @@ void main() async {
 }
 
 class MainApp extends StatelessWidget {
-  static String version = '1.5.1';
   final MediaController mediaController;
   final AudioPlayerService audioPlayerService;
   final MethodChannel? platform;
@@ -272,7 +271,7 @@ class MainApp extends StatelessWidget {
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ButtonStyle(
             iconSize: const WidgetStatePropertyAll(24),
-            elevation: const WidgetStatePropertyAll(10),
+            elevation: const WidgetStatePropertyAll(3),
             shape: WidgetStatePropertyAll(
               RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(
@@ -284,7 +283,7 @@ class MainApp extends StatelessWidget {
         filledButtonTheme: FilledButtonThemeData(
           style: ButtonStyle(
             iconSize: const WidgetStatePropertyAll(24),
-            elevation: const WidgetStatePropertyAll(10),
+            elevation: const WidgetStatePropertyAll(3),
             shape: WidgetStatePropertyAll(
               RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(
@@ -327,7 +326,7 @@ class MainApp extends StatelessWidget {
                       : Colors.white),
         ),
         cardTheme: CardThemeData(
-          elevation: 10,
+          elevation: 3,
           color: Provider.of<ChangeSettings>(context).color,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(

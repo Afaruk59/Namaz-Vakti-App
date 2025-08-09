@@ -147,6 +147,8 @@ class PrayerNotificationService : Service() {
     private var lastAlarmCheckTime: Long = 0
     private var lastLocationId: String = ""
     private var lastCheckedDay: Int = -1
+    private var lastCurrentPrayerIndex: Int = -2 // -2 means not initialized
+    private var lastCountdownText: String = ""
     
     override fun onCreate() {
         super.onCreate()
@@ -172,6 +174,12 @@ class PrayerNotificationService : Service() {
                     // Önce eski kaydedilmiş vakitleri yükle
                     loadPrayerTimes()
                     startForeground(FOREGROUND_NOTIFICATION_ID, createForegroundNotification())
+                    
+                    // İlk mevcut vakit indeksini ve kalan süreyi kaydet
+                    lastCurrentPrayerIndex = getCurrentPrayerIndex()
+                    lastCountdownText = getTimeUntilNextPrayer()
+                    Log.d(TAG, "Initial current prayer index: $lastCurrentPrayerIndex")
+                    Log.d(TAG, "Initial countdown text: '$lastCountdownText'")
                     
                     // İnternet varsa yeni veri çekmeye çalış
                     checkAndFetchInitialData()
@@ -241,21 +249,34 @@ class PrayerNotificationService : Service() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         
+        // Bir sonraki tam dakikaya kadar olan süreyi hesapla
+        val millisecondsUntilNextMinute = getTimeUntilNextMinute()
+        val nextMinuteTime = System.currentTimeMillis() + millisecondsUntilNextMinute
+        
         if (VERSION.SDK_INT >= VERSION_CODES.M) {
             alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
-                System.currentTimeMillis() + ALARM_CHECK_INTERVAL,
+                nextMinuteTime,
                 alarmCheckPendingIntent
             )
         } else {
             alarmManager.setExact(
                 AlarmManager.RTC_WAKEUP,
-                System.currentTimeMillis() + ALARM_CHECK_INTERVAL,
+                nextMinuteTime,
                 alarmCheckPendingIntent
             )
         }
         
-        Log.d(TAG, "Scheduled periodic checks")
+        Log.d(TAG, "Scheduled periodic checks to sync with next minute change in ${millisecondsUntilNextMinute}ms")
+    }
+    
+    private fun getTimeUntilNextMinute(): Long {
+        val now = Calendar.getInstance()
+        val currentSeconds = now.get(Calendar.SECOND)
+        val currentMillis = now.get(Calendar.MILLISECOND)
+        
+        // Bir sonraki tam dakikaya kadar kalan milisaniye
+        return (60 - currentSeconds) * 1000L - currentMillis
     }
     
     private fun cancelPeriodicChecks() {
@@ -298,8 +319,26 @@ class PrayerNotificationService : Service() {
                 lastLocationId = currentLocationId
                 fetchPrayerTimesData(isLocationChange = true)
             } else {
-                // Sadece değişiklik yoksa bildirim görünürlüğünü güncelle
-                updateForegroundNotification()
+                // Mevcut vakit ve kalan süre değişikliği kontrolü
+                val currentPrayerIndex = getCurrentPrayerIndex()
+                val currentCountdownText = getTimeUntilNextPrayer()
+                
+                val prayerChanged = currentPrayerIndex != lastCurrentPrayerIndex
+                val countdownChanged = currentCountdownText != lastCountdownText
+                
+                if (prayerChanged || countdownChanged) {
+                    if (prayerChanged) {
+                        Log.d(TAG, "Current prayer changed from $lastCurrentPrayerIndex to $currentPrayerIndex")
+                        lastCurrentPrayerIndex = currentPrayerIndex
+                    }
+                    if (countdownChanged) {
+                        Log.d(TAG, "Countdown changed from '$lastCountdownText' to '$currentCountdownText'")
+                        lastCountdownText = currentCountdownText
+                    }
+                    updateForegroundNotification()
+                } else {
+                    // Değişiklik yoksa log çıktısı verme (çok fazla log olmasın)
+                }
             }
             
             schedulePrayerAlarms()
@@ -314,16 +353,20 @@ class PrayerNotificationService : Service() {
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
             
+            // Bir sonraki tam dakikaya kadar olan süreyi hesapla
+            val millisecondsUntilNextMinute = getTimeUntilNextMinute()
+            val nextMinuteTime = System.currentTimeMillis() + millisecondsUntilNextMinute
+            
             if (VERSION.SDK_INT >= VERSION_CODES.M) {
                 alarmManager.setExactAndAllowWhileIdle(
                     AlarmManager.RTC_WAKEUP,
-                    currentTime + ALARM_CHECK_INTERVAL,
+                    nextMinuteTime,
                     nextCheckPendingIntent
                 )
             } else {
                 alarmManager.setExact(
                     AlarmManager.RTC_WAKEUP,
-                    currentTime + ALARM_CHECK_INTERVAL,
+                    nextMinuteTime,
                     nextCheckPendingIntent
                 )
             }
@@ -613,7 +656,12 @@ class PrayerNotificationService : Service() {
                         
                         // Main thread'de bildirim güncelleme
                         Handler(Looper.getMainLooper()).post {
-                        updateForegroundNotification()
+                            updateForegroundNotification()
+                            // Yeni verilerle mevcut vakit indeksini ve kalan süreyi güncelle
+                            lastCurrentPrayerIndex = getCurrentPrayerIndex()
+                            lastCountdownText = getTimeUntilNextPrayer()
+                            Log.d(TAG, "Updated current prayer index after data fetch: $lastCurrentPrayerIndex")
+                            Log.d(TAG, "Updated countdown text after data fetch: '$lastCountdownText'")
                         }
                         
                         // Yeni veriler geldiğinde alarmları güncelle
@@ -966,6 +1014,117 @@ class PrayerNotificationService : Service() {
         }
     }
     
+    private fun getCurrentPrayerIndex(): Int {
+        if (prayerTimes == null) return -1
+        
+        val now = Calendar.getInstance()
+        val currentTime = now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE)
+        
+        try {
+            // Parse prayer times to minutes
+            val prayerMinutes = Array(7) { 0 }
+            for (i in 0 until 7) {
+                val timeParts = prayerTimes!![i].split(":")
+                if (timeParts.size == 2) {
+                    prayerMinutes[i] = timeParts[0].toInt() * 60 + timeParts[1].toInt()
+                }
+            }
+            
+            // İmsak ile Güneş arasında -> İmsak bold (0)
+            if (currentTime >= prayerMinutes[0] && currentTime < prayerMinutes[2]) {
+                return 0
+            }
+            // Güneş ile Öğle arasında -> Güneş bold (2) 
+            else if (currentTime >= prayerMinutes[2] && currentTime < prayerMinutes[3]) {
+                return 2
+            }
+            // Öğle ile İkindi arasında -> Öğle bold (3)
+            else if (currentTime >= prayerMinutes[3] && currentTime < prayerMinutes[4]) {
+                return 3
+            }
+            // İkindi ile Akşam arasında -> İkindi bold (4)
+            else if (currentTime >= prayerMinutes[4] && currentTime < prayerMinutes[5]) {
+                return 4
+            }
+            // Akşam ile Yatsı arasında -> Akşam bold (5)
+            else if (currentTime >= prayerMinutes[5] && currentTime < prayerMinutes[6]) {
+                return 5
+            }
+            // Yatsı ile gece 12 arasında -> Yatsı bold (6)
+            else if (currentTime >= prayerMinutes[6] && currentTime < 24 * 60) {
+                return 6
+            }
+            // Gece 12'den İmsak'a kadar -> hiçbir vakit bold değil
+            else {
+                return -1
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error calculating current prayer index: ${e.message}")
+            return -1
+        }
+    }
+    
+    private fun getTimeUntilNextPrayer(): String {
+        if (prayerTimes == null) return ""
+        
+        val now = Calendar.getInstance()
+        val currentTime = now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE)
+        
+        try {
+            // Parse prayer times to minutes
+            val prayerMinutes = Array(7) { 0 }
+            for (i in 0 until 7) {
+                val timeParts = prayerTimes!![i].split(":")
+                if (timeParts.size == 2) {
+                    prayerMinutes[i] = timeParts[0].toInt() * 60 + timeParts[1].toInt()
+                }
+            }
+            
+            var nextPrayerTime = -1
+            
+            // Bir sonraki vakti bul
+            if (currentTime < prayerMinutes[0]) {
+                // Gece 12'den önce, İmsak'a kalan
+                nextPrayerTime = prayerMinutes[0]
+            } else if (currentTime < prayerMinutes[2]) {
+                // İmsak ile Güneş arasında, Güneş'e kalan
+                nextPrayerTime = prayerMinutes[2]
+            } else if (currentTime < prayerMinutes[3]) {
+                // Güneş ile Öğle arasında, Öğle'ye kalan
+                nextPrayerTime = prayerMinutes[3]
+            } else if (currentTime < prayerMinutes[4]) {
+                // Öğle ile İkindi arasında, İkindi'ye kalan
+                nextPrayerTime = prayerMinutes[4]
+            } else if (currentTime < prayerMinutes[5]) {
+                // İkindi ile Akşam arasında, Akşam'a kalan
+                nextPrayerTime = prayerMinutes[5]
+            } else if (currentTime < prayerMinutes[6]) {
+                // Akşam ile Yatsı arasında, Yatsı'ya kalan
+                nextPrayerTime = prayerMinutes[6]
+            } else if (currentTime < 24 * 60) {
+                // Yatsı ile gece 12 arasında, kalan süre gösterme
+                return ""
+            } else {
+                // Gece 12'den sonra, ertesi gün İmsak'a kalan
+                nextPrayerTime = prayerMinutes[0] + 24 * 60 // Ertesi gün İmsak
+            }
+            
+            if (nextPrayerTime == -1) return ""
+            
+            val remainingMinutes = nextPrayerTime - currentTime
+            if (remainingMinutes <= 0) return ""
+            
+            val hours = remainingMinutes / 60
+            val minutes = remainingMinutes % 60
+            
+            return String.format("%02d:%02d", hours, minutes)
+            
+        } catch (e: Exception) {
+            Log.e(TAG, "Error calculating time until next prayer: ${e.message}")
+            return ""
+        }
+    }
+
     private fun createForegroundNotification(): Notification {
         val pendingIntent: PendingIntent =
             Intent(this, MainActivity::class.java).let { notificationIntent ->
@@ -981,15 +1140,102 @@ class PrayerNotificationService : Service() {
         remoteViews.setTextViewText(R.id.location_text, cityName)
         Log.d(TAG, "Setting city name in notification: $cityName")
         
+        // Kalan süreyi ayarla
+        val timeUntilNext = getTimeUntilNextPrayer()
+        remoteViews.setTextViewText(R.id.countdown_text, timeUntilNext)
+        Log.d(TAG, "Setting countdown text in notification: $timeUntilNext")
+        
         if (prayerTimes != null) {
             Log.d(TAG, "Setting prayer times in notification: ${prayerTimes!!.joinToString()}")
+            val currentPrayerIndex = getCurrentPrayerIndex()
+            Log.d(TAG, "Current prayer index: $currentPrayerIndex")
+            
             try {
+                // Önce tüm normal görünümleri göster ve bold görünümleri gizle
+                remoteViews.setViewVisibility(R.id.imsak_text, android.view.View.VISIBLE)
+                remoteViews.setViewVisibility(R.id.imsak_text_bold, android.view.View.GONE)
+                remoteViews.setViewVisibility(R.id.imsak_time, android.view.View.VISIBLE)
+                remoteViews.setViewVisibility(R.id.imsak_time_bold, android.view.View.GONE)
+                
+                remoteViews.setViewVisibility(R.id.gunes_text, android.view.View.VISIBLE)
+                remoteViews.setViewVisibility(R.id.gunes_text_bold, android.view.View.GONE)
+                remoteViews.setViewVisibility(R.id.gunes_time, android.view.View.VISIBLE)
+                remoteViews.setViewVisibility(R.id.gunes_time_bold, android.view.View.GONE)
+                
+                remoteViews.setViewVisibility(R.id.ogle_text, android.view.View.VISIBLE)
+                remoteViews.setViewVisibility(R.id.ogle_text_bold, android.view.View.GONE)
+                remoteViews.setViewVisibility(R.id.ogle_time, android.view.View.VISIBLE)
+                remoteViews.setViewVisibility(R.id.ogle_time_bold, android.view.View.GONE)
+                
+                remoteViews.setViewVisibility(R.id.ikindi_text, android.view.View.VISIBLE)
+                remoteViews.setViewVisibility(R.id.ikindi_text_bold, android.view.View.GONE)
+                remoteViews.setViewVisibility(R.id.ikindi_time, android.view.View.VISIBLE)
+                remoteViews.setViewVisibility(R.id.ikindi_time_bold, android.view.View.GONE)
+                
+                remoteViews.setViewVisibility(R.id.aksam_text, android.view.View.VISIBLE)
+                remoteViews.setViewVisibility(R.id.aksam_text_bold, android.view.View.GONE)
+                remoteViews.setViewVisibility(R.id.aksam_time, android.view.View.VISIBLE)
+                remoteViews.setViewVisibility(R.id.aksam_time_bold, android.view.View.GONE)
+                
+                remoteViews.setViewVisibility(R.id.yatsi_text, android.view.View.VISIBLE)
+                remoteViews.setViewVisibility(R.id.yatsi_text_bold, android.view.View.GONE)
+                remoteViews.setViewVisibility(R.id.yatsi_time, android.view.View.VISIBLE)
+                remoteViews.setViewVisibility(R.id.yatsi_time_bold, android.view.View.GONE)
+                
+                // Tüm vakitleri ayarla
                 remoteViews.setTextViewText(R.id.imsak_time, prayerTimes!![0])
+                remoteViews.setTextViewText(R.id.imsak_time_bold, prayerTimes!![0])
                 remoteViews.setTextViewText(R.id.gunes_time, prayerTimes!![2])
+                remoteViews.setTextViewText(R.id.gunes_time_bold, prayerTimes!![2])
                 remoteViews.setTextViewText(R.id.ogle_time, prayerTimes!![3])
+                remoteViews.setTextViewText(R.id.ogle_time_bold, prayerTimes!![3])
                 remoteViews.setTextViewText(R.id.ikindi_time, prayerTimes!![4])
+                remoteViews.setTextViewText(R.id.ikindi_time_bold, prayerTimes!![4])
                 remoteViews.setTextViewText(R.id.aksam_time, prayerTimes!![5])
+                remoteViews.setTextViewText(R.id.aksam_time_bold, prayerTimes!![5])
                 remoteViews.setTextViewText(R.id.yatsi_time, prayerTimes!![6])
+                remoteViews.setTextViewText(R.id.yatsi_time_bold, prayerTimes!![6])
+                
+                // Mevcut vakti bold yap
+                when (currentPrayerIndex) {
+                    0 -> {
+                        remoteViews.setViewVisibility(R.id.imsak_text, android.view.View.GONE)
+                        remoteViews.setViewVisibility(R.id.imsak_text_bold, android.view.View.VISIBLE)
+                        remoteViews.setViewVisibility(R.id.imsak_time, android.view.View.GONE)
+                        remoteViews.setViewVisibility(R.id.imsak_time_bold, android.view.View.VISIBLE)
+                    }
+                    2 -> {
+                        remoteViews.setViewVisibility(R.id.gunes_text, android.view.View.GONE)
+                        remoteViews.setViewVisibility(R.id.gunes_text_bold, android.view.View.VISIBLE)
+                        remoteViews.setViewVisibility(R.id.gunes_time, android.view.View.GONE)
+                        remoteViews.setViewVisibility(R.id.gunes_time_bold, android.view.View.VISIBLE)
+                    }
+                    3 -> {
+                        remoteViews.setViewVisibility(R.id.ogle_text, android.view.View.GONE)
+                        remoteViews.setViewVisibility(R.id.ogle_text_bold, android.view.View.VISIBLE)
+                        remoteViews.setViewVisibility(R.id.ogle_time, android.view.View.GONE)
+                        remoteViews.setViewVisibility(R.id.ogle_time_bold, android.view.View.VISIBLE)
+                    }
+                    4 -> {
+                        remoteViews.setViewVisibility(R.id.ikindi_text, android.view.View.GONE)
+                        remoteViews.setViewVisibility(R.id.ikindi_text_bold, android.view.View.VISIBLE)
+                        remoteViews.setViewVisibility(R.id.ikindi_time, android.view.View.GONE)
+                        remoteViews.setViewVisibility(R.id.ikindi_time_bold, android.view.View.VISIBLE)
+                    }
+                    5 -> {
+                        remoteViews.setViewVisibility(R.id.aksam_text, android.view.View.GONE)
+                        remoteViews.setViewVisibility(R.id.aksam_text_bold, android.view.View.VISIBLE)
+                        remoteViews.setViewVisibility(R.id.aksam_time, android.view.View.GONE)
+                        remoteViews.setViewVisibility(R.id.aksam_time_bold, android.view.View.VISIBLE)
+                    }
+                    6 -> {
+                        remoteViews.setViewVisibility(R.id.yatsi_text, android.view.View.GONE)
+                        remoteViews.setViewVisibility(R.id.yatsi_text_bold, android.view.View.VISIBLE)
+                        remoteViews.setViewVisibility(R.id.yatsi_time, android.view.View.GONE)
+                        remoteViews.setViewVisibility(R.id.yatsi_time_bold, android.view.View.VISIBLE)
+                    }
+                }
+                
             } catch (e: Exception) {
                 Log.e(TAG, "Error setting prayer times in notification: ${e.message}")
             }

@@ -20,7 +20,6 @@ import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:namaz_vakti_app/pages/timesPage/calendar.dart';
 import 'package:namaz_vakti_app/pages/timesPage/clock.dart';
 import 'package:namaz_vakti_app/data/time_data.dart';
-import 'package:namaz_vakti_app/pages/timesPage/daily.dart';
 import 'package:namaz_vakti_app/pages/timesPage/detailed_times.dart';
 import 'package:provider/provider.dart';
 import 'package:namaz_vakti_app/l10n/app_localization.dart';
@@ -50,10 +49,6 @@ class BottomTimesCard extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Provider.of<ChangeSettings>(context).langCode == 'tr' &&
-                            Provider.of<ChangeSettings>(context).currentHeight! > 700
-                        ? const Expanded(flex: 1, child: Daily())
-                        : const SizedBox.shrink(),
                     Expanded(
                       flex: Provider.of<ChangeSettings>(context).langCode == 'tr' &&
                               Provider.of<ChangeSettings>(context).currentHeight! > 700

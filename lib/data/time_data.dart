@@ -60,7 +60,7 @@ class TimeData extends ChangeSettings {
   DateTime detailedSoontime = DateTime.now();
   DateTime detailedPreTime = DateTime.now();
   Duration detailedMainDifference = const Duration(minutes: 1);
-
+  bool noPray = false;
   String miladi = DateFormat('dd MMMM yyyy').format(DateTime.now());
 
   String day = '';
@@ -81,7 +81,7 @@ class TimeData extends ChangeSettings {
 
   Future<void> loadPrayerTimes(DateTime time, BuildContext context) async {
     String url =
-        'https://www.namazvakti.com/XML.php?cityID=${Provider.of<ChangeSettings>(context, listen: false).cityID}'; // Çevrimiçi XML dosyasının URL'si
+        'https://www.namazvakti.com/XML.php?cityID=${Provider.of<ChangeSettings>(context, listen: false).cityID}';
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       final data = response.body;
@@ -340,73 +340,87 @@ class TimeData extends ChangeSettings {
       if (DateTime(now.year, now.month, now.day, imsak!.hour, imsak!.minute, 0).difference(now) >
           DateTime.now().difference(now)) {
         detailedPray = 0;
+        noPray = false;
         detailedSoontime = imsak!;
         detailedPreTime = yatsi2!;
       } else if (DateTime(now.year, now.month, now.day, sabah!.hour, sabah!.minute, 0).difference(now) >
           DateTime.now().difference(now)) {
         detailedPray = 1;
+        noPray = false;
         detailedSoontime = sabah!;
         detailedPreTime = imsak!;
       } else if (DateTime(now.year, now.month, now.day, gunes!.hour, gunes!.minute, 0).difference(now) >
           DateTime.now().difference(now)) {
         detailedPray = 2;
+        noPray = false;
         detailedSoontime = gunes!;
         detailedPreTime = sabah!;
       } else if (DateTime(now.year, now.month, now.day, israk!.hour, israk!.minute, 0).difference(now) >
           DateTime.now().difference(now)) {
         detailedPray = 3;
+        noPray = true;
         detailedSoontime = israk!;
         detailedPreTime = gunes!;
       } else if (DateTime(now.year, now.month, now.day, kerahat!.hour, kerahat!.minute, 0).difference(now) >
           DateTime.now().difference(now)) {
         detailedPray = 4;
+        noPray = false;
         detailedSoontime = kerahat!;
         detailedPreTime = israk!;
       } else if (DateTime(now.year, now.month, now.day, ogle!.hour, ogle!.minute, 0).difference(now) >
           DateTime.now().difference(now)) {
         detailedPray = 5;
+        noPray = true;
         detailedSoontime = ogle!;
         detailedPreTime = kerahat!;
       } else if (DateTime(now.year, now.month, now.day, ikindi!.hour, ikindi!.minute, 0).difference(now) >
           DateTime.now().difference(now)) {
         detailedPray = 6;
+        noPray = false;
         detailedSoontime = ikindi!;
         detailedPreTime = ogle!;
       } else if (DateTime(now.year, now.month, now.day, asrisani!.hour, asrisani!.minute, 0)
               .difference(now) >
           DateTime.now().difference(now)) {
         detailedPray = 7;
+        noPray = false;
         detailedSoontime = asrisani!;
         detailedPreTime = ikindi!;
       } else if (DateTime(now.year, now.month, now.day, isfirar!.hour, isfirar!.minute, 0).difference(now) >
           DateTime.now().difference(now)) {
         detailedPray = 8;
+        noPray = false;
         detailedSoontime = isfirar!;
         detailedPreTime = asrisani!;
       } else if (DateTime(now.year, now.month, now.day, aksam!.hour, aksam!.minute, 0).difference(now) >
           DateTime.now().difference(now)) {
         detailedPray = 9;
+        noPray = true;
         detailedSoontime = aksam!;
         detailedPreTime = isfirar!;
       } else if (DateTime(now.year, now.month, now.day, istibak!.hour, istibak!.minute, 0)
               .difference(now) >
           DateTime.now().difference(now)) {
         detailedPray = 10;
+        noPray = false;
         detailedSoontime = istibak!;
         detailedPreTime = aksam!;
       } else if (DateTime(now.year, now.month, now.day, yatsi!.hour, yatsi!.minute, 0).difference(now) >
           DateTime.now().difference(now)) {
         detailedPray = 11;
+        noPray = false;
         detailedSoontime = yatsi!;
         detailedPreTime = istibak!;
       } else if (DateTime(now.year, now.month, now.day, isaisani!.hour, isaisani!.minute, 0)
               .difference(now) >
           DateTime.now().difference(now)) {
         detailedPray = 12;
+        noPray = false;
         detailedSoontime = isaisani!;
         detailedPreTime = yatsi!;
       } else {
         detailedPray = 13;
+        noPray = false;
         detailedSoontime = imsak2!;
         detailedPreTime = isaisani!;
       }
