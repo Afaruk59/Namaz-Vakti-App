@@ -239,35 +239,8 @@ class PrayerNotificationService : Service() {
     }
     
     private fun schedulePeriodicChecks() {
-        val alarmCheckIntent = Intent(this, PrayerNotificationService::class.java).apply {
-            action = ACTION_CHECK_ALARMS
-        }
-        val alarmCheckPendingIntent = PendingIntent.getService(
-            this,
-            1000,
-            alarmCheckIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-        
-        // Bir sonraki tam dakikaya kadar olan süreyi hesapla
-        val millisecondsUntilNextMinute = getTimeUntilNextMinute()
-        val nextMinuteTime = System.currentTimeMillis() + millisecondsUntilNextMinute
-        
-        if (VERSION.SDK_INT >= VERSION_CODES.M) {
-            alarmManager.setExactAndAllowWhileIdle(
-                AlarmManager.RTC_WAKEUP,
-                nextMinuteTime,
-                alarmCheckPendingIntent
-            )
-        } else {
-            alarmManager.setExact(
-                AlarmManager.RTC_WAKEUP,
-                nextMinuteTime,
-                alarmCheckPendingIntent
-            )
-        }
-        
-        Log.d(TAG, "Scheduled periodic checks to sync with next minute change in ${millisecondsUntilNextMinute}ms")
+        Log.d(TAG, "🚀 Starting periodic notification update system")
+        scheduleNextPeriodicCheck()
     }
     
     private fun getTimeUntilNextMinute(): Long {
@@ -301,6 +274,7 @@ class PrayerNotificationService : Service() {
         
         if (currentTime - lastAlarmCheckTime >= ALARM_CHECK_INTERVAL) {
             lastAlarmCheckTime = currentTime
+            Log.d(TAG, "Starting periodic check and notification update")
             
             // Gün değişikliği kontrolü
             val currentDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
@@ -310,22 +284,27 @@ class PrayerNotificationService : Service() {
             val currentLocationId = prefs.getString("flutter.location", "") ?: ""
             val isLocationChanged = currentLocationId != lastLocationId
             
+            // Mevcut vakit ve kalan süre bilgilerini al
+            val currentPrayerIndex = getCurrentPrayerIndex()
+            val currentCountdownText = getTimeUntilNextPrayer()
+            
+            // Değişiklik kontrolü
+            val prayerChanged = currentPrayerIndex != lastCurrentPrayerIndex
+            val countdownChanged = currentCountdownText != lastCountdownText
+            
+            // Özel durumlar (gün/konum değişikliği)
             if (isDayChanged) {
                 Log.d(TAG, "Day changed from $lastCheckedDay to $currentDay, fetching new prayer times")
                 lastCheckedDay = currentDay
                 fetchPrayerTimesData(isDayChange = true)
+                // fetchPrayerTimesData içinde bildirim güncellenir, burada ek güncelleme yapmaya gerek yok
             } else if (isLocationChanged) {
                 Log.d(TAG, "Location changed from $lastLocationId to $currentLocationId, fetching new prayer times")
                 lastLocationId = currentLocationId
                 fetchPrayerTimesData(isLocationChange = true)
+                // fetchPrayerTimesData içinde bildirim güncellenir, burada ek güncelleme yapmaya gerek yok
             } else {
-                // Her dakika bildirim güncellemesi (güvenlik için her zaman güncelle)
-                val currentPrayerIndex = getCurrentPrayerIndex()
-                val currentCountdownText = getTimeUntilNextPrayer()
-                
-                val prayerChanged = currentPrayerIndex != lastCurrentPrayerIndex
-                val countdownChanged = currentCountdownText != lastCountdownText
-                
+                // Normal dakikalık güncelleme - HER ZAMAN bildirim güncelle
                 if (prayerChanged) {
                     Log.d(TAG, "Current prayer changed from $lastCurrentPrayerIndex to $currentPrayerIndex")
                     lastCurrentPrayerIndex = currentPrayerIndex
@@ -335,41 +314,49 @@ class PrayerNotificationService : Service() {
                     lastCountdownText = currentCountdownText
                 }
                 
-                // Her dakika bildirim güncelleme (değişiklik olsun ya da olmasın)
+                // HER DAKIKA bildirim güncelleme (değişiklik olsun ya da olmasın)
                 updateForegroundNotification()
-                Log.d(TAG, "Periodic notification update - Prayer: $currentPrayerIndex, Countdown: '$currentCountdownText'")
+                Log.d(TAG, "✓ Notification updated - Prayer: $currentPrayerIndex, Countdown: '$currentCountdownText'")
             }
             
+            // Alarm zamanlamalarını güncelle
             schedulePrayerAlarms()
             
-            val nextCheckIntent = Intent(this, PrayerNotificationService::class.java).apply {
-                action = ACTION_CHECK_ALARMS
-            }
-            val nextCheckPendingIntent = PendingIntent.getService(
-                this,
-                1000,
-                nextCheckIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
-            
-            // Bir sonraki tam dakikaya kadar olan süreyi hesapla
-            val millisecondsUntilNextMinute = getTimeUntilNextMinute()
-            val nextMinuteTime = System.currentTimeMillis() + millisecondsUntilNextMinute
-            
-            if (VERSION.SDK_INT >= VERSION_CODES.M) {
-                alarmManager.setExactAndAllowWhileIdle(
-                    AlarmManager.RTC_WAKEUP,
-                    nextMinuteTime,
-                    nextCheckPendingIntent
-                )
-            } else {
-                alarmManager.setExact(
-                    AlarmManager.RTC_WAKEUP,
-                    nextMinuteTime,
-                    nextCheckPendingIntent
-                )
-            }
+            // Bir sonraki dakikalık kontrol için alarm kur
+            scheduleNextPeriodicCheck()
         }
+    }
+    
+    private fun scheduleNextPeriodicCheck() {
+        val nextCheckIntent = Intent(this, PrayerNotificationService::class.java).apply {
+            action = ACTION_CHECK_ALARMS
+        }
+        val nextCheckPendingIntent = PendingIntent.getService(
+            this,
+            1000,
+            nextCheckIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        
+        // Bir sonraki tam dakikaya kadar olan süreyi hesapla
+        val millisecondsUntilNextMinute = getTimeUntilNextMinute()
+        val nextMinuteTime = System.currentTimeMillis() + millisecondsUntilNextMinute
+        
+        if (VERSION.SDK_INT >= VERSION_CODES.M) {
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                nextMinuteTime,
+                nextCheckPendingIntent
+            )
+        } else {
+            alarmManager.setExact(
+                AlarmManager.RTC_WAKEUP,
+                nextMinuteTime,
+                nextCheckPendingIntent
+            )
+        }
+        
+        Log.d(TAG, "⏰ Next check scheduled in ${millisecondsUntilNextMinute}ms")
     }
     
     private fun schedulePrayerAlarms() {
