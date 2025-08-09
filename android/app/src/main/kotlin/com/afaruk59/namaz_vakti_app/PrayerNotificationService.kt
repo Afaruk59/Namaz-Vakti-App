@@ -319,26 +319,25 @@ class PrayerNotificationService : Service() {
                 lastLocationId = currentLocationId
                 fetchPrayerTimesData(isLocationChange = true)
             } else {
-                // Mevcut vakit ve kalan süre değişikliği kontrolü
+                // Her dakika bildirim güncellemesi (güvenlik için her zaman güncelle)
                 val currentPrayerIndex = getCurrentPrayerIndex()
                 val currentCountdownText = getTimeUntilNextPrayer()
                 
                 val prayerChanged = currentPrayerIndex != lastCurrentPrayerIndex
                 val countdownChanged = currentCountdownText != lastCountdownText
                 
-                if (prayerChanged || countdownChanged) {
-                    if (prayerChanged) {
-                        Log.d(TAG, "Current prayer changed from $lastCurrentPrayerIndex to $currentPrayerIndex")
-                        lastCurrentPrayerIndex = currentPrayerIndex
-                    }
-                    if (countdownChanged) {
-                        Log.d(TAG, "Countdown changed from '$lastCountdownText' to '$currentCountdownText'")
-                        lastCountdownText = currentCountdownText
-                    }
-                    updateForegroundNotification()
-                } else {
-                    // Değişiklik yoksa log çıktısı verme (çok fazla log olmasın)
+                if (prayerChanged) {
+                    Log.d(TAG, "Current prayer changed from $lastCurrentPrayerIndex to $currentPrayerIndex")
+                    lastCurrentPrayerIndex = currentPrayerIndex
                 }
+                if (countdownChanged) {
+                    Log.d(TAG, "Countdown changed from '$lastCountdownText' to '$currentCountdownText'")
+                    lastCountdownText = currentCountdownText
+                }
+                
+                // Her dakika bildirim güncelleme (değişiklik olsun ya da olmasın)
+                updateForegroundNotification()
+                Log.d(TAG, "Periodic notification update - Prayer: $currentPrayerIndex, Countdown: '$currentCountdownText'")
             }
             
             schedulePrayerAlarms()

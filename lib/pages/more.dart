@@ -34,13 +34,13 @@ class More extends StatelessWidget {
       body: ListView(
         children: [
           SizedBox(height: Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5 : 15.0),
-          Provider.of<ChangeSettings>(context).langCode == 'tr'
-              ? const MoreCard(
-                  title: 'Dini ve Tarihi Sualler',
-                  icon: Icon(Icons.question_answer),
-                  route: '/sual',
-                )
-              : const SizedBox.shrink(),
+          // Provider.of<ChangeSettings>(context).langCode == 'tr'
+          //     ? const MoreCard(
+          //         title: 'Dini ve Tarihi Sualler',
+          //         icon: Icon(Icons.question_answer),
+          //         route: '/sual',
+          //       )
+          //     : const SizedBox.shrink(),
           MoreCard(
             title: AppLocalizations.of(context)!.datesTitle,
             icon: const Icon(Icons.calendar_month),

@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:namaz_vakti_app/books/features/book/services/bookmark_service.dart';
 import 'package:namaz_vakti_app/books/features/book/services/book_title_service.dart';
 import 'package:namaz_vakti_app/books/features/book/screens/book_page_screen.dart';
-import 'package:namaz_vakti_app/books/features/book/ui/color_extractor.dart';
-import 'package:namaz_vakti_app/books/shared/models/book_model.dart';
 import 'package:namaz_vakti_app/books/screens/book_screen.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:provider/provider.dart';
@@ -29,7 +27,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
   Map<String, List<Bookmark>> _allBookmarks = {};
   List<String> _bookCodes = [];
   Map<String, String> _bookTitles = {};
-  Map<String, Color> _bookColors = {}; // Kitap renklerini saklamak için
+
   bool _isLoading = true;
 
   @override
@@ -87,8 +85,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
       // Kitap kodlarını al
       final bookCodes = bookmarks.keys.toList();
 
-      // Başlangıçta varsayılan renkleri kullan
-      Map<String, Color> bookColors = {};
+      // Kitap başlıklarını al
       Map<String, String> bookTitles = {};
 
       // Mevcut TabController'ı temizle
@@ -107,7 +104,6 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
       setState(() {
         _allBookmarks = bookmarks;
         _bookCodes = bookCodes;
-        _bookColors = bookColors;
         _bookTitles = bookTitles; // Kitap isimlerini tamamen sıfırla
         _isLoading = false;
       });
@@ -138,7 +134,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
         _tabController!.animateTo(initialTabIndex);
       }
 
-      // Sadece mevcut kitapların başlıklarını ve renklerini yükle
+      // Sadece mevcut kitapların başlıklarını yükle
       if (bookCodes.isNotEmpty) {
         List<Future<void>> futures = [];
 
@@ -146,11 +142,6 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
           // Başlık yükleme
           futures.add(_bookTitleService.getTitle(bookCode).then((title) {
             bookTitles[bookCode] = title;
-          }));
-
-          // Her kitap için renk yükleme
-          futures.add(_getBookColor(bookCode).then((color) {
-            bookColors[bookCode] = color;
           }));
         }
 
@@ -161,7 +152,6 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
         if (mounted) {
           setState(() {
             _bookTitles = bookTitles;
-            _bookColors = bookColors;
           });
         }
       }
@@ -172,35 +162,6 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
           _isLoading = false;
         });
       }
-    }
-  }
-
-  // Kitap rengini al
-  Future<Color> _getBookColor(String bookCode) async {
-    try {
-      // Kitap modelini bul
-      final books = Book.samples();
-      final book = books.firstWhere(
-        (b) => b.code == bookCode,
-        orElse: () => Book(
-          code: bookCode,
-        ),
-      );
-
-      // Yeni ColorExtractor.getBookColor metodunu kullan
-      ImageProvider? coverImage;
-      if (book.coverImageUrl.isNotEmpty) {
-        coverImage = AssetImage(book.coverImageUrl);
-      }
-
-      return await ColorExtractor.getBookColor(
-        bookCode,
-        coverImage,
-        defaultColor: Provider.of<ChangeSettings>(context).color,
-      );
-    } catch (e) {
-      debugPrint('Kitap rengi alınırken hata: $e');
-      return Provider.of<ChangeSettings>(context).color;
     }
   }
 
@@ -245,24 +206,6 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    // Seçili kitabın rengini al
-    Color selectedTabColor = Colors.transparent; // Varsayılan renk olarak koyu mavi kullan
-
-    // TabController ve kitap kodları hazır olduğunda seçili kitabın rengini al
-    if (!_isLoading &&
-        _bookCodes.isNotEmpty &&
-        _tabController != null &&
-        _tabController!.length > 0) {
-      try {
-        int currentIndex = _tabController!.index;
-        if (currentIndex >= 0 && currentIndex < _bookCodes.length) {
-          final selectedBookCode = _bookCodes[currentIndex];
-          selectedTabColor = _bookColors[selectedBookCode] ?? Colors.transparent;
-        }
-      } catch (e) {
-        debugPrint('Tab rengi alınırken hata: $e');
-      }
-    }
     return WillPopScope(
       onWillPop: () async {
         final homeScreenState = context.findAncestorStateOfType<BookScreenState>();
@@ -289,7 +232,6 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
           ),
           Scaffold(
             appBar: AppBar(
-              backgroundColor: selectedTabColor,
               title: const Text('Yer İşaretleri'),
               bottom: _isLoading || _bookCodes.isEmpty || _tabController == null
                   ? null
@@ -389,9 +331,6 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
       );
     }
 
-    // Kitabın rengini al (varsayılan olarak tema rengini kullan)
-    final bookColor = _bookColors[bookCode] ?? Theme.of(context).primaryColor;
-
     return ListView.builder(
       itemCount: bookmarks.length,
       itemBuilder: (context, index) {
@@ -433,7 +372,6 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
                       builder: (context) => BookPageScreen(
                         bookCode: bookCode,
                         initialPage: bookmark.pageNumber,
-                        appBarColor: bookColor, // Kitabın kendi rengini kullan
                         forceRefresh: true, // Vurgulamaları yeniden yükle
                       ),
                     ),
@@ -483,7 +421,6 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
                               builder: (context) => BookPageScreen(
                                 bookCode: bookCode,
                                 initialPage: bookmark.pageNumber,
-                                appBarColor: bookColor,
                                 forceRefresh: true,
                               ),
                             ),

@@ -98,7 +98,7 @@ class _ClockState extends State<Clock> {
                     ),
                     backgroundColor: Colors.transparent,
                     valueColor: Provider.of<TimeData>(context).noPray
-                        ? AlwaysStoppedAnimation<Color>(Colors.red[600]!)
+                        ? AlwaysStoppedAnimation<Color>(Colors.red[600]!.withValues(alpha: 0.5))
                         : AlwaysStoppedAnimation<Color>(
                             Theme.of(context).cardTheme.color!.withValues(alpha: 0.6)),
                   ),
