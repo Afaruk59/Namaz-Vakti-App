@@ -609,21 +609,6 @@ class BookScreenState extends State<BookScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Tablet kontrolü ve orientation ayarları
-    final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
-    if (!isTablet) {
-      SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-      ]);
-    } else {
-      SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-        DeviceOrientation.portraitDown,
-        DeviceOrientation.landscapeLeft,
-        DeviceOrientation.landscapeRight,
-      ]);
-    }
-
     return ScaffoldLayout(
       title: AppLocalizations.of(context)!.booksTitle,
       actions: [

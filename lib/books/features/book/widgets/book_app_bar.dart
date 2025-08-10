@@ -136,9 +136,9 @@ class _BookAppBarState extends State<BookAppBar> {
                     trackHeight: 4.0,
                   ),
                   child: Slider(
-                    min: 14.0,
-                    max: 20.0,
-                    divisions: 6,
+                    min: 12.0,
+                    max: 24.0,
+                    divisions: 12,
                     value: _currentFontSize,
                     onChanged: (newValue) {
                       // StatefulBuilder'ın setState'ini kullan
@@ -153,8 +153,8 @@ class _BookAppBarState extends State<BookAppBar> {
                 const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('T', style: TextStyle(fontSize: 14.0)),
-                    Text('T', style: TextStyle(fontSize: 20.0)),
+                    Text('T', style: TextStyle(fontSize: 12.0)),
+                    Text('T', style: TextStyle(fontSize: 24.0)),
                   ],
                 ),
               ],
