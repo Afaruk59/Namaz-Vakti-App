@@ -688,8 +688,14 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
   Orientation? _lastOrientation;
   bool _isRestoringAfterOrientationChange = false;
 
+  // Tablet kontrolü için cached değer
+  bool _isTablet = false;
+
   @override
   Widget build(BuildContext context) {
+    // Tablet kontrolü - ilk build'de cache'le
+    _isTablet = MediaQuery.of(context).size.shortestSide >= 600;
+
     // Orientation change detection ve state preservation
     final currentOrientation = MediaQuery.of(context).orientation;
 
@@ -828,10 +834,24 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
 
   Future<void> _disposeAsync() async {
     _isExiting = true;
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
+
+    // Tablet kontrolü ile orientation ayarlarını sıfırla
+    // Bu sayede kitap sayfasından çıkıldığında orientation korunur
+    if (_isTablet) {
+      // Tablet için tüm orientationları aç
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+      ]);
+    } else {
+      // Telefon için sadece portrait
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+      ]);
+    }
+
     WidgetsBinding.instance.removeObserver(this);
 
     // Dispose background check timer

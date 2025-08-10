@@ -208,9 +208,17 @@ class _TimesBodyState extends State<TimesBody> {
                     ],
                   ),
                 ),
-                const Expanded(
+                Expanded(
                   flex: 5,
-                  child: BottomTimesCard(),
+                  child: Column(
+                    children: [
+                      Provider.of<ChangeSettings>(context).langCode == 'tr' &&
+                              Provider.of<ChangeSettings>(context).currentHeight! > 700
+                          ? const Expanded(flex: 2, child: Daily())
+                          : const SizedBox.shrink(),
+                      const Expanded(flex: 10, child: BottomTimesCard()),
+                    ],
+                  ),
                 ),
               ],
             ),

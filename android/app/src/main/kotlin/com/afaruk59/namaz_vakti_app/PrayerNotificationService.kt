@@ -271,60 +271,58 @@ class PrayerNotificationService : Service() {
     
     private fun checkAndUpdateAlarms() {
         val currentTime = System.currentTimeMillis()
+        lastAlarmCheckTime = currentTime
+        Log.d(TAG, "🔄 DAKIKALIK GÜNCELLEME - Starting periodic check and notification update")
         
-        if (currentTime - lastAlarmCheckTime >= ALARM_CHECK_INTERVAL) {
-            lastAlarmCheckTime = currentTime
-            Log.d(TAG, "Starting periodic check and notification update")
-            
-            // Gün değişikliği kontrolü
-            val currentDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
-            val isDayChanged = currentDay != lastCheckedDay
-            
-            // Konum değişikliği kontrolü
-            val currentLocationId = prefs.getString("flutter.location", "") ?: ""
-            val isLocationChanged = currentLocationId != lastLocationId
-            
-            // Mevcut vakit ve kalan süre bilgilerini al
-            val currentPrayerIndex = getCurrentPrayerIndex()
-            val currentCountdownText = getTimeUntilNextPrayer()
-            
-            // Değişiklik kontrolü
-            val prayerChanged = currentPrayerIndex != lastCurrentPrayerIndex
-            val countdownChanged = currentCountdownText != lastCountdownText
-            
-            // Özel durumlar (gün/konum değişikliği)
-            if (isDayChanged) {
-                Log.d(TAG, "Day changed from $lastCheckedDay to $currentDay, fetching new prayer times")
-                lastCheckedDay = currentDay
-                fetchPrayerTimesData(isDayChange = true)
-                // fetchPrayerTimesData içinde bildirim güncellenir, burada ek güncelleme yapmaya gerek yok
-            } else if (isLocationChanged) {
-                Log.d(TAG, "Location changed from $lastLocationId to $currentLocationId, fetching new prayer times")
-                lastLocationId = currentLocationId
-                fetchPrayerTimesData(isLocationChange = true)
-                // fetchPrayerTimesData içinde bildirim güncellenir, burada ek güncelleme yapmaya gerek yok
-            } else {
-                // Normal dakikalık güncelleme - HER ZAMAN bildirim güncelle
-                if (prayerChanged) {
-                    Log.d(TAG, "Current prayer changed from $lastCurrentPrayerIndex to $currentPrayerIndex")
-                    lastCurrentPrayerIndex = currentPrayerIndex
-                }
-                if (countdownChanged) {
-                    Log.d(TAG, "Countdown changed from '$lastCountdownText' to '$currentCountdownText'")
-                    lastCountdownText = currentCountdownText
-                }
-                
-                // HER DAKIKA bildirim güncelleme (değişiklik olsun ya da olmasın)
-                updateForegroundNotification()
-                Log.d(TAG, "✓ Notification updated - Prayer: $currentPrayerIndex, Countdown: '$currentCountdownText'")
-            }
-            
-            // Alarm zamanlamalarını güncelle
-            schedulePrayerAlarms()
-            
-            // Bir sonraki dakikalık kontrol için alarm kur
-            scheduleNextPeriodicCheck()
+        // Her durumda mevcut vakit ve kalan süreyi hesapla
+        val currentPrayerIndex = getCurrentPrayerIndex()
+        val currentCountdownText = getTimeUntilNextPrayer()
+        
+        // Değişiklik takibi (sadece log için)
+        val prayerChanged = currentPrayerIndex != lastCurrentPrayerIndex
+        val countdownChanged = currentCountdownText != lastCountdownText
+        
+        if (prayerChanged) {
+            Log.d(TAG, "📿 Prayer changed: $lastCurrentPrayerIndex → $currentPrayerIndex")
+            lastCurrentPrayerIndex = currentPrayerIndex
         }
+        if (countdownChanged) {
+            Log.d(TAG, "⏱️ Countdown changed: '$lastCountdownText' → '$currentCountdownText'")
+            lastCountdownText = currentCountdownText
+        }
+        
+        // 🚨 HER DAKIKA MUTLAKA BİLDİRİM GÜNCELLEMESİ
+        try {
+            updateForegroundNotification()
+            Log.d(TAG, "✅ FOREGROUND NOTIFICATION UPDATED - Prayer: $currentPrayerIndex, Countdown: '$currentCountdownText'")
+        } catch (e: Exception) {
+            Log.e(TAG, "❌ Notification update failed: ${e.message}")
+            e.printStackTrace()
+        }
+        
+        // Gün değişikliği kontrolü (bildirim güncellemesinden sonra)
+        val currentDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+        val isDayChanged = currentDay != lastCheckedDay
+        
+        // Konum değişikliği kontrolü
+        val currentLocationId = prefs.getString("flutter.location", "") ?: ""
+        val isLocationChanged = currentLocationId != lastLocationId
+        
+        if (isDayChanged) {
+            Log.d(TAG, "📅 Day changed: $lastCheckedDay → $currentDay")
+            lastCheckedDay = currentDay
+            fetchPrayerTimesData(isDayChange = true)
+        } else if (isLocationChanged) {
+            Log.d(TAG, "📍 Location changed: $lastLocationId → $currentLocationId")
+            lastLocationId = currentLocationId
+            fetchPrayerTimesData(isLocationChange = true)
+        }
+        
+        // Alarm zamanlamalarını güncelle
+        schedulePrayerAlarms()
+        
+        // Bir sonraki dakikalık kontrol için alarm kur
+        scheduleNextPeriodicCheck()
     }
     
     private fun scheduleNextPeriodicCheck() {
@@ -356,7 +354,8 @@ class PrayerNotificationService : Service() {
             )
         }
         
-        Log.d(TAG, "⏰ Next check scheduled in ${millisecondsUntilNextMinute}ms")
+        val nextMinuteFormatted = java.text.SimpleDateFormat("HH:mm:ss", java.util.Locale.getDefault()).format(java.util.Date(nextMinuteTime))
+        Log.d(TAG, "⏰ NEXT NOTIFICATION UPDATE: ${millisecondsUntilNextMinute}ms (at $nextMinuteFormatted)")
     }
     
     private fun schedulePrayerAlarms() {
@@ -522,11 +521,14 @@ class PrayerNotificationService : Service() {
 
     private fun updateForegroundNotification() {
         try {
+            Log.d(TAG, "🔄 Creating new foreground notification...")
             val notification = createForegroundNotification()
             val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.notify(FOREGROUND_NOTIFICATION_ID, notification)
+            Log.d(TAG, "✅ Foreground notification successfully updated with ID: $FOREGROUND_NOTIFICATION_ID")
         } catch (e: Exception) {
-            Log.e(TAG, "Error updating foreground notification: ${e.message}")
+            Log.e(TAG, "❌ CRITICAL: Error updating foreground notification: ${e.message}")
+            e.printStackTrace()
         }
     }
     

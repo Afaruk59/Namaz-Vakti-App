@@ -1,6 +1,7 @@
 // ignore_for_file: unrelated_type_equality_checks, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:namaz_vakti_app/components/scaffold_layout.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
@@ -38,7 +39,6 @@ class BookScreen extends StatefulWidget {
 
 class BookScreenState extends State<BookScreen> {
   final List<Book> books = Book.samples();
-  final int _gridColumns = 3;
   final BookProgressService _progressService = BookProgressService();
   bool _isProgressLoaded = false;
   bool _hasInternetConnection = true;
@@ -552,42 +552,49 @@ class BookScreenState extends State<BookScreen> {
 
     return Padding(
       padding: const EdgeInsets.all(10.0),
-      child: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: _gridColumns,
-          childAspectRatio: 2 / 3,
-          crossAxisSpacing: 8.0,
-          mainAxisSpacing: 8.0,
-        ),
-        itemCount: books.length,
-        itemBuilder: (context, index) {
-          final book = books[index];
-          return FutureBuilder<Color>(
-            future: _getBookCoverColor(book),
-            builder: (context, snapshot) {
-              final bookCoverColor = snapshot.data ?? Colors.blue;
-              return GestureDetector(
-                onTap: () async {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => BookPageScreen(
-                        bookCode: book.code,
-                        initialPage: getCurrentPage(book.code),
-                        appBarColor: bookCoverColor,
-                      ),
-                    ),
-                  ).then((_) {
-                    if (mounted) {
-                      // Kitap sayfasından geri dönüldüğünde sadece ilgili kitabın yer işareti göstergesini güncelle
-                      setState(() {
-                        // Yer işareti göstergelerini yenilemek için sayacı artır
-                        _bookmarkRefreshCounter++;
+      child: OrientationBuilder(
+        builder: (context, orientation) {
+          // Portrait modda 3 sütun, landscape modda 5 sütun
+          final int gridColumns = orientation == Orientation.portrait ? 3 : 5;
+
+          return GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: gridColumns,
+              childAspectRatio: 2 / 3,
+              crossAxisSpacing: 8.0,
+              mainAxisSpacing: 8.0,
+            ),
+            itemCount: books.length,
+            itemBuilder: (context, index) {
+              final book = books[index];
+              return FutureBuilder<Color>(
+                future: _getBookCoverColor(book),
+                builder: (context, snapshot) {
+                  final bookCoverColor = snapshot.data ?? Colors.blue;
+                  return GestureDetector(
+                    onTap: () async {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BookPageScreen(
+                            bookCode: book.code,
+                            initialPage: getCurrentPage(book.code),
+                            appBarColor: bookCoverColor,
+                          ),
+                        ),
+                      ).then((_) {
+                        if (mounted) {
+                          // Kitap sayfasından geri dönüldüğünde sadece ilgili kitabın yer işareti göstergesini güncelle
+                          setState(() {
+                            // Yer işareti göstergelerini yenilemek için sayacı artır
+                            _bookmarkRefreshCounter++;
+                          });
+                        }
                       });
-                    }
-                  });
+                    },
+                    child: _buildBookCard(book),
+                  );
                 },
-                child: _buildBookCard(book),
               );
             },
           );
@@ -602,6 +609,21 @@ class BookScreenState extends State<BookScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Tablet kontrolü ve orientation ayarları
+    final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
+    if (!isTablet) {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+      ]);
+    } else {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+      ]);
+    }
+
     return ScaffoldLayout(
       title: AppLocalizations.of(context)!.booksTitle,
       actions: [
