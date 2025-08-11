@@ -738,6 +738,8 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
                   onPageChanged: _onPageChanged,
                   onStateChanged: () => setState(() {}),
                   backgroundColor: _themeController.backgroundColor,
+                  onNextPage: () => _navigationController.goToNextPage(),
+                  onPreviousPage: () => _navigationController.goToPreviousPage(),
                 ),
                 // BookControlsOverlay widget'ı kaldırıldı
               ],
