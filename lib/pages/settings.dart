@@ -69,8 +69,25 @@ class _SettingsCardState extends State<SettingsCard> {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              FilledButton(
-                style: FilledButton.styleFrom(
+              IconButton.filled(
+                style: IconButton.styleFrom(
+                  backgroundColor: Provider.of<ChangeSettings>(context, listen: false).isDark
+                      ? const Color.fromARGB(255, 73, 117, 122)
+                      : const Color.fromARGB(255, 101, 162, 170),
+                ),
+                onPressed: () {
+                  setState(() {
+                    Provider.of<ChangeSettings>(context, listen: false).isDark
+                        ? pickerColor = const Color.fromARGB(255, 73, 117, 122)
+                        : pickerColor = const Color.fromARGB(255, 101, 162, 170);
+                  });
+                  Provider.of<ChangeSettings>(context, listen: false).changeCol(pickerColor);
+                  Provider.of<ChangeSettings>(context, listen: false).saveCol(pickerColor);
+                },
+                icon: const Icon(Icons.colorize_rounded),
+              ),
+              IconButton.filled(
+                style: IconButton.styleFrom(
                   backgroundColor: Provider.of<ChangeSettings>(context, listen: false).isDark
                       ? const Color.fromARGB(255, 134, 100, 80)
                       : const Color.fromARGB(255, 170, 126, 101),
@@ -84,11 +101,10 @@ class _SettingsCardState extends State<SettingsCard> {
                   Provider.of<ChangeSettings>(context, listen: false).changeCol(pickerColor);
                   Provider.of<ChangeSettings>(context, listen: false).saveCol(pickerColor);
                 },
-                child: const Icon(Icons.colorize_rounded),
+                icon: const Icon(Icons.colorize_rounded),
               ),
-              const SizedBox(width: 5),
-              FilledButton(
-                style: FilledButton.styleFrom(
+              IconButton.filled(
+                style: IconButton.styleFrom(
                   backgroundColor: Colors.blueGrey[500],
                 ),
                 onPressed: () {
@@ -98,7 +114,7 @@ class _SettingsCardState extends State<SettingsCard> {
                   Provider.of<ChangeSettings>(context, listen: false).changeCol(pickerColor);
                   Provider.of<ChangeSettings>(context, listen: false).saveCol(pickerColor);
                 },
-                child: const Icon(Icons.colorize_rounded),
+                icon: const Icon(Icons.colorize_rounded),
               ),
               TextButton(
                 onPressed: () {

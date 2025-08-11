@@ -22,17 +22,11 @@ import 'package:url_launcher/url_launcher.dart';
 
 class CalendarBtn extends StatelessWidget {
   const CalendarBtn({super.key});
-  static String? _day;
-  static String? _word;
   static String? _calendar;
-  static String? _miladi;
 
   @override
   Widget build(BuildContext context) {
-    _day = Provider.of<TimeData>(context).day;
-    _word = Provider.of<TimeData>(context).word;
     _calendar = Provider.of<TimeData>(context).calendar;
-    _miladi = Provider.of<TimeData>(context).miladi;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
       child: SizedBox.expand(
@@ -56,52 +50,20 @@ class CalendarBtn extends StatelessWidget {
               enableDrag: true,
               scrollControlDisabledMaxHeightRatio: 0.8,
               builder: (context) {
-                return Scrollbar(
-                  child: Card(
-                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                    child: Padding(
-                      padding: EdgeInsets.all(
-                          Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5.0 : 15.0),
+                return Card(
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal:
+                          Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5.0 : 20.0,
+                      vertical: 10.0,
+                    ),
+                    child: Scrollbar(
                       child: ListView(
                         children: [
                           Text(
-                            _miladi!,
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Text(
-                            _day!,
-                          ),
-                          const SizedBox(
-                            height: 30,
-                            child: Divider(
-                              thickness: 3,
-                            ),
-                          ),
-                          Text(
-                            _word!,
-                          ),
-                          const SizedBox(
-                            height: 40,
-                          ),
-                          Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Provider.of<ChangeSettings>(context).isDark
-                                    ? Colors.grey.withValues(alpha: 0.5)
-                                    : Colors.white.withValues(alpha: 0.5),
-                              ),
-                              borderRadius: BorderRadius.circular(
-                                  Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Text(
-                                _calendar!,
-                              ),
-                            ),
+                            _calendar!,
+                            textAlign: TextAlign.justify,
                           ),
                           const SizedBox(
                             height: 20,
