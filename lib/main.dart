@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -189,18 +190,27 @@ class MainApp extends StatelessWidget {
         }
 
         if (page != null) {
-          return PageRouteBuilder(
-            opaque: false,
-            pageBuilder: (context, animation, secondaryAnimation) => page!,
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              const begin = Offset(1.0, 0.0);
-              const end = Offset.zero;
-              const curve = Curves.fastEaseInToSlowEaseOut;
-              var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-              var offsetAnimation = animation.drive(tween);
-              return SlideTransition(position: offsetAnimation, child: child);
-            },
-          );
+          // iOS için CupertinoPageRoute kullan (soldan kaydırarak geri dönme özelliği)
+          if (Platform.isIOS) {
+            return CupertinoPageRoute(
+              builder: (context) => page!,
+              settings: settings,
+            );
+          } else {
+            // Android için mevcut özel animasyon
+            return PageRouteBuilder(
+              opaque: false,
+              pageBuilder: (context, animation, secondaryAnimation) => page!,
+              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                const begin = Offset(1.0, 0.0);
+                const end = Offset.zero;
+                const curve = Curves.fastEaseInToSlowEaseOut;
+                var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                var offsetAnimation = animation.drive(tween);
+                return SlideTransition(position: offsetAnimation, child: child);
+              },
+            );
+          }
         }
         return null;
       },

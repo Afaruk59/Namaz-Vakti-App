@@ -709,13 +709,14 @@ class _BookPageScreenState extends State<BookPageScreen> with WidgetsBindingObse
       _lastOrientation = currentOrientation;
     }
 
-    // ignore: deprecated_member_use
-    return WillPopScope(
-      onWillPop: () async {
-        _isExiting = true;
-        // Geri tuşuna basınca notification ve audio kesinlikle kapatılsın
-        await _audioManager.stopAllAudioAndNotification();
-        return true;
+    return PopScope(
+      canPop: true,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) {
+          _isExiting = true;
+          // Geri dönme işlemi gerçekleştiğinde notification ve audio kesinlikle kapatılsın
+          await _audioManager.stopAllAudioAndNotification();
+        }
       },
       child: OrientationBuilder(
         builder: (context, orientation) {

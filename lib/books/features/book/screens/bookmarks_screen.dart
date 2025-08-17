@@ -206,13 +206,15 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        final homeScreenState = context.findAncestorStateOfType<BookScreenState>();
-        if (homeScreenState != null) {
-          homeScreenState.refreshBookmarkIndicators();
+    return PopScope(
+      canPop: true,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) {
+          final homeScreenState = context.findAncestorStateOfType<BookScreenState>();
+          if (homeScreenState != null) {
+            homeScreenState.refreshBookmarkIndicators();
+          }
         }
-        return true;
       },
       child: Stack(
         children: [
