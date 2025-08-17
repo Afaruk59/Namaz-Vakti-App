@@ -46,6 +46,7 @@ class TimeData extends ChangeSettings {
   bool isLoading = true;
 
   bool isTimeLoading = true;
+  bool _disposed = false;
 
   String clock = '';
   Duration difference = const Duration(minutes: 1);
@@ -450,5 +451,18 @@ class TimeData extends ChangeSettings {
 
   void changeTime(String time) {
     miladi = time;
+  }
+
+  @override
+  void notifyListeners() {
+    if (!_disposed) {
+      super.notifyListeners();
+    }
+  }
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
   }
 }

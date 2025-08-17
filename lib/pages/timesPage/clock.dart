@@ -31,16 +31,20 @@ class Clock extends StatefulWidget {
 }
 
 class _ClockState extends State<Clock> {
+  Timer? _timer;
+
   @override
   void initState() {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<TimeData>(context, listen: false).updateTime();
-      Provider.of<TimeData>(context, listen: false).updateDetailedTime();
+      if (mounted) {
+        Provider.of<TimeData>(context, listen: false).updateTime();
+        Provider.of<TimeData>(context, listen: false).updateDetailedTime();
+      }
     });
 
-    Timer.periodic(const Duration(seconds: 1), (Timer t) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
       if (mounted) {
         if (DateTime.now().hour == 00 &&
             DateTime.now().minute == 00 &&
@@ -49,8 +53,16 @@ class _ClockState extends State<Clock> {
         }
         Provider.of<TimeData>(context, listen: false).updateTime();
         Provider.of<TimeData>(context, listen: false).updateDetailedTime();
+      } else {
+        t.cancel();
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 
   final List<String> _prayList = [
