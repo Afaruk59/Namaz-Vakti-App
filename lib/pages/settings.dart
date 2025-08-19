@@ -45,6 +45,107 @@ class SettingsCard extends StatefulWidget {
 class _SettingsCardState extends State<SettingsCard> {
   Color pickerColor = Colors.white;
 
+  Future<void> _exportSettings() async {
+    // Yedekleme seçenekleri dialog'u
+    final result = await showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Yedekleme Seçeneği'),
+        content:
+            const Text('Paylaş: Diğer uygulamalara gönder\nKlasör Seç: Belirli bir klasöre kaydet'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, 'share'),
+            child: const Text('Paylaş'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, 'save'),
+            child: const Text('Klasör Seç'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('İptal'),
+          ),
+        ],
+      ),
+    );
+
+    if (result != null) {
+      final changeSettings = Provider.of<ChangeSettings>(context, listen: false);
+
+      try {
+        String? filePath;
+
+        if (result == 'share') {
+          filePath = await changeSettings.exportSettingsWithShare();
+        } else if (result == 'save') {
+          filePath = await changeSettings.exportSettingsWithFilePicker();
+        }
+
+        if (filePath != null) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Ayarlar başarıyla yedeklendi:\n$filePath'),
+                duration: const Duration(seconds: 3),
+              ),
+            );
+          }
+        } else {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Yedekleme iptal edildi veya hata oluştu'),
+              ),
+            );
+          }
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Hata: $e'),
+            ),
+          );
+        }
+      }
+    }
+  }
+
+  Future<void> _importSettings() async {
+    final changeSettings = Provider.of<ChangeSettings>(context, listen: false);
+
+    try {
+      final success = await changeSettings.importSettingsWithFilePicker();
+
+      if (success) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Ayarlar başarıyla geri yüklendi!'),
+            ),
+          );
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Geri yükleme iptal edildi veya hata oluştu'),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Hata: $e'),
+          ),
+        );
+      }
+    }
+  }
+
   Future<dynamic> colorPalette(BuildContext context) {
     return showDialog(
       context: context,
@@ -216,6 +317,38 @@ class _SettingsCardState extends State<SettingsCard> {
                   },
                   child: const Icon(Icons.color_lens),
                 ),
+              ),
+            ),
+          ),
+          Card(
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              child: Column(
+                children: [
+                  const ListTile(
+                    title: Text('Ayarları Yedekle ve Geri Yükle'),
+                    subtitle: Text('Ayarlarınızı yedekleyebilir ve geri yükleyebilirsiniz.'),
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: FilledButton.tonal(
+                          onPressed: _exportSettings,
+                          child: const Icon(Icons.backup),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: FilledButton.tonal(
+                          onPressed: _importSettings,
+                          child: const Icon(Icons.restore),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 15),
+                ],
               ),
             ),
           ),

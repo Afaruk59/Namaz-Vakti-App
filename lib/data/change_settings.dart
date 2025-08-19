@@ -19,6 +19,10 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:ui';
 import 'dart:io';
+import 'dart:convert';
+import 'package:file_picker/file_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 class ChangeSettings with ChangeNotifier {
   static late SharedPreferences _settings;
@@ -358,5 +362,144 @@ class ChangeSettings with ChangeNotifier {
 
   String loadSelectedProfile() {
     return _settings.getString('selectedProfile') ?? ' ';
+  }
+
+  // JSON YEDEKLEME VE GERİ YÜKLEME FONKSİYONLARI
+
+  Map<String, dynamic> _getAllSettings() {
+    final keys = _settings.getKeys();
+    final Map<String, dynamic> settingsMap = {};
+
+    for (String key in keys) {
+      final value = _settings.get(key);
+      settingsMap[key] = value;
+    }
+
+    return settingsMap;
+  }
+
+  Future<bool> _loadSettingsFromMap(Map<String, dynamic> settingsMap) async {
+    try {
+      for (String key in settingsMap.keys) {
+        final value = settingsMap[key];
+
+        // Güvenlik önlemi: notifications ayarını her zaman false olarak yükle
+        if (key == 'notifications') {
+          await _settings.setBool(key, false);
+          debugPrint('Güvenlik önlemi: notifications ayarı false olarak yüklendi');
+          continue;
+        }
+
+        if (value is String) {
+          await _settings.setString(key, value);
+        } else if (value is int) {
+          await _settings.setInt(key, value);
+        } else if (value is double) {
+          await _settings.setDouble(key, value);
+        } else if (value is bool) {
+          await _settings.setBool(key, value);
+        } else if (value is List<String>) {
+          await _settings.setStringList(key, value);
+        }
+      }
+      notifyListeners();
+      return true;
+    } catch (e) {
+      debugPrint('Ayarlar yüklenirken hata oluştu: $e');
+      return false;
+    }
+  }
+
+  Future<bool> importSettingsFromJson(String filePath) async {
+    try {
+      final file = File(filePath);
+
+      if (!await file.exists()) {
+        debugPrint('Dosya bulunamadı: $filePath');
+        return false;
+      }
+
+      final jsonString = await file.readAsString();
+      final Map<String, dynamic> settingsMap = jsonDecode(jsonString);
+
+      return await _loadSettingsFromMap(settingsMap);
+    } catch (e) {
+      debugPrint('Ayarlar içe aktarılırken hata oluştu: $e');
+      return false;
+    }
+  }
+
+  /// Ayarları geçici klasöre kaydedip paylaşma seçeneği sunar
+  Future<String?> exportSettingsWithShare() async {
+    try {
+      final settingsMap = _getAllSettings();
+      final jsonString = jsonEncode(settingsMap);
+
+      // Geçici klasöre dosya kaydet
+      final directory = await getTemporaryDirectory();
+      final fileName = 'nva_settings_${DateTime.now().millisecondsSinceEpoch}.json';
+      final file = File('${directory.path}/$fileName');
+
+      await file.writeAsString(jsonString);
+
+      // Dosyayı paylaş (kullanıcı istediği uygulamayı seçebilir)
+      await SharePlus.instance.share(ShareParams(
+        text: 'Namaz Vakti App',
+        subject: 'Uygulama Ayarları Yedek Dosyası',
+        files: [XFile(file.path)],
+      ));
+
+      return file.path;
+    } catch (e) {
+      debugPrint('Ayarlar dışa aktarılırken hata oluştu: $e');
+      return null;
+    }
+  }
+
+  /// Kullanıcının seçtiği klasöre kaydetme
+  Future<String?> exportSettingsWithFilePicker() async {
+    try {
+      final settingsMap = _getAllSettings();
+      final jsonString = jsonEncode(settingsMap);
+
+      // Kullanıcıdan klasör seçmesini iste
+      String? selectedDirectory = await FilePicker.platform.getDirectoryPath(
+        dialogTitle: 'Kaydetmek istediğiniz klasörü seçin',
+      );
+
+      if (selectedDirectory != null) {
+        final fileName = 'nva_settings_${DateTime.now().millisecondsSinceEpoch}.json';
+        final file = File('$selectedDirectory/$fileName');
+
+        await file.writeAsString(jsonString);
+        debugPrint('Dosya kaydedildi: ${file.path}');
+
+        return file.path;
+      }
+
+      return null; // Kullanıcı iptal etti
+    } catch (e) {
+      debugPrint('Ayarlar dışa aktarılırken hata oluştu: $e');
+      return null;
+    }
+  }
+
+  Future<bool> importSettingsWithFilePicker() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['json'],
+        dialogTitle: 'Yedek Dosyası Seçin',
+      );
+
+      if (result != null && result.files.single.path != null) {
+        final filePath = result.files.single.path!;
+        return await importSettingsFromJson(filePath);
+      }
+      return false;
+    } catch (e) {
+      debugPrint('Ayarlar içe aktarılırken hata oluştu: $e');
+      return false;
+    }
   }
 }
