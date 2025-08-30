@@ -207,19 +207,25 @@ class AudioPageService {
       debugPrint(
           'AudioPageService: Stopping audio and clearing player. Current position: ${audioPlayerService.position.inSeconds}s');
 
-      // Stop audio playback
-      await audioPlayerService.stopAudio();
-
       // MediaController'ın servisini durdurmadan önce playback state'i kesin olarak STOPPED yap (singleton üzerinden)
       final mediaController = MediaController.singleton(audioPlayerService);
       await mediaController.updatePlaybackState(MediaController.STATE_STOPPED);
+
+      // iOS için ek güvenlik: servisi durdur
+      await Future.delayed(const Duration(milliseconds: 100));
       await mediaController.stopService();
+
+      // Stop audio playback
+      await audioPlayerService.stopAudio();
 
       // Clear playing book code
       await audioPlayerService.setPlayingBookCode(null);
 
       // Reset SharedPreferences
       await _clearAudioPreferences();
+
+      // iOS için ek güvenlik: işlemlerin tamamlanması için kısa bir gecikme
+      await Future.delayed(const Duration(milliseconds: 200));
 
       // Update HomeScreen - clear mini player
       // HomeScreen.updateCurrentAudioBook(
@@ -233,6 +239,15 @@ class AudioPageService {
       debugPrint('AudioPageService: Audio stopped and player cleared successfully');
     } catch (e) {
       debugPrint('AudioPageService: Error stopping audio and clearing player: $e');
+
+      // Hata durumunda da servisi durdurmaya çalış
+      try {
+        final audioPlayerService = AudioPlayerService();
+        final mediaController = MediaController.singleton(audioPlayerService);
+        await mediaController.stopService();
+      } catch (stopError) {
+        debugPrint('AudioPageService: Error stopping service after error: $stopError');
+      }
     }
   }
 

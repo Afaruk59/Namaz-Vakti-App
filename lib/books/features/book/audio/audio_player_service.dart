@@ -20,6 +20,7 @@ class AudioPlayerService {
   String? _playingBookCode; // Çalınan kitap kodu
   DateTime? _lastPositionUpdateTime; // Son pozisyon güncelleme zamanı
   bool _isHandlingCompletion = false; // Tamamlanma işlemi zaten yürütülüyor mu
+  bool _isStoppingIntentionally = false; // Kasıtlı olarak durduruldu mu
 
   // Convenience getter for playingBookCode
   String? get playingBookCode => _playingBookCode;
@@ -75,10 +76,11 @@ class AudioPlayerService {
     if (_audioPlayer == null) return;
 
     _audioPlayer!.onPlayerStateChanged.listen((state) {
-      debugPrint('AudioPlayerService: Player state changed to: $state');
+      debugPrint(
+          'AudioPlayerService: Player state changed to: $state, isStoppingIntentionally: $_isStoppingIntentionally');
 
-      // Hata durumlarını kontrol et
-      if (state == PlayerState.stopped && isPlaying) {
+      // Hata durumlarını kontrol et - sadece kasıtlı olmayan durmalarda hata ver
+      if (state == PlayerState.stopped && isPlaying && !_isStoppingIntentionally) {
         debugPrint('AudioPlayerService: Player stopped unexpectedly, treating as error');
         // Beklenmeyen durma durumunu hata olarak değerlendir
         isPlaying = false;
@@ -89,13 +91,22 @@ class AudioPlayerService {
         // Hata durumunda completion handling'i sıfırla
         _isHandlingCompletion = false;
 
-        // Android servisine hata durumunu bildir
+        // Android servisine hata durumunu bildir (sadece Android'de)
         try {
-          _platform.invokeMethod('audio_error', {'error': 'Player stopped unexpectedly'});
+          // Platform kontrolü yaparak sadece Android'de çağır
+          if (defaultTargetPlatform == TargetPlatform.android) {
+            _platform.invokeMethod('audio_error', {'error': 'Player stopped unexpectedly'});
+          }
         } catch (e) {
-          debugPrint('AudioPlayerService: Failed to notify Android service about error: $e');
+          debugPrint('AudioPlayerService: Failed to notify service about error: $e');
         }
         return;
+      }
+
+      // Kasıtlı durdurma işlemi tamamlandıysa flag'i sıfırla
+      if (state == PlayerState.stopped && _isStoppingIntentionally) {
+        debugPrint('AudioPlayerService: Player stopped intentionally');
+        _isStoppingIntentionally = false;
       }
 
       isPlaying = state == PlayerState.playing;
@@ -199,6 +210,10 @@ class AudioPlayerService {
       // Önce mevcut sesi durdur
       await stopAudio();
 
+      // Yeni ses başlatılacağı için flag'leri sıfırla
+      _isStoppingIntentionally = false;
+      _isHandlingCompletion = false;
+
       // Kısa bir bekleme ekleyerek önceki ses dosyasının tamamen durmasını sağla
       await Future.delayed(const Duration(milliseconds: 100));
 
@@ -273,6 +288,10 @@ class AudioPlayerService {
         debugPrint(
             'AudioPlayerService.pauseAudio called, current position: ${position.inSeconds}s');
 
+        // iOS için ek güvenlik: completion handling'i geçici olarak devre dışı bırak
+        bool wasHandlingCompletion = _isHandlingCompletion;
+        _isHandlingCompletion = true;
+
         // Mevcut pozisyonu kaydet
         position = await _audioPlayer!.getCurrentPosition() ?? position;
 
@@ -289,6 +308,9 @@ class AudioPlayerService {
 
         // Bildirim kontrollerinin kaybolmaması için kısa bir gecikme ekle
         await Future.delayed(const Duration(milliseconds: 100));
+
+        // Completion handling'i eski durumuna geri getir
+        _isHandlingCompletion = wasHandlingCompletion;
       }
     } catch (e) {
       debugPrint('Error pausing audio: $e');
@@ -297,6 +319,8 @@ class AudioPlayerService {
       if (!_playingStateController!.isClosed) {
         _playingStateController!.add(isPlaying);
       }
+      // Hata durumunda completion handling'i sıfırla
+      _isHandlingCompletion = false;
     }
   }
 
@@ -341,6 +365,12 @@ class AudioPlayerService {
       if (_audioPlayer != null) {
         debugPrint('AudioPlayerService.stopAudio called from Flutter.');
 
+        // Kasıtlı durdurma işlemi başladığını belirt
+        _isStoppingIntentionally = true;
+
+        // iOS için ek güvenlik: completion handling'i devre dışı bırak
+        _isHandlingCompletion = true;
+
         // Önce pozisyonu sıfırla
         position = Duration.zero;
         if (!_positionController!.isClosed) {
@@ -359,6 +389,10 @@ class AudioPlayerService {
         // Çalınan kitap kodunu temizle - bu bildirim kontrollerinin kaldırılmasına yardımcı olur
         await setPlayingBookCode(null);
 
+        // iOS için ek güvenlik: kısa bir gecikme sonra completion handling'i tekrar aktif et
+        await Future.delayed(const Duration(milliseconds: 500));
+        _isHandlingCompletion = false;
+
         debugPrint(
             'AudioPlayerService.stopAudio completed - bildirim kontrollerini kaldırma tamamlandı');
       }
@@ -369,6 +403,9 @@ class AudioPlayerService {
       if (!_playingStateController!.isClosed) {
         _playingStateController!.add(isPlaying);
       }
+      // Hata durumunda flag'leri sıfırla
+      _isHandlingCompletion = false;
+      _isStoppingIntentionally = false;
     }
   }
 
@@ -471,6 +508,8 @@ class AudioPlayerService {
       isPlaying = false;
       position = Duration.zero;
       duration = Duration.zero;
+      _isHandlingCompletion = false;
+      _isStoppingIntentionally = false;
 
       // Notify listeners
       if (!_playingStateController!.isClosed) {

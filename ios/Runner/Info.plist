@@ -64,6 +64,7 @@
 		<array>
 			<string>background-fetch</string>
 			<string>background-processing</string>
+			<string>audio</string>
 		</array>
 		<!-- Internet erişimi -->
 		<key>NSAppTransportSecurity</key>

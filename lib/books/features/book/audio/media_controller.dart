@@ -17,6 +17,8 @@ class MediaController {
   }
   static const MethodChannel _channel =
       MethodChannel('com.afaruk59.namaz_vakti_app/media_controls');
+  static const MethodChannel _callbackChannel =
+      MethodChannel('com.afaruk59.namaz_vakti_app/media_callback');
   final AudioPlayerService _audioPlayerService;
   final BookProgressService _bookProgressService = BookProgressService();
   bool _isServiceRunning = false;
@@ -35,6 +37,7 @@ class MediaController {
       : _audioPlayerService = audioPlayerService {
     _setupListeners();
     _setupMethodCallHandler();
+    _setupCallbackHandler();
   }
 
   /// Servis başlatma
@@ -282,6 +285,112 @@ class MediaController {
     }
   }
 
+  /// Callback handler'ı ayarla (iOS -> Flutter çağrıları için)
+  void _setupCallbackHandler() {
+    _callbackChannel.setMethodCallHandler((call) async {
+      try {
+        debugPrint('MediaController callback received: ${call.method}');
+        switch (call.method) {
+          case 'play':
+            await _audioPlayerService.resumeAudio();
+            return true;
+          case 'pause':
+            await _audioPlayerService.pauseAudio();
+            // Pause durumunda bildirim kontrollerinin kaybolmaması için
+            // playback state'i duraklatılmış olarak güncelle
+            await updatePlaybackState(STATE_PAUSED);
+            return true;
+          case 'stop':
+            // iOS için ek güvenlik: stop işlemini güvenli bir şekilde gerçekleştir
+            try {
+              await _audioPlayerService.stopAudio();
+              // Stop işleminden sonra servisi de durdur
+              await Future.delayed(const Duration(milliseconds: 100));
+              await stopService();
+            } catch (e) {
+              debugPrint('MediaController callback stop error: $e');
+              // Hata durumunda da servisi durdur
+              await stopService();
+            }
+            return true;
+          case 'next':
+            // Sonraki sayfa işlemi - hemen sayfa değişimi yap
+            if (_onNextPage != null) {
+              // Önce playback state'i güncelle - kullanıcıya hemen geri bildirim ver
+              updatePlaybackState(STATE_PAUSED);
+
+              // Kitabın son sayfası kontrolü
+              await _loadBookBoundaries(); // Sınırları güncel tut
+
+              // Son sayfada değilsek sayfa değişimini gerçekleştir
+              if (_currentPage < _lastPage) {
+                // Sayfa değişimini gerçekleştir
+                try {
+                  // Flutter uygulama durumunu kontrol et ve ona göre işlem yap
+                  _checkApplicationStateAndExecute(() {
+                    _onNextPage!(_currentPage, _totalPages);
+                  });
+
+                  // Sayfa değişiminden sonra playback state'i tekrar güncelle
+                  updatePlaybackState(_audioPlayerService.isPlaying ? STATE_PLAYING : STATE_PAUSED);
+                } catch (e) {
+                  debugPrint('Sonraki sayfa işlemi hatası: $e');
+                  // Hata durumunda playback state'i güncelle
+                  updatePlaybackState(STATE_PAUSED);
+                }
+              } else {
+                debugPrint('MediaController: Son sayfadayız, sonraki sayfaya geçilemez');
+                // Kullanıcıya geri bildirim ver (sayfa değişmeyecek)
+                updatePlaybackState(_audioPlayerService.isPlaying ? STATE_PLAYING : STATE_PAUSED);
+              }
+            }
+            return true;
+          case 'previous':
+            // Önceki sayfa işlemi - hemen sayfa değişimi yap
+            if (_onPreviousPage != null) {
+              // Önce playback state'i güncelle - kullanıcıya hemen geri bildirim ver
+              updatePlaybackState(STATE_PAUSED);
+
+              // Kitabın ilk sayfası kontrolü
+              await _loadBookBoundaries(); // Sınırları güncel tut
+
+              // İlk sayfada değilsek sayfa değişimini gerçekleştir
+              if (_currentPage > _firstPage) {
+                // Sayfa değişimini gerçekleştir
+                try {
+                  // Flutter uygulama durumunu kontrol et ve ona göre işlem yap
+                  _checkApplicationStateAndExecute(() {
+                    _onPreviousPage!(_currentPage);
+                  });
+
+                  // Sayfa değişiminden sonra playback state'i tekrar güncelle
+                  updatePlaybackState(_audioPlayerService.isPlaying ? STATE_PLAYING : STATE_PAUSED);
+                } catch (e) {
+                  debugPrint('Önceki sayfa işlemi hatası: $e');
+                  // Hata durumunda playback state'i güncelle
+                  updatePlaybackState(STATE_PAUSED);
+                }
+              } else {
+                debugPrint('MediaController: İlk sayfadayız, önceki sayfaya geçilemez');
+                // Kullanıcıya geri bildirim ver (sayfa değişmeyecek)
+                updatePlaybackState(_audioPlayerService.isPlaying ? STATE_PLAYING : STATE_PAUSED);
+              }
+            }
+            return true;
+          case 'seekTo':
+            final position = call.arguments as int;
+            await _audioPlayerService.seekTo(Duration(milliseconds: position));
+            return true;
+          default:
+            return null;
+        }
+      } catch (e) {
+        debugPrint('MediaController callback method call hatası: $e');
+        return false;
+      }
+    });
+  }
+
   /// Method call handler'ı ayarla
   void _setupMethodCallHandler() {
     _channel.setMethodCallHandler((call) async {
@@ -297,7 +406,17 @@ class MediaController {
             await updatePlaybackState(STATE_PAUSED);
             return true;
           case 'stop':
-            await _audioPlayerService.stopAudio();
+            // iOS için ek güvenlik: stop işlemini güvenli bir şekilde gerçekleştir
+            try {
+              await _audioPlayerService.stopAudio();
+              // Stop işleminden sonra servisi de durdur
+              await Future.delayed(const Duration(milliseconds: 100));
+              await stopService();
+            } catch (e) {
+              debugPrint('MediaController stop error: $e');
+              // Hata durumunda da servisi durdur
+              await stopService();
+            }
             return true;
           case 'next':
             // Sonraki sayfa işlemi - hemen sayfa değişimi yap
