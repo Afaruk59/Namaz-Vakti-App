@@ -17,7 +17,7 @@ class AudioManager {
     required String bookTitle,
     required String bookAuthor,
   })  : _audioPlayerService = audioPlayerService,
-        _mediaController = MediaController(audioPlayerService: audioPlayerService),
+        _mediaController = MediaController.singleton(audioPlayerService),
         _currentBookTitle = bookTitle,
         _currentBookAuthor = bookAuthor;
 

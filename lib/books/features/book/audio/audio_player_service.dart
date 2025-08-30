@@ -9,7 +9,7 @@ class AudioPlayerService {
 
   // Method channel for Android communication
   static const MethodChannel _platform =
-      MethodChannel('com.afaruk59.namaz_vakti_app/media_service');
+      MethodChannel('com.afaruk59.namaz_vakti_app/media_controls');
 
   // AudioPlayer instance
   AudioPlayer? _audioPlayer;
@@ -169,14 +169,21 @@ class AudioPlayerService {
           _completionController!.add(null); // Broadcast completion event
         }
 
-        // Notify Android service about audio completion for background handling
+        // Notify native service about audio completion for background handling
         // This should work even when bookCode is null (app in background)
         try {
-          await _platform.invokeMethod('audio_completed');
-          debugPrint('AudioPlayerService: Audio completion notification sent to Android service');
+          if (defaultTargetPlatform == TargetPlatform.android) {
+            await _platform.invokeMethod('audio_completed');
+            debugPrint('AudioPlayerService: Audio completion notification sent to Android service');
+          } else if (defaultTargetPlatform == TargetPlatform.iOS) {
+            // iOS için ana method channel üzerinden bildir (daha güvenilir)
+            await _platform.invokeMethod('audio_completed');
+            debugPrint(
+                'AudioPlayerService: Audio completion notification sent to iOS via main channel');
+          }
         } catch (e) {
           debugPrint(
-              'AudioPlayerService: Failed to notify Android service about audio completion: $e');
+              'AudioPlayerService: Failed to notify native service about audio completion: $e');
         }
 
         // Reset the completion handling flag after a short delay

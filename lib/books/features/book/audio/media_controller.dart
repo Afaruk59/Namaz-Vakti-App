@@ -1,5 +1,6 @@
 // ignore_for_file: constant_identifier_names
 
+import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:namaz_vakti_app/books/features/book/audio/audio_player_service.dart';
 import 'package:namaz_vakti_app/books/features/book/models/book_page_model.dart';
@@ -23,6 +24,12 @@ class MediaController {
   final BookProgressService _bookProgressService = BookProgressService();
   bool _isServiceRunning = false;
 
+  // Completion controller for iOS background audio completion
+  final StreamController<void> _completionController = StreamController<void>.broadcast();
+
+  // Public getter for completion stream
+  Stream<void> get completionStream => _completionController.stream;
+
   // Playback state sabitleri
   static const int STATE_NONE = 0;
   static const int STATE_PLAYING = 3;
@@ -43,9 +50,12 @@ class MediaController {
   /// Servis başlatma
   Future<void> startService() async {
     try {
+      debugPrint('🔥🔥🔥 FLUTTER MediaController.startService() CALLED 🔥🔥🔥');
       if (!_isServiceRunning) {
+        debugPrint('🔥 FLUTTER: Calling iOS startService via method channel');
         await _channel.invokeMethod('startService');
         _isServiceRunning = true;
+        debugPrint('✅ FLUTTER: startService completed successfully');
 
         // Servis başlatıldıktan sonra kısa bir gecikme ekle
         await Future.delayed(const Duration(milliseconds: 200));
@@ -80,19 +90,21 @@ class MediaController {
   /// Oynatma durumunu güncelleme
   Future<void> updatePlaybackState(int state) async {
     try {
-      // Sadece ses çalarken veya state PLAYING ise native'e gönder
-      if (!_audioPlayerService.isPlaying && state != STATE_PLAYING) {
-        // Eğer ses çalmıyorsa ve state PLAYING değilse, hiçbir şey yapma
-        return;
-      }
+      debugPrint(
+          'MediaController: updatePlaybackState called with state: $state, isPlaying: ${_audioPlayerService.isPlaying}');
+
       if (!_isServiceRunning) {
         await startService();
         await Future.delayed(const Duration(milliseconds: 100));
       }
+
       await _channel.invokeMethod('updatePlaybackState', {'state': state.toInt()});
+
       if (state == STATE_PLAYING) {
         await updatePosition(_audioPlayerService.position.inMilliseconds);
       }
+
+      debugPrint('MediaController: updatePlaybackState completed successfully');
     } catch (e) {
       debugPrint('MediaController updatePlaybackState hatası: $e');
     }
@@ -106,45 +118,37 @@ class MediaController {
     required int durationMs,
     int pageNumber = 0,
   }) async {
+    debugPrint('🔥🔥🔥 FLUTTER MediaController.updateMetadata() CALLED 🔥🔥🔥');
+    debugPrint(
+        '🔥 FLUTTER: Title: $title, Author: $author, Duration: $durationMs, Page: $pageNumber');
     try {
-      // Sadece ses çalarken notification başlat
-      if (_audioPlayerService.isPlaying) {
-        if (!_isServiceRunning) {
-          await startService();
-          await Future.delayed(const Duration(milliseconds: 200));
-        }
-
-        // Başlığa sayfa numarasını ekle
-        String displayTitle = pageNumber > 0 ? "$title - Sayfa $pageNumber" : title;
-
-        // Metadata'yı güncelle
-        await _channel.invokeMethod('updateMetadata', {
-          'title': displayTitle,
-          'author': author,
-          'coverUrl': coverUrl,
-          'duration': durationMs.toInt(),
-        });
-
-        // Kısa bir gecikme ekle
+      // iOS için her zaman servis başlat ve metadata güncelle
+      if (!_isServiceRunning) {
+        await startService();
         await Future.delayed(const Duration(milliseconds: 300));
-
-        // Metadata'yı tekrar güncelle
-        await _channel.invokeMethod('updateMetadata', {
-          'title': displayTitle,
-          'author': author,
-          'coverUrl': coverUrl,
-          'duration': durationMs.toInt(),
-        });
-
-        // Son bir kez daha güncelle
-        await Future.delayed(const Duration(milliseconds: 300));
-        await _channel.invokeMethod('updateMetadata', {
-          'title': displayTitle,
-          'author': author,
-          'coverUrl': coverUrl,
-          'duration': durationMs.toInt(),
-        });
       }
+
+      // Başlığa sayfa numarasını ekle
+      String displayTitle = pageNumber > 0 ? "$title - Sayfa $pageNumber" : title;
+
+      debugPrint('MediaController: Updating metadata - Title: $displayTitle, Author: $author');
+
+      // Metadata'yı güncelle
+      await _channel.invokeMethod('updateMetadata', {
+        'title': displayTitle,
+        'author': author,
+        'coverUrl': coverUrl,
+        'duration': durationMs.toInt(),
+      });
+
+      // Playback state'i güncelle
+      if (_audioPlayerService.isPlaying) {
+        await updatePlaybackState(STATE_PLAYING);
+      } else {
+        await updatePlaybackState(STATE_PAUSED);
+      }
+
+      debugPrint('MediaController: Metadata and playback state updated successfully');
     } catch (e) {
       debugPrint('MediaController updateMetadata hatası: $e');
     }
@@ -161,49 +165,30 @@ class MediaController {
   Future<void> updateForBookPage(BookPageModel bookPage, String bookTitle, String bookAuthor,
       {int pageNumber = 0}) async {
     try {
+      debugPrint(
+          'MediaController: updateForBookPage called - Title: $bookTitle, Page: $pageNumber, isPlaying: ${_audioPlayerService.isPlaying}');
+
       // Her dinleme başlatıldığında method channel handler'ı tekrar ata
       _setupMethodCallHandler();
-      // Sadece ses çalarken notification başlat
-      if (_audioPlayerService.isPlaying) {
-        if (!_isServiceRunning) {
-          await startService();
-          await Future.delayed(const Duration(milliseconds: 200));
-        }
 
-        // Metadata güncelle
-        await updateMetadata(
-          title: bookTitle,
-          author: bookAuthor,
-          coverUrl: '',
-          durationMs: _audioPlayerService.duration.inMilliseconds > 0
-              ? _audioPlayerService.duration.inMilliseconds
-              : 30000,
-          pageNumber: pageNumber,
-        );
-
-        // Oynatma durumunu güncelle
-        final state = _audioPlayerService.isPlaying ? STATE_PLAYING : STATE_PAUSED;
-        await updatePlaybackState(state);
-
-        // Pozisyonu güncelle
-        if (_audioPlayerService.isPlaying) {
-          await updatePosition(_audioPlayerService.position.inMilliseconds);
-        }
-
-        // Kısa bir gecikme ekle
+      // iOS için her zaman servis başlat ve metadata güncelle
+      if (!_isServiceRunning) {
+        await startService();
         await Future.delayed(const Duration(milliseconds: 300));
-
-        // Metadata'yı tekrar güncelle
-        await updateMetadata(
-          title: bookTitle,
-          author: bookAuthor,
-          coverUrl: '',
-          durationMs: _audioPlayerService.duration.inMilliseconds > 0
-              ? _audioPlayerService.duration.inMilliseconds
-              : 30000,
-          pageNumber: pageNumber,
-        );
       }
+
+      // Metadata güncelle
+      await updateMetadata(
+        title: bookTitle,
+        author: bookAuthor,
+        coverUrl: '',
+        durationMs: _audioPlayerService.duration.inMilliseconds > 0
+            ? _audioPlayerService.duration.inMilliseconds
+            : 30000,
+        pageNumber: pageNumber,
+      );
+
+      debugPrint('MediaController: updateForBookPage completed successfully');
     } catch (e) {
       debugPrint('MediaController updateForBookPage hatası: $e');
     }
@@ -380,6 +365,14 @@ class MediaController {
           case 'seekTo':
             final position = call.arguments as int;
             await _audioPlayerService.seekTo(Duration(milliseconds: position));
+            return true;
+          case 'audio_completed':
+            // iOS'tan gelen audio completion event'i
+            debugPrint('MediaController callback: Audio completion received from iOS');
+            // AudioPageService'e completion event'ini ilet
+            if (!_completionController.isClosed) {
+              _completionController.add(null);
+            }
             return true;
           default:
             return null;

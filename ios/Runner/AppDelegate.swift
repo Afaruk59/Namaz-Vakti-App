@@ -5,7 +5,7 @@ import MediaPlayer
 
 @objc class MediaController: NSObject {
     private var methodChannel: FlutterMethodChannel?
-    private var callbackChannel: FlutterMethodChannel?
+    var callbackChannel: FlutterMethodChannel?
     private var nowPlayingInfo: [String: Any] = [:]
     private var isServiceRunning = false
     
@@ -19,8 +19,22 @@ import MediaPlayer
         super.init()
         self.methodChannel = methodChannel
         self.callbackChannel = callbackChannel
+        
+        // Hemen audio session'ı aktif et ve remote command'ları ayarla
         setupAudioSession()
+        activateAudioSession()
         setupRemoteCommandCenter()
+        
+        print("🎵 MediaController: Initialized and activated immediately")
+    }
+    
+    private func activateAudioSession() {
+        do {
+            try AVAudioSession.sharedInstance().setActive(true)
+            print("✅ MediaController: Audio session activated immediately")
+        } catch {
+            print("❌ MediaController: Failed to activate audio session immediately: \(error)")
+        }
     }
     
     private func setupAudioSession() {
@@ -38,10 +52,12 @@ import MediaPlayer
         
         // Play command
         commandCenter.playCommand.addTarget { [weak self] event in
-            print("MediaController: Play command received")
+            print("🎵 MediaController: Play command received from iOS")
             self?.callbackChannel?.invokeMethod("play", arguments: nil) { result in
                 if let error = result as? FlutterError {
-                    print("MediaController: Play command error: \(error)")
+                    print("❌ MediaController: Play command error: \(error)")
+                } else {
+                    print("✅ MediaController: Play command sent to Flutter successfully")
                 }
             }
             return .success
@@ -49,10 +65,12 @@ import MediaPlayer
         
         // Pause command  
         commandCenter.pauseCommand.addTarget { [weak self] event in
-            print("MediaController: Pause command received")
+            print("⏸️ MediaController: Pause command received from iOS")
             self?.callbackChannel?.invokeMethod("pause", arguments: nil) { result in
                 if let error = result as? FlutterError {
-                    print("MediaController: Pause command error: \(error)")
+                    print("❌ MediaController: Pause command error: \(error)")
+                } else {
+                    print("✅ MediaController: Pause command sent to Flutter successfully")
                 }
             }
             return .success
@@ -60,10 +78,12 @@ import MediaPlayer
         
         // Stop command
         commandCenter.stopCommand.addTarget { [weak self] event in
-            print("MediaController: Stop command received")
+            print("⏹️ MediaController: Stop command received from iOS")
             self?.callbackChannel?.invokeMethod("stop", arguments: nil) { result in
                 if let error = result as? FlutterError {
-                    print("MediaController: Stop command error: \(error)")
+                    print("❌ MediaController: Stop command error: \(error)")
+                } else {
+                    print("✅ MediaController: Stop command sent to Flutter successfully")
                 }
             }
             return .success
@@ -96,10 +116,12 @@ import MediaPlayer
         
         // Next track command
         commandCenter.nextTrackCommand.addTarget { [weak self] event in
-            print("MediaController: Next track command received")
+            print("⏭️ MediaController: Next track command received from iOS")
             self?.callbackChannel?.invokeMethod("next", arguments: nil) { result in
                 if let error = result as? FlutterError {
-                    print("MediaController: Next command error: \(error)")
+                    print("❌ MediaController: Next command error: \(error)")
+                } else {
+                    print("✅ MediaController: Next command sent to Flutter successfully")
                 }
             }
             return .success
@@ -107,10 +129,12 @@ import MediaPlayer
         
         // Previous track command
         commandCenter.previousTrackCommand.addTarget { [weak self] event in
-            print("MediaController: Previous track command received")
+            print("⏮️ MediaController: Previous track command received from iOS")
             self?.callbackChannel?.invokeMethod("previous", arguments: nil) { result in
                 if let error = result as? FlutterError {
-                    print("MediaController: Previous command error: \(error)")
+                    print("❌ MediaController: Previous command error: \(error)")
+                } else {
+                    print("✅ MediaController: Previous command sent to Flutter successfully")
                 }
             }
             return .success
@@ -142,15 +166,23 @@ import MediaPlayer
     }
     
     func startService() {
-        print("MediaController: Starting service")
+        print("🎵 MediaController: Starting service (isServiceRunning: \(isServiceRunning))")
         isServiceRunning = true
         
-        // Ensure audio session is active
+        // Ensure audio session is active with proper configuration
         do {
-            try AVAudioSession.sharedInstance().setActive(true)
+            let audioSession = AVAudioSession.sharedInstance()
+            try audioSession.setCategory(.playback, mode: .default, options: [.allowAirPlay, .allowBluetooth])
+            try audioSession.setActive(true)
+            print("🎵 MediaController: Audio session activated successfully")
         } catch {
-            print("MediaController: Failed to activate audio session: \(error)")
+            print("❌ MediaController: Failed to activate audio session: \(error)")
         }
+        
+        // Ensure remote command center is properly set up
+        setupRemoteCommandCenter()
+        
+        print("✅ MediaController: Service started successfully")
     }
     
     func stopService() {
@@ -172,35 +204,57 @@ import MediaPlayer
         print("MediaController: Updating playback state to \(state)")
         
         let nowPlayingCenter = MPNowPlayingInfoCenter.default()
-        var nowPlayingInfo = nowPlayingCenter.nowPlayingInfo ?? [:]
         
         switch state {
         case MediaController.STATE_PLAYING:
+            var nowPlayingInfo = nowPlayingCenter.nowPlayingInfo ?? [:]
             nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = 1.0
+            nowPlayingCenter.nowPlayingInfo = nowPlayingInfo
+            print("MediaController: Set playback state to PLAYING")
         case MediaController.STATE_PAUSED:
+            var nowPlayingInfo = nowPlayingCenter.nowPlayingInfo ?? [:]
             nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = 0.0
+            nowPlayingCenter.nowPlayingInfo = nowPlayingInfo
+            print("MediaController: Set playback state to PAUSED")
         case MediaController.STATE_STOPPED:
-            nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = 0.0
             // Clear all info for stopped state
             nowPlayingCenter.nowPlayingInfo = nil
+            print("MediaController: Cleared now playing info (STOPPED)")
             return
         default:
+            var nowPlayingInfo = nowPlayingCenter.nowPlayingInfo ?? [:]
             nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = 0.0
+            nowPlayingCenter.nowPlayingInfo = nowPlayingInfo
+            print("MediaController: Set playback state to default (0.0)")
         }
         
-        nowPlayingCenter.nowPlayingInfo = nowPlayingInfo
+        // Ensure remote command center is enabled when we have active playback
+        if state == MediaController.STATE_PLAYING || state == MediaController.STATE_PAUSED {
+            let commandCenter = MPRemoteCommandCenter.shared()
+            commandCenter.playCommand.isEnabled = true
+            commandCenter.pauseCommand.isEnabled = true
+            commandCenter.stopCommand.isEnabled = true
+            commandCenter.togglePlayPauseCommand.isEnabled = true
+            commandCenter.nextTrackCommand.isEnabled = true
+            commandCenter.previousTrackCommand.isEnabled = true
+            commandCenter.changePlaybackPositionCommand.isEnabled = true
+        }
     }
     
     func updateMetadata(title: String, author: String, coverUrl: String, duration: Int) {
-        print("MediaController: Updating metadata - Title: \(title), Author: \(author), Duration: \(duration)ms")
+        print("🎵 MediaController: Updating metadata - Title: '\(title)', Author: '\(author)', Duration: \(duration)ms")
         
         let nowPlayingCenter = MPNowPlayingInfoCenter.default()
-        var nowPlayingInfo = nowPlayingCenter.nowPlayingInfo ?? [:]
+        var nowPlayingInfo: [String: Any] = [:]
         
         nowPlayingInfo[MPMediaItemPropertyTitle] = title
         nowPlayingInfo[MPMediaItemPropertyArtist] = author
         nowPlayingInfo[MPMediaItemPropertyAlbumTitle] = "Namaz Vakti App"
         nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = Double(duration) / 1000.0
+        
+        // Set initial playback rate to 1.0 (playing)
+        nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = 1.0
+        nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = 0.0
         
         // Set default artwork if no cover URL provided
         if let image = UIImage(named: "AppIcon") {
@@ -210,6 +264,13 @@ import MediaPlayer
         }
         
         nowPlayingCenter.nowPlayingInfo = nowPlayingInfo
+        print("✅ MediaController: Now playing info updated with \(nowPlayingInfo.count) properties")
+        
+        // Force update the now playing info center
+        DispatchQueue.main.async {
+            nowPlayingCenter.nowPlayingInfo = nowPlayingInfo
+            print("🔄 MediaController: Force updated now playing info on main thread")
+        }
     }
     
     func updatePosition(_ positionMs: Int) {
@@ -291,11 +352,15 @@ import MediaPlayer
         
         // Media controls method handler
         mediaControlsChannel.setMethodCallHandler { [weak self] call, result in
+            print("iOS MediaController: Received method call: \(call.method)")
+            
             guard let self = self, let mediaController = self.mediaController else {
+                print("iOS MediaController: ERROR - Media controller not available")
                 result(FlutterError(code: "UNAVAILABLE", message: "Media controller not available", details: nil))
                 return
             }
             
+            print("iOS MediaController: Processing method: \(call.method)")
             switch call.method {
             case "startService":
                 mediaController.startService()
@@ -331,6 +396,21 @@ import MediaPlayer
                     let firstPage = args["firstPage"] as? Int ?? 1
                     let lastPage = args["lastPage"] as? Int ?? 999
                     mediaController.updateAudioPageState(bookCode: bookCode, currentPage: currentPage, firstPage: firstPage, lastPage: lastPage)
+                }
+                result(nil)
+            case "audio_completed":
+                // iOS'ta audio completion event'ini handle et
+                print("🎵 MediaController: Audio completed - notifying Flutter")
+                
+                // Callback channel üzerinden Flutter'a bildir
+                if let callbackChannel = mediaController.callbackChannel {
+                    callbackChannel.invokeMethod("audio_completed", arguments: nil) { callbackResult in
+                        if let error = callbackResult as? FlutterError {
+                            print("❌ MediaController: Audio completion callback error: \(error)")
+                        } else {
+                            print("✅ MediaController: Audio completion sent to Flutter successfully")
+                        }
+                    }
                 }
                 result(nil)
             default:

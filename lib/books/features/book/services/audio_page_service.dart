@@ -29,18 +29,28 @@ class AudioPageService {
   void _setupAudioCompletionListener() {
     if (_isCompletionListenerSet) return;
 
+    // Listen to both AudioPlayerService and MediaController completion streams
     _completionSubscription = _audioPlayerService.completionStream.listen((_) async {
       debugPrint('AudioPageService: Audio completion detected in background');
 
-      // Check if a book is currently playing
-      final String? currentBookCode = _audioPlayerService.playingBookCode;
+      // Get book code from SharedPreferences instead of AudioPlayerService
+      // because playingBookCode might be null after stopAudio
+      final prefs = await SharedPreferences.getInstance();
+      String? currentBookCode = prefs.getString('current_audio_book_code');
+
+      // Fallback to AudioPlayerService if SharedPreferences is empty
+      if (currentBookCode == null || currentBookCode.isEmpty) {
+        currentBookCode = _audioPlayerService.playingBookCode;
+      }
+
       if (currentBookCode == null || currentBookCode.isEmpty) {
         debugPrint('AudioPageService: No book was playing, ignoring completion');
         return;
       }
 
-      // Get the current page from SharedPreferences
-      final prefs = await SharedPreferences.getInstance();
+      debugPrint('AudioPageService: Found book code for completion: $currentBookCode');
+
+      // Get the current page from SharedPreferences (prefs already loaded above)
       final currentPage = prefs.getInt('${currentBookCode}_current_audio_page') ??
           prefs.getInt('current_audio_book_page') ??
           0;
@@ -95,8 +105,64 @@ class AudioPageService {
       }
     });
 
+    // Also listen to MediaController completion stream for iOS background completion
+    final mediaController = MediaController.singleton(_audioPlayerService);
+    mediaController.completionStream.listen((_) async {
+      debugPrint(
+          'AudioPageService: Audio completion detected from MediaController (iOS background)');
+
+      // Get book code from SharedPreferences (same as above)
+      final prefs = await SharedPreferences.getInstance();
+      String? currentBookCode = prefs.getString('current_audio_book_code');
+
+      // Fallback to AudioPlayerService if SharedPreferences is empty
+      if (currentBookCode == null || currentBookCode.isEmpty) {
+        currentBookCode = _audioPlayerService.playingBookCode;
+      }
+
+      if (currentBookCode == null || currentBookCode.isEmpty) {
+        debugPrint('AudioPageService: No book was playing, ignoring completion (MediaController)');
+        return;
+      }
+
+      debugPrint(
+          'AudioPageService: Found book code for completion (MediaController): $currentBookCode');
+
+      // prefs already loaded above
+      final currentPage = prefs.getInt('${currentBookCode}_current_audio_page') ??
+          prefs.getInt('current_audio_book_page') ??
+          0;
+
+      if (currentPage <= 0) {
+        debugPrint('AudioPageService: Invalid current page: $currentPage');
+        return;
+      }
+
+      final maxPage = await _getMaxPageForBook(currentBookCode);
+      final nextPage = currentPage + 1;
+
+      if (nextPage > maxPage) {
+        debugPrint(
+            'AudioPageService: Reached the end of the book (page $currentPage of $maxPage). No more pages to play.');
+        return;
+      }
+
+      debugPrint(
+          'AudioPageService: Auto-advancing to next page: $nextPage after audio completion (iOS background)');
+
+      await Future.delayed(const Duration(milliseconds: 500));
+      await prefs.setBool('${currentBookCode}_auto_advanced', true);
+      await prefs.setInt('${currentBookCode}_audio_position', 0);
+
+      final success = await changePageAndPlayAudio(currentBookCode, nextPage);
+      if (success) {
+        debugPrint('AudioPageService: Successfully advanced to page $nextPage (iOS background)');
+      }
+    });
+
     _isCompletionListenerSet = true;
-    debugPrint('AudioPageService: Audio completion listener set up');
+    debugPrint(
+        'AudioPageService: Audio completion listener set up (both AudioPlayerService and MediaController)');
   }
 
   /// Dispose of the completion listener
@@ -149,24 +215,32 @@ class AudioPageService {
         return false;
       }
 
-      // --- SADECE SAYFA BİLGİSİNİ GÜNCELLE ---
+      // --- SAYFA BİLGİSİNİ GÜNCELLE VE SES BAŞLAT ---
       // Şu anki sayfa bilgisini kaydet
       await prefs.setInt('${bookCode}_current_audio_page', pageNumber);
-      debugPrint('Sayfa $pageNumber arka planda güncellendi (audio başlatılmadı)');
+      debugPrint('Sayfa $pageNumber arka planda güncellendi');
 
-      // Ses başlatma kodu kaldırıldı!
-      // await _audioPlayerService.playAudio(bookPage.mp3[0]);
-      // if (startPosition != null && startPosition > 0) {
-      //   await Future.delayed(Duration(milliseconds: 100));
-      //   await _audioPlayerService.seekTo(Duration(milliseconds: startPosition));
-      //   debugPrint('Sought to saved position: $startPosition ms');
-      // } else {
-      //   debugPrint('Starting from beginning of page (position: 0)');
-      // }
-      // await _saveAudioBookPreferences(bookCode, pageNumber, true);
-      // await _updateHomeScreen(bookCode, pageNumber);
-      // debugPrint('Sayfa $pageNumber için ses dosyası başarıyla çalınıyor');
-      return true;
+      // Arka planda ses başlat
+      try {
+        await _audioPlayerService.playAudio(bookPage.mp3[0]);
+
+        if (startPosition != null && startPosition > 0) {
+          await Future.delayed(const Duration(milliseconds: 100));
+          await _audioPlayerService.seekTo(Duration(milliseconds: startPosition));
+          debugPrint('Sought to saved position: $startPosition ms');
+        } else {
+          debugPrint('Starting from beginning of page (position: 0)');
+        }
+
+        // Audio preferences kaydet
+        await _saveAudioBookPreferences(bookCode, pageNumber, true);
+
+        debugPrint('Sayfa $pageNumber için ses dosyası başarıyla çalınıyor (arka plan)');
+        return true;
+      } catch (e) {
+        debugPrint('Arka planda ses başlatma hatası: $e');
+        return false;
+      }
     } catch (e) {
       debugPrint('Sayfa değiştirme ve ses çalma hatası: $e');
       if (maxAttempts > 0) {
@@ -294,6 +368,23 @@ class AudioPageService {
     } catch (e) {
       debugPrint('AudioPageService: Error getting max page for book: $e');
       return 1000; // Use a high number as fallback on error
+    }
+  }
+
+  /// Save audio book preferences
+  Future<void> _saveAudioBookPreferences(String bookCode, int pageNumber, bool isPlaying) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+
+      await prefs.setString('current_audio_book_code', bookCode);
+      await prefs.setInt('current_audio_book_page', pageNumber);
+      await prefs.setInt('${bookCode}_current_audio_page', pageNumber);
+      await prefs.setBool('is_audio_playing', isPlaying);
+
+      debugPrint(
+          'AudioPageService: Audio preferences saved - Page: $pageNumber, Playing: $isPlaying');
+    } catch (e) {
+      debugPrint('AudioPageService: Error saving audio preferences: $e');
     }
   }
 }

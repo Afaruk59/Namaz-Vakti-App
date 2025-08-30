@@ -25,7 +25,7 @@ class BookNavigationController {
   final Function() onMediaInfoUpdated;
 
   // Method Channel for native media service
-  static const platform = MethodChannel('com.afaruk59.namaz_vakti_app/media_service');
+  static const platform = MethodChannel('com.afaruk59.namaz_vakti_app/media_controls');
 
   BookNavigationController({
     required this.bookCode,

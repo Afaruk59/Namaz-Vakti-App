@@ -65,7 +65,7 @@ void main() async {
   }
   WidgetsFlutterBinding.ensureInitialized();
 
-  const platform = MethodChannel('com.afaruk59.namaz_vakti_app/media_service');
+  const platform = MethodChannel('com.afaruk59.namaz_vakti_app/media_controls');
   final audioPlayerService = AudioPlayerService();
   final mediaController = MediaController(audioPlayerService: audioPlayerService);
   AudioPageService();
