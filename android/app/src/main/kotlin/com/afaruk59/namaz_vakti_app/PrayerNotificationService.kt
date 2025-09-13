@@ -184,8 +184,8 @@ class PrayerNotificationService : Service() {
                     // İnternet varsa yeni veri çekmeye çalış
                     checkAndFetchInitialData()
                     
-                    // Vakit alarmlarını kur (mevcut verilerle)
-                    schedulePrayerAlarms()
+                    // Tek aktif alarm: en yakın vakti planla (mevcut verilerle)
+                    scheduleNextPrayerAlarm()
                     
                     schedulePeriodicChecks()
                 } catch (e: Exception) {
@@ -207,6 +207,8 @@ class PrayerNotificationService : Service() {
                 val prayerIndex = intent.getIntExtra("prayer_index", -1)
                 if (prayerIndex != -1) {
                     sendPrayerNotification(prayerIndex)
+                    // Tek aktif alarm: tetiklenince bir sonrakini planla
+                    scheduleNextPrayerAlarm()
                 }
             }
             ACTION_CHECK_ALARMS -> {
@@ -233,8 +235,8 @@ class PrayerNotificationService : Service() {
             } else {
                 Log.d(TAG, "Using saved prayer times: ${prayerTimes?.joinToString()}")
             }
-            // İnternet yokken de mevcut vakitlere göre alarmları kur
-            schedulePrayerAlarms()
+            // İnternet yokken de en yakın vakti planla
+            scheduleNextPrayerAlarm()
         }
     }
     
@@ -318,8 +320,8 @@ class PrayerNotificationService : Service() {
             fetchPrayerTimesData(isLocationChange = true)
         }
         
-        // Alarm zamanlamalarını güncelle
-        schedulePrayerAlarms()
+        // Tek aktif alarm yaklaşımı ile bir sonraki vakti planla
+        scheduleNextPrayerAlarm()
         
         // Bir sonraki dakikalık kontrol için alarm kur
         scheduleNextPeriodicCheck()
@@ -359,29 +361,123 @@ class PrayerNotificationService : Service() {
     }
     
     private fun schedulePrayerAlarms() {
-        if (prayerTimes == null) {
-            Log.e(TAG, "Prayer times not available, fetching...")
-            fetchPrayerTimesData(isRecoveryFetch = true)
-            return
-        }
-        
-        cancelAllAlarms()
-        
-        val calendar = Calendar.getInstance()
-        val currentDay = calendar.get(Calendar.DAY_OF_MONTH)
-        
-        for (i in 0 until 7) {
-            try {
-                val isAlarmEnabled = prefs.getBoolean("flutter.$i", false)
-                if (!isAlarmEnabled) {
-                    Log.d(TAG, "Prayer $i alarm is disabled, skipping")
-                    continue
-                }
-                
-                scheduleAlarmForToday(i)
-            } catch (e: Exception) {
-                Log.e(TAG, "Error scheduling alarm for prayer $i: ${e.message}")
+        // Tek aktif alarm yaklaşımı: yalnızca en yakın etkin vakti planla
+        scheduleNextPrayerAlarm()
+    }
+
+    private fun scheduleNextPrayerAlarm() {
+        try {
+            if (prayerTimes == null) {
+                Log.e(TAG, "Prayer times not available, fetching...")
+                fetchPrayerTimesData(isRecoveryFetch = true)
+                return
             }
+
+            // Mevcut tüm vakit alarmlarını iptal et (tek aktif alarm tutulacak)
+            cancelAllAlarms()
+
+            val now = Calendar.getInstance()
+            var selectedIndex = -1
+            var selectedTimeMillis = Long.MAX_VALUE
+
+            for (i in 0 until 7) {
+                try {
+                    val isAlarmEnabled = prefs.getBoolean("flutter.$i", false)
+                    if (!isAlarmEnabled) continue
+
+                    val candidate = buildAlarmTimeForToday(i) ?: continue
+                    if (candidate.timeInMillis > now.timeInMillis && candidate.timeInMillis < selectedTimeMillis) {
+                        selectedIndex = i
+                        selectedTimeMillis = candidate.timeInMillis
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error evaluating next alarm for prayer $i: ${e.message}")
+                }
+            }
+
+            if (selectedIndex == -1) {
+                Log.d(TAG, "No upcoming enabled prayer alarms for today")
+                return
+            }
+
+            scheduleAlarmForExactTime(selectedIndex, selectedTimeMillis)
+            Log.d(TAG, "Scheduled NEXT prayer alarm: index=$selectedIndex at ${java.util.Date(selectedTimeMillis)}")
+        } catch (e: Exception) {
+            Log.e(TAG, "scheduleNextPrayerAlarm error: ${e.message}")
+        }
+    }
+
+    private fun buildAlarmTimeForToday(prayerIndex: Int): Calendar? {
+        return try {
+            val timeIndex = when (prayerIndex) {
+                0 -> 0
+                1 -> 1
+                2 -> 2
+                3 -> 3
+                4 -> 4
+                5 -> 5
+                6 -> 6
+                else -> return null
+            }
+
+            if (prayerTimes == null || timeIndex >= prayerTimes!!.size) return null
+
+            val prayerTime = prayerTimes!![timeIndex]
+            if (prayerTime.isEmpty()) return null
+
+            val parts = prayerTime.split(":")
+            if (parts.size != 2) return null
+
+            val hour = parts[0].toInt()
+            val minute = parts[1].toInt()
+
+            var offsetMin = 0
+            try {
+                offsetMin = prefs.getLong("flutter.${prayerIndex}gap", 0).toInt()
+            } catch (_: Exception) { }
+
+            Calendar.getInstance().apply {
+                set(Calendar.HOUR_OF_DAY, hour)
+                set(Calendar.MINUTE, minute)
+                set(Calendar.SECOND, 0)
+                set(Calendar.MILLISECOND, 0)
+                add(Calendar.MINUTE, offsetMin)
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "buildAlarmTimeForToday error: ${e.message}")
+            null
+        }
+    }
+
+    private fun scheduleAlarmForExactTime(prayerIndex: Int, triggerAtMillis: Long) {
+        try {
+            val intent = Intent(this, PrayerNotificationService::class.java).apply {
+                action = ACTION_PRAYER_TIME
+                putExtra("prayer_index", prayerIndex)
+            }
+
+            val pendingIntent = PendingIntent.getService(
+                this,
+                prayerIndex,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+
+            if (VERSION.SDK_INT >= VERSION_CODES.M) {
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    triggerAtMillis,
+                    pendingIntent
+                )
+            } else {
+                alarmManager.setExact(
+                    AlarmManager.RTC_WAKEUP,
+                    triggerAtMillis,
+                    pendingIntent
+                )
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "scheduleAlarmForExactTime error: ${e.message}")
         }
     }
     
@@ -652,8 +748,8 @@ class PrayerNotificationService : Service() {
                             Log.d(TAG, "Updated countdown text after data fetch: '$lastCountdownText'")
                         }
                         
-                        // Yeni veriler geldiğinde alarmları güncelle
-                            schedulePrayerAlarms()
+                        // Yeni veriler geldiğinde tek aktif alarmı güncelle
+                            scheduleNextPrayerAlarm()
                     } else {
                         Log.d(TAG, "Fetched prayer times are the same as current, no update needed")
                     }
