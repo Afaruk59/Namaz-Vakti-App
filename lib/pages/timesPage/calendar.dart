@@ -23,10 +23,14 @@ import 'package:url_launcher/url_launcher.dart';
 class CalendarBtn extends StatelessWidget {
   const CalendarBtn({super.key});
   static String? _calendar;
+  static String? _calendarTitle;
+  static String? _time;
 
   @override
   Widget build(BuildContext context) {
     _calendar = Provider.of<TimeData>(context).calendar;
+    _calendarTitle = Provider.of<TimeData>(context).calendarTitle;
+    _time = Provider.of<TimeData>(context).miladi;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
       child: SizedBox.expand(
@@ -61,6 +65,27 @@ class CalendarBtn extends StatelessWidget {
                     child: Scrollbar(
                       child: ListView(
                         children: [
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            _time!,
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            _calendarTitle!,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.primary,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
                           Text(
                             _calendar!,
                             textAlign: TextAlign.justify,

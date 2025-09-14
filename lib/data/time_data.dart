@@ -66,6 +66,7 @@ class TimeData extends ChangeSettings {
 
   String day = '';
   String word = '';
+  String calendarTitle = '';
   String calendar = '';
 
   void selectDate(DateTime time) {
@@ -233,16 +234,25 @@ class TimeData extends ChangeSettings {
   }
 
   Future<void> fetchCalendar() async {
-    const url = 'https://www.turktakvim.com/10/Tr/';
+    final url =
+        'https://turktakvim.com/index.php?tarih=${DateFormat('yyyy-MM-dd').format(selectedDate!.add(const Duration(days: 1)))}&page=arkayuz';
 
-    final response = await http.get(Uri.parse(url));
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final document = html_parser.parse(response.body);
+        final title = document.querySelector('article#contents div h1');
+        final content = document.querySelector('article#contents div div[style*="margin:5px"]');
 
-    if (response.statusCode == 200) {
-      var document = html_parser.parse(response.body);
-
-      var textContent = document.body!.text;
-
-      calendar = textContent;
+        calendarTitle = title?.text ?? "Başlık bulunamadı.";
+        calendar = content?.text ?? "İçerik bulunamadı.";
+      } else {
+        calendarTitle = "Siteye erişim başarısız.";
+        calendar = "Siteye erişim başarısız.";
+      }
+    } catch (e) {
+      calendarTitle = "Hata oluştu: $e";
+      calendar = "Hata oluştu: $e";
     }
   }
 
