@@ -367,22 +367,79 @@ class PrayerNotificationService : Service() {
         
         cancelAllAlarms()
         
-        val calendar = Calendar.getInstance()
-        val currentDay = calendar.get(Calendar.DAY_OF_MONTH)
+        // Sadece en yakın aktif alarmı kur
+        val nextActivePrayer = getNextActivePrayerIndex()
+        if (nextActivePrayer != -1) {
+            try {
+                scheduleAlarmForToday(nextActivePrayer)
+                Log.d(TAG, "Scheduled next active prayer alarm: $nextActivePrayer")
+            } catch (e: Exception) {
+                Log.e(TAG, "Error scheduling next active prayer alarm $nextActivePrayer: ${e.message}")
+            }
+        } else {
+            Log.d(TAG, "No active prayer alarms to schedule or all prayers passed for today")
+        }
+    }
+    
+    private fun getNextActivePrayerIndex(): Int {
+        if (prayerTimes == null) return -1
         
+        val now = Calendar.getInstance()
+        val currentTime = now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE)
+        
+        // Yatsı'dan sonra gece 12'ye kadar alarm kurma
+        val yatsiTime = try {
+            val timeParts = prayerTimes!![6].split(":")
+            timeParts[0].toInt() * 60 + timeParts[1].toInt()
+        } catch (e: Exception) {
+            Log.e(TAG, "Error parsing Yatsi time: ${e.message}")
+            return -1
+        }
+        
+        // Eğer Yatsı'dan sonra ve gece 12'den önceyse alarm kurma
+        if (currentTime >= yatsiTime && currentTime < 24 * 60) {
+            Log.d(TAG, "After Yatsi prayer, no alarms until midnight")
+            return -1
+        }
+        
+        // Vakitleri sırayla kontrol et ve bir sonraki aktif vakti bul
         for (i in 0 until 7) {
             try {
+                // Bu vakit için alarm açık mı kontrol et
                 val isAlarmEnabled = prefs.getBoolean("flutter.$i", false)
                 if (!isAlarmEnabled) {
-                    Log.d(TAG, "Prayer $i alarm is disabled, skipping")
                     continue
                 }
                 
-                scheduleAlarmForToday(i)
+                val timeParts = prayerTimes!![i].split(":")
+                if (timeParts.size != 2) continue
+                
+                val prayerHour = timeParts[0].toInt()
+                val prayerMinute = timeParts[1].toInt()
+                
+                // Zaman offset'ini hesapla
+                val timeOffset = try {
+                    prefs.getLong("flutter.${i}gap", 0).toInt()
+                } catch (e: Exception) {
+                    0
+                }
+                
+                val prayerTime = prayerHour * 60 + prayerMinute + timeOffset
+                
+                // Bu vakit henüz gelmedi mi?
+                if (prayerTime > currentTime) {
+                    Log.d(TAG, "Next active prayer found: $i at ${String.format("%02d:%02d", 
+                        (prayerTime / 60) % 24, prayerTime % 60)} (offset: ${timeOffset}min)")
+                    return i
+                }
             } catch (e: Exception) {
-                Log.e(TAG, "Error scheduling alarm for prayer $i: ${e.message}")
+                Log.e(TAG, "Error checking prayer $i: ${e.message}")
+                continue
             }
         }
+        
+        Log.d(TAG, "No more prayers for today")
+        return -1
     }
     
     private fun scheduleAlarmForToday(prayerIndex: Int) {
@@ -1068,7 +1125,7 @@ class PrayerNotificationService : Service() {
                 }
             }
             
-            var nextPrayerTime = -1
+            var nextPrayerTime: Int
             
             // Bir sonraki vakti bul
             if (currentTime < prayerMinutes[0]) {
@@ -1089,15 +1146,10 @@ class PrayerNotificationService : Service() {
             } else if (currentTime < prayerMinutes[6]) {
                 // Akşam ile Yatsı arasında, Yatsı'ya kalan
                 nextPrayerTime = prayerMinutes[6]
-            } else if (currentTime < 24 * 60) {
-                // Yatsı ile gece 12 arasında, kalan süre gösterme
-                return ""
             } else {
-                // Gece 12'den sonra, ertesi gün İmsak'a kalan
+                // Yatsı'dan sonra - ertesi gün İmsak'a kalan süreyi göster
                 nextPrayerTime = prayerMinutes[0] + 24 * 60 // Ertesi gün İmsak
             }
-            
-            if (nextPrayerTime == -1) return ""
             
             val remainingMinutes = nextPrayerTime - currentTime
             if (remainingMinutes <= 0) return ""
@@ -1321,6 +1373,12 @@ class PrayerNotificationService : Service() {
         try {
             notificationManager.notify(PRAYER_NOTIFICATION_ID_START + prayerIndex, notification)
             Log.d(TAG, "Notification sent successfully for prayer $prayerIndex with channel $channelId")
+            
+            // Bu alarm tetiklendikten sonra bir sonraki aktif alarmı kur
+            Handler(Looper.getMainLooper()).postDelayed({
+                schedulePrayerAlarms()
+            }, 1000) // 1 saniye sonra bir sonraki alarmı kur
+            
         } catch (e: Exception) {
             Log.e(TAG, "Failed to send notification for prayer $prayerIndex: ${e.message}")
             e.printStackTrace()
