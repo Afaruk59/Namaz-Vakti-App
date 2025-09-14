@@ -1146,10 +1146,15 @@ class PrayerNotificationService : Service() {
             } else if (currentTime < prayerMinutes[6]) {
                 // Akşam ile Yatsı arasında, Yatsı'ya kalan
                 nextPrayerTime = prayerMinutes[6]
+            } else if (currentTime < 24 * 60) {
+                // Yatsı ile gece 12 arasında, kalan süre gösterme
+                return ""
             } else {
-                // Yatsı'dan sonra - ertesi gün İmsak'a kalan süreyi göster
+                // Gece 12'den sonra, ertesi gün İmsak'a kalan
                 nextPrayerTime = prayerMinutes[0] + 24 * 60 // Ertesi gün İmsak
             }
+            
+            if (nextPrayerTime == -1) return ""
             
             val remainingMinutes = nextPrayerTime - currentTime
             if (remainingMinutes <= 0) return ""
