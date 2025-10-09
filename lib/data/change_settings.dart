@@ -26,6 +26,9 @@ class ChangeSettings with ChangeNotifier {
 
   bool otoLocal = false;
 
+  double? currentLatitude;
+  double? currentLongitude;
+
   double? currentHeight;
 
   bool isDark = false;
@@ -67,6 +70,8 @@ class ChangeSettings with ChangeNotifier {
     cityName = _settings.getString('name') ?? 'Merkez';
     cityState = _settings.getString('state') ?? 'İstanbul';
     otoLocal = _settings.getBool('otoLocation') ?? false;
+    currentLatitude = _settings.getDouble('latitude') ?? 41.0082;
+    currentLongitude = _settings.getDouble('longitude') ?? 28.9784;
 
     //COLOR
     color = _settings.getString('Color')?.toColor() ?? Colors.blueGrey[500]!;
@@ -276,14 +281,21 @@ class ChangeSettings with ChangeNotifier {
   }
 
   //LOCATION SETTINGS
-  void saveLocaltoSharedPref(String value, String name, String state) {
+  void saveLocaltoSharedPref(
+      String value, String name, String state, double latitude, double longitude) {
     _settings.setString('location', value);
     _settings.setString('name', name);
     _settings.setString('state', state);
+    _settings.setDouble('latitude', latitude);
+    _settings.setDouble('longitude', longitude);
     cityID = value;
     cityName = name;
     cityState = state;
+    currentLatitude = latitude;
+    currentLongitude = longitude;
     notifyListeners();
+    debugPrint('latitude: $latitude');
+    debugPrint('longitude: $longitude');
   }
 
   void toggleOtoLoc() {

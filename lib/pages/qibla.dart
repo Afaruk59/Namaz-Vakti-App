@@ -22,6 +22,43 @@ import 'package:provider/provider.dart';
 import 'package:xml/xml.dart' as xml;
 import 'package:http/http.dart' as http;
 import 'package:namaz_vakti_app/l10n/app_localization.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:latlong2/latlong.dart';
+
+enum MapLayerType {
+  street,
+  satellite,
+}
+
+extension MapLayerTypeExtension on MapLayerType {
+  String get displayName {
+    switch (this) {
+      case MapLayerType.street:
+        return 'Sokak';
+      case MapLayerType.satellite:
+        return 'Uydu';
+    }
+  }
+
+  IconData get icon {
+    switch (this) {
+      case MapLayerType.street:
+        return Icons.map;
+      case MapLayerType.satellite:
+        return Icons.satellite_alt;
+    }
+  }
+
+  String get urlTemplate {
+    switch (this) {
+      case MapLayerType.street:
+        return 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+      case MapLayerType.satellite:
+        return 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
+    }
+  }
+}
 
 class Qibla extends StatelessWidget {
   const Qibla({super.key});
@@ -81,9 +118,23 @@ class _QiblaCardState extends State<QiblaCard> {
   static double? _target = 0;
   static double? _targetDir = 0;
 
+  // Harita görünümü için yeni değişkenler
+  LatLng? _currentLocation;
+  final LatLng _kaabaLocation = const LatLng(21.4225, 39.8262);
+  String? _locationError;
+  late PageController _pageController;
+  late MapController _mapController;
+  int _currentPage = 0;
+  bool _isLoadingLocation = false;
+  bool _isMapLocked = true; // Harita varsayılan olarak kilitli
+  MapLayerType _currentMapLayer = MapLayerType.street; // Varsayılan harita katmanı
+  bool _isCompassMode = false; // Pusula modu aktif mi
+
   @override
   void initState() {
     super.initState();
+    _pageController = PageController();
+    _mapController = MapController();
     loadTarget();
     FlutterCompass.events!.listen((event) {
       if (mounted) {
@@ -91,7 +142,25 @@ class _QiblaCardState extends State<QiblaCard> {
           _direction = event.heading;
           _targetDir = event.heading! - _target!;
         });
+
+        // Pusula modu aktifse haritayı döndür
+        if (_isCompassMode && _direction != null) {
+          _mapController.rotate(-_direction!);
+        }
       }
+    });
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    _mapController.dispose();
+    super.dispose();
+  }
+
+  void _onPageChanged(int pageIndex) {
+    setState(() {
+      _currentPage = pageIndex;
     });
   }
 
@@ -108,8 +177,35 @@ class _QiblaCardState extends State<QiblaCard> {
 
       _target = double.parse(cityinfo.getAttribute('qiblaangle')!);
       if (_target! > 180) {
-        _target = (_target! + 180) * -1;
+        _target = _target! - 360;
       }
+    }
+  }
+
+  void _toggleMapLock() {
+    setState(() {
+      _isMapLocked = !_isMapLocked;
+    });
+  }
+
+  void _toggleMapLayer() {
+    setState(() {
+      _currentMapLayer =
+          _currentMapLayer == MapLayerType.street ? MapLayerType.satellite : MapLayerType.street;
+    });
+  }
+
+  void _toggleCompassMode() {
+    setState(() {
+      _isCompassMode = !_isCompassMode;
+    });
+
+    if (_isCompassMode && _direction != null) {
+      // Pusula moduna geçerken haritayı döndür
+      _mapController.rotate(-_direction!);
+    } else {
+      // Normal moda geçerken haritayı sıfırla
+      _mapController.rotate(0);
     }
   }
 
@@ -201,6 +297,221 @@ class _QiblaCardState extends State<QiblaCard> {
     }
   }
 
+  Widget _buildMap() {
+    _currentLocation = LatLng(Provider.of<ChangeSettings>(context, listen: false).currentLatitude!,
+        Provider.of<ChangeSettings>(context, listen: false).currentLongitude!);
+    if (_isLoadingLocation) {
+      return const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(height: 16),
+            Text('Konum alınıyor...'),
+          ],
+        ),
+      );
+    }
+
+    if (_locationError != null) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.location_off,
+              size: 48,
+              color: Theme.of(context).colorScheme.error,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              _locationError!,
+              style: Theme.of(context).textTheme.bodyMedium,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+          ],
+        ),
+      );
+    }
+
+    if (_currentLocation == null) {
+      return const Center(
+        child: Text('Konum bilgisi alınamadı'),
+      );
+    }
+
+    return ClipRRect(
+      borderRadius:
+          BorderRadius.circular(Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
+      child: Stack(
+        children: [
+          FlutterMap(
+            mapController: _mapController,
+            options: MapOptions(
+              initialCenter: _currentLocation!,
+              initialZoom: 17.0, // Daha da yüksek zoom seviyesi
+              minZoom: 3.0,
+              maxZoom: 18.0,
+              // Kilitli durumda harita etkileşimini devre dışı bırak
+              interactionOptions: InteractionOptions(
+                flags: _isMapLocked ? InteractiveFlag.none : InteractiveFlag.all,
+              ),
+            ),
+            children: [
+              TileLayer(
+                urlTemplate: _currentMapLayer.urlTemplate,
+                userAgentPackageName: 'com.kurtkadiroglu.prayertimes',
+              ),
+              // Kullanıcının mevcut konumu
+              MarkerLayer(
+                markers: [
+                  Marker(
+                    point: _currentLocation!,
+                    width: 40,
+                    height: 40,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Colors.white,
+                          width: 3,
+                        ),
+                      ),
+                      child: const Icon(
+                        Icons.my_location,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                  // Kabe konumu
+                  Marker(
+                    point: _kaabaLocation,
+                    width: 40,
+                    height: 40,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Colors.white,
+                          width: 3,
+                        ),
+                      ),
+                      child: const Icon(
+                        Icons.place,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              // Kullanıcı konumundan Kabe'ye çizgi
+              PolylineLayer(
+                polylines: [
+                  Polyline(
+                    points: [_currentLocation!, _kaabaLocation],
+                    color: Colors.red,
+                    strokeWidth: 3.0,
+                  ),
+                ],
+              ),
+            ],
+          ),
+          // Katman seçici butonu - sağ üst köşe
+          Positioned(
+            top: 16,
+            right: 16,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Katman değiştirici butonu
+                Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.9),
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.1),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: IconButton(
+                    onPressed: _toggleMapLayer,
+                    icon: Icon(
+                      _currentMapLayer.icon,
+                      size: 20,
+                    ),
+                    tooltip: 'Harita katmanını değiştir',
+                  ),
+                ),
+                const SizedBox(height: 8),
+                // Pusula butonu
+                Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.9),
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.1),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: IconButton(
+                    onPressed: _toggleCompassMode,
+                    icon: Icon(
+                      Icons.explore,
+                      size: 20,
+                      color: _isCompassMode
+                          ? Theme.of(context).colorScheme.primary
+                          : Theme.of(context).colorScheme.onSurface,
+                    ),
+                    tooltip: _isCompassMode ? 'Pusula modunu kapat' : 'Pusula modunu aç',
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Kilit butonu - sağ alt köşe
+          Positioned(
+            bottom: 16,
+            right: 16,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.9),
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.1),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: IconButton(
+                onPressed: _toggleMapLock,
+                icon: Icon(
+                  _isMapLocked ? Icons.lock : Icons.lock_open,
+                  color: _isMapLocked
+                      ? Theme.of(context).colorScheme.error
+                      : Theme.of(context).colorScheme.primary,
+                ),
+                tooltip: _isMapLocked ? 'Haritayı kaydırmak için kilidi aç' : 'Haritayı kilitle',
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -214,10 +525,46 @@ class _QiblaCardState extends State<QiblaCard> {
                   flex: 4,
                   child: Card(
                     color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                    child: Center(
-                      child: _buildCompass(),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(
+                          Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
+                      child: PageView(
+                        controller: _pageController,
+                        onPageChanged: _onPageChanged,
+                        children: [
+                          // Pusula sayfası
+                          Center(child: _buildCompass()),
+                          // Harita sayfası
+                          _buildMap(),
+                        ],
+                      ),
                     ),
                   ),
+                ),
+                // Sekme göstergesi
+                SegmentedButton<int>(
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStatePropertyAll(
+                        Theme.of(context).colorScheme.surfaceContainerHighest),
+                  ),
+                  segments: const [
+                    ButtonSegment<int>(
+                      value: 0,
+                      icon: Icon(Icons.explore),
+                    ),
+                    ButtonSegment<int>(
+                      value: 1,
+                      icon: Icon(Icons.map),
+                    ),
+                  ],
+                  selected: {_currentPage},
+                  onSelectionChanged: (Set<int> newSelection) {
+                    _pageController.animateToPage(
+                      newSelection.first,
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                    );
+                  },
                 ),
                 Expanded(
                   flex: 1,

@@ -33,6 +33,8 @@ class _SearchState extends State<Search> {
   static List<dynamic> column1Data = [];
   static List<dynamic> column2Data = [];
   static List<dynamic> column3Data = [];
+  static List<dynamic> column5Data = [];
+  static List<dynamic> column6Data = [];
   static bool _first = true;
   TextEditingController searchController = TextEditingController();
   List<dynamic> filteredItems = [];
@@ -50,6 +52,8 @@ class _SearchState extends State<Search> {
         column1Data.add(row[0]);
         column2Data.add(row[1]);
         column3Data.add(row[2]);
+        column5Data.add(row[4]);
+        column6Data.add(row[5]);
       }
     }
     setState(() {
@@ -73,10 +77,11 @@ class _SearchState extends State<Search> {
     String cityId = column1Data[filteredItems[index - 1]].toString();
     String cityName = column2Data[filteredItems[index - 1]].toString();
     String stateName = column3Data[filteredItems[index - 1]].toString();
-
+    double latitude = double.parse(column5Data[filteredItems[index - 1]].toString());
+    double longitude = double.parse(column6Data[filteredItems[index - 1]].toString());
     Navigator.pop(context);
     Provider.of<ChangeSettings>(context, listen: false)
-        .saveLocaltoSharedPref(cityId, cityName, stateName);
+        .saveLocaltoSharedPref(cityId, cityName, stateName, latitude, longitude);
     Provider.of<ChangeSettings>(context, listen: false).saveFirsttoSharedPref(false);
     if (Provider.of<ChangeSettings>(context, listen: false).isfirst == true) {
       Navigator.pop(context);

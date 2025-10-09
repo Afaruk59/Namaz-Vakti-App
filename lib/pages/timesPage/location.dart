@@ -173,11 +173,11 @@ class LocationState extends State<Location> {
       lat = position.latitude;
       long = position.longitude;
 
-      await findCity();
+      await findCity(lat, long);
     }
   }
 
-  Future<void> findCity() async {
+  Future<void> findCity(double lat, double long) async {
     final String csvData = await rootBundle.loadString("assets/cities/cities.csv");
 
     List<List<dynamic>> rowsAsListOfValues = const CsvToListConverter(
@@ -220,7 +220,7 @@ class LocationState extends State<Location> {
 
     if (mounted) {
       Provider.of<ChangeSettings>(context, listen: false)
-          .saveLocaltoSharedPref(cityId, cityName, stateName);
+          .saveLocaltoSharedPref(cityId, cityName, stateName, lat, long);
       Provider.of<ChangeSettings>(context, listen: false).saveFirsttoSharedPref(false);
       if (Provider.of<ChangeSettings>(context, listen: false).isfirst == true) {
         Navigator.pop(context);
