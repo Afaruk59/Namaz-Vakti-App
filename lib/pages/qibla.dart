@@ -23,7 +23,6 @@ import 'package:xml/xml.dart' as xml;
 import 'package:http/http.dart' as http;
 import 'package:namaz_vakti_app/l10n/app_localization.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 
 enum MapLayerType {
@@ -125,7 +124,6 @@ class _QiblaCardState extends State<QiblaCard> {
   late PageController _pageController;
   late MapController _mapController;
   int _currentPage = 0;
-  bool _isLoadingLocation = false;
   bool _isMapLocked = true; // Harita varsayılan olarak kilitli
   MapLayerType _currentMapLayer = MapLayerType.street; // Varsayılan harita katmanı
   bool _isCompassMode = false; // Pusula modu aktif mi
@@ -300,18 +298,6 @@ class _QiblaCardState extends State<QiblaCard> {
   Widget _buildMap() {
     _currentLocation = LatLng(Provider.of<ChangeSettings>(context, listen: false).currentLatitude!,
         Provider.of<ChangeSettings>(context, listen: false).currentLongitude!);
-    if (_isLoadingLocation) {
-      return const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircularProgressIndicator(),
-            SizedBox(height: 16),
-            Text('Konum alınıyor...'),
-          ],
-        ),
-      );
-    }
 
     if (_locationError != null) {
       return Center(
@@ -428,82 +414,46 @@ class _QiblaCardState extends State<QiblaCard> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Katman değiştirici butonu
-                Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.9),
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.1),
-                        blurRadius: 4,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    shape: const CircleBorder(),
                   ),
-                  child: IconButton(
-                    onPressed: _toggleMapLayer,
-                    icon: Icon(
-                      _currentMapLayer.icon,
-                      size: 20,
-                    ),
-                    tooltip: 'Harita katmanını değiştir',
+                  onPressed: _toggleMapLayer,
+                  child: Icon(
+                    _currentMapLayer.icon,
+                    size: 20,
                   ),
                 ),
                 const SizedBox(height: 8),
-                // Pusula butonu
-                Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.9),
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.1),
-                        blurRadius: 4,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    shape: const CircleBorder(),
                   ),
-                  child: IconButton(
-                    onPressed: _toggleCompassMode,
-                    icon: Icon(
-                      Icons.explore,
-                      size: 20,
-                      color: _isCompassMode
-                          ? Theme.of(context).colorScheme.primary
-                          : Theme.of(context).colorScheme.onSurface,
-                    ),
-                    tooltip: _isCompassMode ? 'Pusula modunu kapat' : 'Pusula modunu aç',
+                  onPressed: _toggleCompassMode,
+                  child: Icon(
+                    Icons.explore,
+                    size: 20,
+                    color: _isCompassMode
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
               ],
             ),
           ),
-          // Kilit butonu - sağ alt köşe
           Positioned(
             bottom: 16,
             right: 16,
-            child: Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.9),
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.1),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                shape: const CircleBorder(),
               ),
-              child: IconButton(
-                onPressed: _toggleMapLock,
-                icon: Icon(
-                  _isMapLocked ? Icons.lock : Icons.lock_open,
-                  color: _isMapLocked
-                      ? Theme.of(context).colorScheme.error
-                      : Theme.of(context).colorScheme.primary,
-                ),
-                tooltip: _isMapLocked ? 'Haritayı kaydırmak için kilidi aç' : 'Haritayı kilitle',
+              onPressed: _toggleMapLock,
+              child: Icon(
+                _isMapLocked ? Icons.lock : Icons.lock_open,
+                color: _isMapLocked
+                    ? Theme.of(context).colorScheme.error
+                    : Theme.of(context).colorScheme.primary,
               ),
             ),
           ),
@@ -522,7 +472,7 @@ class _QiblaCardState extends State<QiblaCard> {
             child: Column(
               children: [
                 Expanded(
-                  flex: 4,
+                  flex: 5,
                   child: Card(
                     color: Theme.of(context).colorScheme.surfaceContainerHighest,
                     child: ClipRRect(
@@ -542,29 +492,37 @@ class _QiblaCardState extends State<QiblaCard> {
                   ),
                 ),
                 // Sekme göstergesi
-                SegmentedButton<int>(
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStatePropertyAll(
-                        Theme.of(context).colorScheme.surfaceContainerHighest),
+                Card(
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 5),
+                          child: SegmentedButton<int>(
+                            segments: const [
+                              ButtonSegment<int>(
+                                value: 0,
+                                icon: Icon(Icons.explore),
+                              ),
+                              ButtonSegment<int>(
+                                value: 1,
+                                icon: Icon(Icons.map),
+                              ),
+                            ],
+                            selected: {_currentPage},
+                            onSelectionChanged: (Set<int> newSelection) {
+                              _pageController.animateToPage(
+                                newSelection.first,
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.easeInOut,
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  segments: const [
-                    ButtonSegment<int>(
-                      value: 0,
-                      icon: Icon(Icons.explore),
-                    ),
-                    ButtonSegment<int>(
-                      value: 1,
-                      icon: Icon(Icons.map),
-                    ),
-                  ],
-                  selected: {_currentPage},
-                  onSelectionChanged: (Set<int> newSelection) {
-                    _pageController.animateToPage(
-                      newSelection.first,
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                    );
-                  },
                 ),
                 Expanded(
                   flex: 1,
@@ -597,7 +555,7 @@ class _QiblaCardState extends State<QiblaCard> {
                                       height: Provider.of<ChangeSettings>(context).currentHeight! <
                                               700.0
                                           ? 5.0
-                                          : 15.0,
+                                          : 10.0,
                                     ),
                                   ),
                                   Text(

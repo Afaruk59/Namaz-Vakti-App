@@ -30,12 +30,23 @@ class Clock extends StatefulWidget {
   State<Clock> createState() => _ClockState();
 }
 
-class _ClockState extends State<Clock> {
+class _ClockState extends State<Clock> with SingleTickerProviderStateMixin {
   Timer? _timer;
+  late AnimationController _blinkController;
+  late Animation<double> _blinkAnimation;
 
   @override
   void initState() {
     super.initState();
+
+    _blinkController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    )..repeat(reverse: true);
+
+    _blinkAnimation = Tween<double>(begin: 0.3, end: 1.0).animate(
+      CurvedAnimation(parent: _blinkController, curve: Curves.easeInOut),
+    );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
@@ -62,6 +73,7 @@ class _ClockState extends State<Clock> {
   @override
   void dispose() {
     _timer?.cancel();
+    _blinkController.dispose();
     super.dispose();
   }
 
@@ -101,18 +113,24 @@ class _ClockState extends State<Clock> {
                 clipBehavior: Clip.hardEdge,
                 color: Theme.of(context).colorScheme.surfaceContainerHighest,
                 child: SizedBox.expand(
-                  child: LinearProgressIndicator(
-                    value: (Provider.of<TimeData>(context).mainDifference.inSeconds -
-                            Provider.of<TimeData>(context).difference.inSeconds) /
-                        Provider.of<TimeData>(context).mainDifference.inSeconds,
-                    borderRadius: BorderRadius.circular(
-                      Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10,
-                    ),
-                    backgroundColor: Colors.transparent,
-                    valueColor: Provider.of<TimeData>(context).noPray
-                        ? AlwaysStoppedAnimation<Color>(Colors.red[600]!.withValues(alpha: 0.5))
-                        : AlwaysStoppedAnimation<Color>(
-                            Theme.of(context).cardTheme.color!.withValues(alpha: 0.6)),
+                  child: AnimatedBuilder(
+                    animation: _blinkAnimation,
+                    builder: (context, child) {
+                      return LinearProgressIndicator(
+                        value: (Provider.of<TimeData>(context).mainDifference.inSeconds -
+                                Provider.of<TimeData>(context).difference.inSeconds) /
+                            Provider.of<TimeData>(context).mainDifference.inSeconds,
+                        borderRadius: BorderRadius.circular(
+                          Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10,
+                        ),
+                        backgroundColor: Colors.transparent,
+                        valueColor: Provider.of<TimeData>(context).noPray
+                            ? AlwaysStoppedAnimation<Color>(
+                                Colors.red[600]!.withValues(alpha: _blinkAnimation.value))
+                            : AlwaysStoppedAnimation<Color>(
+                                Theme.of(context).cardTheme.color!.withValues(alpha: 0.6)),
+                      );
+                    },
                   ),
                 ),
               ),
