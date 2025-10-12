@@ -18,9 +18,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_compass/flutter_compass.dart';
 import 'package:namaz_vakti_app/components/scaffold_layout.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
+import 'package:namaz_vakti_app/data/time_data.dart';
 import 'package:provider/provider.dart';
 import 'package:xml/xml.dart' as xml;
-import 'package:http/http.dart' as http;
 import 'package:namaz_vakti_app/l10n/app_localization.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -164,19 +164,25 @@ class _QiblaCardState extends State<QiblaCard> {
 
   Future<void> loadTarget() async {
     String url =
-        'https://www.namazvakti.com/XML.php?cityID=${Provider.of<ChangeSettings>(context, listen: false).cityID}'; // Çevrimiçi XML dosyasının URL'si
+        'https://www.namazvakti.com/XML.php?cityID=${Provider.of<ChangeSettings>(context, listen: false).cityID}';
 
-    final response = await http.get(Uri.parse(url));
-    if (response.statusCode == 200) {
-      final data = response.body;
-      final document = xml.XmlDocument.parse(data);
+    try {
+      // Static metodu kullan - Provider'a gerek yok
+      final response = await TimeData.fetchWithFallback(url);
+      if (response.statusCode == 200) {
+        final data = response.body;
+        final document = xml.XmlDocument.parse(data);
 
-      final cityinfo = document.findAllElements('cityinfo').first;
+        final cityinfo = document.findAllElements('cityinfo').first;
 
-      _target = double.parse(cityinfo.getAttribute('qiblaangle')!);
-      if (_target! > 180) {
-        _target = _target! - 360;
+        _target = double.parse(cityinfo.getAttribute('qiblaangle')!);
+        if (_target! > 180) {
+          _target = _target! - 360;
+        }
       }
+    } catch (e) {
+      debugPrint('Qibla açısı yüklenirken hata: $e');
+      // Varsayılan değeri kullan veya kullanıcıya bildirim göster
     }
   }
 

@@ -15,11 +15,11 @@ limitations under the License.
 */
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as html_parser;
 import 'package:html/dom.dart' as dom;
 import 'package:namaz_vakti_app/components/scaffold_layout.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
+import 'package:namaz_vakti_app/data/time_data.dart';
 import 'package:namaz_vakti_app/l10n/app_localization.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -287,15 +287,20 @@ class _DatesCardState extends State<DatesCard> {
   }
 
   Future<void> _loadDates() async {
-    final response = await http.get(Uri.parse('http://turktakvim.com/yillikhicri.php'));
+    try {
+      // Static metodu kullan - Provider'a gerek yok
+      final response = await TimeData.fetchWithFallback('https://turktakvim.com/yillikhicri.php');
 
-    dom.Document document = html_parser.parse(response.body);
+      dom.Document document = html_parser.parse(response.body);
 
-    final element = document.querySelectorAll('tr.active td');
+      final element = document.querySelectorAll('tr.active td');
 
-    setState(() {
-      _list = element.map((e) => e.text).toList();
-    });
+      setState(() {
+        _list = element.map((e) => e.text).toList();
+      });
+    } catch (e) {
+      debugPrint('Dates yüklenirken hata: $e');
+    }
   }
 
   @override

@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
@@ -21,6 +22,7 @@ import 'package:provider/provider.dart';
 import 'package:xml/xml.dart' as xml;
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as html_parser;
+import 'package:http/io_client.dart';
 
 class TimeData extends ChangeSettings {
   DateTime? yatsi2;
@@ -69,6 +71,84 @@ class TimeData extends ChangeSettings {
   String calendarTitle = '';
   String calendar = '';
 
+  static Future<http.Response> fetchWithFallback(String url) async {
+    // URL'yi düzenle - protokol yoksa ekle, varsa al
+    String baseUrl = url;
+    if (!baseUrl.startsWith('http://') && !baseUrl.startsWith('https://')) {
+      baseUrl = 'https://$baseUrl';
+    }
+
+    // Protokolü çıkar
+    String urlWithoutProtocol = baseUrl.replaceFirst('https://', '').replaceFirst('http://', '');
+
+    // Önce normal HTTPS ile dene
+    final httpsUrl = 'https://$urlWithoutProtocol';
+
+    try {
+      debugPrint('🔒 Trying HTTPS: $httpsUrl');
+      final response = await http.get(Uri.parse(httpsUrl)).timeout(
+            const Duration(seconds: 10),
+          );
+
+      if (response.statusCode == 200) {
+        debugPrint('✅ HTTPS başarılı');
+        return response;
+      }
+
+      debugPrint('⚠️ HTTPS yanıt kodu: ${response.statusCode}');
+    } catch (e) {
+      debugPrint('❌ HTTPS hatası: ${e.runtimeType} - $e');
+
+      // Sertifika hatası ise, sertifika doğrulamasını bypass ederek dene
+      if (e is HandshakeException) {
+        debugPrint('🔓 Sertifika doğrulaması olmadan HTTPS deneniyor...');
+        try {
+          final httpClient = HttpClient()
+            ..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+          final ioClient = IOClient(httpClient);
+
+          final response = await ioClient.get(Uri.parse(httpsUrl)).timeout(
+                const Duration(seconds: 10),
+              );
+
+          ioClient.close();
+
+          if (response.statusCode == 200) {
+            debugPrint('✅ HTTPS (sertifika bypass) başarılı');
+            return response;
+          }
+
+          debugPrint('⚠️ HTTPS (bypass) yanıt kodu: ${response.statusCode}');
+        } catch (bypassError) {
+          debugPrint('❌ HTTPS (bypass) hatası: ${bypassError.runtimeType} - $bypassError');
+        }
+      }
+
+      debugPrint('🔓 HTTP ile deneniyor...');
+    }
+
+    // HTTP ile dene
+    try {
+      final httpUrl = 'http://$urlWithoutProtocol';
+      debugPrint('🔓 Trying HTTP: $httpUrl');
+
+      final response = await http.get(Uri.parse(httpUrl)).timeout(
+            const Duration(seconds: 10),
+          );
+
+      if (response.statusCode == 200) {
+        debugPrint('✅ HTTP başarılı');
+        return response;
+      }
+
+      debugPrint('⚠️ HTTP yanıt kodu: ${response.statusCode}');
+      throw Exception('HTTP başarısız, status: ${response.statusCode}');
+    } catch (httpError) {
+      debugPrint('❌ HTTP hatası: ${httpError.runtimeType} - $httpError');
+      throw Exception('Tüm bağlantı denemeleri başarısız: $httpError');
+    }
+  }
+
   void selectDate(DateTime time) {
     final DateTime picked = time;
 
@@ -84,7 +164,7 @@ class TimeData extends ChangeSettings {
   Future<void> loadPrayerTimes(DateTime time, BuildContext context) async {
     String url =
         'https://www.namazvakti.com/XML.php?cityID=${Provider.of<ChangeSettings>(context, listen: false).cityID}';
-    final response = await http.get(Uri.parse(url));
+    final response = await fetchWithFallback(url);
     if (response.statusCode == 200) {
       final data = response.body;
       final document = xml.XmlDocument.parse(data);
@@ -209,11 +289,11 @@ class TimeData extends ChangeSettings {
   }
 
   Future<void> fetchWordnDay() async {
-    final url = Uri.parse(
-        'https://turktakvim.com/index.php?tarih=${DateFormat('yyyy-MM-dd').format(selectedDate!.add(const Duration(days: 1)))}&page=onyuz');
+    final url =
+        'https://turktakvim.com/index.php?tarih=${DateFormat('yyyy-MM-dd').format(selectedDate!.add(const Duration(days: 1)))}&page=onyuz';
 
     try {
-      final response = await http.get(url);
+      final response = await fetchWithFallback(url);
       if (response.statusCode == 200) {
         final document = html_parser.parse(response.body);
         final olayElement = document.querySelector(
@@ -238,7 +318,7 @@ class TimeData extends ChangeSettings {
         'https://turktakvim.com/index.php?tarih=${DateFormat('yyyy-MM-dd').format(selectedDate!.add(const Duration(days: 1)))}&page=arkayuz';
 
     try {
-      final response = await http.get(Uri.parse(url));
+      final response = await fetchWithFallback(url);
       if (response.statusCode == 200) {
         final document = html_parser.parse(response.body);
         final title = document.querySelector('article#contents div h1');
