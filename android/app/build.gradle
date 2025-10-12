@@ -31,8 +31,8 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace "com.afaruk59.namaz_vakti_app"
-    compileSdkVersion flutter.compileSdkVersion
-    ndkVersion flutter.ndkVersion
+    compileSdk 35  // Plugin gereksinimleri için SDK 35
+    ndkVersion "27.0.12077973"  // Plugin gereksinimleri için NDK 27
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -43,6 +43,10 @@ android {
     kotlinOptions {
         jvmTarget = '17'
         freeCompilerArgs += ["-Xjvm-default=all"]
+    }
+    
+    buildFeatures {
+        buildConfig = true  // BuildConfig özelliğini etkinleştir
     }
 
     sourceSets {
@@ -56,9 +60,15 @@ android {
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdk 21
-        targetSdk = flutter.targetSdkVersion
+        targetSdk 35  // Plugin ve Google Play requirement
         versionCode = flutterVersionCode.toInteger()
         versionName = flutterVersionName
+        
+        // 16KB page size desteği için NDK yapılandırması
+        ndk {
+            // 16KB page size destekleyen ABI'lar
+            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+        }
     }
 
     signingConfigs {
@@ -88,7 +98,7 @@ dependencies {
     // Core library desugaring for Java 17 features on older Android versions
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
     
-    // Media Session dependencies
-    implementation 'androidx.media:media:1.6.0'
-    implementation 'androidx.core:core:1.12.0'
+    // Media Session dependencies - Güncel versiyonlar (16KB page size uyumlu)
+    implementation 'androidx.media:media:1.7.0'
+    implementation 'androidx.core:core:1.13.1'
 }

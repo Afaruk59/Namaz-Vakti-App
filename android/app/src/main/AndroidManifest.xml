@@ -26,6 +26,11 @@
         android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher">
         
+        <!-- 16KB page size desteği -->
+        <property
+            android:name="android.app.PROPERTY_SUPPORTS_16KB_PAGE_SIZE"
+            android:value="true" />
+        
         <activity
             android:name=".MainActivity"
             android:exported="true"

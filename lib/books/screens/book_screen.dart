@@ -15,6 +15,7 @@ import 'package:namaz_vakti_app/books/features/book/services/book_progress_servi
 import 'package:namaz_vakti_app/books/features/book/ui/color_extractor.dart';
 import 'package:namaz_vakti_app/books/features/book/widgets/book_bookmark_indicator.dart';
 import 'package:namaz_vakti_app/books/features/book/services/audio_page_service.dart';
+import 'package:namaz_vakti_app/books/other_books.dart';
 import 'no_internet_screen.dart';
 import 'package:namaz_vakti_app/books/features/book/services/book_info_service.dart';
 import 'package:namaz_vakti_app/l10n/app_localization.dart';
@@ -635,15 +636,7 @@ class BookScreenState extends State<BookScreen> {
       background: false,
       body: Provider.of<ChangeSettings>(context).langCode == 'tr'
           ? _buildBody()
-          : FutureBuilder<void>(
-              future: _loadWebView(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                return WebViewWidget(controller: _webViewController);
-              },
-            ),
+          : OtherBooksPage(language: Provider.of<ChangeSettings>(context).langCode!),
     );
   }
 

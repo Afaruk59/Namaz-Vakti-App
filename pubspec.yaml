@@ -49,6 +49,8 @@ dependencies:
   webview_flutter: ^4.9.0
   simple_gesture_detector: ^0.2.1
   flutter_map: ^8.2.2
+  path_provider: ^2.1.5
+  pdfx: ^2.9.2
 
 dev_dependencies:
   flutter_lints: ^4.0.0

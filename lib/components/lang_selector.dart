@@ -65,7 +65,7 @@ class LangPage extends StatelessWidget {
           padding: EdgeInsets.all(
               Provider.of<ChangeSettings>(context).currentHeight! < 700.0 ? 5.0 : 10.0),
           child: ListView.builder(
-            itemCount: 7,
+            itemCount: 8,
             itemBuilder: (context, index) {
               return LangItem(index: index);
             },
@@ -81,13 +81,13 @@ class LangItem extends StatelessWidget {
   final int index;
   static const List<String> langs = [
     'Türkçe',
-    'English (%80)',
-    'عربي (%80)',
-    'Deutsch (%80)',
-    'Español (%80)',
-    'Français (%80)',
-    'Italiano (%80)',
-    'Русский (%80)',
+    'English (%90)',
+    'عربي (%90)',
+    'Deutsch (%90)',
+    'Español (%90)',
+    'Français (%90)',
+    'Italiano (%90)',
+    'Русский (%90)',
   ];
 
   @override
