@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.9.25'  // Güncel Kotlin versiyonu (16KB page size uyumlu)
+    ext.kotlin_version = '2.1.0'  // Güncel Kotlin versiyonu (16KB page size uyumlu)
     repositories {
         google()
         mavenCentral()

@@ -1,3 +1,5 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
 import 'app_localization.dart';
 
 // ignore_for_file: type=lint
@@ -196,7 +198,8 @@ class AppLocalizationsTr extends AppLocalizations {
   String get ln => 'Dil';
 
   @override
-  String get languageMessageBody => 'Uygulama yeniden başlatıldığında değişecektir.';
+  String get languageMessageBody =>
+      'Uygulama yeniden başlatıldığında değişecektir.';
 
   @override
   String get otoLocal => 'Konum Takibi';
@@ -229,7 +232,8 @@ class AppLocalizationsTr extends AppLocalizations {
   String get locationMessageTitle => 'Konum Erişimi Gerekli';
 
   @override
-  String get locationMessageBody => 'Devam etmek için lütfen konumu etkinleştirin.';
+  String get locationMessageBody =>
+      'Devam etmek için lütfen konumu etkinleştirin.';
 
   @override
   String get openLoc => 'Konumu Aç';
@@ -238,13 +242,15 @@ class AppLocalizationsTr extends AppLocalizations {
   String get permissionMessageTitle => 'Konum İzni Gerekli';
 
   @override
-  String get permissionMessageBody => 'Bu uygulamanın düzgün çalışabilmesi için konum izni gereklidir.';
+  String get permissionMessageBody =>
+      'Bu uygulamanın düzgün çalışabilmesi için konum izni gereklidir.';
 
   @override
   String get retry => 'Tekrar Dene';
 
   @override
-  String get permissionDeniedBody => 'Konum izni kalıcı olarak reddedildi. Devam edebilmek için lütfen ayarlardan izin verin.';
+  String get permissionDeniedBody =>
+      'Konum izni kalıcı olarak reddedildi. Devam edebilmek için lütfen ayarlardan izin verin.';
 
   @override
   String get openSettings => 'Ayarları Aç';
@@ -253,10 +259,12 @@ class AppLocalizationsTr extends AppLocalizations {
   String get wifiMessageTitle => 'İnternet Bağlantısı Gerekli';
 
   @override
-  String get wifiMessageBody => 'Devam etmek için lütfen Wi-Fi\'yi yada Mobil Veri\'yi etkinleştirin.';
+  String get wifiMessageBody =>
+      'Devam etmek için lütfen Wi-Fi\'yi yada Mobil Veri\'yi etkinleştirin.';
 
   @override
-  String get wifiMessageBody2 => '(Servisler internet olmadan düzgün çalışmayacaktır.)';
+  String get wifiMessageBody2 =>
+      '(Servisler internet olmadan düzgün çalışmayacaktır.)';
 
   @override
   String get kazaMessageTitle => 'Kaza Sayısı:';
@@ -322,46 +330,60 @@ class AppLocalizationsTr extends AppLocalizations {
   String get sevahid => 'Şevâhid-ün Nübüvve';
 
   @override
-  String get ilmihalInfo => '(Tam İlmihâl-Se’âdet-i Ebediyye) kitâbı, üç kısımdan meydâna gelmişdir: I. kısımda; İslâm dînine nasıl inanılacağı, ehl-i sünnet i’tikâdı, İslâm dinine iftirâ edenlere cevâblar, Kur\'ân-ı kerîm ve tefsîrler, kur\'ân-ı kerîmdeki ilmlerin sınıflandırılması, Nemâzın ehemmiyyeti, farzları, abdest, gusl, nemâz ile ilgili bütün husûslar, kaza nemâzları, Cum’a ve bayram nemâzları, Zekât, Ramezân Orucu, Sadaka-i Fıtr, Yemîn ve Yemîn Keffâreti, Adak, Kurban Kesmek, Hac, Mübârek Geceler, Hicrî ve Mîlâdî Senelerin birbirine çevrilmeleri, Selâmlaşmak, Muhammed aleyhisselâmın hayâtı, Mübârek ahlâkı, anne, baba ve dedelerinin mü’min oluşu, Sübhâne Rabbîke âyeti hakkında bilgiler... yer almakdadır. II. kısımda; Îmân, Akl, Kaza-Kader, Tefsîr ve Hadîs kitâbları, Hadîs âlimleri, Allahü teâlânın ismleri, Mezheb, Fıkh, İmâm-ı A’zam hazretleri, Vehhâbîlere Ehl-i Sünnetin cevâbı, Evliyâ rûhlarından faydalanma, Bozuk dinler, hurûfîlik, Sosyalizm ve Sosyâl adâlet, İslâmiyyetde nikâh, Talâk, Süt kardeşlik, Nafaka, Komşu hakkı, Halâl ve Harâmlar, İsrâf ve Fâiz, Fen Bilgileri, Tevekkül, Müzik ve Tegannî, Cin hakkında bilgi, Bir Müslimân babanın kızına nasîhatları, Mu’cîze, kerâmet, firâset, istidrâc ... gibi konular yer almakdadır. III. kısımda, İslâmiyyetde kesb ve ticâret, Bey’ ve Şirâ’, Alış-verişde muhayyerlik, Bâtıl, Fâsid ve Mekrûh Satışlar, Ticârette adâlet ve ihtikâr, dinini kayırmak, ihsân, Banka ve Fâiz, Şirketler, Cezâlar, Ölüm ve Ölüme Hâzırlık, Meyyite Hizmetler, Ferâiz, Meyyit için İskât ... gibi konular yer almakdadır. Ayrıca konular arasında, İmâm-ı Rabbânî hazretlerinin ve oğlu Muhammed Ma’sûm hazretlerinin (MEKTÛBÂT) kitâblarından çeşitli mektûblar vardır. Son bölümde (1020) zâtın hâl tercemesi yer almakdadır. Fihrist bölümünde zâtlar, kitâblar, mevzû\'lar fihristleri vardır. Bine yakın eserden uzun bir zemânda hâzırlanan bu nâdîde eserde; insanı se’âdete kavuşduracak bütün husûslar yer almakdadır.';
+  String get ilmihalInfo =>
+      '(Tam İlmihâl-Se’âdet-i Ebediyye) kitâbı, üç kısımdan meydâna gelmişdir: I. kısımda; İslâm dînine nasıl inanılacağı, ehl-i sünnet i’tikâdı, İslâm dinine iftirâ edenlere cevâblar, Kur\'ân-ı kerîm ve tefsîrler, kur\'ân-ı kerîmdeki ilmlerin sınıflandırılması, Nemâzın ehemmiyyeti, farzları, abdest, gusl, nemâz ile ilgili bütün husûslar, kaza nemâzları, Cum’a ve bayram nemâzları, Zekât, Ramezân Orucu, Sadaka-i Fıtr, Yemîn ve Yemîn Keffâreti, Adak, Kurban Kesmek, Hac, Mübârek Geceler, Hicrî ve Mîlâdî Senelerin birbirine çevrilmeleri, Selâmlaşmak, Muhammed aleyhisselâmın hayâtı, Mübârek ahlâkı, anne, baba ve dedelerinin mü’min oluşu, Sübhâne Rabbîke âyeti hakkında bilgiler... yer almakdadır. II. kısımda; Îmân, Akl, Kaza-Kader, Tefsîr ve Hadîs kitâbları, Hadîs âlimleri, Allahü teâlânın ismleri, Mezheb, Fıkh, İmâm-ı A’zam hazretleri, Vehhâbîlere Ehl-i Sünnetin cevâbı, Evliyâ rûhlarından faydalanma, Bozuk dinler, hurûfîlik, Sosyalizm ve Sosyâl adâlet, İslâmiyyetde nikâh, Talâk, Süt kardeşlik, Nafaka, Komşu hakkı, Halâl ve Harâmlar, İsrâf ve Fâiz, Fen Bilgileri, Tevekkül, Müzik ve Tegannî, Cin hakkında bilgi, Bir Müslimân babanın kızına nasîhatları, Mu’cîze, kerâmet, firâset, istidrâc ... gibi konular yer almakdadır. III. kısımda, İslâmiyyetde kesb ve ticâret, Bey’ ve Şirâ’, Alış-verişde muhayyerlik, Bâtıl, Fâsid ve Mekrûh Satışlar, Ticârette adâlet ve ihtikâr, dinini kayırmak, ihsân, Banka ve Fâiz, Şirketler, Cezâlar, Ölüm ve Ölüme Hâzırlık, Meyyite Hizmetler, Ferâiz, Meyyit için İskât ... gibi konular yer almakdadır. Ayrıca konular arasında, İmâm-ı Rabbânî hazretlerinin ve oğlu Muhammed Ma’sûm hazretlerinin (MEKTÛBÂT) kitâblarından çeşitli mektûblar vardır. Son bölümde (1020) zâtın hâl tercemesi yer almakdadır. Fihrist bölümünde zâtlar, kitâblar, mevzû\'lar fihristleri vardır. Bine yakın eserden uzun bir zemânda hâzırlanan bu nâdîde eserde; insanı se’âdete kavuşduracak bütün husûslar yer almakdadır.';
 
   @override
-  String get mektubatInfo => '971 [m.1563] de doğan ve 1034 [m.1624] de vefât eden, ikinci bin yılın müceddîdi, İmâm-ı Rabbânî Ahmed Fârûkî Serhendi hazretleri, Kur’ân-ı kerîm ve Hadîs-i Şerîflerden sonra, en kıymetli üçüncü kitâb olan (MEKTÛBÂT) kitâbını yazmışdır. İnsanoğlunun rûhî hastalıklarının tedâvî yollarını göstermiş, islâm dînine nasıl inanılacağı, ibâdetlerin ehemmiyyeti, Evliyâlık, Resûlullahın güzel ahlâkı, islâmiyyet, tarîkat ve hakîkatin ayrı ayrı şeyler olmadıklarını îzâh etmişdir. Üç cild ve aslı fârisî olan mektûbât kitâbında (536) mektûb vardır.';
+  String get mektubatInfo =>
+      '971 [m.1563] de doğan ve 1034 [m.1624] de vefât eden, ikinci bin yılın müceddîdi, İmâm-ı Rabbânî Ahmed Fârûkî Serhendi hazretleri, Kur’ân-ı kerîm ve Hadîs-i Şerîflerden sonra, en kıymetli üçüncü kitâb olan (MEKTÛBÂT) kitâbını yazmışdır. İnsanoğlunun rûhî hastalıklarının tedâvî yollarını göstermiş, islâm dînine nasıl inanılacağı, ibâdetlerin ehemmiyyeti, Evliyâlık, Resûlullahın güzel ahlâkı, islâmiyyet, tarîkat ve hakîkatin ayrı ayrı şeyler olmadıklarını îzâh etmişdir. Üç cild ve aslı fârisî olan mektûbât kitâbında (536) mektûb vardır.';
 
   @override
-  String get islamInfo => 'İslâm dîninin güzel ahlâkına ulaşmak için kurtulmak gereken 40 kötü ahlak ve bunlardan kurtulma çarelerinin anlatıldığı bu kitâbda aynı zamanda (Mızraklı İlmihâl) diye bilinen Muhammed bin Kutbüddîn İznîki hazretlerinin kitâbı esas alınarak yazılan Îmân ve ibâdet bilgilerini içeren Cennet Yolu İlmihâli bulunmaktadır.';
+  String get islamInfo =>
+      'İslâm dîninin güzel ahlâkına ulaşmak için kurtulmak gereken 40 kötü ahlak ve bunlardan kurtulma çarelerinin anlatıldığı bu kitâbda aynı zamanda (Mızraklı İlmihâl) diye bilinen Muhammed bin Kutbüddîn İznîki hazretlerinin kitâbı esas alınarak yazılan Îmân ve ibâdet bilgilerini içeren Cennet Yolu İlmihâli bulunmaktadır.';
 
   @override
-  String get kiyametInfo => 'Kıyâmet ve Âhıret kitâbında insanın ölümü, rûhun bedenden ayrılması, kabr hayâtı, kabr süâlleri, kıyâmet günü insanların hesâba çekilmesi, Cennet ve Cehenneme nasıl gidileceği büyük islâm âlimi, İmâm-ı Gazâlî hazretlerinin kitâblarından terceme edilerek geniş olarak açıklanmakda ve vehhâbîliğe cevap vererek evliyâlığın ne olduğu, kıyâmet günü herkesin sevdiğinin yanında olacağı konuları açıklanmakdadır.';
+  String get kiyametInfo =>
+      'Kıyâmet ve Âhıret kitâbında insanın ölümü, rûhun bedenden ayrılması, kabr hayâtı, kabr süâlleri, kıyâmet günü insanların hesâba çekilmesi, Cennet ve Cehenneme nasıl gidileceği büyük islâm âlimi, İmâm-ı Gazâlî hazretlerinin kitâblarından terceme edilerek geniş olarak açıklanmakda ve vehhâbîliğe cevap vererek evliyâlığın ne olduğu, kıyâmet günü herkesin sevdiğinin yanında olacağı konuları açıklanmakdadır.';
 
   @override
-  String get namazInfo => 'Küçük bir ilmihal niteliğinde olan bu kitâbda her müslümanın bilmesi zaruri olan Ehl-i sünnet i\'tikâdı, namaz, abdest, gusl, teyemmüm, oruç, hac ve zekât bilgileri anlatılmaktadır. Namâz kitâbının sonunda, namâzın içinde ve dışında okunacak duâlar arabî olarak yer almaktadır. Namâz ve Namâzla ilgili bilgileri detaylıca içeren dokuz kısımdan oluşmaktadır.';
+  String get namazInfo =>
+      'Küçük bir ilmihal niteliğinde olan bu kitâbda her müslümanın bilmesi zaruri olan Ehl-i sünnet i\'tikâdı, namaz, abdest, gusl, teyemmüm, oruç, hac ve zekât bilgileri anlatılmaktadır. Namâz kitâbının sonunda, namâzın içinde ve dışında okunacak duâlar arabî olarak yer almaktadır. Namâz ve Namâzla ilgili bilgileri detaylıca içeren dokuz kısımdan oluşmaktadır.';
 
   @override
-  String get cevabInfo => 'Îsâ aleyhisselâma gönderilen ve hak kitâb olan İncîlin tahrîf edilmesi ile ortaya çıkan dört kitâb [Matta İncîli, Markos İncîli, Luka İncîli, Yuhannâ İncîli] hakkında bilgi vermekde, aralarındaki ihtilâfları açıklamakdadır. Kur’ân-ı kerîm ile İncîl karşılaştırılmakda, İncîlin tahrîf edildiği, hükümlerinin yürürlükden kalkdığı, Kur’ân-ı kerîmin bütün semâvî kitâbların hükümlerini yürürlükden kaldırdığı îzâh edilmekdedir. Îsevîlikdeki teslîs (üç tanrı) inancının yanlış olduğu, Allahü teâlânın bir olduğu, ilim ve kudret sıfâtları ilmî olarak açıklanmakdadır. Îsâ aleyhisselâmın insan ve Peygamber olduğu, ona tapılmıyacağı îzâh edilmekdedir. Yehûdîlik, Tevrât ve Talmud hakkında da bilgi verilmekdedir.';
+  String get cevabInfo =>
+      'Îsâ aleyhisselâma gönderilen ve hak kitâb olan İncîlin tahrîf edilmesi ile ortaya çıkan dört kitâb [Matta İncîli, Markos İncîli, Luka İncîli, Yuhannâ İncîli] hakkında bilgi vermekde, aralarındaki ihtilâfları açıklamakdadır. Kur’ân-ı kerîm ile İncîl karşılaştırılmakda, İncîlin tahrîf edildiği, hükümlerinin yürürlükden kalkdığı, Kur’ân-ı kerîmin bütün semâvî kitâbların hükümlerini yürürlükden kaldırdığı îzâh edilmekdedir. Îsevîlikdeki teslîs (üç tanrı) inancının yanlış olduğu, Allahü teâlânın bir olduğu, ilim ve kudret sıfâtları ilmî olarak açıklanmakdadır. Îsâ aleyhisselâmın insan ve Peygamber olduğu, ona tapılmıyacağı îzâh edilmekdedir. Yehûdîlik, Tevrât ve Talmud hakkında da bilgi verilmekdedir.';
 
   @override
-  String get eshabikiramInfo => 'Eshâb-ı Kirâm kitâbının başında, Peygamberimiz Muhammed aleyhisselâmın Eshâbının üstünlüğünü, Eshâb-ı kirâm arasındaki hâdiseler, Eshâb-ı kirâma dil uzatanların haksız ve câhil oldukları anlatılmakda, ayrıca; (İctihâd) ın ne olduğu açıklanmakdadır.';
+  String get eshabikiramInfo =>
+      'Eshâb-ı Kirâm kitâbının başında, Peygamberimiz Muhammed aleyhisselâmın Eshâbının üstünlüğünü, Eshâb-ı kirâm arasındaki hâdiseler, Eshâb-ı kirâma dil uzatanların haksız ve câhil oldukları anlatılmakda, ayrıca; (İctihâd) ın ne olduğu açıklanmakdadır.';
 
   @override
-  String get faideliInfo => 'İslâm dîni ve Ehl-i Sünnet i’tikâdı hakkında öz bilgiler verilen kitâbda, islâmî ilimlerin ve fıkh âlimlerinin sınıflandırılması, İmâm-ı A’zam Ebû Hanîfe hazretlerinin hayâtı anlatılmaktadır. Üç kısımdan meydâna gelen Fâideli Bilgiler kitâbında dinde reform yapmak isteyenlere, İslâm dinini bozan zararlı cereyân ve fikirlere ve cebriyye, mu’tezîle, vehhâbîlik gibi sapık fırkalara cevâb verilmektedir.';
+  String get faideliInfo =>
+      'İslâm dîni ve Ehl-i Sünnet i’tikâdı hakkında öz bilgiler verilen kitâbda, islâmî ilimlerin ve fıkh âlimlerinin sınıflandırılması, İmâm-ı A’zam Ebû Hanîfe hazretlerinin hayâtı anlatılmaktadır. Üç kısımdan meydâna gelen Fâideli Bilgiler kitâbında dinde reform yapmak isteyenlere, İslâm dinini bozan zararlı cereyân ve fikirlere ve cebriyye, mu’tezîle, vehhâbîlik gibi sapık fırkalara cevâb verilmektedir.';
 
   @override
-  String get haksozInfo => 'Hak sözün vesîkaları kitabı Şî’îlik, Ehl-i Beyt, Eshâb-ı kirâm ve Ehl-i Sünnet hakkında bilgiler vermekde, Ehl-i beyt ile Eshâb-ı kirâmın birbirlerini çok sevdiklerini açıklamakda ve şî’îlerin kitablarını ve iftirâlarını gâyet ilmî olarak cevâblamakdadır. Komünistlik ve din düşmanlığı hakkında bilgiler de veren kitâbda İmâm-ı Gazâlî hazretlerinin (Eyyühel-Veled) tercemesi ve İmâm-ı Rabbânî hazretlerinin hâl tercemesi de bulunmaktadır.';
+  String get haksozInfo =>
+      'Hak sözün vesîkaları kitabı Şî’îlik, Ehl-i Beyt, Eshâb-ı kirâm ve Ehl-i Sünnet hakkında bilgiler vermekde, Ehl-i beyt ile Eshâb-ı kirâmın birbirlerini çok sevdiklerini açıklamakda ve şî’îlerin kitablarını ve iftirâlarını gâyet ilmî olarak cevâblamakdadır. Komünistlik ve din düşmanlığı hakkında bilgiler de veren kitâbda İmâm-ı Gazâlî hazretlerinin (Eyyühel-Veled) tercemesi ve İmâm-ı Rabbânî hazretlerinin hâl tercemesi de bulunmaktadır.';
 
   @override
-  String get imanInfo => 'İslâm dîninin bilinmesi gereken îmân esaslarını ve îmânın altı şartını kaynak kitaplardan aktararak detaylı bir şekilde açıklayan bu kitâb, aynı zamanda diğer dînler hakkında bilgiler de verip İslâmiyyet ile karşılaşdırmakdadır.';
+  String get imanInfo =>
+      'İslâm dîninin bilinmesi gereken îmân esaslarını ve îmânın altı şartını kaynak kitaplardan aktararak detaylı bir şekilde açıklayan bu kitâb, aynı zamanda diğer dînler hakkında bilgiler de verip İslâmiyyet ile karşılaşdırmakdadır.';
 
   @override
-  String get ingilizInfo => '1700’lü yıllarda İstanbul’a gelen ve orada çeşidli islâmi ilimleri ve lîsanları öğrenen İngiliz casusu Hempher’in, İslâm dünyâsını ve müslimânları parçalamak için yaptığı casusluk faaliyetlerini ve vehhâbîliği nasıl kurduğunu anlattığı hatıratının tercümesini içeren bu kitâb 3 bölümden oluşmaktadır.';
+  String get ingilizInfo =>
+      '1700’lü yıllarda İstanbul’a gelen ve orada çeşidli islâmi ilimleri ve lîsanları öğrenen İngiliz casusu Hempher’in, İslâm dünyâsını ve müslimânları parçalamak için yaptığı casusluk faaliyetlerini ve vehhâbîliği nasıl kurduğunu anlattığı hatıratının tercümesini içeren bu kitâb 3 bölümden oluşmaktadır.';
 
   @override
-  String get kiymetsizInfo => 'İmâm-ı Rabbânî Müceddîd-i Elf-i sânî Ahmed Fârûkî Serhendi hazretlerinin üç cild (MEKTÛBÂT) kitâbından ve oğulları Muhammed Ma’sûm-i Fârûkî hazretlerinin de üç cild (MEKTÛBÂT) kitâbından, çıkarılan kıymetli cümleler, Elif-ba sırasına göre tanzîm edilmiş, Seyyid Abdülhakîm Arvâsî hazretlerine okunmuşdur. Dikkat ile dinledikden sonra, bunun adı (Kıymetsiz Yazılar) olsun demişdir. Okuyanın hayreti üzere, anlamadın mı, (Bunun kıymetine karşılık olabilecek birşey bulunabilir mi?) buyurmuşdur. Son sayfasında şu cümleler yer almakdadır: (Fırsat ganîmetdir. Ömrün temâmını fâidesiz işlerle telef ve sarf etmemek lâzımdır. Belki temâm ömrü, Hak celle ve a’lânın rızâsına muvâfık ve mutâbık şeylere sarf etmek lâzımdır....)';
+  String get kiymetsizInfo =>
+      'İmâm-ı Rabbânî Müceddîd-i Elf-i sânî Ahmed Fârûkî Serhendi hazretlerinin üç cild (MEKTÛBÂT) kitâbından ve oğulları Muhammed Ma’sûm-i Fârûkî hazretlerinin de üç cild (MEKTÛBÂT) kitâbından, çıkarılan kıymetli cümleler, Elif-ba sırasına göre tanzîm edilmiş, Seyyid Abdülhakîm Arvâsî hazretlerine okunmuşdur. Dikkat ile dinledikden sonra, bunun adı (Kıymetsiz Yazılar) olsun demişdir. Okuyanın hayreti üzere, anlamadın mı, (Bunun kıymetine karşılık olabilecek birşey bulunabilir mi?) buyurmuşdur. Son sayfasında şu cümleler yer almakdadır: (Fırsat ganîmetdir. Ömrün temâmını fâidesiz işlerle telef ve sarf etmemek lâzımdır. Belki temâm ömrü, Hak celle ve a’lânın rızâsına muvâfık ve mutâbık şeylere sarf etmek lâzımdır....)';
 
   @override
-  String get menakibInfo => 'Dört halîfenin ve Eshâb-ı Kirâmın bütününün büyüklüklerini, kıymetlerini menkıbeler ile çok uzun ve çok güzel anlatan bu kitâb, türkçe olup, ilk defa 1325 senesinde basılmıştır. Kitabevimiz yeniden 1998\'de basdırmıştır. Bu kitâbı Seyyid Eyyûb hazretleri yazmıştır. On iki bâb dan oluşmakdadır.';
+  String get menakibInfo =>
+      'Dört halîfenin ve Eshâb-ı Kirâmın bütününün büyüklüklerini, kıymetlerini menkıbeler ile çok uzun ve çok güzel anlatan bu kitâb, türkçe olup, ilk defa 1325 senesinde basılmıştır. Kitabevimiz yeniden 1998\'de basdırmıştır. Bu kitâbı Seyyid Eyyûb hazretleri yazmıştır. On iki bâb dan oluşmakdadır.';
 
   @override
-  String get sevahidInfo => 'Şevâhid-ün Nübüvve (Peygamberlik Müjdeleri) kitâbı, derin âlim ve büyük velî Mevlânâ Abdürrahmân Câmî hazretlerinin, “ŞEVÂHİD-ÜN NÜBÜVVE Lİ-TAKVİYET-İ EHLİL-FÜTÜVVE” adlı kitâbının tercümesidir. Muhammed aleyhisselamın peygamberliğine delîl olan alâmetler ve mu’cizelerinin beyânı hakkındadır. Kitâbda, bir mukaddime, yedi bölüm, bir hâtime vardır:';
+  String get sevahidInfo =>
+      'Şevâhid-ün Nübüvve (Peygamberlik Müjdeleri) kitâbı, derin âlim ve büyük velî Mevlânâ Abdürrahmân Câmî hazretlerinin, “ŞEVÂHİD-ÜN NÜBÜVVE Lİ-TAKVİYET-İ EHLİL-FÜTÜVVE” adlı kitâbının tercümesidir. Muhammed aleyhisselamın peygamberliğine delîl olan alâmetler ve mu’cizelerinin beyânı hakkındadır. Kitâbda, bir mukaddime, yedi bölüm, bir hâtime vardır:';
 
   @override
   String get notificationsPageTitle => 'Bildirimler';
@@ -370,7 +392,8 @@ class AppLocalizationsTr extends AppLocalizations {
   String get enableNotifications => 'Bildirimleri Etkinleştir';
 
   @override
-  String get notificationsSubtitle => 'Namaz vakti bildirimlerini etkinleştir/devre dışı bırak';
+  String get notificationsSubtitle =>
+      'Namaz vakti bildirimlerini etkinleştir/devre dışı bırak';
 
   @override
   String get imsakAlarm => 'İmsak Alarmı';
@@ -400,10 +423,12 @@ class AppLocalizationsTr extends AppLocalizations {
   String get calendarListTitle => 'Takvimler';
 
   @override
-  String get disableBatteryOptimization => 'Pil Optimizasyonunu Devre Dışı Bırak';
+  String get disableBatteryOptimization =>
+      'Pil Optimizasyonunu Devre Dışı Bırak';
 
   @override
-  String get batteryOptimizationSubtitle => 'Bildirim servislerinin düzgün çalışması için pil optimizasyonunu devre dışı bırakın.';
+  String get batteryOptimizationSubtitle =>
+      'Bildirim servislerinin düzgün çalışması için pil optimizasyonunu devre dışı bırakın.';
 
   @override
   String get selectCalendarTitle => 'Takvim Seçin';
@@ -433,7 +458,8 @@ class AppLocalizationsTr extends AppLocalizations {
   String get lockScreen => 'Kilit Ekranında Vakitler';
 
   @override
-  String get lockScreenDesc => 'Kilit ekranında namaz vakitlerinin gösterilmesini sağlar';
+  String get lockScreenDesc =>
+      'Kilit ekranında namaz vakitlerinin gösterilmesini sağlar';
 
   @override
   String get notificationSoundTitle => 'Vakit Bildirim Sesi';
@@ -448,7 +474,8 @@ class AppLocalizationsTr extends AppLocalizations {
   String get ezanSound => 'Ezan Sesi';
 
   @override
-  String get imsakSunriseNotificationInfo => 'İmsak ve Güneş vakitlerinde varsayılan bildirim sesi çalınır.';
+  String get imsakSunriseNotificationInfo =>
+      'İmsak ve Güneş vakitlerinde varsayılan bildirim sesi çalınır.';
 
   @override
   String get on => 'Açık';
@@ -475,5 +502,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get compassOptimizationTitle => 'Pusula Optimizasyonu';
 
   @override
-  String get compassOptimizationMessage => 'Daha doğru sonuç almak için pusulanızı kalibre edin.';
+  String get compassOptimizationMessage =>
+      'Daha doğru sonuç almak için pusulanızı kalibre edin.';
 }

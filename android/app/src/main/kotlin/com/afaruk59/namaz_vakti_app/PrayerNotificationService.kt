@@ -638,7 +638,7 @@ class PrayerNotificationService : Service() {
                     return@Thread
                 }
                 
-                if (url.protocol.toLowerCase() == "https") {
+                if (url.protocol.lowercase() == "https") {
                     try {
                         val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
                             override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {}

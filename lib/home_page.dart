@@ -87,20 +87,26 @@ class _HomePageState extends State<HomePage> {
                               ? 0
                               : (MediaQuery.of(context).size.height * 0.6)),
                       0),
-                  child: child,
+                  child: Transform.scale(
+                    scale: 4.0,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage(
+                            Provider.of<ChangeSettings>(context).isDark
+                                ? 'assets/img/wallpaperdark.png'
+                                : 'assets/img/wallpaper.png',
+                          ),
+                          colorFilter: ColorFilter.mode(
+                            Provider.of<ChangeSettings>(context).color,
+                            BlendMode.color,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 );
               },
-              child: ColorFiltered(
-                colorFilter: ColorFilter.mode(
-                  Provider.of<ChangeSettings>(context).color,
-                  BlendMode.color,
-                ),
-                child: Image.asset(
-                  Provider.of<ChangeSettings>(context).isDark
-                      ? 'assets/img/wallpaperdark.png'
-                      : 'assets/img/wallpaper.png',
-                ),
-              ),
             ),
           ),
         ),

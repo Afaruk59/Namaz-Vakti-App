@@ -35,16 +35,20 @@ class ScaffoldLayout extends StatelessWidget {
         ? Stack(
             children: [
               Positioned.fill(
-                child: ColorFiltered(
-                  colorFilter: ColorFilter.mode(
-                    Provider.of<ChangeSettings>(context).color,
-                    BlendMode.color,
-                  ),
-                  child: Image.asset(
-                    Provider.of<ChangeSettings>(context).isDark
-                        ? 'assets/img/wallpaperdark.png'
-                        : 'assets/img/wallpaper.png',
-                    fit: BoxFit.cover,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(
+                        Provider.of<ChangeSettings>(context).isDark
+                            ? 'assets/img/wallpaperdark.png'
+                            : 'assets/img/wallpaper.png',
+                      ),
+                      fit: BoxFit.cover,
+                      colorFilter: ColorFilter.mode(
+                        Provider.of<ChangeSettings>(context).color,
+                        BlendMode.color,
+                      ),
+                    ),
                   ),
                 ),
               ),
