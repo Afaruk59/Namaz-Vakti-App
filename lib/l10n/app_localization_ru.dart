@@ -503,4 +503,38 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get compassOptimizationMessage =>
       'Откалибруйте компас для более точных результатов.';
+
+  @override
+  String get pdfDownloading => 'Загрузка PDF...';
+
+  @override
+  String get pdfNotAvailable => 'PDF недоступен';
+
+  @override
+  String get colorSchemeDefault => 'Белый (Далее: Сепия)';
+
+  @override
+  String get colorSchemeSepia => 'Сепия (Далее: Темный)';
+
+  @override
+  String get colorSchemeDark => 'Темный (Далее: Белый)';
+
+  @override
+  String get loadingDescription => 'Загрузка описания...';
+
+  @override
+  String get errorLoadingDescription => 'Ошибка загрузки описания:';
+
+  @override
+  String get noDescriptionAvailable => 'Описание для этой книги недоступно.';
+
+  @override
+  String get close => 'Закрыть';
+
+  @override
+  String get couldNotOpenWebsite =>
+      'Не удалось открыть сайт. Попробуйте снова.';
+
+  @override
+  String get errorOpeningWebsite => 'Ошибка открытия сайта:';
 }

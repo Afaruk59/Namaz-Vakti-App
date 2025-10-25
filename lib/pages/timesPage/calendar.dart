@@ -25,12 +25,13 @@ class CalendarBtn extends StatelessWidget {
   static String? _calendar;
   static String? _calendarTitle;
   static String? _time;
-
+  static String? _word;
   @override
   Widget build(BuildContext context) {
     _calendar = Provider.of<TimeData>(context).calendar;
     _calendarTitle = Provider.of<TimeData>(context).calendarTitle;
     _time = Provider.of<TimeData>(context).miladi;
+    _word = Provider.of<TimeData>(context).word;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
       child: SizedBox.expand(
@@ -70,6 +71,13 @@ class CalendarBtn extends StatelessWidget {
                           ),
                           Text(
                             _time!,
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            _word!,
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(

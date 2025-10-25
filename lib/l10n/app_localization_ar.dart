@@ -498,4 +498,37 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get compassOptimizationMessage =>
       'قم بمعايرة البوصلة للحصول على نتائج أكثر دقة.';
+
+  @override
+  String get pdfDownloading => 'جاري تحميل PDF...';
+
+  @override
+  String get pdfNotAvailable => 'PDF غير متاح';
+
+  @override
+  String get colorSchemeDefault => 'أبيض (التالي: بني فاتح)';
+
+  @override
+  String get colorSchemeSepia => 'بني فاتح (التالي: داكن)';
+
+  @override
+  String get colorSchemeDark => 'داكن (التالي: أبيض)';
+
+  @override
+  String get loadingDescription => 'جاري تحميل الوصف...';
+
+  @override
+  String get errorLoadingDescription => 'خطأ في تحميل الوصف:';
+
+  @override
+  String get noDescriptionAvailable => 'لا يوجد وصف متاح لهذا الكتاب.';
+
+  @override
+  String get close => 'إغلاق';
+
+  @override
+  String get couldNotOpenWebsite => 'تعذر فتح الموقع. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get errorOpeningWebsite => 'خطأ في فتح الموقع:';
 }

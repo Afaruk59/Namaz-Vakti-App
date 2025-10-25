@@ -202,5 +202,49 @@
   "compassOptimizationMessage": "قم بمعايرة البوصلة للحصول على نتائج أكثر دقة.",
   "@compassOptimizationMessage": {
     "description": "Message for compass optimization dialog"
+  },
+  "pdfDownloading": "جاري تحميل PDF...",
+  "@pdfDownloading": {
+    "description": "PDF downloading message"
+  },
+  "pdfNotAvailable": "PDF غير متاح",
+  "@pdfNotAvailable": {
+    "description": "PDF not available message"
+  },
+  "colorSchemeDefault": "أبيض (التالي: بني فاتح)",
+  "@colorSchemeDefault": {
+    "description": "Default color scheme tooltip"
+  },
+  "colorSchemeSepia": "بني فاتح (التالي: داكن)",
+  "@colorSchemeSepia": {
+    "description": "Sepia color scheme tooltip"
+  },
+  "colorSchemeDark": "داكن (التالي: أبيض)",
+  "@colorSchemeDark": {
+    "description": "Dark color scheme tooltip"
+  },
+  "loadingDescription": "جاري تحميل الوصف...",
+  "@loadingDescription": {
+    "description": "Loading description message"
+  },
+  "errorLoadingDescription": "خطأ في تحميل الوصف:",
+  "@errorLoadingDescription": {
+    "description": "Error loading description prefix"
+  },
+  "noDescriptionAvailable": "لا يوجد وصف متاح لهذا الكتاب.",
+  "@noDescriptionAvailable": {
+    "description": "No description available message"
+  },
+  "close": "إغلاق",
+  "@close": {
+    "description": "Close button text"
+  },
+  "couldNotOpenWebsite": "تعذر فتح الموقع. يرجى المحاولة مرة أخرى.",
+  "@couldNotOpenWebsite": {
+    "description": "Could not open website error message"
+  },
+  "errorOpeningWebsite": "خطأ في فتح الموقع:",
+  "@errorOpeningWebsite": {
+    "description": "Error opening website prefix"
   }
 }

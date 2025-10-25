@@ -637,5 +637,49 @@
   "compassOptimizationMessage": "Daha doğru sonuç almak için pusulanızı kalibre edin.",
   "@compassOptimizationMessage": {
     "description": "Message for compass optimization dialog"
+  },
+  "pdfDownloading": "PDF İndiriliyor...",
+  "@pdfDownloading": {
+    "description": "PDF downloading message"
+  },
+  "pdfNotAvailable": "PDF mevcut değil",
+  "@pdfNotAvailable": {
+    "description": "PDF not available message"
+  },
+  "colorSchemeDefault": "Beyaz (Sonraki: Sepia)",
+  "@colorSchemeDefault": {
+    "description": "Default color scheme tooltip"
+  },
+  "colorSchemeSepia": "Sepia (Sonraki: Koyu)",
+  "@colorSchemeSepia": {
+    "description": "Sepia color scheme tooltip"
+  },
+  "colorSchemeDark": "Koyu (Sonraki: Beyaz)",
+  "@colorSchemeDark": {
+    "description": "Dark color scheme tooltip"
+  },
+  "loadingDescription": "Açıklama yükleniyor...",
+  "@loadingDescription": {
+    "description": "Loading description message"
+  },
+  "errorLoadingDescription": "Açıklama yükleme hatası:",
+  "@errorLoadingDescription": {
+    "description": "Error loading description prefix"
+  },
+  "noDescriptionAvailable": "Bu kitap için açıklama mevcut değil.",
+  "@noDescriptionAvailable": {
+    "description": "No description available message"
+  },
+  "close": "Kapat",
+  "@close": {
+    "description": "Close button text"
+  },
+  "couldNotOpenWebsite": "Web sitesi açılamadı. Lütfen tekrar deneyin.",
+  "@couldNotOpenWebsite": {
+    "description": "Could not open website error message"
+  },
+  "errorOpeningWebsite": "Web sitesi açma hatası:",
+  "@errorOpeningWebsite": {
+    "description": "Error opening website prefix"
   }
 }

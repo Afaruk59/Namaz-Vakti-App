@@ -1039,6 +1039,72 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Daha doğru sonuç almak için pusulanızı kalibre edin.'**
   String get compassOptimizationMessage;
+
+  /// PDF downloading message
+  ///
+  /// In tr, this message translates to:
+  /// **'PDF İndiriliyor...'**
+  String get pdfDownloading;
+
+  /// PDF not available message
+  ///
+  /// In tr, this message translates to:
+  /// **'PDF mevcut değil'**
+  String get pdfNotAvailable;
+
+  /// Default color scheme tooltip
+  ///
+  /// In tr, this message translates to:
+  /// **'Beyaz (Sonraki: Sepia)'**
+  String get colorSchemeDefault;
+
+  /// Sepia color scheme tooltip
+  ///
+  /// In tr, this message translates to:
+  /// **'Sepia (Sonraki: Koyu)'**
+  String get colorSchemeSepia;
+
+  /// Dark color scheme tooltip
+  ///
+  /// In tr, this message translates to:
+  /// **'Koyu (Sonraki: Beyaz)'**
+  String get colorSchemeDark;
+
+  /// Loading description message
+  ///
+  /// In tr, this message translates to:
+  /// **'Açıklama yükleniyor...'**
+  String get loadingDescription;
+
+  /// Error loading description prefix
+  ///
+  /// In tr, this message translates to:
+  /// **'Açıklama yükleme hatası:'**
+  String get errorLoadingDescription;
+
+  /// No description available message
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu kitap için açıklama mevcut değil.'**
+  String get noDescriptionAvailable;
+
+  /// Close button text
+  ///
+  /// In tr, this message translates to:
+  /// **'Kapat'**
+  String get close;
+
+  /// Could not open website error message
+  ///
+  /// In tr, this message translates to:
+  /// **'Web sitesi açılamadı. Lütfen tekrar deneyin.'**
+  String get couldNotOpenWebsite;
+
+  /// Error opening website prefix
+  ///
+  /// In tr, this message translates to:
+  /// **'Web sitesi açma hatası:'**
+  String get errorOpeningWebsite;
 }
 
 class _AppLocalizationsDelegate

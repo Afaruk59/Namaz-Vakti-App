@@ -504,4 +504,38 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get compassOptimizationMessage =>
       'Daha doğru sonuç almak için pusulanızı kalibre edin.';
+
+  @override
+  String get pdfDownloading => 'PDF İndiriliyor...';
+
+  @override
+  String get pdfNotAvailable => 'PDF mevcut değil';
+
+  @override
+  String get colorSchemeDefault => 'Beyaz (Sonraki: Sepia)';
+
+  @override
+  String get colorSchemeSepia => 'Sepia (Sonraki: Koyu)';
+
+  @override
+  String get colorSchemeDark => 'Koyu (Sonraki: Beyaz)';
+
+  @override
+  String get loadingDescription => 'Açıklama yükleniyor...';
+
+  @override
+  String get errorLoadingDescription => 'Açıklama yükleme hatası:';
+
+  @override
+  String get noDescriptionAvailable => 'Bu kitap için açıklama mevcut değil.';
+
+  @override
+  String get close => 'Kapat';
+
+  @override
+  String get couldNotOpenWebsite =>
+      'Web sitesi açılamadı. Lütfen tekrar deneyin.';
+
+  @override
+  String get errorOpeningWebsite => 'Web sitesi açma hatası:';
 }

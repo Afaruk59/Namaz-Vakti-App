@@ -506,4 +506,40 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get compassOptimizationMessage =>
       'Calibrez votre boussole pour des résultats plus précis.';
+
+  @override
+  String get pdfDownloading => 'Téléchargement du PDF...';
+
+  @override
+  String get pdfNotAvailable => 'PDF non disponible';
+
+  @override
+  String get colorSchemeDefault => 'Blanc (Suivant: Sépia)';
+
+  @override
+  String get colorSchemeSepia => 'Sépia (Suivant: Sombre)';
+
+  @override
+  String get colorSchemeDark => 'Sombre (Suivant: Blanc)';
+
+  @override
+  String get loadingDescription => 'Chargement de la description...';
+
+  @override
+  String get errorLoadingDescription =>
+      'Erreur lors du chargement de la description:';
+
+  @override
+  String get noDescriptionAvailable =>
+      'Aucune description disponible pour ce livre.';
+
+  @override
+  String get close => 'Fermer';
+
+  @override
+  String get couldNotOpenWebsite =>
+      'Impossible d\'ouvrir le site web. Veuillez réessayer.';
+
+  @override
+  String get errorOpeningWebsite => 'Erreur lors de l\'ouverture du site web:';
 }

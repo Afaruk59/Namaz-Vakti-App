@@ -202,5 +202,49 @@
   "compassOptimizationMessage": "Kalibrieren Sie Ihren Kompass für genauere Ergebnisse.",
   "@compassOptimizationMessage": {
     "description": "Message for compass optimization dialog"
+  },
+  "pdfDownloading": "PDF wird heruntergeladen...",
+  "@pdfDownloading": {
+    "description": "PDF downloading message"
+  },
+  "pdfNotAvailable": "PDF nicht verfügbar",
+  "@pdfNotAvailable": {
+    "description": "PDF not available message"
+  },
+  "colorSchemeDefault": "Weiß (Nächstes: Sepia)",
+  "@colorSchemeDefault": {
+    "description": "Default color scheme tooltip"
+  },
+  "colorSchemeSepia": "Sepia (Nächstes: Dunkel)",
+  "@colorSchemeSepia": {
+    "description": "Sepia color scheme tooltip"
+  },
+  "colorSchemeDark": "Dunkel (Nächstes: Weiß)",
+  "@colorSchemeDark": {
+    "description": "Dark color scheme tooltip"
+  },
+  "loadingDescription": "Beschreibung wird geladen...",
+  "@loadingDescription": {
+    "description": "Loading description message"
+  },
+  "errorLoadingDescription": "Fehler beim Laden der Beschreibung:",
+  "@errorLoadingDescription": {
+    "description": "Error loading description prefix"
+  },
+  "noDescriptionAvailable": "Keine Beschreibung für dieses Buch verfügbar.",
+  "@noDescriptionAvailable": {
+    "description": "No description available message"
+  },
+  "close": "Schließen",
+  "@close": {
+    "description": "Close button text"
+  },
+  "couldNotOpenWebsite": "Website konnte nicht geöffnet werden. Bitte versuchen Sie es erneut.",
+  "@couldNotOpenWebsite": {
+    "description": "Could not open website error message"
+  },
+  "errorOpeningWebsite": "Fehler beim Öffnen der Website:",
+  "@errorOpeningWebsite": {
+    "description": "Error opening website prefix"
   }
 }

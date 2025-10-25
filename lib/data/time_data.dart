@@ -290,7 +290,7 @@ class TimeData extends ChangeSettings {
 
   Future<void> fetchWordnDay() async {
     final url =
-        'https://turktakvim.com/index.php?tarih=${DateFormat('yyyy-MM-dd').format(selectedDate!.add(const Duration(days: 1)))}&page=onyuz';
+        'https://turktakvim.com/index.php?tarih=${DateFormat('yyyy-MM-dd').format(selectedDate!.add(const Duration(days: 1)))}&page=onyuz&dil=${langCode == 'tr' ? 'tr' : 'en'}';
 
     try {
       final response = await fetchWithFallback(url);
@@ -315,7 +315,7 @@ class TimeData extends ChangeSettings {
 
   Future<void> fetchCalendar() async {
     final url =
-        'https://turktakvim.com/index.php?tarih=${DateFormat('yyyy-MM-dd').format(selectedDate!.add(const Duration(days: 1)))}&page=arkayuz';
+        'https://turktakvim.com/index.php?tarih=${DateFormat('yyyy-MM-dd').format(selectedDate!.add(const Duration(days: 1)))}&page=arkayuz&dil=${langCode == 'tr' ? 'tr' : 'en'}';
 
     try {
       final response = await fetchWithFallback(url);

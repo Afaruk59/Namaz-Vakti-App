@@ -108,12 +108,6 @@ class BookScreenState extends State<BookScreen> {
       );
   }
 
-  Future<void> _loadWebView() async {
-    final code = Provider.of<ChangeSettings>(context, listen: false).langCode;
-    final url = 'https://www.hakikatkitabevi.net/?listBook=$code';
-    await _webViewController.loadRequest(Uri.parse(url));
-  }
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();

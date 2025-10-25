@@ -202,5 +202,49 @@
   "compassOptimizationMessage": "Откалибруйте компас для более точных результатов.",
   "@compassOptimizationMessage": {
     "description": "Message for compass optimization dialog"
+  },
+  "pdfDownloading": "Загрузка PDF...",
+  "@pdfDownloading": {
+    "description": "PDF downloading message"
+  },
+  "pdfNotAvailable": "PDF недоступен",
+  "@pdfNotAvailable": {
+    "description": "PDF not available message"
+  },
+  "colorSchemeDefault": "Белый (Далее: Сепия)",
+  "@colorSchemeDefault": {
+    "description": "Default color scheme tooltip"
+  },
+  "colorSchemeSepia": "Сепия (Далее: Темный)",
+  "@colorSchemeSepia": {
+    "description": "Sepia color scheme tooltip"
+  },
+  "colorSchemeDark": "Темный (Далее: Белый)",
+  "@colorSchemeDark": {
+    "description": "Dark color scheme tooltip"
+  },
+  "loadingDescription": "Загрузка описания...",
+  "@loadingDescription": {
+    "description": "Loading description message"
+  },
+  "errorLoadingDescription": "Ошибка загрузки описания:",
+  "@errorLoadingDescription": {
+    "description": "Error loading description prefix"
+  },
+  "noDescriptionAvailable": "Описание для этой книги недоступно.",
+  "@noDescriptionAvailable": {
+    "description": "No description available message"
+  },
+  "close": "Закрыть",
+  "@close": {
+    "description": "Close button text"
+  },
+  "couldNotOpenWebsite": "Не удалось открыть сайт. Попробуйте снова.",
+  "@couldNotOpenWebsite": {
+    "description": "Could not open website error message"
+  },
+  "errorOpeningWebsite": "Ошибка открытия сайта:",
+  "@errorOpeningWebsite": {
+    "description": "Error opening website prefix"
   }
 }

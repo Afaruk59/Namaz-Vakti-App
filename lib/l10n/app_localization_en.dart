@@ -501,4 +501,38 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get compassOptimizationMessage =>
       'Calibrate your compass for more accurate results.';
+
+  @override
+  String get pdfDownloading => 'Downloading PDF...';
+
+  @override
+  String get pdfNotAvailable => 'PDF not available';
+
+  @override
+  String get colorSchemeDefault => 'White (Next: Sepia)';
+
+  @override
+  String get colorSchemeSepia => 'Sepia (Next: Dark)';
+
+  @override
+  String get colorSchemeDark => 'Dark (Next: White)';
+
+  @override
+  String get loadingDescription => 'Loading description...';
+
+  @override
+  String get errorLoadingDescription => 'Error loading description:';
+
+  @override
+  String get noDescriptionAvailable =>
+      'No description available for this book.';
+
+  @override
+  String get close => 'Close';
+
+  @override
+  String get couldNotOpenWebsite => 'Could not open website. Please try again.';
+
+  @override
+  String get errorOpeningWebsite => 'Error opening website:';
 }
