@@ -73,12 +73,14 @@ void main() async {
   tz.setLocalLocation(
       tz.getLocation(DateTime.now().timeZoneOffset.inHours >= 3 ? 'Europe/Istanbul' : 'UTC'));
 
-  await ChangeSettings().createSharedPrefObject();
+  final changeSettings = ChangeSettings();
+  await changeSettings.createSharedPrefObject();
+  changeSettings.loadProfile();
 
   initializeDateFormatting().then((_) {
     runApp(
-      ChangeNotifierProvider<ChangeSettings>(
-        create: (context) => ChangeSettings(),
+      ChangeNotifierProvider<ChangeSettings>.value(
+        value: changeSettings,
         child: MainApp(
           mediaController: mediaController,
           audioPlayerService: audioPlayerService,
@@ -86,13 +88,15 @@ void main() async {
         ),
       ),
     );
-    Future.delayed(const Duration(milliseconds: 1500), () {
-      FlutterNativeSplash.remove();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(milliseconds: 300), () {
+        FlutterNativeSplash.remove();
+      });
     });
   });
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends StatefulWidget {
   final MediaController mediaController;
   final AudioPlayerService audioPlayerService;
   final MethodChannel? platform;
@@ -105,9 +109,15 @@ class MainApp extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    if (platform != null) {
-      platform!.setMethodCallHandler((call) async {
+  State<MainApp> createState() => _MainAppState();
+}
+
+class _MainAppState extends State<MainApp> {
+  @override
+  void initState() {
+    super.initState();
+    if (widget.platform != null) {
+      widget.platform!.setMethodCallHandler((call) async {
         if (call.method == 'next') {
           debugPrint('main.dart: Androidden next çağrısı geldi.');
           BookScreen.goToNextPageFromBackground();
@@ -115,17 +125,31 @@ class MainApp extends StatelessWidget {
         return null;
       });
     }
-    Provider.of<ChangeSettings>(context, listen: false).loadProfileFromSharedPref(context);
-    Provider.of<ChangeSettings>(context).locale == const Locale('ar')
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<ChangeSettings>(context, listen: false).updateHeight(context);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final settings = Provider.of<ChangeSettings>(context);
+    final settingsNoListen = Provider.of<ChangeSettings>(context, listen: false);
+
+    settings.locale == const Locale('ar')
         ? HijriCalendar.setLocal('ar')
         : HijriCalendar.setLocal('en');
+
+    final borderRadius = settings.rounded ? 50.0 : 10.0;
+    final isDarkMode = settings.isDark;
+    final themeColor = settings.color;
+    final currentHeight = settings.currentHeight ?? 700.0;
+
     return MaterialApp(
       supportedLocales: L10n.all,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
-      locale: Provider.of<ChangeSettings>(context).locale,
+      locale: settings.locale,
       debugShowCheckedModeBanner: false,
-      initialRoute:
-          Provider.of<ChangeSettings>(context, listen: false).isfirst == true ? '/startup' : '/',
+      initialRoute: settingsNoListen.isfirst == true ? '/startup' : '/',
       onGenerateRoute: (settings) {
         Widget? page;
 
@@ -222,30 +246,26 @@ class MainApp extends StatelessWidget {
       theme: ThemeData(
         dialogTheme: DialogThemeData(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(
-                Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
+            borderRadius: BorderRadius.circular(borderRadius),
           ),
         ),
         bottomSheetTheme: BottomSheetThemeData(
           showDragHandle: true,
-          backgroundColor: Provider.of<ChangeSettings>(context).color,
+          backgroundColor: themeColor,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(
-                Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
+            borderRadius: BorderRadius.circular(borderRadius),
           ),
         ),
         snackBarTheme: SnackBarThemeData(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(
-                Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
+            borderRadius: BorderRadius.circular(borderRadius),
           ),
         ),
         segmentedButtonTheme: SegmentedButtonThemeData(
           style: ButtonStyle(
             shape: WidgetStatePropertyAll(
               RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                    Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
+                borderRadius: BorderRadius.circular(borderRadius),
               ),
             ),
           ),
@@ -255,8 +275,7 @@ class MainApp extends StatelessWidget {
             iconSize: const WidgetStatePropertyAll(24),
             shape: WidgetStatePropertyAll(
               RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                    Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
+                borderRadius: BorderRadius.circular(borderRadius),
               ),
             ),
           ),
@@ -266,8 +285,7 @@ class MainApp extends StatelessWidget {
             iconSize: const WidgetStatePropertyAll(24),
             shape: WidgetStatePropertyAll(
               RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                    Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
+                borderRadius: BorderRadius.circular(borderRadius),
               ),
             ),
           ),
@@ -277,8 +295,7 @@ class MainApp extends StatelessWidget {
             iconSize: const WidgetStatePropertyAll(24),
             shape: WidgetStatePropertyAll(
               RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                    Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
+                borderRadius: BorderRadius.circular(borderRadius),
               ),
             ),
           ),
@@ -289,8 +306,7 @@ class MainApp extends StatelessWidget {
             elevation: const WidgetStatePropertyAll(3),
             shape: WidgetStatePropertyAll(
               RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                    Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
+                borderRadius: BorderRadius.circular(borderRadius),
               ),
             ),
           ),
@@ -301,57 +317,47 @@ class MainApp extends StatelessWidget {
             elevation: const WidgetStatePropertyAll(3),
             shape: WidgetStatePropertyAll(
               RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                    Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
+                borderRadius: BorderRadius.circular(borderRadius),
               ),
             ),
           ),
         ),
         scaffoldBackgroundColor: Colors.transparent,
         useMaterial3: true,
-        brightness: Provider.of<ChangeSettings>(context).isDark == false
-            ? Brightness.light
-            : Brightness.dark,
-        colorSchemeSeed: Provider.of<ChangeSettings>(context).color,
+        brightness: isDarkMode ? Brightness.dark : Brightness.light,
+        colorSchemeSeed: themeColor,
         applyElevationOverlayColor: true,
         appBarTheme: AppBarTheme(
           centerTitle: false,
           elevation: 0,
           systemOverlayStyle: SystemUiOverlayStyle(
             statusBarColor: Colors.transparent,
-            statusBarIconBrightness: Provider.of<ChangeSettings>(context).isDark == false
-                ? Brightness.dark
-                : Brightness.light,
+            statusBarIconBrightness: isDarkMode ? Brightness.light : Brightness.dark,
           ),
-          toolbarHeight: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 40 : 50,
+          toolbarHeight: currentHeight < 700 ? 40 : 50,
           titleSpacing: 30,
           color: Colors.transparent,
           titleTextStyle: Platform.isAndroid
               ? GoogleFonts.ubuntu(
-                  fontSize: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 22 : 25.0,
-                  color: Provider.of<ChangeSettings>(context).isDark == false
-                      ? Colors.black87
-                      : Colors.white)
+                  fontSize: currentHeight < 700 ? 22 : 25.0,
+                  color: isDarkMode ? Colors.white : Colors.black87)
               : TextStyle(
                   fontFamily: 'SF Pro Display',
                   fontWeight: FontWeight.bold,
-                  fontSize: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 24 : 28.0,
-                  color: Provider.of<ChangeSettings>(context).isDark == false
-                      ? Colors.black87
-                      : Colors.white),
+                  fontSize: currentHeight < 700 ? 24 : 28.0,
+                  color: isDarkMode ? Colors.white : Colors.black87),
         ),
         cardTheme: CardThemeData(
           elevation: 3,
-          color: Provider.of<ChangeSettings>(context).color,
+          color: themeColor,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(
-                Provider.of<ChangeSettings>(context).rounded == true ? 50 : 10),
+            borderRadius: BorderRadius.circular(borderRadius),
           ),
         ),
         navigationBarTheme: NavigationBarThemeData(
           elevation: 0,
           backgroundColor: Colors.transparent,
-          height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 60 : 70,
+          height: currentHeight < 700 ? 60 : 70,
           labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
         ),
       ),

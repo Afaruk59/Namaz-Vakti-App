@@ -162,6 +162,9 @@ class TimeData extends ChangeSettings {
   }
 
   Future<void> loadPrayerTimes(DateTime time, BuildContext context) async {
+    // BuildContext'i async işlemlerden ÖNCE kullan
+    final currentLangCode = Provider.of<ChangeSettings>(context, listen: false).langCode ?? 'tr';
+
     String url =
         'https://www.namazvakti.com/XML.php?cityID=${Provider.of<ChangeSettings>(context, listen: false).cityID}';
     final response = await fetchWithFallback(url);
@@ -282,13 +285,14 @@ class TimeData extends ChangeSettings {
         yatsi2 = null;
       }
       isTimeLoading = false;
-      await fetchCalendar();
-      await fetchWordnDay();
+      // Dil kodunu parametre olarak geç (BuildContext güvenli değil)
+      await fetchCalendar(currentLangCode);
+      await fetchWordnDay(currentLangCode);
       notifyListeners();
     }
   }
 
-  Future<void> fetchWordnDay() async {
+  Future<void> fetchWordnDay(String langCode) async {
     final url =
         'https://turktakvim.com/index.php?tarih=${DateFormat('yyyy-MM-dd').format(selectedDate!.add(const Duration(days: 1)))}&page=onyuz&dil=${langCode == 'tr' ? 'tr' : 'en'}';
 
@@ -313,7 +317,7 @@ class TimeData extends ChangeSettings {
     }
   }
 
-  Future<void> fetchCalendar() async {
+  Future<void> fetchCalendar(String langCode) async {
     final url =
         'https://turktakvim.com/index.php?tarih=${DateFormat('yyyy-MM-dd').format(selectedDate!.add(const Duration(days: 1)))}&page=arkayuz&dil=${langCode == 'tr' ? 'tr' : 'en'}';
 

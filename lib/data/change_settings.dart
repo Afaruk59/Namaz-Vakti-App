@@ -29,7 +29,8 @@ class ChangeSettings with ChangeNotifier {
   double? currentLatitude;
   double? currentLongitude;
 
-  double? currentHeight;
+  // Varsayılan değer ile başlat - ilk build'de güncellenecek
+  double? currentHeight = 700.0;
 
   bool isDark = false;
   int themeIndex = 0;
@@ -63,8 +64,8 @@ class ChangeSettings with ChangeNotifier {
 
   List<int> alarmVoices = [0, 0, 0, 0, 0, 0, 0];
 
-  //LOAD PROFILE
-  void loadProfileFromSharedPref(BuildContext context) {
+  //LOAD PROFILE - Ana yükleme metodu (BuildContext gerekmez)
+  void loadProfile() {
     //LOCATION
     cityID = _settings.getString('location') ?? '16741';
     cityName = _settings.getString('name') ?? 'Merkez';
@@ -132,9 +133,19 @@ class ChangeSettings with ChangeNotifier {
     //NOTIFICATIONS
     notificationsEnabled = _settings.getBool('notifications') ?? false;
     lockScreenEnabled = _settings.getBool('lockScreen') ?? false;
+  }
 
-    //HEIGHT
+  //LOAD PROFILE FROM SHARED PREF - Geriye dönük uyumluluk için
+  void loadProfileFromSharedPref(BuildContext context) {
+    loadProfile();
+    //HEIGHT - BuildContext gerektirir
     currentHeight = MediaQuery.of(context).size.height;
+  }
+
+  // HEIGHT'ı güncelle
+  void updateHeight(BuildContext context) {
+    currentHeight = MediaQuery.of(context).size.height;
+    notifyListeners();
   }
 
   //SHAPE

@@ -17,6 +17,7 @@ limitations under the License.
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:namaz_vakti_app/books/screens/book_screen.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
@@ -49,23 +50,39 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _checkForUpdate() async {
-    InAppUpdate.checkForUpdate().then((info) {
-      setState(() {
-        if (info.updateAvailability == UpdateAvailability.updateAvailable) {
-          _update();
+    try {
+      final info = await InAppUpdate.checkForUpdate();
+      if (info.updateAvailability == UpdateAvailability.updateAvailable) {
+        await _update();
+      }
+    } on PlatformException catch (e) {
+      // Hata kodlarını işle
+      if (e.code == 'TASK_FAILURE') {
+        final errorCode = e.message;
+        if (errorCode != null && errorCode.contains('-6')) {
+          // ERROR_INSTALL_NOT_ALLOWED: Düşük batarya, düşük disk alanı vb.
+          debugPrint(
+              'Güncelleme şu an yapılamıyor: Cihaz durumu uygun değil (düşük batarya/disk alanı)');
+        } else {
+          debugPrint('Güncelleme hatası: ${e.message}');
         }
-      });
-    }).catchError((e) {
-      debugPrint(e.toString());
-    });
+      }
+    } catch (e) {
+      debugPrint('Güncelleme kontrolü hatası: $e');
+    }
   }
 
-  void _update() async {
-    debugPrint('Updating');
-    await InAppUpdate.startFlexibleUpdate();
-    InAppUpdate.completeFlexibleUpdate().then((_) {}).catchError((e) {
-      debugPrint(e.toString());
-    });
+  Future<void> _update() async {
+    try {
+      debugPrint('Güncelleme başlatılıyor...');
+      await InAppUpdate.startFlexibleUpdate();
+      await InAppUpdate.completeFlexibleUpdate();
+      debugPrint('Güncelleme tamamlandı');
+    } on PlatformException catch (e) {
+      debugPrint('Güncelleme hatası: ${e.message}');
+    } catch (e) {
+      debugPrint('Güncelleme beklenmeyen hatası: $e');
+    }
   }
 
   @override
@@ -168,7 +185,7 @@ class _HomePageState extends State<HomePage> {
                 label: AppLocalizations.of(context)!.nav2,
               ),
               SizedBox(
-                height: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 45 : 55,
+                height: (Provider.of<ChangeSettings>(context).currentHeight)! < 700 ? 45 : 55,
                 child: _currentIndex == 2
                     ? IconButton.filledTonal(
                         tooltip: AppLocalizations.of(context)!.nav1,

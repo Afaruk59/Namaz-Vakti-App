@@ -76,13 +76,16 @@ class CalendarBtn extends StatelessWidget {
                           const SizedBox(
                             height: 10,
                           ),
-                          Text(
-                            _word!,
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
+                          Provider.of<ChangeSettings>(context).langCode != 'tr'
+                              ? Column(
+                                  children: [
+                                    Text(
+                                      _word!,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                )
+                              : const SizedBox.shrink(),
                           Text(
                             _calendarTitle!,
                             style: TextStyle(
