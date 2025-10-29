@@ -34,7 +34,6 @@ import java.io.StringReader
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.Calendar
-import android.os.AsyncTask
 import android.os.Handler
 import android.os.Looper
 import android.util.Log

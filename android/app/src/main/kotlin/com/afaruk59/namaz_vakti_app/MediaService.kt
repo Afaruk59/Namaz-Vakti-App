@@ -90,7 +90,7 @@ class MediaService : Service() {
                     methodChannel?.invokeMethod("play", null)
                     updatePlaybackState(PlaybackStateCompat.STATE_PLAYING)
                 } catch (e: Exception) {
-                    println("MediaService onPlay error: ${e.message}")
+                    android.util.Log.e("MediaService", "onPlay error: ${e.message}")
                     // Hata durumunda güvenli bir şekilde durumu güncelle
                     updatePlaybackState(PlaybackStateCompat.STATE_PAUSED)
                 }
@@ -101,7 +101,7 @@ class MediaService : Service() {
                     methodChannel?.invokeMethod("pause", null)
                     updatePlaybackState(PlaybackStateCompat.STATE_PAUSED)
                 } catch (e: Exception) {
-                    println("MediaService onPause error: ${e.message}")
+                    android.util.Log.e("MediaService", "onPause error: ${e.message}")
                     // Hata durumunda güvenli bir şekilde durumu güncelle
                     updatePlaybackState(PlaybackStateCompat.STATE_PAUSED)
                 }
@@ -111,7 +111,7 @@ class MediaService : Service() {
                 try {
                     updatePlaybackState(PlaybackStateCompat.STATE_STOPPED)
                 } catch (e: Exception) {
-                    println("MediaService onStop error: ${e.message}")
+                    android.util.Log.e("MediaService", "onStop error: ${e.message}")
                     // Hata durumunda güvenli bir şekilde durumu güncelle
                     updatePlaybackState(PlaybackStateCompat.STATE_STOPPED)
                 }
@@ -127,7 +127,7 @@ class MediaService : Service() {
                     
                     // Son sayfada olup olmadığımızı kontrol et
                     if (currentPage >= lastPage) {
-                        println("MediaService: Son sayfadayız, sonraki sayfaya geçilemez")
+                        android.util.Log.d("MediaService", "Son sayfadayız, sonraki sayfaya geçilemez")
                         // Kullanıcıya geri bildirim ver - durumu güncelle ama sayfa değiştirme
                         updatePlaybackState(if (isPlaying) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED)
                         return
@@ -147,7 +147,7 @@ class MediaService : Service() {
                         try {
                             startActivity(intent)
                         } catch (e: Exception) {
-                            println("Uygulamayı ön plana getirme hatası: ${e.message}")
+                            android.util.Log.e("MediaService", "Uygulamayı ön plana getirme hatası: ${e.message}")
                             // Uygulama ön plana getirilemezse doğrudan method channel üzerinden çağır
                             methodChannel?.invokeMethod("next", null)
                         }
@@ -156,7 +156,7 @@ class MediaService : Service() {
                         methodChannel?.invokeMethod("next", null)
                     }
                 } catch (e: Exception) {
-                    println("Sonraki sayfa kontrol hatası: ${e.message}")
+                    android.util.Log.e("MediaService", "Sonraki sayfa kontrol hatası: ${e.message}")
                     // Hata durumunda normal işleme devam et
                     methodChannel?.invokeMethod("next", null)
                 }
@@ -172,7 +172,7 @@ class MediaService : Service() {
                     
                     // İlk sayfada olup olmadığımızı kontrol et
                     if (currentPage <= firstPage) {
-                        println("MediaService: İlk sayfadayız, önceki sayfaya geçilemez")
+                        android.util.Log.d("MediaService", "İlk sayfadayız, önceki sayfaya geçilemez")
                         // Kullanıcıya geri bildirim ver - durumu güncelle ama sayfa değiştirme
                         updatePlaybackState(if (isPlaying) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED)
                         return
@@ -192,7 +192,7 @@ class MediaService : Service() {
                         try {
                             startActivity(intent)
                         } catch (e: Exception) {
-                            println("Uygulamayı ön plana getirme hatası: ${e.message}")
+                            android.util.Log.e("MediaService", "Uygulamayı ön plana getirme hatası (previous): ${e.message}")
                             // Uygulama ön plana getirilemezse doğrudan method channel üzerinden çağır
                             methodChannel?.invokeMethod("previous", null)
                         }
@@ -201,7 +201,7 @@ class MediaService : Service() {
                         methodChannel?.invokeMethod("previous", null)
                     }
                 } catch (e: Exception) {
-                    println("Önceki sayfa kontrol hatası: ${e.message}")
+                    android.util.Log.e("MediaService", "Önceki sayfa kontrol hatası: ${e.message}")
                     // Hata durumunda normal işleme devam et
                     methodChannel?.invokeMethod("previous", null)
                 }
@@ -246,7 +246,7 @@ class MediaService : Service() {
                 notificationManager.cancel(NOTIFICATION_ID)
             }
         } catch (e: Exception) {
-            println("Servis başlatma hatası: ${e.message}")
+            android.util.Log.e("MediaService", "Servis başlatma hatası: ${e.message}")
         }
 
         return START_NOT_STICKY
@@ -260,6 +260,8 @@ class MediaService : Service() {
         stopForeground(true)
         mediaSession.release()
         executor?.shutdown()
+        // Handler callback'lerini temizle
+        Handler(Looper.getMainLooper()).removeCallbacksAndMessages(null)
         super.onDestroy()
     }
 
@@ -296,7 +298,7 @@ class MediaService : Service() {
     }
 
     fun stopAudio() {
-        println("MediaService: stopAudio called. isPlaying: $isPlaying")
+        android.util.Log.d("MediaService", "stopAudio called. isPlaying: $isPlaying")
         isPlaying = false
         stopPositionUpdates()
         
@@ -480,7 +482,7 @@ class MediaService : Service() {
                 notificationManager.notify(NOTIFICATION_ID, notification)
             }
         } catch (e: Exception) {
-            println("Bildirim gösterme hatası: ${e.message}")
+            android.util.Log.e("MediaService", "Bildirim gösterme hatası: ${e.message}")
             notificationManager.notify(NOTIFICATION_ID, notification)
         }
     }

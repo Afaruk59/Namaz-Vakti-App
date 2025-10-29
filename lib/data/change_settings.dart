@@ -64,7 +64,6 @@ class ChangeSettings with ChangeNotifier {
 
   List<int> alarmVoices = [0, 0, 0, 0, 0, 0, 0];
 
-  //LOAD PROFILE - Ana yükleme metodu (BuildContext gerekmez)
   void loadProfile() {
     //LOCATION
     cityID = _settings.getString('location') ?? '16741';
@@ -138,7 +137,6 @@ class ChangeSettings with ChangeNotifier {
   //LOAD PROFILE FROM SHARED PREF - Geriye dönük uyumluluk için
   void loadProfileFromSharedPref(BuildContext context) {
     loadProfile();
-    //HEIGHT - BuildContext gerektirir
     currentHeight = MediaQuery.of(context).size.height;
   }
 

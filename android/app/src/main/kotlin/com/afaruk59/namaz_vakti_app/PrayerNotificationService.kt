@@ -40,11 +40,6 @@ import android.content.ComponentName
 import androidx.core.app.NotificationCompat
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
-import javax.net.ssl.HttpsURLConnection
-import javax.net.ssl.SSLContext
-import javax.net.ssl.TrustManager
-import javax.net.ssl.X509TrustManager
-import java.security.cert.X509Certificate
 import android.net.ConnectivityManager
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
@@ -638,22 +633,9 @@ class PrayerNotificationService : Service() {
                     return@Thread
                 }
                 
-                if (url.protocol.lowercase() == "https") {
-                    try {
-                        val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
-                            override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {}
-                            override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) {}
-                            override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
-                        })
-                        
-                        val sc = SSLContext.getInstance("TLS")
-                        sc.init(null, trustAllCerts, java.security.SecureRandom())
-                        HttpsURLConnection.setDefaultSSLSocketFactory(sc.socketFactory)
-                        HttpsURLConnection.setDefaultHostnameVerifier { _, _ -> true }
-                    } catch (e: Exception) {
-                        Log.e(TAG, "SSL setup error: ${e.message}")
-                    }
-                }
+                // GÜVENLİK: SSL sertifika doğrulamasını devre dışı bırakmıyoruz
+                // namazvakti.com için geçerli bir sertifika olmalı
+                // Eğer sorun yaşanırsa OkHttp kullanmayı düşünün
                 
                 val connection = url.openConnection() as HttpURLConnection
                 connection.requestMethod = "GET"

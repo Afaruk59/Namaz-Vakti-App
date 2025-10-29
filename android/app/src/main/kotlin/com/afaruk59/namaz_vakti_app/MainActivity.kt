@@ -45,6 +45,8 @@ class MainActivity : FlutterActivity() {
     private var pendingAction: String? = null
     private var isActivityResumed = false
     private var isProcessingAction = false
+    // Handler memory leak riskini önlemek için WeakReference kullanılabilir
+    // Ancak Activity context'i gerekli olmadığı için static Handler güvenli
     private val handler = Handler(Looper.getMainLooper())
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
@@ -109,7 +111,7 @@ class MainActivity : FlutterActivity() {
                         
                         result.success(true)
                     } catch (e: Exception) {
-                        println("Servis başlatma hatası: ${e.message}")
+                        Log.e("MainActivity", "Servis başlatma hatası: ${e.message}")
                         result.error("SERVICE_START_ERROR", e.message, null)
                     }
                 }
@@ -119,7 +121,7 @@ class MainActivity : FlutterActivity() {
                         try {
                             mediaService?.stopAudio()
                         } catch (e: Exception) {
-                            println("stopAudio çağrısı hatası: ${e.message}")
+                            Log.e("MainActivity", "stopAudio çağrısı hatası: ${e.message}")
                         }
                     }
                     if (bound) {
@@ -169,23 +171,23 @@ class MainActivity : FlutterActivity() {
                 }
                 "audio_completed" -> {
                     // Ses tamamlandığında Flutter'a "next" komutunu gönder
-                    println("MainActivity: Audio completed, sending next command to Flutter")
+                    Log.d("MainActivity", "Audio completed, sending next command to Flutter")
                     try {
                         flutterMethodChannel?.invokeMethod("next", null)
                         result.success(null)
                     } catch (e: Exception) {
-                        println("MainActivity: Audio completed error: ${e.message}")
+                        Log.e("MainActivity", "Audio completed error: ${e.message}")
                         result.error("AUDIO_COMPLETED_ERROR", e.message, null)
                     }
                 }
                 "audio_error" -> {
                     // Ses hatası durumunda Flutter'a hata bildirimi gönder
-                    println("MainActivity: Audio error received")
+                    Log.d("MainActivity", "Audio error received")
                     try {
                         flutterMethodChannel?.invokeMethod("audio_error", null)
                         result.success(null)
                     } catch (e: Exception) {
-                        println("MainActivity: Audio error notification error: ${e.message}")
+                        Log.e("MainActivity", "Audio error notification error: ${e.message}")
                         result.error("AUDIO_ERROR_NOTIFICATION_ERROR", e.message, null)
                     }
                 }
@@ -287,7 +289,7 @@ class MainActivity : FlutterActivity() {
         try {
             val action = intent.getStringExtra("action")
             if (action != null) {
-                println("MainActivity: Alınan intent action: $action")
+                Log.d("MainActivity", "Alınan intent action: $action")
                 
                 // Sayfa değişikliklerinde yeni bir Handler kullanarak Flutter'a bildir
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -299,7 +301,7 @@ class MainActivity : FlutterActivity() {
                 }, 300) // Kısa bir gecikme ile UI'ın hazır olmasını bekle
             }
         } catch (e: Exception) {
-            println("Intent işleme hatası: ${e.message}")
+            Log.e("MainActivity", "Intent işleme hatası: ${e.message}")
         }
     }
     
@@ -341,13 +343,16 @@ class MainActivity : FlutterActivity() {
                 }
             }
         } catch (e: Exception) {
-            println("Sayfa değişim komutu işleme hatası: ${e.message}")
+            Log.e("MainActivity", "Sayfa değişim komutu işleme hatası: ${e.message}")
             isProcessingAction = false
             pendingAction = null
         }
     }
 
     override fun onDestroy() {
+        // Handler callback'lerini temizle (memory leak önleme)
+        handler.removeCallbacksAndMessages(null)
+        
         if (bound) {
             mediaService?.stopAudio()
             unbindService(connection)
