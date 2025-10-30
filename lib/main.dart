@@ -53,46 +53,52 @@ void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
+  final futures = <Future>[];
+
+  futures.add(Future(() {
+    tz.initializeTimeZones();
+    tz.setLocalLocation(
+        tz.getLocation(DateTime.now().timeZoneOffset.inHours >= 3 ? 'Europe/Istanbul' : 'UTC'));
+  }));
+
+  final changeSettings = ChangeSettings();
+  await changeSettings.createSharedPrefObject();
+  changeSettings.loadProfile();
+
+  futures.add(initializeDateFormatting());
+
   if (Platform.isAndroid) {
-    const platform = MethodChannel('com.afaruk59.namaz_vakti_app/notifications');
-    try {
-      debugPrint("Starting notification service");
-      await platform.invokeMethod('startNotificationService');
-    } on PlatformException catch (e) {
-      debugPrint('Failed to start notification service: ${e.message}');
-    }
+    futures.add(Future(() async {
+      const platform = MethodChannel('com.afaruk59.namaz_vakti_app/notifications');
+      try {
+        debugPrint("Starting notification service");
+        await platform.invokeMethod('startNotificationService');
+      } on PlatformException catch (e) {
+        debugPrint('Failed to start notification service: ${e.message}');
+      }
+    }));
   }
-  WidgetsFlutterBinding.ensureInitialized();
 
   const platform = MethodChannel('com.afaruk59.namaz_vakti_app/media_service');
   final audioPlayerService = AudioPlayerService();
   final mediaController = MediaController(audioPlayerService: audioPlayerService);
   AudioPageService();
 
-  tz.initializeTimeZones();
-  tz.setLocalLocation(
-      tz.getLocation(DateTime.now().timeZoneOffset.inHours >= 3 ? 'Europe/Istanbul' : 'UTC'));
+  await Future.wait(futures);
 
-  final changeSettings = ChangeSettings();
-  await changeSettings.createSharedPrefObject();
-  changeSettings.loadProfile();
-
-  initializeDateFormatting().then((_) {
-    runApp(
-      ChangeNotifierProvider<ChangeSettings>.value(
-        value: changeSettings,
-        child: MainApp(
-          mediaController: mediaController,
-          audioPlayerService: audioPlayerService,
-          platform: platform,
-        ),
+  runApp(
+    ChangeNotifierProvider<ChangeSettings>.value(
+      value: changeSettings,
+      child: MainApp(
+        mediaController: mediaController,
+        audioPlayerService: audioPlayerService,
+        platform: platform,
       ),
-    );
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Future.delayed(const Duration(milliseconds: 300), () {
-        FlutterNativeSplash.remove();
-      });
-    });
+    ),
+  );
+
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    FlutterNativeSplash.remove();
   });
 }
 
@@ -113,6 +119,8 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
+  Locale? _lastLocale;
+
   @override
   void initState() {
     super.initState();
@@ -135,9 +143,12 @@ class _MainAppState extends State<MainApp> {
     final settings = Provider.of<ChangeSettings>(context);
     final settingsNoListen = Provider.of<ChangeSettings>(context, listen: false);
 
-    settings.locale == const Locale('ar')
-        ? HijriCalendar.setLocal('ar')
-        : HijriCalendar.setLocal('en');
+    if (_lastLocale != settings.locale) {
+      _lastLocale = settings.locale;
+      settings.locale == const Locale('ar')
+          ? HijriCalendar.setLocal('ar')
+          : HijriCalendar.setLocal('en');
+    }
 
     final borderRadius = settings.rounded ? 50.0 : 10.0;
     final isDarkMode = settings.isDark;
