@@ -537,4 +537,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get errorOpeningWebsite => 'Ошибка открытия сайта:';
+
+  @override
+  String get skip => 'Пропустить';
 }

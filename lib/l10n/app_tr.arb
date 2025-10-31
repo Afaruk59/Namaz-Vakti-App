@@ -681,5 +681,9 @@
   "errorOpeningWebsite": "Web sitesi açma hatası:",
   "@errorOpeningWebsite": {
     "description": "Error opening website prefix"
+  },
+  "skip": "Atla",
+  "@skip": {
+    "description": "Skip button text"
   }
 }

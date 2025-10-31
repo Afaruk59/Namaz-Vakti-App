@@ -246,5 +246,9 @@
   "errorOpeningWebsite": "Error opening website:",
   "@errorOpeningWebsite": {
     "description": "Error opening website prefix"
+  },
+  "skip": "Skip",
+  "@skip": {
+    "description": "Skip button text"
   }
 }

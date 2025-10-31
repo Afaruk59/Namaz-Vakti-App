@@ -240,5 +240,9 @@
   "errorOpeningWebsite": "Errore nell'apertura del sito web:",
   "@errorOpeningWebsite": {
     "description": "Error opening website prefix"
+  },
+  "skip": "Salta",
+  "@skip": {
+    "description": "Skip button text"
   }
 }

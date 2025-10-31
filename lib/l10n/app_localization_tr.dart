@@ -538,4 +538,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get errorOpeningWebsite => 'Web sitesi açma hatası:';
+
+  @override
+  String get skip => 'Atla';
 }

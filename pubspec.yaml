@@ -51,6 +51,7 @@ dependencies:
   flutter_map: ^8.2.2
   path_provider: ^2.1.5
   pdfx: ^2.9.2
+  introduction_screen: ^4.0.0
 
 dev_dependencies:
   flutter_lints: ^4.0.0

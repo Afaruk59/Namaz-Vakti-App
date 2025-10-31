@@ -1105,6 +1105,12 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Web sitesi açma hatası:'**
   String get errorOpeningWebsite;
+
+  /// Skip button text
+  ///
+  /// In tr, this message translates to:
+  /// **'Atla'**
+  String get skip;
 }
 
 class _AppLocalizationsDelegate

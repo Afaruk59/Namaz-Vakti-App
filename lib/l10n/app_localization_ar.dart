@@ -531,4 +531,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get errorOpeningWebsite => 'خطأ في فتح الموقع:';
+
+  @override
+  String get skip => 'تخطي';
 }

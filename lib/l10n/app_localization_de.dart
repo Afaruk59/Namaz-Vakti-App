@@ -539,4 +539,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get errorOpeningWebsite => 'Fehler beim Öffnen der Website:';
+
+  @override
+  String get skip => 'Überspringen';
 }
