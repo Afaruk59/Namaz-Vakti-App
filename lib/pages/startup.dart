@@ -35,6 +35,7 @@ class Startup extends StatefulWidget {
 
 class _StartupState extends State<Startup> {
   double _backgroundOffset = 0.0;
+  int _currentPage = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -88,6 +89,7 @@ class _StartupState extends State<Startup> {
             pages: _buildPages(context),
             onChange: (index) {
               setState(() {
+                _currentPage = index;
                 // 5 sayfa var (0-4), her sayfada arka plan offset'i değişsin
                 // Arapça için ters yönde hareket (RTL desteği)
                 bool isRTL = Provider.of<ChangeSettings>(context, listen: false).langCode == 'ar';
@@ -133,18 +135,22 @@ class _StartupState extends State<Startup> {
           automaticallyImplyLeading: false,
           title: Text(AppLocalizations.of(context)!.startupTitle),
         ),
-        bodyWidget: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Namaz Vakti uygulamasına hoş geldiniz. İslami yaşantınızı kolaylaştırmak için buradayız.",
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 40),
-              const AppCard(),
-              const SizedBox(height: 20),
-            ],
+        bodyWidget: AnimatedPageContent(
+          pageIndex: 0,
+          currentPage: _currentPage,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Namaz Vakti uygulamasına hoş geldiniz. İslami yaşantınızı kolaylaştırmak için buradayız.",
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 40),
+                const AppCard(),
+                const SizedBox(height: 20),
+              ],
+            ),
           ),
         ),
         decoration: PageDecoration(
@@ -160,21 +166,25 @@ class _StartupState extends State<Startup> {
           automaticallyImplyLeading: false,
           title: Text(AppLocalizations.of(context)!.ln),
         ),
-        bodyWidget: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Uygulamayı kullanmak istediğiniz dili seçin.",
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 40),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10.0),
-                child: LangSelector(),
-              ),
-              const SizedBox(height: 20),
-            ],
+        bodyWidget: AnimatedPageContent(
+          pageIndex: 1,
+          currentPage: _currentPage,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Uygulamayı kullanmak istediğiniz dili seçin.",
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 40),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10.0),
+                  child: LangSelector(),
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
           ),
         ),
         decoration: PageDecoration(
@@ -190,21 +200,25 @@ class _StartupState extends State<Startup> {
           automaticallyImplyLeading: false,
           title: Text("Vakit Hesaplama"),
         ),
-        bodyWidget: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                AppLocalizations.of(context)!.startupDescription,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 40),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10.0),
-                child: TimeNote(),
-              ),
-              const SizedBox(height: 20),
-            ],
+        bodyWidget: AnimatedPageContent(
+          pageIndex: 2,
+          currentPage: _currentPage,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  AppLocalizations.of(context)!.startupDescription,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 40),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10.0),
+                  child: TimeNote(),
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
           ),
         ),
         decoration: PageDecoration(
@@ -220,21 +234,25 @@ class _StartupState extends State<Startup> {
           automaticallyImplyLeading: false,
           title: Text(AppLocalizations.of(context)!.notificationsPageTitle),
         ),
-        bodyWidget: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Namaz vakitleri için bildirim ayarlarınızı yapın.",
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 40),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10.0),
-                child: TenbihCard(),
-              ),
-              const SizedBox(height: 20),
-            ],
+        bodyWidget: AnimatedPageContent(
+          pageIndex: 3,
+          currentPage: _currentPage,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Namaz vakitleri için bildirim ayarlarınızı yapın.",
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 40),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10.0),
+                  child: TenbihCard(),
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
           ),
         ),
         decoration: PageDecoration(
@@ -250,37 +268,41 @@ class _StartupState extends State<Startup> {
           automaticallyImplyLeading: false,
           title: Text(AppLocalizations.of(context)!.searchTitle),
         ),
-        bodyWidget: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Namaz vakitlerini doğru hesaplayabilmek için konumunuzu seçin.",
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 40),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Card(
-                        color: Theme.of(context).colorScheme.secondaryContainer,
-                        child: Location(
-                          title: AppLocalizations.of(context)!.locationButtonTextonStart,
+        bodyWidget: AnimatedPageContent(
+          pageIndex: 4,
+          currentPage: _currentPage,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Namaz vakitlerini doğru hesaplayabilmek için konumunuzu seçin.",
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 40),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Card(
+                          color: Theme.of(context).colorScheme.secondaryContainer,
+                          child: Location(
+                            title: AppLocalizations.of(context)!.locationButtonTextonStart,
+                          ),
                         ),
                       ),
-                    ),
-                    Card(
-                      color: Theme.of(context).colorScheme.secondaryContainer,
-                      child: const SearchButton(),
-                    ),
-                  ],
+                      Card(
+                        color: Theme.of(context).colorScheme.secondaryContainer,
+                        child: const SearchButton(),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 20),
-            ],
+                const SizedBox(height: 20),
+              ],
+            ),
           ),
         ),
         decoration: PageDecoration(
@@ -290,5 +312,84 @@ class _StartupState extends State<Startup> {
         ),
       ),
     ];
+  }
+}
+
+// Animasyonlu sayfa içeriği widget'ı
+class AnimatedPageContent extends StatefulWidget {
+  final Widget child;
+  final int pageIndex;
+  final int currentPage;
+
+  const AnimatedPageContent({
+    super.key,
+    required this.child,
+    required this.pageIndex,
+    required this.currentPage,
+  });
+
+  @override
+  State<AnimatedPageContent> createState() => _AnimatedPageContentState();
+}
+
+class _AnimatedPageContentState extends State<AnimatedPageContent>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _opacityAnimation;
+  late Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 600),
+      vsync: this,
+    );
+
+    _opacityAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOut,
+    ));
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.1),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOutCubic,
+    ));
+
+    if (widget.pageIndex == widget.currentPage) {
+      _controller.forward();
+    }
+  }
+
+  @override
+  void didUpdateWidget(AnimatedPageContent oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.currentPage == widget.pageIndex && oldWidget.currentPage != widget.pageIndex) {
+      _controller.reset();
+      _controller.forward();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _opacityAnimation,
+      child: SlideTransition(
+        position: _slideAnimation,
+        child: widget.child,
+      ),
+    );
   }
 }
