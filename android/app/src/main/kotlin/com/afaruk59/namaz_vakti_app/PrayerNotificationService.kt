@@ -1057,9 +1057,13 @@ class PrayerNotificationService : Service() {
                 }
             }
             
-            // İmsak ile Güneş arasında -> İmsak bold (0)
-            if (currentTime >= prayerMinutes[0] && currentTime < prayerMinutes[2]) {
+            // İmsak ile Sabah arasında -> İmsak bold (0)
+            if (currentTime >= prayerMinutes[0] && currentTime < prayerMinutes[1]) {
                 return 0
+            }
+            // Sabah ile Güneş arasında -> Sabah bold (1)
+            else if (currentTime >= prayerMinutes[1] && currentTime < prayerMinutes[2]) {
+                return 1
             }
             // Güneş ile Öğle arasında -> Güneş bold (2) 
             else if (currentTime >= prayerMinutes[2] && currentTime < prayerMinutes[3]) {
@@ -1113,8 +1117,11 @@ class PrayerNotificationService : Service() {
             if (currentTime < prayerMinutes[0]) {
                 // Gece 12'den önce, İmsak'a kalan
                 nextPrayerTime = prayerMinutes[0]
+            } else if (currentTime < prayerMinutes[1]) {
+                // İmsak ile Sabah arasında, Sabah'a kalan
+                nextPrayerTime = prayerMinutes[1]
             } else if (currentTime < prayerMinutes[2]) {
-                // İmsak ile Güneş arasında, Güneş'e kalan
+                // Sabah ile Güneş arasında, Güneş'e kalan
                 nextPrayerTime = prayerMinutes[2]
             } else if (currentTime < prayerMinutes[3]) {
                 // Güneş ile Öğle arasında, Öğle'ye kalan
@@ -1184,6 +1191,11 @@ class PrayerNotificationService : Service() {
                 remoteViews.setViewVisibility(R.id.imsak_time, android.view.View.VISIBLE)
                 remoteViews.setViewVisibility(R.id.imsak_time_bold, android.view.View.GONE)
                 
+                remoteViews.setViewVisibility(R.id.sabah_text, android.view.View.VISIBLE)
+                remoteViews.setViewVisibility(R.id.sabah_text_bold, android.view.View.GONE)
+                remoteViews.setViewVisibility(R.id.sabah_time, android.view.View.VISIBLE)
+                remoteViews.setViewVisibility(R.id.sabah_time_bold, android.view.View.GONE)
+                
                 remoteViews.setViewVisibility(R.id.gunes_text, android.view.View.VISIBLE)
                 remoteViews.setViewVisibility(R.id.gunes_text_bold, android.view.View.GONE)
                 remoteViews.setViewVisibility(R.id.gunes_time, android.view.View.VISIBLE)
@@ -1212,6 +1224,8 @@ class PrayerNotificationService : Service() {
                 // Tüm vakitleri ayarla
                 remoteViews.setTextViewText(R.id.imsak_time, prayerTimes!![0])
                 remoteViews.setTextViewText(R.id.imsak_time_bold, prayerTimes!![0])
+                remoteViews.setTextViewText(R.id.sabah_time, prayerTimes!![1])
+                remoteViews.setTextViewText(R.id.sabah_time_bold, prayerTimes!![1])
                 remoteViews.setTextViewText(R.id.gunes_time, prayerTimes!![2])
                 remoteViews.setTextViewText(R.id.gunes_time_bold, prayerTimes!![2])
                 remoteViews.setTextViewText(R.id.ogle_time, prayerTimes!![3])
@@ -1230,6 +1244,12 @@ class PrayerNotificationService : Service() {
                         remoteViews.setViewVisibility(R.id.imsak_text_bold, android.view.View.VISIBLE)
                         remoteViews.setViewVisibility(R.id.imsak_time, android.view.View.GONE)
                         remoteViews.setViewVisibility(R.id.imsak_time_bold, android.view.View.VISIBLE)
+                    }
+                    1 -> {
+                        remoteViews.setViewVisibility(R.id.sabah_text, android.view.View.GONE)
+                        remoteViews.setViewVisibility(R.id.sabah_text_bold, android.view.View.VISIBLE)
+                        remoteViews.setViewVisibility(R.id.sabah_time, android.view.View.GONE)
+                        remoteViews.setViewVisibility(R.id.sabah_time_bold, android.view.View.VISIBLE)
                     }
                     2 -> {
                         remoteViews.setViewVisibility(R.id.gunes_text, android.view.View.GONE)

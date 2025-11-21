@@ -93,6 +93,50 @@
             android:orientation="vertical"
             android:gravity="center">
             <TextView
+                android:id="@+id/sabah_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sabah"
+                android:textSize="11sp"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"/>
+            <TextView
+                android:id="@+id/sabah_text_bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sabah"
+                android:textSize="12sp"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:textStyle="bold"
+                android:visibility="gone"
+                android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"/>
+            <TextView
+                android:id="@+id/sabah_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:singleLine="true"
+                android:textAppearance="@android:style/TextAppearance.Material.Notification"/>
+            <TextView
+                android:id="@+id/sabah_time_bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:singleLine="true"
+                android:textStyle="bold"
+                android:visibility="gone"
+                android:textAppearance="@android:style/TextAppearance.Material.Notification"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+            <TextView
                 android:id="@+id/gunes_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
