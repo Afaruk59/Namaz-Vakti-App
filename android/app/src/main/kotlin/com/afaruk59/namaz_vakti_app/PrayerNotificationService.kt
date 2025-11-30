@@ -145,6 +145,13 @@ class PrayerNotificationService : Service() {
     private var lastCurrentPrayerIndex: Int = -2 // -2 means not initialized
     private var lastCountdownText: String = ""
     
+    // Mevcut alarm durumunu takip etmek için
+    private var currentScheduledPrayerIndex: Int = -1 // -1 means no alarm scheduled
+    private var currentScheduledAlarmTime: Long = 0
+    private var currentScheduledGap: Int = 0
+    private var currentScheduledVoice: Int = 0
+    private var currentScheduledAlarmEnabled: Boolean = false
+    
     override fun onCreate() {
         super.onCreate()
         Log.d(TAG, "Service created")
@@ -306,10 +313,16 @@ class PrayerNotificationService : Service() {
         if (isDayChanged) {
             Log.d(TAG, "📅 Day changed: $lastCheckedDay → $currentDay")
             lastCheckedDay = currentDay
+            // Gün değiştiğinde mevcut alarm durumunu sıfırla
+            currentScheduledPrayerIndex = -1
+            currentScheduledAlarmTime = 0
             fetchPrayerTimesData(isDayChange = true)
         } else if (isLocationChanged) {
             Log.d(TAG, "📍 Location changed: $lastLocationId → $currentLocationId")
             lastLocationId = currentLocationId
+            // Konum değiştiğinde mevcut alarm durumunu sıfırla
+            currentScheduledPrayerIndex = -1
+            currentScheduledAlarmTime = 0
             fetchPrayerTimesData(isLocationChange = true)
         }
         
@@ -360,20 +373,123 @@ class PrayerNotificationService : Service() {
             return
         }
         
+        // Sadece en yakın aktif alarmı bul
+        val nextActivePrayer = getNextActivePrayerIndex()
+        
+        if (nextActivePrayer == -1) {
+            // Alarm yoksa mevcut alarmı iptal et
+            if (currentScheduledPrayerIndex != -1) {
+                Log.d(TAG, "No active prayer alarms, cancelling current alarm")
+                cancelAllAlarms()
+                currentScheduledPrayerIndex = -1
+                currentScheduledAlarmTime = 0
+            } else {
+                Log.d(TAG, "No active prayer alarms to schedule or all prayers passed for today")
+            }
+            return
+        }
+        
+        // Yeni alarm için bilgileri al
+        val newAlarmTime = getAlarmTimeForPrayer(nextActivePrayer)
+        if (newAlarmTime <= System.currentTimeMillis()) {
+            Log.d(TAG, "Alarm time has already passed, skipping")
+            if (currentScheduledPrayerIndex != -1) {
+                cancelAllAlarms()
+                currentScheduledPrayerIndex = -1
+            }
+            return
+        }
+        
+        val newGap = try {
+            prefs.getLong("flutter.${nextActivePrayer}gap", 0).toInt()
+        } catch (e: Exception) {
+            0
+        }
+        
+        val newVoice = try {
+            prefs.getLong("flutter.${nextActivePrayer}voice", 0).toInt()
+        } catch (e: Exception) {
+            try {
+                prefs.getInt("flutter.${nextActivePrayer}voice", 0)
+            } catch (e2: Exception) {
+                0
+            }
+        }
+        
+        val newAlarmEnabled = prefs.getBoolean("flutter.$nextActivePrayer", false)
+        
+        // Mevcut alarm ile karşılaştır
+        val needsUpdate = currentScheduledPrayerIndex != nextActivePrayer ||
+                currentScheduledAlarmTime != newAlarmTime ||
+                currentScheduledGap != newGap ||
+                currentScheduledVoice != newVoice ||
+                currentScheduledAlarmEnabled != newAlarmEnabled
+        
+        if (!needsUpdate) {
+            Log.d(TAG, "No changes detected, keeping existing alarm for prayer $nextActivePrayer")
+            return
+        }
+        
+        // İlk kurulum mu yoksa gerçek bir değişiklik mi?
+        if (currentScheduledPrayerIndex == -1) {
+            Log.d(TAG, "Initial alarm setup - scheduling alarm. Prayer: $nextActivePrayer, Time: $newAlarmTime, Gap: $newGap, Voice: $newVoice")
+        } else {
+            Log.d(TAG, "Changes detected - updating alarm. Prayer: $nextActivePrayer (was: $currentScheduledPrayerIndex), Time: $newAlarmTime, Gap: $newGap, Voice: $newVoice")
+        }
+        
+        // Değişiklik var, alarmı güncelle
         cancelAllAlarms()
         
-        // Sadece en yakın aktif alarmı kur
-        val nextActivePrayer = getNextActivePrayerIndex()
-        if (nextActivePrayer != -1) {
-            try {
-                scheduleAlarmForToday(nextActivePrayer)
-                Log.d(TAG, "Scheduled next active prayer alarm: $nextActivePrayer")
-            } catch (e: Exception) {
-                Log.e(TAG, "Error scheduling next active prayer alarm $nextActivePrayer: ${e.message}")
-            }
-        } else {
-            Log.d(TAG, "No active prayer alarms to schedule or all prayers passed for today")
+        try {
+            scheduleAlarmForToday(nextActivePrayer)
+            
+            // Yeni durumu kaydet
+            currentScheduledPrayerIndex = nextActivePrayer
+            currentScheduledAlarmTime = newAlarmTime
+            currentScheduledGap = newGap
+            currentScheduledVoice = newVoice
+            currentScheduledAlarmEnabled = newAlarmEnabled
+            
+            Log.d(TAG, "Scheduled next active prayer alarm: $nextActivePrayer at ${java.text.SimpleDateFormat("HH:mm:ss", java.util.Locale.getDefault()).format(java.util.Date(newAlarmTime))}")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error scheduling next active prayer alarm $nextActivePrayer: ${e.message}")
+            currentScheduledPrayerIndex = -1
         }
+    }
+    
+    private fun getAlarmTimeForPrayer(prayerIndex: Int): Long {
+        if (prayerTimes == null || prayerIndex < 0 || prayerIndex >= prayerTimes!!.size) {
+            return 0
+        }
+        
+        val prayerTime = prayerTimes!![prayerIndex]
+        if (prayerTime.isEmpty()) {
+            return 0
+        }
+        
+        val timeParts = prayerTime.split(":")
+        if (timeParts.size != 2) {
+            return 0
+        }
+        
+        val prayerHour = timeParts[0].toInt()
+        val prayerMinute = timeParts[1].toInt()
+        
+        val timeOffset = try {
+            prefs.getLong("flutter.${prayerIndex}gap", 0).toInt()
+        } catch (e: Exception) {
+            0
+        }
+        
+        val alarmTime = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, prayerHour)
+            set(Calendar.MINUTE, prayerMinute)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+            add(Calendar.MINUTE, timeOffset)
+        }
+        
+        return alarmTime.timeInMillis
     }
     
     private fun getNextActivePrayerIndex(): Int {
@@ -537,6 +653,9 @@ class PrayerNotificationService : Service() {
             )
             alarmManager.cancel(pendingIntent)
         }
+        // Alarm durumunu sıfırla
+        currentScheduledPrayerIndex = -1
+        currentScheduledAlarmTime = 0
         Log.d(TAG, "Cancelled all prayer alarms")
     }
     
@@ -680,6 +799,10 @@ class PrayerNotificationService : Service() {
                         lastFetchTime = System.currentTimeMillis()
                         Log.d(TAG, "New prayer times fetched: ${prayerTimes?.joinToString()}")
                         savePrayerTimes()
+                        
+                        // Vakitler değiştiğinde mevcut alarm durumunu sıfırla
+                        currentScheduledPrayerIndex = -1
+                        currentScheduledAlarmTime = 0
                         
                         // Main thread'de bildirim güncelleme
                         Handler(Looper.getMainLooper()).post {
@@ -1380,6 +1503,12 @@ class PrayerNotificationService : Service() {
         try {
             notificationManager.notify(PRAYER_NOTIFICATION_ID_START + prayerIndex, notification)
             Log.d(TAG, "Notification sent successfully for prayer $prayerIndex with channel $channelId")
+            
+            // Tetiklenen alarmın durumunu sıfırla (bir sonraki alarm kurulacak)
+            if (currentScheduledPrayerIndex == prayerIndex) {
+                currentScheduledPrayerIndex = -1
+                currentScheduledAlarmTime = 0
+            }
             
             // Bu alarm tetiklendikten sonra bir sonraki aktif alarmı kur
             Handler(Looper.getMainLooper()).postDelayed({
