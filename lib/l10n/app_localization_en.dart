@@ -538,4 +538,92 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get skip => 'Skip';
+
+  @override
+  String get startupWelcome =>
+      'Welcome to Prayer Times app. We are here to make your Islamic life easier.';
+
+  @override
+  String get importantInfo => 'Important Caution';
+
+  @override
+  String get timesSource => 'Prayer times are provided by namazvakti.com';
+
+  @override
+  String get timesFeatureTitle => 'Prayer Times';
+
+  @override
+  String get timesFeature1 => '5 Daily Prayers + Detailed Times';
+
+  @override
+  String get timesFeature1Desc =>
+      'Fajr, Dhuhr, Asr, Maghrib, Isha and detailed times like Ishraq, Karahat.';
+
+  @override
+  String get timesFeature2 => 'Smart Notifications';
+
+  @override
+  String get timesFeature2Desc =>
+      'Customizable notifications and alarms for each prayer time.';
+
+  @override
+  String get timesFeature3 => 'Hijri Calendar';
+
+  @override
+  String get timesFeature3Desc =>
+      'Daily Hijri date and Islamic month tracking.';
+
+  @override
+  String get spiritualFeatures => 'General Features';
+
+  @override
+  String get qiblaFeature => 'Qibla Compass';
+
+  @override
+  String get qiblaFeatureDesc => 'Direction to Kaaba from your location.';
+
+  @override
+  String get qiblaFeature2 => 'Map View';
+
+  @override
+  String get qiblaFeature2Desc =>
+      'Detailed qibla direction with street and satellite maps.';
+
+  @override
+  String get zikirFeature => 'Digital Tasbih';
+
+  @override
+  String get zikirFeatureDesc =>
+      'Digital dhikr counter with multiple profiles and vibration.';
+
+  @override
+  String get contentFeatures => 'Content Features';
+
+  @override
+  String get booksFeature => 'Islamic Books';
+
+  @override
+  String get booksFeatureDesc =>
+      'Extensive content library with 14 books from Hakikat Kitabevi.';
+
+  @override
+  String get audioFeature => 'Audio Book Support';
+
+  @override
+  String get audioFeatureDesc =>
+      'Listen to books with audio playback and lock screen controls.';
+
+  @override
+  String get datesFeature => 'Religious Dates';
+
+  @override
+  String get datesFeatureDesc =>
+      'Calendar of blessed nights, holidays and important days.';
+
+  @override
+  String get locationDescription =>
+      'Search for your location or find it automatically to accurately calculate prayer times.';
+
+  @override
+  String get locationFeatureTitle => 'Find Your Location';
 }

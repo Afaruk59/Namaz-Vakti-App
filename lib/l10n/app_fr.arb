@@ -250,5 +250,31 @@
   "skip": "Passer",
   "@skip": {
     "description": "Skip button text"
-  }
+  },
+  "startupWelcome": "Bienvenue dans l'application Horaires de Prière. Nous sommes là pour faciliter votre vie islamique.",
+  "importantInfo": "Avertissement important",
+  "timesSource": "Les horaires de prière sont fournis par namazvakti.com",
+  "timesFeatureTitle": "Horaires de prière",
+  "timesFeature1": "5 prières quotidiennes + horaires détaillés",
+  "timesFeature1Desc": "Fajr, Dhuhr, Asr, Maghrib, Isha et horaires détaillés comme Ishraq, Karahat.",
+  "timesFeature2": "Notifications intelligentes",
+  "timesFeature2Desc": "Notifications et alarmes personnalisables pour chaque heure de prière.",
+  "timesFeature3": "Calendrier Hijri",
+  "timesFeature3Desc": "Date Hijri quotidienne et suivi du mois islamique.",
+  "spiritualFeatures": "Fonctionnalités générales",
+  "qiblaFeature": "Boussole Qibla",
+  "qiblaFeatureDesc": "Direction vers la Kaaba depuis votre emplacement.",
+  "qiblaFeature2": "Vue de la carte",
+  "qiblaFeature2Desc": "Direction Qibla détaillée avec cartes de rues et satellites.",
+  "zikirFeature": "Tasbih numérique",
+  "zikirFeatureDesc": "Compteur de dhikr numérique avec plusieurs profils et vibration.",
+  "contentFeatures": "Fonctionnalités de contenu",
+  "booksFeature": "Livres islamiques",
+  "booksFeatureDesc": "Vaste bibliothèque de contenu avec 14 livres de Hakikat Kitabevi.",
+  "audioFeature": "Support de livres audio",
+  "audioFeatureDesc": "Écoutez des livres avec lecture audio et contrôles d'écran de verrouillage.",
+  "datesFeature": "Dates religieuses",
+  "datesFeatureDesc": "Calendrier des nuits bénies, jours fériés et jours importants.",
+  "locationDescription": "Recherchez votre emplacement ou trouvez-le automatiquement pour calculer avec précision les horaires de prière.",
+  "locationFeatureTitle": "Trouvez votre emplacement"
 }

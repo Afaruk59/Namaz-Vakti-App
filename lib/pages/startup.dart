@@ -90,10 +90,10 @@ class _StartupState extends State<Startup> {
             onChange: (index) {
               setState(() {
                 _currentPage = index;
-                // 5 sayfa var (0-4), her sayfada arka plan offset'i değişsin
+                // 6 sayfa var (0-5), her sayfada arka plan offset'i değişsin
                 // Arapça için ters yönde hareket (RTL desteği)
                 bool isRTL = Provider.of<ChangeSettings>(context, listen: false).langCode == 'ar';
-                _backgroundOffset = isRTL ? (4 - index) * 0.25 : index * 0.25;
+                _backgroundOffset = isRTL ? (5 - index) * 0.2 : index * 0.2;
               });
             },
             onDone: () {
@@ -112,15 +112,16 @@ class _StartupState extends State<Startup> {
             ),
             next: const Icon(Icons.arrow_forward, color: Colors.white),
             dotsDecorator: DotsDecorator(
-              size: const Size.square(10.0),
-              activeSize: const Size(20.0, 10.0),
+              size: const Size.square(8.0),
+              activeSize: const Size(16.0, 8.0),
+              spacing: const EdgeInsets.symmetric(horizontal: 3.0),
               color: Colors.white.withValues(alpha: 0.5),
               activeColor: Colors.white,
               activeShape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(25.0),
+                borderRadius: BorderRadius.circular(20.0),
               ),
             ),
-            controlsPadding: const EdgeInsets.all(16.0),
+            controlsPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
           ),
         ),
       ],
@@ -129,7 +130,7 @@ class _StartupState extends State<Startup> {
 
   List<PageViewModel> _buildPages(BuildContext context) {
     return [
-      // 1. Hoş Geldiniz + AppCard
+      // 1. Hoş Geldiniz + AppCard + Dil Seçici
       PageViewModel(
         titleWidget: AppBar(
           automaticallyImplyLeading: false,
@@ -140,44 +141,16 @@ class _StartupState extends State<Startup> {
           currentPage: _currentPage,
           child: SingleChildScrollView(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "Namaz Vakti uygulamasına hoş geldiniz. İslami yaşantınızı kolaylaştırmak için buradayız.",
+                  AppLocalizations.of(context)!.startupWelcome,
                   textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 16),
                 ),
                 const SizedBox(height: 40),
                 const AppCard(),
-                const SizedBox(height: 20),
-              ],
-            ),
-          ),
-        ),
-        decoration: PageDecoration(
-          contentMargin: const EdgeInsets.symmetric(horizontal: 20),
-          pageColor: Colors.transparent,
-          bodyFlex: 3,
-        ),
-      ),
-
-      // 2. Dil Seçimi
-      PageViewModel(
-        titleWidget: AppBar(
-          automaticallyImplyLeading: false,
-          title: Text(AppLocalizations.of(context)!.ln),
-        ),
-        bodyWidget: AnimatedPageContent(
-          pageIndex: 1,
-          currentPage: _currentPage,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Uygulamayı kullanmak istediğiniz dili seçin.",
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 40),
+                const SizedBox(height: 30),
+                // Dil seçiciyi alt kısma ekledik
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 10.0),
                   child: LangSelector(),
@@ -187,18 +160,53 @@ class _StartupState extends State<Startup> {
             ),
           ),
         ),
-        decoration: PageDecoration(
-          contentMargin: const EdgeInsets.symmetric(horizontal: 20),
+        decoration: const PageDecoration(
+          contentMargin: EdgeInsets.symmetric(horizontal: 20),
           pageColor: Colors.transparent,
           bodyFlex: 3,
         ),
       ),
 
-      // 3. Zaman Notu Ayarları
+      // 2. Vakitler Kaynağı + Tenbih Kartı
       PageViewModel(
         titleWidget: AppBar(
           automaticallyImplyLeading: false,
-          title: Text("Vakit Hesaplama"),
+          title: Text(AppLocalizations.of(context)!.importantInfo),
+        ),
+        bodyWidget: AnimatedPageContent(
+          pageIndex: 1,
+          currentPage: _currentPage,
+          child: const SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Vakitler namazvakti.com'dan alınmıştır
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10.0),
+                  child: TimeNote(),
+                ),
+                SizedBox(height: 10),
+                // Tenbih Kartı
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10.0),
+                  child: TenbihCard(),
+                ),
+              ],
+            ),
+          ),
+        ),
+        decoration: const PageDecoration(
+          contentMargin: EdgeInsets.symmetric(horizontal: 20),
+          pageColor: Colors.transparent,
+          bodyFlex: 3,
+        ),
+      ),
+
+      // 3. Namaz Vakitleri Özellikleri
+      PageViewModel(
+        titleWidget: AppBar(
+          automaticallyImplyLeading: false,
+          title: Text(AppLocalizations.of(context)!.timesPageTitle),
         ),
         bodyWidget: AnimatedPageContent(
           pageIndex: 2,
@@ -207,32 +215,40 @@ class _StartupState extends State<Startup> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  AppLocalizations.of(context)!.startupDescription,
-                  textAlign: TextAlign.center,
+                _buildFeatureCard(
+                  context,
+                  Icons.access_time,
+                  AppLocalizations.of(context)!.timesFeature1,
+                  AppLocalizations.of(context)!.timesFeature1Desc,
                 ),
-                const SizedBox(height: 40),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10.0),
-                  child: TimeNote(),
+                _buildFeatureCard(
+                  context,
+                  Icons.alarm,
+                  AppLocalizations.of(context)!.timesFeature2,
+                  AppLocalizations.of(context)!.timesFeature2Desc,
                 ),
-                const SizedBox(height: 20),
+                _buildFeatureCard(
+                  context,
+                  Icons.calendar_today,
+                  AppLocalizations.of(context)!.timesFeature3,
+                  AppLocalizations.of(context)!.timesFeature3Desc,
+                ),
               ],
             ),
           ),
         ),
-        decoration: PageDecoration(
-          contentMargin: const EdgeInsets.symmetric(horizontal: 20),
+        decoration: const PageDecoration(
+          contentMargin: EdgeInsets.symmetric(horizontal: 20),
           pageColor: Colors.transparent,
           bodyFlex: 3,
         ),
       ),
 
-      // 4. Bildirim Ayarları
+      // 4. Kıble & Zikir Özellikleri
       PageViewModel(
         titleWidget: AppBar(
           automaticallyImplyLeading: false,
-          title: Text(AppLocalizations.of(context)!.notificationsPageTitle),
+          title: Text(AppLocalizations.of(context)!.spiritualFeatures),
         ),
         bodyWidget: AnimatedPageContent(
           pageIndex: 3,
@@ -241,32 +257,40 @@ class _StartupState extends State<Startup> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  "Namaz vakitleri için bildirim ayarlarınızı yapın.",
-                  textAlign: TextAlign.center,
+                _buildFeatureCard(
+                  context,
+                  Icons.explore,
+                  AppLocalizations.of(context)!.qiblaFeature,
+                  AppLocalizations.of(context)!.qiblaFeatureDesc,
                 ),
-                const SizedBox(height: 40),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10.0),
-                  child: TenbihCard(),
+                _buildFeatureCard(
+                  context,
+                  Icons.map,
+                  AppLocalizations.of(context)!.qiblaFeature2,
+                  AppLocalizations.of(context)!.qiblaFeature2Desc,
                 ),
-                const SizedBox(height: 20),
+                _buildFeatureCard(
+                  context,
+                  Icons.timer,
+                  AppLocalizations.of(context)!.zikirFeature,
+                  AppLocalizations.of(context)!.zikirFeatureDesc,
+                ),
               ],
             ),
           ),
         ),
-        decoration: PageDecoration(
-          contentMargin: const EdgeInsets.symmetric(horizontal: 20),
+        decoration: const PageDecoration(
+          contentMargin: EdgeInsets.symmetric(horizontal: 20),
           pageColor: Colors.transparent,
           bodyFlex: 3,
         ),
       ),
 
-      // 5. Konum Seçimi
+      // 5. Kitaplar & Dini Günler Özellikleri
       PageViewModel(
         titleWidget: AppBar(
           automaticallyImplyLeading: false,
-          title: Text(AppLocalizations.of(context)!.searchTitle),
+          title: Text(AppLocalizations.of(context)!.contentFeatures),
         ),
         bodyWidget: AnimatedPageContent(
           pageIndex: 4,
@@ -275,9 +299,53 @@ class _StartupState extends State<Startup> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  "Namaz vakitlerini doğru hesaplayabilmek için konumunuzu seçin.",
-                  textAlign: TextAlign.center,
+                _buildFeatureCard(
+                  context,
+                  Icons.menu_book_rounded,
+                  AppLocalizations.of(context)!.booksFeature,
+                  AppLocalizations.of(context)!.booksFeatureDesc,
+                ),
+                _buildFeatureCard(
+                  context,
+                  Icons.headphones,
+                  AppLocalizations.of(context)!.audioFeature,
+                  AppLocalizations.of(context)!.audioFeatureDesc,
+                ),
+                _buildFeatureCard(
+                  context,
+                  Icons.event,
+                  AppLocalizations.of(context)!.datesFeature,
+                  AppLocalizations.of(context)!.datesFeatureDesc,
+                ),
+              ],
+            ),
+          ),
+        ),
+        decoration: const PageDecoration(
+          contentMargin: EdgeInsets.symmetric(horizontal: 20),
+          pageColor: Colors.transparent,
+          bodyFlex: 3,
+        ),
+      ),
+
+      // 6. Konum Seçimi (Değişiklik Yok)
+      PageViewModel(
+        titleWidget: AppBar(
+          automaticallyImplyLeading: false,
+          title: Text(AppLocalizations.of(context)!.searchTitle),
+        ),
+        bodyWidget: AnimatedPageContent(
+          pageIndex: 5,
+          currentPage: _currentPage,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildFeatureCard(
+                  context,
+                  Icons.location_on,
+                  AppLocalizations.of(context)!.locationFeatureTitle,
+                  AppLocalizations.of(context)!.locationDescription,
                 ),
                 const SizedBox(height: 40),
                 Padding(
@@ -305,13 +373,64 @@ class _StartupState extends State<Startup> {
             ),
           ),
         ),
-        decoration: PageDecoration(
-          contentMargin: const EdgeInsets.symmetric(horizontal: 20),
+        decoration: const PageDecoration(
+          contentMargin: EdgeInsets.symmetric(horizontal: 20),
           pageColor: Colors.transparent,
           bodyFlex: 3,
         ),
       ),
     ];
+  }
+
+  // Özellik kartı oluşturan yardımcı metod
+  Widget _buildFeatureCard(
+    BuildContext context,
+    IconData icon,
+    String title,
+    String description,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
+      child: Card(
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            children: [
+              Icon(
+                icon,
+                size: 32,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      description,
+                      style: TextStyle(
+                        fontSize: 13,
+                        color:
+                            Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 

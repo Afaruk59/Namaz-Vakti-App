@@ -250,5 +250,31 @@
   "skip": "Omitir",
   "@skip": {
     "description": "Skip button text"
-  }
+  },
+  "startupWelcome": "Bienvenido a la aplicación Horarios de Oración. Estamos aquí para facilitar su vida islámica.",
+  "importantInfo": "Advertencia importante",
+  "timesSource": "Los horarios de oración son proporcionados por namazvakti.com",
+  "timesFeatureTitle": "Horarios de Oración",
+  "timesFeature1": "5 oraciones diarias + horarios detallados",
+  "timesFeature1Desc": "Fajr, Dhuhr, Asr, Maghrib, Isha y horarios detallados como Ishraq, Karahat.",
+  "timesFeature2": "Notificaciones inteligentes",
+  "timesFeature2Desc": "Notificaciones y alarmas personalizables para cada horario de oración.",
+  "timesFeature3": "Calendario Hijri",
+  "timesFeature3Desc": "Fecha Hijri diaria y seguimiento del mes islámico.",
+  "spiritualFeatures": "Características generales",
+  "qiblaFeature": "Brújula Qibla",
+  "qiblaFeatureDesc": "Dirección a la Kaaba desde su ubicación.",
+  "qiblaFeature2": "Vista de mapa",
+  "qiblaFeature2Desc": "Dirección Qibla detallada con mapas de calles y satélite.",
+  "zikirFeature": "Tasbih digital",
+  "zikirFeatureDesc": "Contador de dhikr digital con múltiples perfiles y vibración.",
+  "contentFeatures": "Características de contenido",
+  "booksFeature": "Libros islámicos",
+  "booksFeatureDesc": "Amplia biblioteca de contenido con 14 libros de Hakikat Kitabevi.",
+  "audioFeature": "Soporte de audiolibros",
+  "audioFeatureDesc": "Escuche libros con reproducción de audio y controles de pantalla de bloqueo.",
+  "datesFeature": "Fechas religiosas",
+  "datesFeatureDesc": "Calendario de noches benditas, días festivos y días importantes.",
+  "locationDescription": "Busque su ubicación o encuéntrela automáticamente para calcular con precisión los horarios de oración.",
+  "locationFeatureTitle": "Encuentre su ubicación"
 }

@@ -250,5 +250,109 @@
   "skip": "Skip",
   "@skip": {
     "description": "Skip button text"
+  },
+  "startupWelcome": "Welcome to Prayer Times app. We are here to make your Islamic life easier.",
+  "@startupWelcome": {
+    "description": "Startup welcome message"
+  },
+  "importantInfo": "Important Caution",
+  "@importantInfo": {
+    "description": "Important information page title"
+  },
+  "timesSource": "Prayer times are provided by namazvakti.com",
+  "@timesSource": {
+    "description": "Prayer times source information"
+  },
+  "timesFeatureTitle": "Prayer Times",
+  "@timesFeatureTitle": {
+    "description": "Prayer times feature title"
+  },
+  "timesFeature1": "5 Daily Prayers + Detailed Times",
+  "@timesFeature1": {
+    "description": "Prayer times feature 1"
+  },
+  "timesFeature1Desc": "Fajr, Dhuhr, Asr, Maghrib, Isha and detailed times like Ishraq, Karahat.",
+  "@timesFeature1Desc": {
+    "description": "Prayer times feature 1 description"
+  },
+  "timesFeature2": "Smart Notifications",
+  "@timesFeature2": {
+    "description": "Prayer times feature 2"
+  },
+  "timesFeature2Desc": "Customizable notifications and alarms for each prayer time.",
+  "@timesFeature2Desc": {
+    "description": "Prayer times feature 2 description"
+  },
+  "timesFeature3": "Hijri Calendar",
+  "@timesFeature3": {
+    "description": "Prayer times feature 3"
+  },
+  "timesFeature3Desc": "Daily Hijri date and Islamic month tracking.",
+  "@timesFeature3Desc": {
+    "description": "Prayer times feature 3 description"
+  },
+  "spiritualFeatures": "General Features",
+  "@spiritualFeatures": {
+    "description": "Spiritual features page title"
+  },
+  "qiblaFeature": "Qibla Compass",
+  "@qiblaFeature": {
+    "description": "Qibla compass feature"
+  },
+  "qiblaFeatureDesc": "Direction to Kaaba from your location.",
+  "@qiblaFeatureDesc": {
+    "description": "Qibla compass feature description"
+  },
+  "qiblaFeature2": "Map View",
+  "@qiblaFeature2": {
+    "description": "Qibla map feature"
+  },
+  "qiblaFeature2Desc": "Detailed qibla direction with street and satellite maps.",
+  "@qiblaFeature2Desc": {
+    "description": "Qibla map feature description"
+  },
+  "zikirFeature": "Digital Tasbih",
+  "@zikirFeature": {
+    "description": "Digital tasbih feature"
+  },
+  "zikirFeatureDesc": "Digital dhikr counter with multiple profiles and vibration.",
+  "@zikirFeatureDesc": {
+    "description": "Digital tasbih feature description"
+  },
+  "contentFeatures": "Content Features",
+  "@contentFeatures": {
+    "description": "Content features page title"
+  },
+  "booksFeature": "Islamic Books",
+  "@booksFeature": {
+    "description": "Islamic books feature"
+  },
+  "booksFeatureDesc": "Extensive content library with 14 books from Hakikat Kitabevi.",
+  "@booksFeatureDesc": {
+    "description": "Islamic books feature description"
+  },
+  "audioFeature": "Audio Book Support",
+  "@audioFeature": {
+    "description": "Audio book feature"
+  },
+  "audioFeatureDesc": "Listen to books with audio playback and lock screen controls.",
+  "@audioFeatureDesc": {
+    "description": "Audio book feature description"
+  },
+  "datesFeature": "Religious Dates",
+  "@datesFeature": {
+    "description": "Religious dates feature"
+  },
+  "datesFeatureDesc": "Calendar of blessed nights, holidays and important days.",
+  "@datesFeatureDesc": {
+    "description": "Religious dates feature description"
+  },
+  "locationDescription": "Search for your location or find it automatically to accurately calculate prayer times.",
+  "@locationDescription": {
+    "description": "Location selection description"
+  },
+  "locationFeatureTitle": "Find Your Location",
+  "@locationFeatureTitle": {
+    "description": "Location feature title"
   }
 }

@@ -541,4 +541,92 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get skip => 'Atla';
+
+  @override
+  String get startupWelcome =>
+      'Namaz Vakti uygulamasına hoş geldiniz. İslami yaşantınızı kolaylaştırmak için buradayız.';
+
+  @override
+  String get importantInfo => 'Mühim Tenbih';
+
+  @override
+  String get timesSource => 'Vakitler namazvakti.com\'dan alınmaktadır.';
+
+  @override
+  String get timesFeatureTitle => 'Namaz Vakitleri';
+
+  @override
+  String get timesFeature1 => '5 Vakit + Detaylı Vakitler';
+
+  @override
+  String get timesFeature1Desc =>
+      'İmsak, Sabah, Öğle, İkindi, Akşam, Yatsı ve İşrak, Kerahat gibi detaylı vakitler.';
+
+  @override
+  String get timesFeature2 => 'Akıllı Bildirimler';
+
+  @override
+  String get timesFeature2Desc =>
+      'Her vakit için özelleştirilebilir bildirim ve alarmlar.';
+
+  @override
+  String get timesFeature3 => 'Hicrî Takvim';
+
+  @override
+  String get timesFeature3Desc => 'Günlük Hicrî tarih ve İslami aylar takibi.';
+
+  @override
+  String get spiritualFeatures => 'Genel Özellikler';
+
+  @override
+  String get qiblaFeature => 'Kıble Pusulası';
+
+  @override
+  String get qiblaFeatureDesc =>
+      'Bulunduğunuz konumdan Kabe\'ye doğru yön tespiti.';
+
+  @override
+  String get qiblaFeature2 => 'Harita Görünümü';
+
+  @override
+  String get qiblaFeature2Desc =>
+      'Sokak ve uydu haritası ile detaylı kıble yönü.';
+
+  @override
+  String get zikirFeature => 'Dijital Tesbih';
+
+  @override
+  String get zikirFeatureDesc =>
+      'Çoklu profil desteği ve titreşimli dijital zikir sayacı.';
+
+  @override
+  String get contentFeatures => 'İçerik Özellikleri';
+
+  @override
+  String get booksFeature => 'İslami Kitaplar';
+
+  @override
+  String get booksFeatureDesc =>
+      'Hakikat Kitabevi\'nden 14 kitap ile geniş içerik kütüphanesi.';
+
+  @override
+  String get audioFeature => 'Sesli Kitap Desteği';
+
+  @override
+  String get audioFeatureDesc =>
+      'Kitapları dinleyerek okuyabilme ve kilit ekranı kontrolü.';
+
+  @override
+  String get datesFeature => 'Dini Günler';
+
+  @override
+  String get datesFeatureDesc =>
+      'Kandil geceleri, bayramlar ve önemli günlerin takvimi.';
+
+  @override
+  String get locationDescription =>
+      'Namaz vakitlerini doğru hesaplayabilmek için konumunuzu aratın veya otomatik olarak bulun.';
+
+  @override
+  String get locationFeatureTitle => 'Konumunuzu Bulun';
 }

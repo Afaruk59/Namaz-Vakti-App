@@ -27,7 +27,7 @@ class TimeNote extends StatelessWidget {
       color: Theme.of(context).colorScheme.surfaceContainerHighest,
       child: ListTile(
         title: Text(
-          AppLocalizations.of(context)!.startupDescription,
+          AppLocalizations.of(context)!.timesSource,
           textAlign: TextAlign.center,
           style: const TextStyle(fontSize: 15),
         ),

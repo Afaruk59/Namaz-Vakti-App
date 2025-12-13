@@ -244,5 +244,31 @@
   "skip": "Salta",
   "@skip": {
     "description": "Skip button text"
-  }
+  },
+  "startupWelcome": "Benvenuto nell'app Orari di Preghiera. Siamo qui per facilitare la tua vita islamica.",
+  "importantInfo": "Avvertimento importante",
+  "timesSource": "Gli orari di preghiera sono forniti da namazvakti.com",
+  "timesFeatureTitle": "Orari di preghiera",
+  "timesFeature1": "5 preghiere quotidiane + orari dettagliati",
+  "timesFeature1Desc": "Fajr, Dhuhr, Asr, Maghrib, Isha e orari dettagliati come Ishraq, Karahat.",
+  "timesFeature2": "Notifiche intelligenti",
+  "timesFeature2Desc": "Notifiche e allarmi personalizzabili per ogni orario di preghiera.",
+  "timesFeature3": "Calendario Hijri",
+  "timesFeature3Desc": "Data Hijri giornaliera e tracciamento del mese islamico.",
+  "spiritualFeatures": "Funzionalità generali",
+  "qiblaFeature": "Bussola Qibla",
+  "qiblaFeatureDesc": "Direzione verso la Kaaba dalla tua posizione.",
+  "qiblaFeature2": "Vista mappa",
+  "qiblaFeature2Desc": "Direzione Qibla dettagliata con mappe stradali e satellitari.",
+  "zikirFeature": "Tasbih digitale",
+  "zikirFeatureDesc": "Contatore dhikr digitale con profili multipli e vibrazione.",
+  "contentFeatures": "Funzionalità di contenuto",
+  "booksFeature": "Libri islamici",
+  "booksFeatureDesc": "Ampia biblioteca di contenuti con 14 libri di Hakikat Kitabevi.",
+  "audioFeature": "Supporto audiolibri",
+  "audioFeatureDesc": "Ascolta i libri con riproduzione audio e controlli dello schermo di blocco.",
+  "datesFeature": "Date religiose",
+  "datesFeatureDesc": "Calendario delle notti benedette, festività e giorni importanti.",
+  "locationDescription": "Cerca la tua posizione o trovala automaticamente per calcolare con precisione gli orari di preghiera.",
+  "locationFeatureTitle": "Trova la tua posizione"
 }

@@ -250,5 +250,31 @@
   "skip": "Überspringen",
   "@skip": {
     "description": "Skip button text"
-  }
+  },
+  "startupWelcome": "Willkommen bei der Gebetszeiten-App. Wir sind hier, um Ihr islamisches Leben zu erleichtern.",
+  "importantInfo": "Wichtige Warnung",
+  "timesSource": "Gebetszeiten werden von namazvakti.com bereitgestellt",
+  "timesFeatureTitle": "Gebetszeiten",
+  "timesFeature1": "5 tägliche Gebete + detaillierte Zeiten",
+  "timesFeature1Desc": "Fajr, Dhuhr, Asr, Maghrib, Isha und detaillierte Zeiten wie Ishraq, Karahat.",
+  "timesFeature2": "Intelligente Benachrichtigungen",
+  "timesFeature2Desc": "Anpassbare Benachrichtigungen und Alarme für jede Gebetszeit.",
+  "timesFeature3": "Hijri-Kalender",
+  "timesFeature3Desc": "Tägliches Hijri-Datum und islamische Monatsverfolgung.",
+  "spiritualFeatures": "Allgemeine Funktionen",
+  "qiblaFeature": "Qibla-Kompass",
+  "qiblaFeatureDesc": "Richtung zur Kaaba von Ihrem Standort.",
+  "qiblaFeature2": "Kartenansicht",
+  "qiblaFeature2Desc": "Detaillierte Qibla-Richtung mit Straßen- und Satellitenkarten.",
+  "zikirFeature": "Digitale Tasbih",
+  "zikirFeatureDesc": "Digitaler Dhikr-Zähler mit mehreren Profilen und Vibration.",
+  "contentFeatures": "Inhaltsfunktionen",
+  "booksFeature": "Islamische Bücher",
+  "booksFeatureDesc": "Umfangreiche Inhaltsbibliothek mit 14 Büchern von Hakikat Kitabevi.",
+  "audioFeature": "Hörbuch-Unterstützung",
+  "audioFeatureDesc": "Hören Sie Bücher mit Audiowiedergabe und Sperrbildschirm-Steuerung.",
+  "datesFeature": "Religiöse Daten",
+  "datesFeatureDesc": "Kalender der gesegneten Nächte, Feiertage und wichtigen Tage.",
+  "locationDescription": "Suchen Sie nach Ihrem Standort oder finden Sie ihn automatisch, um die Gebetszeiten genau zu berechnen.",
+  "locationFeatureTitle": "Finden Sie Ihren Standort"
 }

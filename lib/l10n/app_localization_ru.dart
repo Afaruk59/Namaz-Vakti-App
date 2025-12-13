@@ -540,4 +540,93 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get skip => 'Пропустить';
+
+  @override
+  String get startupWelcome =>
+      'Добро пожаловать в приложение Время Намаза. Мы здесь, чтобы облегчить вашу исламскую жизнь.';
+
+  @override
+  String get importantInfo => 'Важное предупреждение';
+
+  @override
+  String get timesSource => 'Время намаза предоставлено namazvakti.com';
+
+  @override
+  String get timesFeatureTitle => 'Время намаза';
+
+  @override
+  String get timesFeature1 => '5 ежедневных намазов + подробное время';
+
+  @override
+  String get timesFeature1Desc =>
+      'Фаджр, Зухр, Аср, Магриб, Иша и подробное время, такое как Ишрак, Карахат.';
+
+  @override
+  String get timesFeature2 => 'Умные уведомления';
+
+  @override
+  String get timesFeature2Desc =>
+      'Настраиваемые уведомления и будильники для каждого времени намаза.';
+
+  @override
+  String get timesFeature3 => 'Календарь Хиджры';
+
+  @override
+  String get timesFeature3Desc =>
+      'Ежедневная дата Хиджры и отслеживание исламских месяцев.';
+
+  @override
+  String get spiritualFeatures => 'Общие функции';
+
+  @override
+  String get qiblaFeature => 'Компас Кибла';
+
+  @override
+  String get qiblaFeatureDesc =>
+      'Направление на Каабу с вашего местоположения.';
+
+  @override
+  String get qiblaFeature2 => 'Просмотр карты';
+
+  @override
+  String get qiblaFeature2Desc =>
+      'Подробное направление Киблы с уличными и спутниковыми картами.';
+
+  @override
+  String get zikirFeature => 'Цифровые четки';
+
+  @override
+  String get zikirFeatureDesc =>
+      'Цифровой счетчик зикра с несколькими профилями и вибрацией.';
+
+  @override
+  String get contentFeatures => 'Контентные функции';
+
+  @override
+  String get booksFeature => 'Исламские книги';
+
+  @override
+  String get booksFeatureDesc =>
+      'Обширная библиотека контента с 14 книгами от Hakikat Kitabevi.';
+
+  @override
+  String get audioFeature => 'Поддержка аудиокниг';
+
+  @override
+  String get audioFeatureDesc =>
+      'Слушайте книги с воспроизведением аудио и управлением с экрана блокировки.';
+
+  @override
+  String get datesFeature => 'Религиозные даты';
+
+  @override
+  String get datesFeatureDesc =>
+      'Календарь благословенных ночей, праздников и важных дней.';
+
+  @override
+  String get locationDescription =>
+      'Найдите свое местоположение или найдите его автоматически для точного расчета времени намаза.';
+
+  @override
+  String get locationFeatureTitle => 'Найдите свое местоположение';
 }

@@ -1111,6 +1111,162 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Atla'**
   String get skip;
+
+  /// Startup welcome message
+  ///
+  /// In tr, this message translates to:
+  /// **'Namaz Vakti uygulamasına hoş geldiniz. İslami yaşantınızı kolaylaştırmak için buradayız.'**
+  String get startupWelcome;
+
+  /// Important information page title
+  ///
+  /// In tr, this message translates to:
+  /// **'Mühim Tenbih'**
+  String get importantInfo;
+
+  /// Prayer times source information
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakitler namazvakti.com\'dan alınmaktadır.'**
+  String get timesSource;
+
+  /// Prayer times feature title
+  ///
+  /// In tr, this message translates to:
+  /// **'Namaz Vakitleri'**
+  String get timesFeatureTitle;
+
+  /// Prayer times feature 1
+  ///
+  /// In tr, this message translates to:
+  /// **'5 Vakit + Detaylı Vakitler'**
+  String get timesFeature1;
+
+  /// Prayer times feature 1 description
+  ///
+  /// In tr, this message translates to:
+  /// **'İmsak, Sabah, Öğle, İkindi, Akşam, Yatsı ve İşrak, Kerahat gibi detaylı vakitler.'**
+  String get timesFeature1Desc;
+
+  /// Prayer times feature 2
+  ///
+  /// In tr, this message translates to:
+  /// **'Akıllı Bildirimler'**
+  String get timesFeature2;
+
+  /// Prayer times feature 2 description
+  ///
+  /// In tr, this message translates to:
+  /// **'Her vakit için özelleştirilebilir bildirim ve alarmlar.'**
+  String get timesFeature2Desc;
+
+  /// Prayer times feature 3
+  ///
+  /// In tr, this message translates to:
+  /// **'Hicrî Takvim'**
+  String get timesFeature3;
+
+  /// Prayer times feature 3 description
+  ///
+  /// In tr, this message translates to:
+  /// **'Günlük Hicrî tarih ve İslami aylar takibi.'**
+  String get timesFeature3Desc;
+
+  /// Spiritual features page title
+  ///
+  /// In tr, this message translates to:
+  /// **'Genel Özellikler'**
+  String get spiritualFeatures;
+
+  /// Qibla compass feature
+  ///
+  /// In tr, this message translates to:
+  /// **'Kıble Pusulası'**
+  String get qiblaFeature;
+
+  /// Qibla compass feature description
+  ///
+  /// In tr, this message translates to:
+  /// **'Bulunduğunuz konumdan Kabe\'ye doğru yön tespiti.'**
+  String get qiblaFeatureDesc;
+
+  /// Qibla map feature
+  ///
+  /// In tr, this message translates to:
+  /// **'Harita Görünümü'**
+  String get qiblaFeature2;
+
+  /// Qibla map feature description
+  ///
+  /// In tr, this message translates to:
+  /// **'Sokak ve uydu haritası ile detaylı kıble yönü.'**
+  String get qiblaFeature2Desc;
+
+  /// Digital tasbih feature
+  ///
+  /// In tr, this message translates to:
+  /// **'Dijital Tesbih'**
+  String get zikirFeature;
+
+  /// Digital tasbih feature description
+  ///
+  /// In tr, this message translates to:
+  /// **'Çoklu profil desteği ve titreşimli dijital zikir sayacı.'**
+  String get zikirFeatureDesc;
+
+  /// Content features page title
+  ///
+  /// In tr, this message translates to:
+  /// **'İçerik Özellikleri'**
+  String get contentFeatures;
+
+  /// Islamic books feature
+  ///
+  /// In tr, this message translates to:
+  /// **'İslami Kitaplar'**
+  String get booksFeature;
+
+  /// Islamic books feature description
+  ///
+  /// In tr, this message translates to:
+  /// **'Hakikat Kitabevi\'nden 14 kitap ile geniş içerik kütüphanesi.'**
+  String get booksFeatureDesc;
+
+  /// Audio book feature
+  ///
+  /// In tr, this message translates to:
+  /// **'Sesli Kitap Desteği'**
+  String get audioFeature;
+
+  /// Audio book feature description
+  ///
+  /// In tr, this message translates to:
+  /// **'Kitapları dinleyerek okuyabilme ve kilit ekranı kontrolü.'**
+  String get audioFeatureDesc;
+
+  /// Religious dates feature
+  ///
+  /// In tr, this message translates to:
+  /// **'Dini Günler'**
+  String get datesFeature;
+
+  /// Religious dates feature description
+  ///
+  /// In tr, this message translates to:
+  /// **'Kandil geceleri, bayramlar ve önemli günlerin takvimi.'**
+  String get datesFeatureDesc;
+
+  /// Location selection description
+  ///
+  /// In tr, this message translates to:
+  /// **'Namaz vakitlerini doğru hesaplayabilmek için konumunuzu aratın veya otomatik olarak bulun.'**
+  String get locationDescription;
+
+  /// Location feature title
+  ///
+  /// In tr, this message translates to:
+  /// **'Konumunuzu Bulun'**
+  String get locationFeatureTitle;
 }
 
 class _AppLocalizationsDelegate

@@ -158,7 +158,7 @@ class _MainAppState extends State<MainApp> {
           case '/':
             page = ChangeNotifierProvider<TimeData>(
               create: (context) => TimeData(),
-              child: const HomePage(),
+              child: const Startup(),
             );
             break;
           case '/times':

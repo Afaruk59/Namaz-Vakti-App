@@ -543,4 +543,93 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get skip => 'Omitir';
+
+  @override
+  String get startupWelcome =>
+      'Bienvenido a la aplicación Horarios de Oración. Estamos aquí para facilitar su vida islámica.';
+
+  @override
+  String get importantInfo => 'Advertencia importante';
+
+  @override
+  String get timesSource =>
+      'Los horarios de oración son proporcionados por namazvakti.com';
+
+  @override
+  String get timesFeatureTitle => 'Horarios de Oración';
+
+  @override
+  String get timesFeature1 => '5 oraciones diarias + horarios detallados';
+
+  @override
+  String get timesFeature1Desc =>
+      'Fajr, Dhuhr, Asr, Maghrib, Isha y horarios detallados como Ishraq, Karahat.';
+
+  @override
+  String get timesFeature2 => 'Notificaciones inteligentes';
+
+  @override
+  String get timesFeature2Desc =>
+      'Notificaciones y alarmas personalizables para cada horario de oración.';
+
+  @override
+  String get timesFeature3 => 'Calendario Hijri';
+
+  @override
+  String get timesFeature3Desc =>
+      'Fecha Hijri diaria y seguimiento del mes islámico.';
+
+  @override
+  String get spiritualFeatures => 'Características generales';
+
+  @override
+  String get qiblaFeature => 'Brújula Qibla';
+
+  @override
+  String get qiblaFeatureDesc => 'Dirección a la Kaaba desde su ubicación.';
+
+  @override
+  String get qiblaFeature2 => 'Vista de mapa';
+
+  @override
+  String get qiblaFeature2Desc =>
+      'Dirección Qibla detallada con mapas de calles y satélite.';
+
+  @override
+  String get zikirFeature => 'Tasbih digital';
+
+  @override
+  String get zikirFeatureDesc =>
+      'Contador de dhikr digital con múltiples perfiles y vibración.';
+
+  @override
+  String get contentFeatures => 'Características de contenido';
+
+  @override
+  String get booksFeature => 'Libros islámicos';
+
+  @override
+  String get booksFeatureDesc =>
+      'Amplia biblioteca de contenido con 14 libros de Hakikat Kitabevi.';
+
+  @override
+  String get audioFeature => 'Soporte de audiolibros';
+
+  @override
+  String get audioFeatureDesc =>
+      'Escuche libros con reproducción de audio y controles de pantalla de bloqueo.';
+
+  @override
+  String get datesFeature => 'Fechas religiosas';
+
+  @override
+  String get datesFeatureDesc =>
+      'Calendario de noches benditas, días festivos y días importantes.';
+
+  @override
+  String get locationDescription =>
+      'Busque su ubicación o encuéntrela automáticamente para calcular con precisión los horarios de oración.';
+
+  @override
+  String get locationFeatureTitle => 'Encuentre su ubicación';
 }

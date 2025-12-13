@@ -534,4 +534,91 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get skip => 'تخطي';
+
+  @override
+  String get startupWelcome =>
+      'مرحبا بك في تطبيق مواقيت الصلاة. نحن هنا لتسهيل حياتك الإسلامية.';
+
+  @override
+  String get importantInfo => 'تنبيه مهم';
+
+  @override
+  String get timesSource => 'مواقيت الصلاة من namazvakti.com';
+
+  @override
+  String get timesFeatureTitle => 'مواقيت الصلاة';
+
+  @override
+  String get timesFeature1 => '5 صلوات + أوقات تفصيلية';
+
+  @override
+  String get timesFeature1Desc =>
+      'الفجر، الظهر، العصر، المغرب، العشاء وأوقات تفصيلية مثل الإشراق والكراهة.';
+
+  @override
+  String get timesFeature2 => 'إشعارات ذكية';
+
+  @override
+  String get timesFeature2Desc =>
+      'إشعارات وتنبيهات قابلة للتخصيص لكل وقت صلاة.';
+
+  @override
+  String get timesFeature3 => 'التقويم الهجري';
+
+  @override
+  String get timesFeature3Desc =>
+      'تتبع التاريخ الهجري اليومي والأشهر الإسلامية.';
+
+  @override
+  String get spiritualFeatures => 'الميزات العامة';
+
+  @override
+  String get qiblaFeature => 'بوصلة القبلة';
+
+  @override
+  String get qiblaFeatureDesc => 'الاتجاه إلى الكعبة من موقعك.';
+
+  @override
+  String get qiblaFeature2 => 'عرض الخريطة';
+
+  @override
+  String get qiblaFeature2Desc =>
+      'اتجاه القبلة التفصيلي مع خرائط الشوارع والأقمار الصناعية.';
+
+  @override
+  String get zikirFeature => 'السبحة الرقمية';
+
+  @override
+  String get zikirFeatureDesc => 'عداد الذكر الرقمي مع ملفات متعددة والاهتزاز.';
+
+  @override
+  String get contentFeatures => 'ميزات المحتوى';
+
+  @override
+  String get booksFeature => 'الكتب الإسلامية';
+
+  @override
+  String get booksFeatureDesc =>
+      'مكتبة محتوى شاملة مع 14 كتابًا من Hakikat Kitabevi.';
+
+  @override
+  String get audioFeature => 'دعم الكتب الصوتية';
+
+  @override
+  String get audioFeatureDesc =>
+      'استمع إلى الكتب مع التشغيل الصوتي وأدوات التحكم في شاشة القفل.';
+
+  @override
+  String get datesFeature => 'التواريخ الدينية';
+
+  @override
+  String get datesFeatureDesc =>
+      'تقويم الليالي المباركة والعطلات والأيام المهمة.';
+
+  @override
+  String get locationDescription =>
+      'ابحث عن موقعك أو ابحث عنه تلقائيًا لحساب أوقات الصلاة بدقة.';
+
+  @override
+  String get locationFeatureTitle => 'ابحث عن موقعك';
 }

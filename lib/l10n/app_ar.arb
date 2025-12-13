@@ -250,5 +250,31 @@
   "skip": "تخطي",
   "@skip": {
     "description": "Skip button text"
-  }
+  },
+  "startupWelcome": "مرحبا بك في تطبيق مواقيت الصلاة. نحن هنا لتسهيل حياتك الإسلامية.",
+  "importantInfo": "تنبيه مهم",
+  "timesSource": "مواقيت الصلاة من namazvakti.com",
+  "timesFeatureTitle": "مواقيت الصلاة",
+  "timesFeature1": "5 صلوات + أوقات تفصيلية",
+  "timesFeature1Desc": "الفجر، الظهر، العصر، المغرب، العشاء وأوقات تفصيلية مثل الإشراق والكراهة.",
+  "timesFeature2": "إشعارات ذكية",
+  "timesFeature2Desc": "إشعارات وتنبيهات قابلة للتخصيص لكل وقت صلاة.",
+  "timesFeature3": "التقويم الهجري",
+  "timesFeature3Desc": "تتبع التاريخ الهجري اليومي والأشهر الإسلامية.",
+  "spiritualFeatures": "الميزات العامة",
+  "qiblaFeature": "بوصلة القبلة",
+  "qiblaFeatureDesc": "الاتجاه إلى الكعبة من موقعك.",
+  "qiblaFeature2": "عرض الخريطة",
+  "qiblaFeature2Desc": "اتجاه القبلة التفصيلي مع خرائط الشوارع والأقمار الصناعية.",
+  "zikirFeature": "السبحة الرقمية",
+  "zikirFeatureDesc": "عداد الذكر الرقمي مع ملفات متعددة والاهتزاز.",
+  "contentFeatures": "ميزات المحتوى",
+  "booksFeature": "الكتب الإسلامية",
+  "booksFeatureDesc": "مكتبة محتوى شاملة مع 14 كتابًا من Hakikat Kitabevi.",
+  "audioFeature": "دعم الكتب الصوتية",
+  "audioFeatureDesc": "استمع إلى الكتب مع التشغيل الصوتي وأدوات التحكم في شاشة القفل.",
+  "datesFeature": "التواريخ الدينية",
+  "datesFeatureDesc": "تقويم الليالي المباركة والعطلات والأيام المهمة.",
+  "locationDescription": "ابحث عن موقعك أو ابحث عنه تلقائيًا لحساب أوقات الصلاة بدقة.",
+  "locationFeatureTitle": "ابحث عن موقعك"
 }

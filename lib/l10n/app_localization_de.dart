@@ -542,4 +542,93 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get skip => 'Überspringen';
+
+  @override
+  String get startupWelcome =>
+      'Willkommen bei der Gebetszeiten-App. Wir sind hier, um Ihr islamisches Leben zu erleichtern.';
+
+  @override
+  String get importantInfo => 'Wichtige Warnung';
+
+  @override
+  String get timesSource =>
+      'Gebetszeiten werden von namazvakti.com bereitgestellt';
+
+  @override
+  String get timesFeatureTitle => 'Gebetszeiten';
+
+  @override
+  String get timesFeature1 => '5 tägliche Gebete + detaillierte Zeiten';
+
+  @override
+  String get timesFeature1Desc =>
+      'Fajr, Dhuhr, Asr, Maghrib, Isha und detaillierte Zeiten wie Ishraq, Karahat.';
+
+  @override
+  String get timesFeature2 => 'Intelligente Benachrichtigungen';
+
+  @override
+  String get timesFeature2Desc =>
+      'Anpassbare Benachrichtigungen und Alarme für jede Gebetszeit.';
+
+  @override
+  String get timesFeature3 => 'Hijri-Kalender';
+
+  @override
+  String get timesFeature3Desc =>
+      'Tägliches Hijri-Datum und islamische Monatsverfolgung.';
+
+  @override
+  String get spiritualFeatures => 'Allgemeine Funktionen';
+
+  @override
+  String get qiblaFeature => 'Qibla-Kompass';
+
+  @override
+  String get qiblaFeatureDesc => 'Richtung zur Kaaba von Ihrem Standort.';
+
+  @override
+  String get qiblaFeature2 => 'Kartenansicht';
+
+  @override
+  String get qiblaFeature2Desc =>
+      'Detaillierte Qibla-Richtung mit Straßen- und Satellitenkarten.';
+
+  @override
+  String get zikirFeature => 'Digitale Tasbih';
+
+  @override
+  String get zikirFeatureDesc =>
+      'Digitaler Dhikr-Zähler mit mehreren Profilen und Vibration.';
+
+  @override
+  String get contentFeatures => 'Inhaltsfunktionen';
+
+  @override
+  String get booksFeature => 'Islamische Bücher';
+
+  @override
+  String get booksFeatureDesc =>
+      'Umfangreiche Inhaltsbibliothek mit 14 Büchern von Hakikat Kitabevi.';
+
+  @override
+  String get audioFeature => 'Hörbuch-Unterstützung';
+
+  @override
+  String get audioFeatureDesc =>
+      'Hören Sie Bücher mit Audiowiedergabe und Sperrbildschirm-Steuerung.';
+
+  @override
+  String get datesFeature => 'Religiöse Daten';
+
+  @override
+  String get datesFeatureDesc =>
+      'Kalender der gesegneten Nächte, Feiertage und wichtigen Tage.';
+
+  @override
+  String get locationDescription =>
+      'Suchen Sie nach Ihrem Standort oder finden Sie ihn automatisch, um die Gebetszeiten genau zu berechnen.';
+
+  @override
+  String get locationFeatureTitle => 'Finden Sie Ihren Standort';
 }

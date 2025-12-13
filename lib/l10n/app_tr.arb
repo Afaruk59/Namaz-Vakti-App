@@ -685,5 +685,109 @@
   "skip": "Atla",
   "@skip": {
     "description": "Skip button text"
+  },
+  "startupWelcome": "Namaz Vakti uygulamasına hoş geldiniz. İslami yaşantınızı kolaylaştırmak için buradayız.",
+  "@startupWelcome": {
+    "description": "Startup welcome message"
+  },
+  "importantInfo": "Mühim Tenbih",
+  "@importantInfo": {
+    "description": "Important information page title"
+  },
+  "timesSource": "Vakitler namazvakti.com'dan alınmaktadır.",
+  "@timesSource": {
+    "description": "Prayer times source information"
+  },
+  "timesFeatureTitle": "Namaz Vakitleri",
+  "@timesFeatureTitle": {
+    "description": "Prayer times feature title"
+  },
+  "timesFeature1": "5 Vakit + Detaylı Vakitler",
+  "@timesFeature1": {
+    "description": "Prayer times feature 1"
+  },
+  "timesFeature1Desc": "İmsak, Sabah, Öğle, İkindi, Akşam, Yatsı ve İşrak, Kerahat gibi detaylı vakitler.",
+  "@timesFeature1Desc": {
+    "description": "Prayer times feature 1 description"
+  },
+  "timesFeature2": "Akıllı Bildirimler",
+  "@timesFeature2": {
+    "description": "Prayer times feature 2"
+  },
+  "timesFeature2Desc": "Her vakit için özelleştirilebilir bildirim ve alarmlar.",
+  "@timesFeature2Desc": {
+    "description": "Prayer times feature 2 description"
+  },
+  "timesFeature3": "Hicrî Takvim",
+  "@timesFeature3": {
+    "description": "Prayer times feature 3"
+  },
+  "timesFeature3Desc": "Günlük Hicrî tarih ve İslami aylar takibi.",
+  "@timesFeature3Desc": {
+    "description": "Prayer times feature 3 description"
+  },
+  "spiritualFeatures": "Genel Özellikler",
+  "@spiritualFeatures": {
+    "description": "Spiritual features page title"
+  },
+  "qiblaFeature": "Kıble Pusulası",
+  "@qiblaFeature": {
+    "description": "Qibla compass feature"
+  },
+  "qiblaFeatureDesc": "Bulunduğunuz konumdan Kabe'ye doğru yön tespiti.",
+  "@qiblaFeatureDesc": {
+    "description": "Qibla compass feature description"
+  },
+  "qiblaFeature2": "Harita Görünümü",
+  "@qiblaFeature2": {
+    "description": "Qibla map feature"
+  },
+  "qiblaFeature2Desc": "Sokak ve uydu haritası ile detaylı kıble yönü.",
+  "@qiblaFeature2Desc": {
+    "description": "Qibla map feature description"
+  },
+  "zikirFeature": "Dijital Tesbih",
+  "@zikirFeature": {
+    "description": "Digital tasbih feature"
+  },
+  "zikirFeatureDesc": "Çoklu profil desteği ve titreşimli dijital zikir sayacı.",
+  "@zikirFeatureDesc": {
+    "description": "Digital tasbih feature description"
+  },
+  "contentFeatures": "İçerik Özellikleri",
+  "@contentFeatures": {
+    "description": "Content features page title"
+  },
+  "booksFeature": "İslami Kitaplar",
+  "@booksFeature": {
+    "description": "Islamic books feature"
+  },
+  "booksFeatureDesc": "Hakikat Kitabevi'nden 14 kitap ile geniş içerik kütüphanesi.",
+  "@booksFeatureDesc": {
+    "description": "Islamic books feature description"
+  },
+  "audioFeature": "Sesli Kitap Desteği",
+  "@audioFeature": {
+    "description": "Audio book feature"
+  },
+  "audioFeatureDesc": "Kitapları dinleyerek okuyabilme ve kilit ekranı kontrolü.",
+  "@audioFeatureDesc": {
+    "description": "Audio book feature description"
+  },
+  "datesFeature": "Dini Günler",
+  "@datesFeature": {
+    "description": "Religious dates feature"
+  },
+  "datesFeatureDesc": "Kandil geceleri, bayramlar ve önemli günlerin takvimi.",
+  "@datesFeatureDesc": {
+    "description": "Religious dates feature description"
+  },
+  "locationDescription": "Namaz vakitlerini doğru hesaplayabilmek için konumunuzu aratın veya otomatik olarak bulun.",
+  "@locationDescription": {
+    "description": "Location selection description"
+  },
+  "locationFeatureTitle": "Konumunuzu Bulun",
+  "@locationFeatureTitle": {
+    "description": "Location feature title"
   }
 }
