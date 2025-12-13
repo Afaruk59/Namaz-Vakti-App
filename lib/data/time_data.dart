@@ -41,6 +41,9 @@ class TimeData extends ChangeSettings {
   DateTime? istibak;
   DateTime? isaisani;
   DateTime? kible;
+  DateTime? geceYarisi;
+  DateTime? teheccud;
+  DateTime? seher;
 
   List<Map<String, String>> prayerTimes = [];
   Map<String, String>? selectedDayTimes;
@@ -287,6 +290,44 @@ class TimeData extends ChangeSettings {
       } on Exception catch (_) {
         yatsi2 = null;
       }
+
+      // Gece Yarısı, Teheccüd ve Seher vakitlerini hesapla
+      selectDate(time);
+      if (aksam != null && imsak2 != null) {
+        // Şer'î gece: Akşam vaktinden ertesi gün imsak vaktine kadar
+        final aksamMinutes = aksam!.hour * 60 + aksam!.minute;
+        final imsakMinutes = imsak2!.hour * 60 + imsak2!.minute;
+
+        // Şer'î gecenin uzunluğu (dakika cinsinden)
+        final seriGeceUzunlugu = (24 * 60) - aksamMinutes + imsakMinutes;
+
+        // 1. Gece Yarısı Vakti: Şer'î gecenin yarısı
+        final geceYarisiDakika = aksamMinutes + (seriGeceUzunlugu / 2).round();
+        final geceYarisiSaat = (geceYarisiDakika ~/ 60) % 24;
+        final geceYarisiDk = geceYarisiDakika % 60;
+        geceYarisi = DateTime(1970, 1, 1, geceYarisiSaat, geceYarisiDk.toInt());
+
+        // 2. Teheccüd Vakti: Şer'î gecenin son üçte biri (2/3'ü geçtikten sonra)
+        final teheccudDakika = aksamMinutes + ((seriGeceUzunlugu * 2) / 3).round();
+        final teheccudSaat = (teheccudDakika ~/ 60) % 24;
+        final teheccudDk = teheccudDakika % 60;
+        teheccud = DateTime(1970, 1, 1, teheccudSaat, teheccudDk.toInt());
+
+        // 3. Seher Vakti: Şer'î gecenin son altıda biri (5/6'sı geçtikten sonra)
+        final seherDakika = aksamMinutes + ((seriGeceUzunlugu * 5) / 6).round();
+        final seherSaat = (seherDakika ~/ 60) % 24;
+        final seherDk = seherDakika % 60;
+        seher = DateTime(1970, 1, 1, seherSaat, seherDk.toInt());
+
+        debugPrint('Gece Yarısı: ${DateFormat('HH:mm').format(geceYarisi!)}');
+        debugPrint('Teheccüd: ${DateFormat('HH:mm').format(teheccud!)}');
+        debugPrint('Seher: ${DateFormat('HH:mm').format(seher!)}');
+      } else {
+        geceYarisi = null;
+        teheccud = null;
+        seher = null;
+      }
+
       isTimeLoading = false;
       await fetchCalendar(currentLangCode);
       await fetchWordnDay(currentLangCode);
@@ -514,8 +555,7 @@ class TimeData extends ChangeSettings {
         noPray = false;
         detailedSoontime = ikindi!;
         detailedPreTime = ogle!;
-      } else if (DateTime(now.year, now.month, now.day, asrisani!.hour, asrisani!.minute, 0)
-              .difference(now) >
+      } else if (DateTime(now.year, now.month, now.day, asrisani!.hour, asrisani!.minute, 0).difference(now) >
           DateTime.now().difference(now)) {
         detailedPray = 7;
         noPray = false;
@@ -533,8 +573,7 @@ class TimeData extends ChangeSettings {
         noPray = true;
         detailedSoontime = aksam!;
         detailedPreTime = isfirar!;
-      } else if (DateTime(now.year, now.month, now.day, istibak!.hour, istibak!.minute, 0)
-              .difference(now) >
+      } else if (DateTime(now.year, now.month, now.day, istibak!.hour, istibak!.minute, 0).difference(now) >
           DateTime.now().difference(now)) {
         detailedPray = 10;
         noPray = false;
@@ -546,18 +585,35 @@ class TimeData extends ChangeSettings {
         noPray = false;
         detailedSoontime = yatsi!;
         detailedPreTime = istibak!;
-      } else if (DateTime(now.year, now.month, now.day, isaisani!.hour, isaisani!.minute, 0)
-              .difference(now) >
+      } else if (DateTime(now.year, now.month, now.day, isaisani!.hour, isaisani!.minute, 0).difference(now) >
           DateTime.now().difference(now)) {
         detailedPray = 12;
         noPray = false;
         detailedSoontime = isaisani!;
         detailedPreTime = yatsi!;
-      } else {
+      } else if (geceYarisi != null &&
+          DateTime(now.year, now.month, now.day, geceYarisi!.hour, geceYarisi!.minute, 0).difference(now) >
+              DateTime.now().difference(now)) {
         detailedPray = 13;
+        noPray = true;
+        detailedSoontime = geceYarisi!;
+        detailedPreTime = isaisani!;
+      } else if (teheccud != null &&
+          DateTime(now.year, now.month, now.day, teheccud!.hour, teheccud!.minute, 0).difference(now) > DateTime.now().difference(now)) {
+        detailedPray = 14;
+        noPray = true;
+        detailedSoontime = teheccud!;
+        detailedPreTime = geceYarisi!;
+      } else if (seher != null && DateTime(now.year, now.month, now.day, seher!.hour, seher!.minute, 0).difference(now) > DateTime.now().difference(now)) {
+        detailedPray = 15;
+        noPray = true;
+        detailedSoontime = seher!;
+        detailedPreTime = teheccud!;
+      } else {
+        detailedPray = 16;
         noPray = false;
         detailedSoontime = imsak2!;
-        detailedPreTime = isaisani!;
+        detailedPreTime = seher ?? isaisani!;
       }
 
       if (detailedSoontime == imsak2 &&

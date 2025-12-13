@@ -129,6 +129,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String get kible => 'Qibla-Zeit';
 
   @override
+  String get geceYarisi => 'Mitternacht';
+
+  @override
+  String get teheccud => 'Tahajjud';
+
+  @override
+  String get seher => 'Morgendämmerung';
+
+  @override
   String get vitir => 'Witr';
 
   @override

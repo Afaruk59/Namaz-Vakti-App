@@ -129,6 +129,15 @@ class AppLocalizationsRu extends AppLocalizations {
   String get kible => 'Время киблы';
 
   @override
+  String get geceYarisi => 'Полночь';
+
+  @override
+  String get teheccud => 'Тахаджуд';
+
+  @override
+  String get seher => 'Рассвет';
+
+  @override
   String get vitir => 'Витр';
 
   @override

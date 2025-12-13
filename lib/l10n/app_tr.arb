@@ -160,6 +160,18 @@
   "@kible": {
     "description": "Text"
   },
+  "geceYarisi": "Gece Yarısı",
+  "@geceYarisi": {
+    "description": "Text"
+  },
+  "teheccud": "Teheccüd",
+  "@teheccud": {
+    "description": "Text"
+  },
+  "seher": "Seher",
+  "@seher": {
+    "description": "Text"
+  },
   "vitir": "Vitir",
   "@vitir": {
     "description": "Text"

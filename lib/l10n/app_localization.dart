@@ -353,6 +353,24 @@ abstract class AppLocalizations {
   /// Text
   ///
   /// In tr, this message translates to:
+  /// **'Gece Yarısı'**
+  String get geceYarisi;
+
+  /// Text
+  ///
+  /// In tr, this message translates to:
+  /// **'Teheccüd'**
+  String get teheccud;
+
+  /// Text
+  ///
+  /// In tr, this message translates to:
+  /// **'Seher'**
+  String get seher;
+
+  /// Text
+  ///
+  /// In tr, this message translates to:
   /// **'Vitir'**
   String get vitir;
 

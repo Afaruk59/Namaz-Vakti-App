@@ -129,6 +129,15 @@ class AppLocalizationsTr extends AppLocalizations {
   String get kible => 'Kıble';
 
   @override
+  String get geceYarisi => 'Gece Yarısı';
+
+  @override
+  String get teheccud => 'Teheccüd';
+
+  @override
+  String get seher => 'Seher';
+
+  @override
   String get vitir => 'Vitir';
 
   @override

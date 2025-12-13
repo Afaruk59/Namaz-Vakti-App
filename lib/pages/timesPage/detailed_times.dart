@@ -38,6 +38,9 @@ class DetailedTimesBtn extends StatelessWidget {
   static DateTime? _istibak;
   static DateTime? _isaisani;
   static DateTime? _kible;
+  static DateTime? _geceYarisi;
+  static DateTime? _teheccud;
+  static DateTime? _seher;
   static String? _time;
   static int? _detailedPray;
   @override
@@ -56,6 +59,9 @@ class DetailedTimesBtn extends StatelessWidget {
     _istibak = Provider.of<TimeData>(context).istibak;
     _isaisani = Provider.of<TimeData>(context).isaisani;
     _kible = Provider.of<TimeData>(context).kible;
+    _geceYarisi = Provider.of<TimeData>(context).geceYarisi;
+    _teheccud = Provider.of<TimeData>(context).teheccud;
+    _seher = Provider.of<TimeData>(context).seher;
     _time = Provider.of<TimeData>(context).miladi;
     _detailedPray = Provider.of<TimeData>(context).detailedPray;
     TextStyle textStyleBold = TextStyle(
@@ -174,7 +180,25 @@ class DetailedTimesBtn extends StatelessWidget {
                                         ),
                                         Text(
                                           AppLocalizations.of(context)!.isaisani,
-                                          style: _detailedPray == 13 || _detailedPray == 0
+                                          style: _detailedPray == 12
+                                              ? textStyleBold
+                                              : textStyle,
+                                        ),
+                                        Text(
+                                          AppLocalizations.of(context)!.geceYarisi,
+                                          style: _detailedPray == 13
+                                              ? textStyleBold
+                                              : textStyle,
+                                        ),
+                                        Text(
+                                          AppLocalizations.of(context)!.teheccud,
+                                          style: _detailedPray == 14
+                                              ? textStyleBold
+                                              : textStyle,
+                                        ),
+                                        Text(
+                                          AppLocalizations.of(context)!.seher,
+                                          style: _detailedPray == 15
                                               ? textStyleBold
                                               : textStyle,
                                         ),
@@ -253,7 +277,31 @@ class DetailedTimesBtn extends StatelessWidget {
                                         ),
                                         Text(
                                           DateFormat('HH:mm').format(_isaisani!),
-                                          style: _detailedPray == 13 || _detailedPray == 0
+                                          style: _detailedPray == 12
+                                              ? textStyleBold
+                                              : textStyle,
+                                        ),
+                                        Text(
+                                          _geceYarisi != null
+                                              ? DateFormat('HH:mm').format(_geceYarisi!)
+                                              : '-',
+                                          style: _detailedPray == 13
+                                              ? textStyleBold
+                                              : textStyle,
+                                        ),
+                                        Text(
+                                          _teheccud != null
+                                              ? DateFormat('HH:mm').format(_teheccud!)
+                                              : '-',
+                                          style: _detailedPray == 14
+                                              ? textStyleBold
+                                              : textStyle,
+                                        ),
+                                        Text(
+                                          _seher != null
+                                              ? DateFormat('HH:mm').format(_seher!)
+                                              : '-',
+                                          style: _detailedPray == 15
                                               ? textStyleBold
                                               : textStyle,
                                         ),
