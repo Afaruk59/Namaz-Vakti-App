@@ -536,6 +536,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get close => 'إغلاق';
 
   @override
+  String get openInMaps => 'فتح في الخرائط';
+
+  @override
   String get couldNotOpenWebsite => 'تعذر فتح الموقع. يرجى المحاولة مرة أخرى.';
 
   @override

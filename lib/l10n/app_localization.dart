@@ -1112,6 +1112,12 @@ abstract class AppLocalizations {
   /// **'Kapat'**
   String get close;
 
+  /// Open in maps button text
+  ///
+  /// In tr, this message translates to:
+  /// **'Haritalarda Aç'**
+  String get openInMaps;
+
   /// Could not open website error message
   ///
   /// In tr, this message translates to:

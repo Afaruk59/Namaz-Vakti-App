@@ -540,6 +540,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get close => 'Close';
 
   @override
+  String get openInMaps => 'Open in Maps';
+
+  @override
   String get couldNotOpenWebsite => 'Could not open website. Please try again.';
 
   @override

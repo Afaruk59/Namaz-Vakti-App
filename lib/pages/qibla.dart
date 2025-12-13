@@ -24,6 +24,22 @@ import 'package:xml/xml.dart' as xml;
 import 'package:namaz_vakti_app/l10n/app_localization.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:url_launcher/url_launcher.dart';
+
+// Cami modeli
+class Mosque {
+  final String name;
+  final LatLng location;
+  final String? address;
+
+  Mosque({
+    required this.name,
+    required this.location,
+    this.address,
+  });
+}
 
 enum MapLayerType {
   street,
@@ -49,11 +65,15 @@ extension MapLayerTypeExtension on MapLayerType {
     }
   }
 
-  String get urlTemplate {
+  String urlTemplate(bool isDark) {
     switch (this) {
       case MapLayerType.street:
-        return 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+        // Koyu tema için CartoDB dark matter, açık tema için OpenStreetMap
+        return isDark
+            ? 'https://cartodb-basemaps-a.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png'
+            : 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
       case MapLayerType.satellite:
+        // Uydu görünümü her zaman aynı
         return 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
     }
   }
@@ -127,6 +147,8 @@ class _QiblaCardState extends State<QiblaCard> {
   bool _isMapLocked = true; // Harita varsayılan olarak kilitli
   MapLayerType _currentMapLayer = MapLayerType.street; // Varsayılan harita katmanı
   bool _isCompassMode = false; // Pusula modu aktif mi
+  List<Mosque> _nearbyMosques = []; // Yakındaki camiler
+  bool _isLoadingMosques = false; // Camiler yükleniyor mu
 
   @override
   void initState() {
@@ -134,6 +156,7 @@ class _QiblaCardState extends State<QiblaCard> {
     _pageController = PageController();
     _mapController = MapController();
     loadTarget();
+    _loadNearbyMosques(); // Yakındaki camileri yükle
     FlutterCompass.events!.listen((event) {
       if (mounted) {
         setState(() {
@@ -183,6 +206,107 @@ class _QiblaCardState extends State<QiblaCard> {
     } catch (e) {
       debugPrint('Qibla açısı yüklenirken hata: $e');
       // Varsayılan değeri kullan veya kullanıcıya bildirim göster
+    }
+  }
+
+  // Yakındaki camileri yükle (Overpass API kullanarak)
+  Future<void> _loadNearbyMosques() async {
+    final lat = Provider.of<ChangeSettings>(context, listen: false).currentLatitude;
+    final lon = Provider.of<ChangeSettings>(context, listen: false).currentLongitude;
+
+    if (lat == null || lon == null) {
+      debugPrint('Konum bilgisi yok, camiler yüklenemedi');
+      return;
+    }
+
+    setState(() {
+      _isLoadingMosques = true;
+    });
+
+    try {
+      // Overpass API sorgusu - 2 km yarıçapında camiler
+      final query = '''
+[out:json][timeout:25];
+(
+  node["amenity"="place_of_worship"]["religion"="muslim"](around:2000,$lat,$lon);
+  way["amenity"="place_of_worship"]["religion"="muslim"](around:2000,$lat,$lon);
+);
+out center;
+''';
+
+      final response = await http.post(
+        Uri.parse('https://overpass-api.de/api/interpreter'),
+        body: query,
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final elements = data['elements'] as List;
+
+        List<Mosque> mosques = [];
+        for (var element in elements) {
+          try {
+            double mosqueLat;
+            double mosqueLon;
+
+            // Node veya way olabilir
+            if (element['type'] == 'node') {
+              mosqueLat = element['lat'];
+              mosqueLon = element['lon'];
+            } else if (element['type'] == 'way' && element['center'] != null) {
+              mosqueLat = element['center']['lat'];
+              mosqueLon = element['center']['lon'];
+            } else {
+              continue;
+            }
+
+            final tags = element['tags'] as Map<String, dynamic>?;
+            if (tags == null) continue;
+
+            String name = tags['name'] ?? tags['name:tr'] ?? tags['name:en'] ?? 'Cami';
+            String? address = tags['addr:street'];
+
+            mosques.add(Mosque(
+              name: name,
+              location: LatLng(mosqueLat, mosqueLon),
+              address: address,
+            ));
+          } catch (e) {
+            debugPrint('Cami parse hatası: $e');
+          }
+        }
+
+        if (mounted) {
+          setState(() {
+            _nearbyMosques = mosques;
+            _isLoadingMosques = false;
+          });
+          debugPrint('${mosques.length} cami yüklendi');
+        }
+      }
+    } catch (e) {
+      debugPrint('Camiler yüklenirken hata: $e');
+      if (mounted) {
+        setState(() {
+          _isLoadingMosques = false;
+        });
+      }
+    }
+  }
+
+  // Google Maps'te aç
+  Future<void> _openInGoogleMaps(LatLng location, String name) async {
+    final lat = location.latitude;
+    final lon = location.longitude;
+
+    // Google Maps URL'i
+    final url =
+        Uri.parse('https://www.google.com/maps/search/?api=1&query=$lat,$lon&query_place_id=$name');
+
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    } else {
+      debugPrint('Google Maps açılamadı');
     }
   }
 
@@ -352,10 +476,12 @@ class _QiblaCardState extends State<QiblaCard> {
             ),
             children: [
               TileLayer(
-                urlTemplate: _currentMapLayer.urlTemplate,
-                userAgentPackageName: 'com.kurtkadiroglu.prayertimes',
+                urlTemplate: _currentMapLayer.urlTemplate(
+                  Provider.of<ChangeSettings>(context).isDark,
+                ),
+                userAgentPackageName: 'com.afaruk59.namazvaktiapp',
               ),
-              // Kullanıcının mevcut konumu
+              // Kullanıcının mevcut konumu ve Kabe
               MarkerLayer(
                 markers: [
                   Marker(
@@ -401,6 +527,102 @@ class _QiblaCardState extends State<QiblaCard> {
                   ),
                 ],
               ),
+              // Yakındaki camiler
+              MarkerLayer(
+                markers: _nearbyMosques.map((mosque) {
+                  return Marker(
+                    point: mosque.location,
+                    width: 50,
+                    height: 50,
+                    child: GestureDetector(
+                      onTap: () {
+                        // Cami bilgilerini göster ve Google Maps'te aç
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Row(
+                                children: [
+                                  Icon(
+                                    Icons.mosque,
+                                    color: Theme.of(context).colorScheme.primary,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      mosque.name,
+                                      style: const TextStyle(fontSize: 18),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              content: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  if (mosque.address != null) ...[
+                                    Row(
+                                      children: [
+                                        const Icon(Icons.location_on, size: 16),
+                                        const SizedBox(width: 4),
+                                        Expanded(child: Text(mosque.address!)),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 8),
+                                  ],
+                                  Text(
+                                    '${mosque.location.latitude.toStringAsFixed(6)}, ${mosque.location.longitude.toStringAsFixed(6)}',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: Text(AppLocalizations.of(context)!.close),
+                                ),
+                                FilledButton.icon(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    _openInGoogleMaps(mosque.location, mosque.name);
+                                  },
+                                  icon: const Icon(Icons.map, size: 18),
+                                  label: Text(AppLocalizations.of(context)!.openInMaps),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primaryContainer,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Theme.of(context).colorScheme.primary,
+                            width: 2,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.3),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Icon(
+                          Icons.mosque,
+                          color: Theme.of(context).colorScheme.primary,
+                          size: 24,
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
               // Kullanıcı konumundan Kabe'ye çizgi
               PolylineLayer(
                 polylines: [
@@ -436,13 +658,36 @@ class _QiblaCardState extends State<QiblaCard> {
                     shape: const CircleBorder(),
                   ),
                   onPressed: _toggleCompassMode,
-                  child: Icon(
-                    Icons.explore,
-                    size: 20,
-                    color: _isCompassMode
-                        ? Theme.of(context).colorScheme.primary
-                        : Theme.of(context).colorScheme.onSurface,
+                  child: _isCompassMode
+                      ? Icon(Icons.explore, size: 20, color: Theme.of(context).colorScheme.primary)
+                      : Icon(
+                          Icons.explore_outlined,
+                          size: 20,
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                ),
+                const SizedBox(height: 8),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    shape: const CircleBorder(),
                   ),
+                  onPressed: _isLoadingMosques ? null : _loadNearbyMosques,
+                  child: _isLoadingMosques
+                      ? SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        )
+                      : Icon(
+                          Icons.mosque,
+                          size: 20,
+                          color: _nearbyMosques.isNotEmpty
+                              ? Theme.of(context).colorScheme.primary
+                              : Theme.of(context).colorScheme.onSurface,
+                        ),
                 ),
               ],
             ),

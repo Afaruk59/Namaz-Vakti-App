@@ -544,6 +544,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get close => 'Chiudi';
 
   @override
+  String get openInMaps => 'Apri in Mappe';
+
+  @override
   String get couldNotOpenWebsite => 'Impossibile aprire il sito web. Riprova.';
 
   @override

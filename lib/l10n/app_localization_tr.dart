@@ -542,6 +542,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get close => 'Kapat';
 
   @override
+  String get openInMaps => 'Haritalarda Aç';
+
+  @override
   String get couldNotOpenWebsite =>
       'Web sitesi açılamadı. Lütfen tekrar deneyin.';
 

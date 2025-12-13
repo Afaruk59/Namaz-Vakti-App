@@ -541,6 +541,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get close => 'Закрыть';
 
   @override
+  String get openInMaps => 'Открыть в Картах';
+
+  @override
   String get couldNotOpenWebsite =>
       'Не удалось открыть сайт. Попробуйте снова.';
 

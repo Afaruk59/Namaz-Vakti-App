@@ -239,6 +239,7 @@
     "description": "No description available message"
   },
   "close": "Close",
+  "openInMaps": "Open in Maps",
   "@close": {
     "description": "Close button text"
   },

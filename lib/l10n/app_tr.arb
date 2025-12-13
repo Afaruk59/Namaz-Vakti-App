@@ -686,6 +686,10 @@
   "@close": {
     "description": "Close button text"
   },
+  "openInMaps": "Haritalarda Aç",
+  "@openInMaps": {
+    "description": "Open in maps button text"
+  },
   "couldNotOpenWebsite": "Web sitesi açılamadı. Lütfen tekrar deneyin.",
   "@couldNotOpenWebsite": {
     "description": "Could not open website error message"
