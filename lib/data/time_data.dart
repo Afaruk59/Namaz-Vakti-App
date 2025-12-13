@@ -338,7 +338,7 @@ class TimeData extends ChangeSettings {
 
   Future<void> fetchWordnDay(String langCode) async {
     final url =
-        'https://turktakvim.com/index.php?tarih=${DateFormat('yyyy-MM-dd').format(selectedDate!.add(const Duration(days: 1)))}&page=onyuz&dil=${langCode == 'tr' ? 'tr' : 'en'}';
+        'https://turktakvim.com/index.php?tarih=${DateFormat('yyyy-MM-dd').format(selectedDate!)}&page=onyuz&dil=${langCode == 'tr' ? 'tr' : 'en'}';
 
     try {
       final response = await fetchWithFallback(url);
@@ -363,7 +363,7 @@ class TimeData extends ChangeSettings {
 
   Future<void> fetchCalendar(String langCode) async {
     final url =
-        'https://turktakvim.com/index.php?tarih=${DateFormat('yyyy-MM-dd').format(selectedDate!.add(const Duration(days: 1)))}&page=arkayuz&dil=${langCode == 'tr' ? 'tr' : 'en'}';
+        'https://turktakvim.com/index.php?tarih=${DateFormat('yyyy-MM-dd').format(selectedDate!)}&page=arkayuz&dil=${langCode == 'tr' ? 'tr' : 'en'}';
 
     try {
       final response = await fetchWithFallback(url);
@@ -386,7 +386,7 @@ class TimeData extends ChangeSettings {
 
   Future<void> fetchHijriCalendar(String langCode) async {
     final url =
-        'https://turktakvim.com/index.php?tarih=${DateFormat('yyyy-MM-dd').format(selectedDate!.add(const Duration(days: 1)))}&page=onyuz&dil=${langCode == 'tr' ? 'tr' : (langCode == 'ar' ? 'ar' : 'en')}';
+        'https://turktakvim.com/index.php?tarih=${DateFormat('yyyy-MM-dd').format(selectedDate!)}&page=onyuz&dil=${langCode == 'tr' ? 'tr' : (langCode == 'ar' ? 'ar' : 'en')}';
 
     try {
       final response = await fetchWithFallback(url);
@@ -512,108 +512,107 @@ class TimeData extends ChangeSettings {
     DateTime now = DateTime.now();
     clock = DateFormat('HH:mm:ss').format(now);
 
-    if (isTimeLoading == false && imsak != null) {
-      if (DateTime(now.year, now.month, now.day, imsak!.hour, imsak!.minute, 0).difference(now) >
+    if (isTimeLoading == false && geceYarisi != null) {
+      if (DateTime(now.year, now.month, now.day, geceYarisi!.hour, geceYarisi!.minute, 0).difference(now) >
           DateTime.now().difference(now)) {
         detailedPray = 0;
         noPray = false;
-        detailedSoontime = imsak!;
+        detailedSoontime = geceYarisi!;
         detailedPreTime = yatsi2!;
-      } else if (DateTime(now.year, now.month, now.day, sabah!.hour, sabah!.minute, 0).difference(now) >
+      } else if (DateTime(now.year, now.month, now.day, teheccud!.hour, teheccud!.minute, 0).difference(now) >
           DateTime.now().difference(now)) {
         detailedPray = 1;
+        noPray = false;
+        detailedSoontime = teheccud!;
+        detailedPreTime = geceYarisi!;
+      } else if (DateTime(now.year, now.month, now.day, seher!.hour, seher!.minute, 0).difference(now) >
+          DateTime.now().difference(now)) {
+        detailedPray = 2;
+        noPray = false;
+        detailedSoontime = seher!;
+        detailedPreTime = teheccud!;
+      } else if (DateTime(now.year, now.month, now.day, imsak!.hour, imsak!.minute, 0).difference(now) >
+          DateTime.now().difference(now)) {
+        detailedPray = 3;
+        noPray = false;
+        detailedSoontime = imsak!;
+        detailedPreTime = seher!;
+      } else if (DateTime(now.year, now.month, now.day, sabah!.hour, sabah!.minute, 0).difference(now) >
+          DateTime.now().difference(now)) {
+        detailedPray = 4;
         noPray = false;
         detailedSoontime = sabah!;
         detailedPreTime = imsak!;
       } else if (DateTime(now.year, now.month, now.day, gunes!.hour, gunes!.minute, 0).difference(now) >
           DateTime.now().difference(now)) {
-        detailedPray = 2;
+        detailedPray = 5;
         noPray = false;
         detailedSoontime = gunes!;
         detailedPreTime = sabah!;
       } else if (DateTime(now.year, now.month, now.day, israk!.hour, israk!.minute, 0).difference(now) >
           DateTime.now().difference(now)) {
-        detailedPray = 3;
+        detailedPray = 6;
         noPray = true;
         detailedSoontime = israk!;
         detailedPreTime = gunes!;
       } else if (DateTime(now.year, now.month, now.day, kerahat!.hour, kerahat!.minute, 0).difference(now) >
           DateTime.now().difference(now)) {
-        detailedPray = 4;
+        detailedPray = 7;
         noPray = false;
         detailedSoontime = kerahat!;
         detailedPreTime = israk!;
       } else if (DateTime(now.year, now.month, now.day, ogle!.hour, ogle!.minute, 0).difference(now) >
           DateTime.now().difference(now)) {
-        detailedPray = 5;
+        detailedPray = 8;
         noPray = true;
         detailedSoontime = ogle!;
         detailedPreTime = kerahat!;
       } else if (DateTime(now.year, now.month, now.day, ikindi!.hour, ikindi!.minute, 0).difference(now) >
           DateTime.now().difference(now)) {
-        detailedPray = 6;
+        detailedPray = 9;
         noPray = false;
         detailedSoontime = ikindi!;
         detailedPreTime = ogle!;
       } else if (DateTime(now.year, now.month, now.day, asrisani!.hour, asrisani!.minute, 0).difference(now) >
           DateTime.now().difference(now)) {
-        detailedPray = 7;
+        detailedPray = 10;
         noPray = false;
         detailedSoontime = asrisani!;
         detailedPreTime = ikindi!;
       } else if (DateTime(now.year, now.month, now.day, isfirar!.hour, isfirar!.minute, 0).difference(now) >
           DateTime.now().difference(now)) {
-        detailedPray = 8;
+        detailedPray = 11;
         noPray = false;
         detailedSoontime = isfirar!;
         detailedPreTime = asrisani!;
       } else if (DateTime(now.year, now.month, now.day, aksam!.hour, aksam!.minute, 0).difference(now) >
           DateTime.now().difference(now)) {
-        detailedPray = 9;
+        detailedPray = 12;
         noPray = true;
         detailedSoontime = aksam!;
         detailedPreTime = isfirar!;
       } else if (DateTime(now.year, now.month, now.day, istibak!.hour, istibak!.minute, 0).difference(now) >
           DateTime.now().difference(now)) {
-        detailedPray = 10;
+        detailedPray = 13;
         noPray = false;
         detailedSoontime = istibak!;
         detailedPreTime = aksam!;
       } else if (DateTime(now.year, now.month, now.day, yatsi!.hour, yatsi!.minute, 0).difference(now) >
           DateTime.now().difference(now)) {
-        detailedPray = 11;
+        detailedPray = 14;
         noPray = false;
         detailedSoontime = yatsi!;
         detailedPreTime = istibak!;
-      } else if (DateTime(now.year, now.month, now.day, isaisani!.hour, isaisani!.minute, 0).difference(now) >
-          DateTime.now().difference(now)) {
-        detailedPray = 12;
+      } else if (DateTime(now.year, now.month, now.day, isaisani!.hour, isaisani!.minute, 0).difference(now) > DateTime.now().difference(now)) {
+        detailedPray = 15;
         noPray = false;
         detailedSoontime = isaisani!;
         detailedPreTime = yatsi!;
-      } else if (geceYarisi != null &&
-          DateTime(now.year, now.month, now.day, geceYarisi!.hour, geceYarisi!.minute, 0).difference(now) >
-              DateTime.now().difference(now)) {
-        detailedPray = 13;
-        noPray = true;
-        detailedSoontime = geceYarisi!;
-        detailedPreTime = isaisani!;
-      } else if (teheccud != null &&
-          DateTime(now.year, now.month, now.day, teheccud!.hour, teheccud!.minute, 0).difference(now) > DateTime.now().difference(now)) {
-        detailedPray = 14;
-        noPray = true;
-        detailedSoontime = teheccud!;
-        detailedPreTime = geceYarisi!;
-      } else if (seher != null && DateTime(now.year, now.month, now.day, seher!.hour, seher!.minute, 0).difference(now) > DateTime.now().difference(now)) {
-        detailedPray = 15;
-        noPray = true;
-        detailedSoontime = seher!;
-        detailedPreTime = teheccud!;
       } else {
         detailedPray = 16;
         noPray = false;
         detailedSoontime = imsak2!;
-        detailedPreTime = seher ?? isaisani!;
+        detailedPreTime = isaisani!;
       }
 
       if (detailedSoontime == imsak2 &&
