@@ -299,14 +299,40 @@ out center;
     final lat = location.latitude;
     final lon = location.longitude;
 
-    // Google Maps URL'i
-    final url =
-        Uri.parse('https://www.google.com/maps/search/?api=1&query=$lat,$lon&query_place_id=$name');
+    // Farklı URL formatlarını sırayla dene
+    final urls = [
+      // Google Maps uygulamasını direkt aç (Android/iOS)
+      Uri.parse('geo:$lat,$lon?q=$lat,$lon(${Uri.encodeComponent(name)})'),
+      // Google Maps web
+      Uri.parse('https://www.google.com/maps/search/?api=1&query=$lat,$lon'),
+      // Alternatif format
+      Uri.parse('https://maps.google.com/?q=$lat,$lon'),
+    ];
 
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url, mode: LaunchMode.externalApplication);
-    } else {
-      debugPrint('Google Maps açılamadı');
+    for (var url in urls) {
+      try {
+        final canLaunch = await canLaunchUrl(url);
+        debugPrint('Denenen URL: $url - canLaunch: $canLaunch');
+
+        if (canLaunch) {
+          await launchUrl(url, mode: LaunchMode.externalApplication);
+          debugPrint('Harita başarıyla açıldı: $url');
+          return;
+        }
+      } catch (e) {
+        debugPrint('URL deneme hatası ($url): $e');
+        // Bir sonraki URL'i dene
+        continue;
+      }
+    }
+
+    // Hiçbir URL çalışmadıysa, son çare olarak canLaunchUrl kontrolü olmadan dene
+    try {
+      final fallbackUrl = Uri.parse('https://www.google.com/maps/search/?api=1&query=$lat,$lon');
+      await launchUrl(fallbackUrl, mode: LaunchMode.externalApplication);
+      debugPrint('Fallback URL ile harita açıldı');
+    } catch (e) {
+      debugPrint('Harita açılamadı - tüm denemeler başarısız: $e');
     }
   }
 
