@@ -29,7 +29,6 @@ import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:namaz_vakti_app/pages/timesPage/main_times.dart';
 import 'package:namaz_vakti_app/data/time_data.dart';
 import 'package:provider/provider.dart';
-import 'package:hijri/hijri_calendar.dart';
 import 'package:namaz_vakti_app/l10n/app_localization.dart';
 
 class Times extends StatelessWidget {
@@ -235,25 +234,9 @@ class TopTimesCard extends StatefulWidget {
 
 class _TopTimesCardState extends State<TopTimesCard> {
   String miladi = '';
-  String hicri = '';
   String day = '';
   int count = 0;
   DateTime customDate = DateTime.now();
-
-  List<String> hijriList = [
-    'Muharrem',
-    'Safer',
-    'Rebiülevvel',
-    'Rebiülahir',
-    'Cemayizelevvel',
-    'Cemayizelahir',
-    'Recep',
-    'Şaban',
-    'Ramazan',
-    'Şevval',
-    'Zilkade',
-    'Zilhicce'
-  ];
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
@@ -275,13 +258,6 @@ class _TopTimesCardState extends State<TopTimesCard> {
       miladi =
           DateFormat('dd MMMM yyyy', Provider.of<ChangeSettings>(context, listen: false).langCode)
               .format(DateTime.now().add(Duration(days: count)));
-      if (Provider.of<ChangeSettings>(context, listen: false).langCode == 'tr') {
-        hicri =
-            '${HijriCalendar.fromDate(DateTime.now().add(Duration(days: count))).toFormat('dd')} ${hijriList[HijriCalendar.fromDate(DateTime.now().add(Duration(days: count))).hMonth - 1]} ${HijriCalendar.fromDate(DateTime.now().add(Duration(days: count))).toFormat('yy')}';
-      } else {
-        hicri = HijriCalendar.fromDate(DateTime.now().add(Duration(days: count)))
-            .toFormat('dd MMMM yy');
-      }
       day = DateFormat('EEEE', Provider.of<ChangeSettings>(context, listen: false).langCode)
           .format(DateTime.now().add(Duration(days: count)));
     });
@@ -429,13 +405,24 @@ class _TopTimesCardState extends State<TopTimesCard> {
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
                 child: FittedBox(
                   fit: BoxFit.scaleDown,
-                  child: Text(
-                    textAlign: TextAlign.center,
-                    hicri,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                    ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '${Provider.of<TimeData>(context).hijriDay} ${Provider.of<TimeData>(context).hijriMonth}',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
+                      ),
+                      Text(
+                        Provider.of<TimeData>(context).hijriYear,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),

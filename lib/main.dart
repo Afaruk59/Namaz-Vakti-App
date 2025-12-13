@@ -18,7 +18,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hijri/hijri_calendar.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:namaz_vakti_app/books/features/book/audio/audio_player_service.dart';
 import 'package:namaz_vakti_app/books/features/book/audio/media_controller.dart';
@@ -119,8 +118,6 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
-  Locale? _lastLocale;
-
   @override
   void initState() {
     super.initState();
@@ -142,13 +139,6 @@ class _MainAppState extends State<MainApp> {
   Widget build(BuildContext context) {
     final settings = Provider.of<ChangeSettings>(context);
     final settingsNoListen = Provider.of<ChangeSettings>(context, listen: false);
-
-    if (_lastLocale != settings.locale) {
-      _lastLocale = settings.locale;
-      settings.locale == const Locale('ar')
-          ? HijriCalendar.setLocal('ar')
-          : HijriCalendar.setLocal('en');
-    }
 
     final borderRadius = settings.rounded ? 50.0 : 10.0;
     final isDarkMode = settings.isDark;

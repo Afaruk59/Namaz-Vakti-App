@@ -71,6 +71,10 @@ class TimeData extends ChangeSettings {
   String calendarTitle = '';
   String calendar = '';
 
+  String hijriDay = '';
+  String hijriMonth = '';
+  String hijriYear = '';
+
   static Future<http.Response> fetchWithFallback(String url) async {
     // URL'yi düzenle - protokol yoksa ekle, varsa al
     String baseUrl = url;
@@ -162,7 +166,6 @@ class TimeData extends ChangeSettings {
   }
 
   Future<void> loadPrayerTimes(DateTime time, BuildContext context) async {
-    // BuildContext'i async işlemlerden ÖNCE kullan
     final currentLangCode = Provider.of<ChangeSettings>(context, listen: false).langCode ?? 'tr';
 
     String url =
@@ -285,9 +288,9 @@ class TimeData extends ChangeSettings {
         yatsi2 = null;
       }
       isTimeLoading = false;
-      // Dil kodunu parametre olarak geç (BuildContext güvenli değil)
       await fetchCalendar(currentLangCode);
       await fetchWordnDay(currentLangCode);
+      await fetchHijriCalendar(currentLangCode);
       notifyListeners();
     }
   }
@@ -338,6 +341,43 @@ class TimeData extends ChangeSettings {
       calendarTitle = "Hata oluştu: $e";
       calendar = "Hata oluştu: $e";
     }
+  }
+
+  Future<void> fetchHijriCalendar(String langCode) async {
+    final url =
+        'https://turktakvim.com/index.php?tarih=${DateFormat('yyyy-MM-dd').format(selectedDate!.add(const Duration(days: 1)))}&page=onyuz&dil=${langCode == 'tr' ? 'tr' : (langCode == 'ar' ? 'ar' : 'en')}';
+
+    try {
+      final response = await fetchWithFallback(url);
+      if (response.statusCode == 200) {
+        final document = html_parser.parse(response.body);
+        final dayElement = document.querySelector(
+            'html body div#Wrapper article#contents div div#takvimon_part1 div.hicri');
+
+        final hijriFullText = dayElement?.text ?? "Günün önemi bulunamadı.";
+
+        // Hicrî tarihi parçalara ayır
+        final parts = hijriFullText.trim().split(RegExp(r'\s+'));
+        if (parts.length >= 3) {
+          hijriDay = parts[0]; // Gün
+          hijriMonth = parts[1]; // Ay
+          hijriYear = parts[2]; // Yıl
+        } else {
+          hijriDay = hijriFullText;
+          hijriMonth = '';
+          hijriYear = '';
+        }
+      } else {
+        hijriDay = "Hicrî Takvim Siteye erişim başarısız.";
+        hijriMonth = '';
+        hijriYear = '';
+      }
+    } catch (e) {
+      hijriDay = "Hicrî Takvim Hata oluştu: $e";
+      hijriMonth = '';
+      hijriYear = '';
+    }
+    debugPrint('Hicrî Takvim - Gün: $hijriDay, Ay: $hijriMonth, Yıl: $hijriYear');
   }
 
   void switchClock(bool value) {
