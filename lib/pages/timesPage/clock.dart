@@ -77,27 +77,33 @@ class _ClockState extends State<Clock> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
-  final List<String> _prayList = [
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-  ];
+  // Vakitlerin adlarını al (dinamik sıralama)
+  String _getPrayerName(BuildContext context, int index) {
+    final localizations = AppLocalizations.of(context)!;
+    final prayerTimes = Provider.of<TimeData>(context, listen: false).getMainPrayerTimes();
+
+    if (index < 0 || index >= prayerTimes.length) {
+      return localizations.timeLeftImsak;
+    }
+
+    final prayerName = prayerTimes[index].name;
+
+    // İsim çeviri map'i
+    final nameMap = {
+      'imsak': localizations.timeLeftImsak,
+      'sabah': localizations.timeLeftSabah,
+      'gunes': localizations.timeLeftGunes,
+      'ogle': localizations.timeLeftOgle,
+      'ikindi': localizations.timeLeftIkindi,
+      'aksam': localizations.timeLeftAksam,
+      'yatsi': localizations.timeLeftYatsi,
+    };
+
+    return nameMap[prayerName] ?? localizations.timeLeftImsak;
+  }
 
   @override
   Widget build(BuildContext context) {
-    _prayList[0] = AppLocalizations.of(context)!.timeLeftImsak;
-    _prayList[1] = AppLocalizations.of(context)!.timeLeftSabah;
-    _prayList[2] = AppLocalizations.of(context)!.timeLeftGunes;
-    _prayList[3] = AppLocalizations.of(context)!.timeLeftOgle;
-    _prayList[4] = AppLocalizations.of(context)!.timeLeftIkindi;
-    _prayList[5] = AppLocalizations.of(context)!.timeLeftAksam;
-    _prayList[6] = AppLocalizations.of(context)!.timeLeftYatsi;
-    _prayList[7] = AppLocalizations.of(context)!.timeLeftImsak;
     return Provider.of<TimeData>(context).isClockEnabled == false
         ? IconButton.filledTonal(
             iconSize: 25,
@@ -143,7 +149,7 @@ class _ClockState extends State<Clock> with SingleTickerProviderStateMixin {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Text(
-                          _prayList[Provider.of<TimeData>(context).pray],
+                          _getPrayerName(context, Provider.of<TimeData>(context).nextPray),
                           style: TextStyle(
                               fontSize: Provider.of<ChangeSettings>(context).currentHeight! < 700.0
                                   ? 15.0

@@ -24,46 +24,59 @@ import 'package:namaz_vakti_app/l10n/app_localization.dart';
 class DetailedTimesBtn extends StatelessWidget {
   const DetailedTimesBtn({super.key});
 
-  static DateTime? _imsak;
-  static DateTime? _sabah;
-  static DateTime? _gunes;
-  static DateTime? _ogle;
-  static DateTime? _ikindi;
-  static DateTime? _aksam;
-  static DateTime? _yatsi;
-  static DateTime? _israk;
-  static DateTime? _kerahat;
-  static DateTime? _asrisani;
-  static DateTime? _isfirar;
-  static DateTime? _istibak;
-  static DateTime? _isaisani;
-  static DateTime? _kible;
-  static DateTime? _geceYarisi;
-  static DateTime? _teheccud;
-  static DateTime? _seher;
-  static String? _time;
-  static int? _detailedPray;
+  // Detaylı vakitleri yerelleştirilmiş isimlerle döndür (kronolojik sıralı)
+  List<Map<String, dynamic>> _getDetailedPrayerTimesWithNames(BuildContext context) {
+    final timeData = Provider.of<TimeData>(context, listen: false);
+    final localizations = AppLocalizations.of(context)!;
+
+    // İsim çeviri map'i
+    final nameMap = {
+      'geceYarisi': localizations.geceYarisi,
+      'teheccud': localizations.teheccud,
+      'seher': localizations.seher,
+      'imsak': localizations.imsak,
+      'sabah': localizations.sabah,
+      'gunes': localizations.gunes,
+      'israk': localizations.israk,
+      'kerahat': localizations.kerahat,
+      'ogle': localizations.ogle,
+      'ikindi': localizations.ikindi,
+      'asrisani': localizations.asrisani,
+      'isfirar': localizations.isfirar,
+      'aksam': localizations.aksam,
+      'istibak': localizations.istibak,
+      'yatsi': localizations.yatsi,
+      'isaisani': localizations.isaisani,
+      'imsak2': localizations.imsak,
+    };
+
+    // Sıralanmış vakitleri al ve map'e dönüştür
+    final sortedTimes = timeData.getDetailedPrayerTimes().map((prayer) {
+      return {
+        'name': nameMap[prayer.name] ?? prayer.name,
+        'time': prayer.time,
+        'index': prayer.index,
+      };
+    }).toList();
+
+    // Kıble vaktini en sona ekle (sıralamaya dahil edilmez, hiçbir zaman aktif olmaz)
+    if (timeData.kible != null) {
+      sortedTimes.add({
+        'name': localizations.kible,
+        'time': timeData.kible,
+        'index': -1, // Kıble hiçbir zaman aktif olmayacak (-1 index kullanılmıyor)
+      });
+    }
+
+    return sortedTimes;
+  }
+
   @override
   Widget build(BuildContext context) {
-    _imsak = Provider.of<TimeData>(context).imsak;
-    _sabah = Provider.of<TimeData>(context).sabah;
-    _gunes = Provider.of<TimeData>(context).gunes;
-    _ogle = Provider.of<TimeData>(context).ogle;
-    _ikindi = Provider.of<TimeData>(context).ikindi;
-    _aksam = Provider.of<TimeData>(context).aksam;
-    _yatsi = Provider.of<TimeData>(context).yatsi;
-    _israk = Provider.of<TimeData>(context).israk;
-    _kerahat = Provider.of<TimeData>(context).kerahat;
-    _asrisani = Provider.of<TimeData>(context).asrisani;
-    _isfirar = Provider.of<TimeData>(context).isfirar;
-    _istibak = Provider.of<TimeData>(context).istibak;
-    _isaisani = Provider.of<TimeData>(context).isaisani;
-    _kible = Provider.of<TimeData>(context).kible;
-    _geceYarisi = Provider.of<TimeData>(context).geceYarisi;
-    _teheccud = Provider.of<TimeData>(context).teheccud;
-    _seher = Provider.of<TimeData>(context).seher;
-    _time = Provider.of<TimeData>(context).miladi;
-    _detailedPray = Provider.of<TimeData>(context).detailedPray;
+    final timeData = Provider.of<TimeData>(context);
+    final detailedPray = timeData.detailedPray;
+    final time = timeData.miladi;
+    final prayerTimes = _getDetailedPrayerTimesWithNames(context);
     TextStyle textStyleBold = TextStyle(
       color: Theme.of(context).colorScheme.primary,
       fontSize: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 20 : 22,
@@ -103,7 +116,7 @@ class DetailedTimesBtn extends StatelessWidget {
                         height: 20,
                       ),
                       Text(
-                        _time!,
+                        time,
                         textAlign: TextAlign.center,
                       ),
                       Expanded(
@@ -129,76 +142,13 @@ class DetailedTimesBtn extends StatelessWidget {
                                     ),
                                     child: Column(
                                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        Text(
-                                          AppLocalizations.of(context)!.geceYarisi,
-                                          style: _detailedPray == 1 ? textStyleBold : textStyle,
-                                        ),
-                                        Text(
-                                          AppLocalizations.of(context)!.teheccud,
-                                          style: _detailedPray == 2 ? textStyleBold : textStyle,
-                                        ),
-                                        Text(
-                                          AppLocalizations.of(context)!.seher,
-                                          style: _detailedPray == 3 ? textStyleBold : textStyle,
-                                        ),
-                                        Text(
-                                          AppLocalizations.of(context)!.imsak,
-                                          style: _detailedPray == 4 ? textStyleBold : textStyle,
-                                        ),
-                                        Text(
-                                          AppLocalizations.of(context)!.sabah,
-                                          style: _detailedPray == 5 ? textStyleBold : textStyle,
-                                        ),
-                                        Text(
-                                          AppLocalizations.of(context)!.gunes,
-                                          style: _detailedPray == 6 ? textStyleBold : textStyle,
-                                        ),
-                                        Text(
-                                          AppLocalizations.of(context)!.israk,
-                                          style: _detailedPray == 7 ? textStyleBold : textStyle,
-                                        ),
-                                        Text(
-                                          AppLocalizations.of(context)!.kerahat,
-                                          style: _detailedPray == 8 ? textStyleBold : textStyle,
-                                        ),
-                                        Text(
-                                          AppLocalizations.of(context)!.ogle,
-                                          style: _detailedPray == 9 ? textStyleBold : textStyle,
-                                        ),
-                                        Text(
-                                          AppLocalizations.of(context)!.ikindi,
-                                          style: _detailedPray == 10 ? textStyleBold : textStyle,
-                                        ),
-                                        Text(
-                                          AppLocalizations.of(context)!.asrisani,
-                                          style: _detailedPray == 11 ? textStyleBold : textStyle,
-                                        ),
-                                        Text(
-                                          AppLocalizations.of(context)!.isfirar,
-                                          style: _detailedPray == 12 ? textStyleBold : textStyle,
-                                        ),
-                                        Text(
-                                          AppLocalizations.of(context)!.aksam,
-                                          style: _detailedPray == 13 ? textStyleBold : textStyle,
-                                        ),
-                                        Text(
-                                          AppLocalizations.of(context)!.istibak,
-                                          style: _detailedPray == 14 ? textStyleBold : textStyle,
-                                        ),
-                                        Text(
-                                          AppLocalizations.of(context)!.yatsi,
-                                          style: _detailedPray == 15 ? textStyleBold : textStyle,
-                                        ),
-                                        Text(
-                                          AppLocalizations.of(context)!.isaisani,
-                                          style: _detailedPray == 16 ? textStyleBold : textStyle,
-                                        ),
-                                        Text(
-                                          AppLocalizations.of(context)!.kible,
-                                          style: textStyle,
-                                        ),
-                                      ],
+                                      children: prayerTimes.map((prayer) {
+                                        final isActive = detailedPray == prayer['index'];
+                                        return Text(
+                                          prayer['name'],
+                                          style: isActive ? textStyleBold : textStyle,
+                                        );
+                                      }).toList(),
                                     ),
                                   ),
                                 ),
@@ -218,84 +168,16 @@ class DetailedTimesBtn extends StatelessWidget {
                                     ),
                                     child: Column(
                                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        Text(
-                                          _geceYarisi != null
-                                              ? DateFormat('HH:mm').format(_geceYarisi!)
-                                              : '-',
-                                          style: _detailedPray == 1 ? textStyleBold : textStyle,
-                                        ),
-                                        Text(
-                                          _teheccud != null
-                                              ? DateFormat('HH:mm').format(_teheccud!)
-                                              : '-',
-                                          style: _detailedPray == 2 ? textStyleBold : textStyle,
-                                        ),
-                                        Text(
-                                          _seher != null
-                                              ? DateFormat('HH:mm').format(_seher!)
-                                              : '-',
-                                          style: _detailedPray == 3 ? textStyleBold : textStyle,
-                                        ),
-                                        Text(
-                                          DateFormat('HH:mm').format(_imsak!),
-                                          style: _detailedPray == 4 ? textStyleBold : textStyle,
-                                        ),
-                                        Text(
-                                          DateFormat('HH:mm').format(_sabah!),
-                                          style: _detailedPray == 5 ? textStyleBold : textStyle,
-                                        ),
-                                        Text(
-                                          DateFormat('HH:mm').format(_gunes!),
-                                          style: _detailedPray == 6 ? textStyleBold : textStyle,
-                                        ),
-                                        Text(
-                                          DateFormat('HH:mm').format(_israk!),
-                                          style: _detailedPray == 7 ? textStyleBold : textStyle,
-                                        ),
-                                        Text(
-                                          DateFormat('HH:mm').format(_kerahat!),
-                                          style: _detailedPray == 8 ? textStyleBold : textStyle,
-                                        ),
-                                        Text(
-                                          DateFormat('HH:mm').format(_ogle!),
-                                          style: _detailedPray == 9 ? textStyleBold : textStyle,
-                                        ),
-                                        Text(
-                                          DateFormat('HH:mm').format(_ikindi!),
-                                          style: _detailedPray == 10 ? textStyleBold : textStyle,
-                                        ),
-                                        Text(
-                                          DateFormat('HH:mm').format(_asrisani!),
-                                          style: _detailedPray == 11 ? textStyleBold : textStyle,
-                                        ),
-                                        Text(
-                                          DateFormat('HH:mm').format(_isfirar!),
-                                          style: _detailedPray == 12 ? textStyleBold : textStyle,
-                                        ),
-                                        Text(
-                                          DateFormat('HH:mm').format(_aksam!),
-                                          style: _detailedPray == 13 ? textStyleBold : textStyle,
-                                        ),
-                                        Text(
-                                          DateFormat('HH:mm').format(_istibak!),
-                                          style: _detailedPray == 14 ? textStyleBold : textStyle,
-                                        ),
-                                        Text(
-                                          DateFormat('HH:mm').format(_yatsi!),
-                                          style: _detailedPray == 15 ? textStyleBold : textStyle,
-                                        ),
-                                        Text(
-                                          DateFormat('HH:mm').format(_isaisani!),
-                                          style: _detailedPray == 16 ? textStyleBold : textStyle,
-                                        ),
-                                        Text(
-                                          _kible != null
-                                              ? DateFormat('HH:mm').format(_kible!)
-                                              : '-',
-                                          style: textStyle,
-                                        ),
-                                      ],
+                                      children: prayerTimes.map((prayer) {
+                                        final isActive = detailedPray == prayer['index'];
+                                        final timeStr = prayer['time'] != null
+                                            ? DateFormat('HH:mm').format(prayer['time'])
+                                            : '-';
+                                        return Text(
+                                          timeStr,
+                                          style: isActive ? textStyleBold : textStyle,
+                                        );
+                                      }).toList(),
                                     ),
                                   ),
                                 ),

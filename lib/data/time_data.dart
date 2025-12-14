@@ -24,6 +24,21 @@ import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as html_parser;
 import 'package:http/io_client.dart';
 
+// Vakit modeli
+class PrayerTimeModel {
+  final String name;
+  final DateTime? time;
+  final int index;
+  final bool isNoPray; // Namaz kılınamayan vakit mi?
+
+  PrayerTimeModel({
+    required this.name,
+    required this.time,
+    required this.index,
+    this.isNoPray = false,
+  });
+}
+
 class TimeData extends ChangeSettings {
   DateTime? yatsi2;
   DateTime? imsak2;
@@ -55,14 +70,16 @@ class TimeData extends ChangeSettings {
 
   String clock = '';
   Duration difference = const Duration(minutes: 1);
-  int pray = 0;
+  int pray = 0; // Şu anki geçerli vakit index'i (widget'larda vurgulamak için)
+  int nextPray = 0; // Bir sonraki vakit index'i (clock'ta göstermek için)
   DateTime soontime = DateTime.now();
   DateTime preTime = DateTime.now();
   Duration mainDifference = const Duration(minutes: 1);
   bool isClockEnabled = true;
 
   Duration detailedDifference = const Duration(minutes: 1);
-  int detailedPray = 0;
+  int detailedPray = 0; // Şu anki geçerli vakit index'i (detaylı vakitler için)
+  int detailedNextPray = 0; // Bir sonraki vakit index'i (detaylı vakitler için)
   DateTime detailedSoontime = DateTime.now();
   DateTime detailedPreTime = DateTime.now();
   Duration detailedMainDifference = const Duration(minutes: 1);
@@ -77,6 +94,93 @@ class TimeData extends ChangeSettings {
   String hijriDay = '';
   String hijriMonth = '';
   String hijriYear = '';
+
+  // Ana vakitler listesi (gerçek kronolojik saat sırasına göre)
+  // NOT: İmsak2 ve Yatsı2 widget'larda gösterilmez, sadece süre hesaplaması için kullanılır
+  List<PrayerTimeModel> getMainPrayerTimes() {
+    // Sadece görünür vakitleri ekle (imsak2 eklenmiyor)
+    final times = [
+      PrayerTimeModel(name: 'imsak', time: imsak, index: 0),
+      PrayerTimeModel(name: 'sabah', time: sabah, index: 1),
+      PrayerTimeModel(name: 'gunes', time: gunes, index: 2),
+      PrayerTimeModel(name: 'ogle', time: ogle, index: 3),
+      PrayerTimeModel(name: 'ikindi', time: ikindi, index: 4),
+      PrayerTimeModel(name: 'aksam', time: aksam, index: 5),
+      PrayerTimeModel(name: 'yatsi', time: yatsi, index: 6),
+    ];
+
+    // Null olmayan vakitleri filtrele
+    final validTimes = times.where((t) => t.time != null).toList();
+
+    // Sadece saat/dakika değerine göre sırala (00:00 - 23:59 doğal sırada)
+    validTimes.sort((a, b) {
+      final hourA = a.time!.hour;
+      final hourB = b.time!.hour;
+
+      if (hourA != hourB) return hourA.compareTo(hourB);
+      return a.time!.minute.compareTo(b.time!.minute);
+    });
+
+    // Sıralandıktan sonra her vakite yeni index ver (updateTime'da kullanılacak)
+    for (int i = 0; i < validTimes.length; i++) {
+      validTimes[i] = PrayerTimeModel(
+        name: validTimes[i].name,
+        time: validTimes[i].time,
+        index: i,
+        isNoPray: validTimes[i].isNoPray,
+      );
+    }
+
+    return validTimes;
+  }
+
+  // Detaylı vakitler listesi (gerçek kronolojik saat sırasına göre)
+  // NOT: İmsak2 ve Yatsı2 widget'larda gösterilmez, sadece süre hesaplaması için kullanılır
+  List<PrayerTimeModel> getDetailedPrayerTimes() {
+    // Sadece görünür vakitleri ekle (imsak2 eklenmiyor)
+    final times = [
+      PrayerTimeModel(name: 'geceYarisi', time: geceYarisi, index: 0),
+      PrayerTimeModel(name: 'teheccud', time: teheccud, index: 1),
+      PrayerTimeModel(name: 'seher', time: seher, index: 2),
+      PrayerTimeModel(name: 'imsak', time: imsak, index: 3),
+      PrayerTimeModel(name: 'sabah', time: sabah, index: 4),
+      PrayerTimeModel(name: 'gunes', time: gunes, index: 5, isNoPray: true),
+      PrayerTimeModel(name: 'israk', time: israk, index: 6),
+      PrayerTimeModel(name: 'kerahat', time: kerahat, index: 7, isNoPray: true),
+      PrayerTimeModel(name: 'ogle', time: ogle, index: 8),
+      PrayerTimeModel(name: 'ikindi', time: ikindi, index: 9),
+      PrayerTimeModel(name: 'asrisani', time: asrisani, index: 10),
+      PrayerTimeModel(name: 'isfirar', time: isfirar, index: 11, isNoPray: true),
+      PrayerTimeModel(name: 'aksam', time: aksam, index: 12),
+      PrayerTimeModel(name: 'istibak', time: istibak, index: 13),
+      PrayerTimeModel(name: 'yatsi', time: yatsi, index: 14),
+      PrayerTimeModel(name: 'isaisani', time: isaisani, index: 15),
+    ];
+
+    // Null olmayan vakitleri filtrele
+    final validTimes = times.where((t) => t.time != null).toList();
+
+    // Sadece saat/dakika değerine göre sırala (00:00 - 23:59 doğal sırada)
+    validTimes.sort((a, b) {
+      final hourA = a.time!.hour;
+      final hourB = b.time!.hour;
+
+      if (hourA != hourB) return hourA.compareTo(hourB);
+      return a.time!.minute.compareTo(b.time!.minute);
+    });
+
+    // Sıralandıktan sonra her vakite yeni index ver (0-based)
+    for (int i = 0; i < validTimes.length; i++) {
+      validTimes[i] = PrayerTimeModel(
+        name: validTimes[i].name,
+        time: validTimes[i].time,
+        index: i, // 0-based index
+        isNoPray: validTimes[i].isNoPray,
+      );
+    }
+
+    return validTimes;
+  }
 
   static Future<http.Response> fetchWithFallback(String url) async {
     // URL'yi düzenle - protokol yoksa ekle, varsa al
@@ -444,66 +548,74 @@ class TimeData extends ChangeSettings {
     clock = DateFormat('HH:mm:ss').format(now);
 
     if (isTimeLoading == false && imsak != null) {
-      if (DateTime(now.year, now.month, now.day, imsak!.hour, imsak!.minute, 0).difference(now) >
-          DateTime.now().difference(now)) {
-        pray = 0;
-        soontime = imsak!;
-        preTime = yatsi2!;
-      } else if (DateTime(now.year, now.month, now.day, sabah!.hour, sabah!.minute, 0)
-              .difference(now) >
-          DateTime.now().difference(now)) {
-        pray = 1;
-        soontime = sabah!;
-        preTime = imsak!;
-      } else if (DateTime(now.year, now.month, now.day, gunes!.hour, gunes!.minute, 0)
-              .difference(now) >
-          DateTime.now().difference(now)) {
-        pray = 2;
-        soontime = gunes!;
-        preTime = sabah!;
-      } else if (DateTime(now.year, now.month, now.day, ogle!.hour, ogle!.minute, 0)
-              .difference(now) >
-          DateTime.now().difference(now)) {
-        pray = 3;
-        soontime = ogle!;
-        preTime = gunes!;
-      } else if (DateTime(now.year, now.month, now.day, ikindi!.hour, ikindi!.minute, 0)
-              .difference(now) >
-          DateTime.now().difference(now)) {
-        pray = 4;
-        soontime = ikindi!;
-        preTime = ogle!;
-      } else if (DateTime(now.year, now.month, now.day, aksam!.hour, aksam!.minute, 0)
-              .difference(now) >
-          DateTime.now().difference(now)) {
-        pray = 5;
-        soontime = aksam!;
-        preTime = ikindi!;
-      } else if (DateTime(now.year, now.month, now.day, yatsi!.hour, yatsi!.minute, 0)
-              .difference(now) >
-          DateTime.now().difference(now)) {
-        pray = 6;
-        soontime = yatsi!;
-        preTime = aksam!;
-      } else {
-        pray = 7;
-        soontime = imsak2!;
-        preTime = yatsi!;
+      final prayerTimes = getMainPrayerTimes();
+
+      // Şu anki vakti bul
+      PrayerTimeModel? currentPrayer;
+      PrayerTimeModel? previousPrayer;
+
+      for (int i = 0; i < prayerTimes.length; i++) {
+        final prayerTime = prayerTimes[i];
+        if (prayerTime.time == null) continue;
+
+        final prayerDateTime = DateTime(
+            now.year, now.month, now.day, prayerTime.time!.hour, prayerTime.time!.minute, 0);
+
+        if (prayerDateTime.isAfter(now)) {
+          currentPrayer = prayerTime;
+          previousPrayer = i > 0 ? prayerTimes[i - 1] : null;
+
+          // Önceki vakit yatsi2 ise (gece yarısından sonra ilk vakit için)
+          if (previousPrayer == null && yatsi2 != null) {
+            // Yatsı2 için index'i Yatsı'nın index'i olarak kullan (son vakit)
+            final yatsiIndex = prayerTimes.isNotEmpty ? prayerTimes.last.index : 6;
+            previousPrayer = PrayerTimeModel(name: 'yatsi2', time: yatsi2, index: yatsiIndex);
+          }
+          break;
+        }
       }
 
-      if (soontime == imsak2 &&
-          DateTime(1970, 1, 1, now.hour, now.minute, now.second, now.millisecond).isAfter(yatsi!)) {
-        mainDifference = DateTime(1970, 1, 2, soontime.hour, soontime.minute, soontime.second)
-            .difference(preTime);
-        difference = soontime.difference(DateTime(1969, 12, 31, now.hour, now.minute, now.second));
-      } else if (soontime == imsak) {
-        mainDifference = DateTime(1970, 1, 2, soontime.hour, soontime.minute, soontime.second)
-            .difference(preTime);
-        difference = soontime.difference(DateTime(1970, 1, 1, now.hour, now.minute, now.second));
-      } else {
-        mainDifference = soontime.difference(preTime);
-        difference = soontime.difference(DateTime(1970, 1, 1, now.hour, now.minute, now.second));
+      // Hiçbir vakit bulunamadıysa (tüm vakitler geçmiş, gece yarısından sonra)
+      // Ertesi gün imsak'ı bir sonraki vakit olarak ata
+      if (currentPrayer == null) {
+        // Son vakit şu anki geçerli vakit
+        previousPrayer = prayerTimes.isNotEmpty ? prayerTimes.last : null;
+
+        // İmsak2'yi bir sonraki vakit olarak kullan
+        if (imsak2 != null && previousPrayer != null) {
+          currentPrayer = PrayerTimeModel(
+            name: 'imsak2',
+            time: imsak2,
+            index: prayerTimes.length, // Listenin sonundan sonraki index
+          );
+        }
       }
+
+      if (currentPrayer != null && previousPrayer != null && previousPrayer.time != null) {
+        pray = previousPrayer.index; // Şu anki geçerli vakit (previousPrayer)
+        nextPray = currentPrayer.index; // Bir sonraki vakit (currentPrayer) - clock'ta gösteriliyor
+        soontime = currentPrayer.time!; // Bir sonraki vakit (currentPrayer)
+        preTime = previousPrayer.time!; // Geçerli vakit başlangıcı
+
+        // Fark hesaplama
+        if ((currentPrayer.name == 'imsak2' || currentPrayer.name == 'imsak') &&
+            yatsi != null &&
+            DateTime(1970, 1, 1, now.hour, now.minute, now.second, now.millisecond)
+                .isAfter(yatsi!)) {
+          mainDifference = DateTime(1970, 1, 2, soontime.hour, soontime.minute, soontime.second)
+              .difference(preTime);
+          difference =
+              soontime.difference(DateTime(1969, 12, 31, now.hour, now.minute, now.second));
+        } else if (currentPrayer.name == 'imsak') {
+          mainDifference = DateTime(1970, 1, 2, soontime.hour, soontime.minute, soontime.second)
+              .difference(preTime);
+          difference = soontime.difference(DateTime(1970, 1, 1, now.hour, now.minute, now.second));
+        } else {
+          mainDifference = soontime.difference(preTime);
+          difference = soontime.difference(DateTime(1970, 1, 1, now.hour, now.minute, now.second));
+        }
+      }
+
       notifyListeners();
     }
   }
@@ -513,127 +625,79 @@ class TimeData extends ChangeSettings {
     clock = DateFormat('HH:mm:ss').format(now);
 
     if (isTimeLoading == false && geceYarisi != null) {
-      if (DateTime(now.year, now.month, now.day, geceYarisi!.hour, geceYarisi!.minute, 0).difference(now) >
-          DateTime.now().difference(now)) {
-        detailedPray = 0;
-        noPray = false;
-        detailedSoontime = geceYarisi!;
-        detailedPreTime = yatsi2!;
-      } else if (DateTime(now.year, now.month, now.day, teheccud!.hour, teheccud!.minute, 0).difference(now) >
-          DateTime.now().difference(now)) {
-        detailedPray = 1;
-        noPray = false;
-        detailedSoontime = teheccud!;
-        detailedPreTime = geceYarisi!;
-      } else if (DateTime(now.year, now.month, now.day, seher!.hour, seher!.minute, 0).difference(now) >
-          DateTime.now().difference(now)) {
-        detailedPray = 2;
-        noPray = false;
-        detailedSoontime = seher!;
-        detailedPreTime = teheccud!;
-      } else if (DateTime(now.year, now.month, now.day, imsak!.hour, imsak!.minute, 0).difference(now) >
-          DateTime.now().difference(now)) {
-        detailedPray = 3;
-        noPray = false;
-        detailedSoontime = imsak!;
-        detailedPreTime = seher!;
-      } else if (DateTime(now.year, now.month, now.day, sabah!.hour, sabah!.minute, 0).difference(now) >
-          DateTime.now().difference(now)) {
-        detailedPray = 4;
-        noPray = false;
-        detailedSoontime = sabah!;
-        detailedPreTime = imsak!;
-      } else if (DateTime(now.year, now.month, now.day, gunes!.hour, gunes!.minute, 0).difference(now) >
-          DateTime.now().difference(now)) {
-        detailedPray = 5;
-        noPray = false;
-        detailedSoontime = gunes!;
-        detailedPreTime = sabah!;
-      } else if (DateTime(now.year, now.month, now.day, israk!.hour, israk!.minute, 0).difference(now) >
-          DateTime.now().difference(now)) {
-        detailedPray = 6;
-        noPray = true;
-        detailedSoontime = israk!;
-        detailedPreTime = gunes!;
-      } else if (DateTime(now.year, now.month, now.day, kerahat!.hour, kerahat!.minute, 0).difference(now) >
-          DateTime.now().difference(now)) {
-        detailedPray = 7;
-        noPray = false;
-        detailedSoontime = kerahat!;
-        detailedPreTime = israk!;
-      } else if (DateTime(now.year, now.month, now.day, ogle!.hour, ogle!.minute, 0).difference(now) >
-          DateTime.now().difference(now)) {
-        detailedPray = 8;
-        noPray = true;
-        detailedSoontime = ogle!;
-        detailedPreTime = kerahat!;
-      } else if (DateTime(now.year, now.month, now.day, ikindi!.hour, ikindi!.minute, 0).difference(now) >
-          DateTime.now().difference(now)) {
-        detailedPray = 9;
-        noPray = false;
-        detailedSoontime = ikindi!;
-        detailedPreTime = ogle!;
-      } else if (DateTime(now.year, now.month, now.day, asrisani!.hour, asrisani!.minute, 0).difference(now) >
-          DateTime.now().difference(now)) {
-        detailedPray = 10;
-        noPray = false;
-        detailedSoontime = asrisani!;
-        detailedPreTime = ikindi!;
-      } else if (DateTime(now.year, now.month, now.day, isfirar!.hour, isfirar!.minute, 0).difference(now) >
-          DateTime.now().difference(now)) {
-        detailedPray = 11;
-        noPray = false;
-        detailedSoontime = isfirar!;
-        detailedPreTime = asrisani!;
-      } else if (DateTime(now.year, now.month, now.day, aksam!.hour, aksam!.minute, 0).difference(now) >
-          DateTime.now().difference(now)) {
-        detailedPray = 12;
-        noPray = true;
-        detailedSoontime = aksam!;
-        detailedPreTime = isfirar!;
-      } else if (DateTime(now.year, now.month, now.day, istibak!.hour, istibak!.minute, 0).difference(now) >
-          DateTime.now().difference(now)) {
-        detailedPray = 13;
-        noPray = false;
-        detailedSoontime = istibak!;
-        detailedPreTime = aksam!;
-      } else if (DateTime(now.year, now.month, now.day, yatsi!.hour, yatsi!.minute, 0).difference(now) >
-          DateTime.now().difference(now)) {
-        detailedPray = 14;
-        noPray = false;
-        detailedSoontime = yatsi!;
-        detailedPreTime = istibak!;
-      } else if (DateTime(now.year, now.month, now.day, isaisani!.hour, isaisani!.minute, 0).difference(now) > DateTime.now().difference(now)) {
-        detailedPray = 15;
-        noPray = false;
-        detailedSoontime = isaisani!;
-        detailedPreTime = yatsi!;
-      } else {
-        detailedPray = 16;
-        noPray = false;
-        detailedSoontime = imsak2!;
-        detailedPreTime = isaisani!;
+      final prayerTimes = getDetailedPrayerTimes();
+
+      // Şu anki vakti bul
+      PrayerTimeModel? currentPrayer;
+      PrayerTimeModel? previousPrayer;
+
+      for (int i = 0; i < prayerTimes.length; i++) {
+        final prayerTime = prayerTimes[i];
+        if (prayerTime.time == null) continue;
+
+        final prayerDateTime = DateTime(
+            now.year, now.month, now.day, prayerTime.time!.hour, prayerTime.time!.minute, 0);
+
+        if (prayerDateTime.isAfter(now)) {
+          currentPrayer = prayerTime;
+          previousPrayer = i > 0 ? prayerTimes[i - 1] : null;
+
+          // Önceki vakit yok ise yatsi2 (gece yarısından sonra ilk vakit için)
+          if (previousPrayer == null && yatsi2 != null) {
+            // Yatsı2 için index'i İşa-i Sani'nin index'i olarak kullan (son vakit)
+            final yatsiIndex = prayerTimes.isNotEmpty ? prayerTimes.last.index : 15;
+            previousPrayer = PrayerTimeModel(name: 'yatsi2', time: yatsi2, index: yatsiIndex);
+          }
+          break;
+        }
       }
 
-      if (detailedSoontime == imsak2 &&
-          DateTime(1970, 1, 1, now.hour, now.minute, now.second, now.millisecond)
-              .isAfter(isaisani!)) {
-        detailedMainDifference = DateTime(
-                1970, 1, 2, detailedSoontime.hour, detailedSoontime.minute, detailedSoontime.second)
-            .difference(preTime);
-        detailedDifference =
-            detailedSoontime.difference(DateTime(1969, 12, 31, now.hour, now.minute, now.second));
-      } else if (detailedSoontime == imsak) {
-        detailedMainDifference = DateTime(
-                1970, 1, 2, detailedSoontime.hour, detailedSoontime.minute, detailedSoontime.second)
-            .difference(preTime);
-        detailedDifference =
-            detailedSoontime.difference(DateTime(1970, 1, 1, now.hour, now.minute, now.second));
-      } else {
-        detailedMainDifference = detailedSoontime.difference(preTime);
-        detailedDifference =
-            detailedSoontime.difference(DateTime(1970, 1, 1, now.hour, now.minute, now.second));
+      // Hiçbir vakit bulunamadıysa (tüm vakitler geçmiş, gece yarısından sonra)
+      // Ertesi gün imsak'ı bir sonraki vakit olarak ata
+      if (currentPrayer == null) {
+        // Son vakit şu anki geçerli vakit
+        previousPrayer = prayerTimes.isNotEmpty ? prayerTimes.last : null;
+
+        // İmsak2'yi bir sonraki vakit olarak kullan
+        if (imsak2 != null && previousPrayer != null) {
+          currentPrayer = PrayerTimeModel(
+            name: 'imsak2',
+            time: imsak2,
+            index: prayerTimes.length, // Listenin sonundan sonraki index
+          );
+        }
       }
+
+      if (currentPrayer != null && previousPrayer != null && previousPrayer.time != null) {
+        detailedPray = previousPrayer.index; // Şu anki geçerli vakit (previousPrayer)
+        detailedNextPray = currentPrayer.index; // Bir sonraki vakit (currentPrayer)
+        noPray = previousPrayer.isNoPray; // Şu anki vakitte namaz kılınabilir mi?
+        detailedSoontime = currentPrayer.time!; // Bir sonraki vakit (currentPrayer)
+        detailedPreTime = previousPrayer.time!; // Geçerli vakit başlangıcı
+
+        // Fark hesaplama
+        if ((currentPrayer.name == 'imsak2' || currentPrayer.name == 'imsak') &&
+            isaisani != null &&
+            DateTime(1970, 1, 1, now.hour, now.minute, now.second, now.millisecond)
+                .isAfter(isaisani!)) {
+          detailedMainDifference = DateTime(1970, 1, 2, detailedSoontime.hour,
+                  detailedSoontime.minute, detailedSoontime.second)
+              .difference(detailedPreTime);
+          detailedDifference =
+              detailedSoontime.difference(DateTime(1969, 12, 31, now.hour, now.minute, now.second));
+        } else if (currentPrayer.name == 'imsak') {
+          detailedMainDifference = DateTime(1970, 1, 2, detailedSoontime.hour,
+                  detailedSoontime.minute, detailedSoontime.second)
+              .difference(detailedPreTime);
+          detailedDifference =
+              detailedSoontime.difference(DateTime(1970, 1, 1, now.hour, now.minute, now.second));
+        } else {
+          detailedMainDifference = detailedSoontime.difference(detailedPreTime);
+          detailedDifference =
+              detailedSoontime.difference(DateTime(1970, 1, 1, now.hour, now.minute, now.second));
+        }
+      }
+
       notifyListeners();
     }
   }

@@ -29,6 +29,33 @@ class BottomTimesCard extends StatelessWidget {
     super.key,
   });
 
+  // Ana vakitleri yerelleştirilmiş isimlerle döndür (kronolojik sıralı)
+  List<Map<String, dynamic>> _getMainPrayerTimesWithNames(BuildContext context) {
+    final timeData = Provider.of<TimeData>(context, listen: false);
+    final localizations = AppLocalizations.of(context)!;
+
+    // İsim çeviri map'i
+    final nameMap = {
+      'imsak': localizations.imsak,
+      'sabah': localizations.sabah,
+      'gunes': localizations.gunes,
+      'ogle': localizations.ogle,
+      'ikindi': localizations.ikindi,
+      'aksam': localizations.aksam,
+      'yatsi': localizations.yatsi,
+      'imsak2': localizations.imsak,
+    };
+
+    // Sıralanmış vakitleri al ve map'e dönüştür
+    return timeData.getMainPrayerTimes().map((prayer) {
+      return {
+        'name': nameMap[prayer.name] ?? prayer.name,
+        'time': prayer.time,
+        'index': prayer.index,
+      };
+    }).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     TextStyle textStyleBold = TextStyle(
@@ -40,6 +67,10 @@ class BottomTimesCard extends StatelessWidget {
       fontSize: Provider.of<ChangeSettings>(context).currentHeight! < 700 ? 16 : 20,
       fontWeight: FontWeight.normal,
     );
+
+    final prayerTimes = _getMainPrayerTimesWithNames(context);
+    final currentPray = Provider.of<TimeData>(context).pray;
+
     return Center(
       child: Card(
         child: Provider.of<TimeData>(context).isLoading
@@ -61,51 +92,15 @@ class BottomTimesCard extends StatelessWidget {
                               color: Theme.of(context).colorScheme.surfaceContainerHighest,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Text(
-                                    AppLocalizations.of(context)!.imsak,
-                                    style: Provider.of<TimeData>(context).pray == 1
-                                        ? textStyleBold
-                                        : textStyle,
-                                  ),
-                                  Text(
-                                    AppLocalizations.of(context)!.sabah,
-                                    style: Provider.of<TimeData>(context).pray == 2
-                                        ? textStyleBold
-                                        : textStyle,
-                                  ),
-                                  Text(
-                                    AppLocalizations.of(context)!.gunes,
-                                    style: Provider.of<TimeData>(context).pray == 3
-                                        ? textStyleBold
-                                        : textStyle,
-                                  ),
-                                  Text(
-                                    AppLocalizations.of(context)!.ogle,
-                                    style: Provider.of<TimeData>(context).pray == 4
-                                        ? textStyleBold
-                                        : textStyle,
-                                  ),
-                                  Text(
-                                    AppLocalizations.of(context)!.ikindi,
-                                    style: Provider.of<TimeData>(context).pray == 5
-                                        ? textStyleBold
-                                        : textStyle,
-                                  ),
-                                  Text(
-                                    AppLocalizations.of(context)!.aksam,
-                                    style: Provider.of<TimeData>(context).pray == 6
-                                        ? textStyleBold
-                                        : textStyle,
-                                  ),
-                                  Text(
-                                    AppLocalizations.of(context)!.yatsi,
-                                    style: Provider.of<TimeData>(context).pray == 7 ||
-                                            Provider.of<TimeData>(context).pray == 0
-                                        ? textStyleBold
-                                        : textStyle,
-                                  ),
-                                ],
+                                children: prayerTimes.map((prayer) {
+                                  // Sıralanmış vakitlerde index direkt karşılaştırılır
+                                  final isActive = currentPray == prayer['index'];
+
+                                  return Text(
+                                    prayer['name'],
+                                    style: isActive ? textStyleBold : textStyle,
+                                  );
+                                }).toList(),
                               ),
                             ),
                           ),
@@ -114,58 +109,15 @@ class BottomTimesCard extends StatelessWidget {
                               color: Theme.of(context).colorScheme.surfaceContainerHighest,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Text(
-                                    DateFormat('HH:mm').format(
-                                        Provider.of<TimeData>(context).imsak ?? DateTime.now()),
-                                    style: Provider.of<TimeData>(context).pray == 1
-                                        ? textStyleBold
-                                        : textStyle,
-                                  ),
-                                  Text(
-                                    DateFormat('HH:mm').format(
-                                        Provider.of<TimeData>(context).sabah ?? DateTime.now()),
-                                    style: Provider.of<TimeData>(context).pray == 2
-                                        ? textStyleBold
-                                        : textStyle,
-                                  ),
-                                  Text(
-                                    DateFormat('HH:mm').format(
-                                        Provider.of<TimeData>(context).gunes ?? DateTime.now()),
-                                    style: Provider.of<TimeData>(context).pray == 3
-                                        ? textStyleBold
-                                        : textStyle,
-                                  ),
-                                  Text(
-                                    DateFormat('HH:mm').format(
-                                        Provider.of<TimeData>(context).ogle ?? DateTime.now()),
-                                    style: Provider.of<TimeData>(context).pray == 4
-                                        ? textStyleBold
-                                        : textStyle,
-                                  ),
-                                  Text(
-                                    DateFormat('HH:mm').format(
-                                        Provider.of<TimeData>(context).ikindi ?? DateTime.now()),
-                                    style: Provider.of<TimeData>(context).pray == 5
-                                        ? textStyleBold
-                                        : textStyle,
-                                  ),
-                                  Text(
-                                    DateFormat('HH:mm').format(
-                                        Provider.of<TimeData>(context).aksam ?? DateTime.now()),
-                                    style: Provider.of<TimeData>(context).pray == 6
-                                        ? textStyleBold
-                                        : textStyle,
-                                  ),
-                                  Text(
-                                    DateFormat('HH:mm').format(
-                                        Provider.of<TimeData>(context).yatsi ?? DateTime.now()),
-                                    style: Provider.of<TimeData>(context).pray == 7 ||
-                                            Provider.of<TimeData>(context).pray == 0
-                                        ? textStyleBold
-                                        : textStyle,
-                                  ),
-                                ],
+                                children: prayerTimes.map((prayer) {
+                                  // Sıralanmış vakitlerde index direkt karşılaştırılır
+                                  final isActive = currentPray == prayer['index'];
+
+                                  return Text(
+                                    DateFormat('HH:mm').format(prayer['time'] ?? DateTime.now()),
+                                    style: isActive ? textStyleBold : textStyle,
+                                  );
+                                }).toList(),
                               ),
                             ),
                           ),
