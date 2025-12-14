@@ -488,6 +488,12 @@ class TimeData extends ChangeSettings {
     }
   }
 
+  // Metinin ilk harfini büyük yapar (Türkçe karakterler dahil)
+  String _capitalizeFirstLetter(String text) {
+    if (text.isEmpty) return text;
+    return text[0].toUpperCase() + text.substring(1).toLowerCase();
+  }
+
   Future<void> fetchHijriCalendar(String langCode) async {
     final url =
         'https://turktakvim.com/index.php?tarih=${DateFormat('yyyy-MM-dd').format(selectedDate!)}&page=onyuz&dil=${langCode == 'tr' ? 'tr' : (langCode == 'ar' ? 'ar' : 'en')}';
@@ -505,7 +511,7 @@ class TimeData extends ChangeSettings {
         final parts = hijriFullText.trim().split(RegExp(r'\s+'));
         if (parts.length >= 3) {
           hijriDay = parts[0]; // Gün
-          hijriMonth = parts[1]; // Ay
+          hijriMonth = _capitalizeFirstLetter(parts[1]); // Ay (baş harf büyük)
           hijriYear = parts[2]; // Yıl
         } else {
           hijriDay = hijriFullText;
