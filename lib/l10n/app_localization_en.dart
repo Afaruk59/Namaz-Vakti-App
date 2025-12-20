@@ -638,4 +638,131 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get locationFeatureTitle => 'Find Your Location';
+
+  @override
+  String get quranProstration => 'Prostration';
+
+  @override
+  String get quranPageDataError => 'Error loading page data';
+
+  @override
+  String get quranNoVersesFound => 'No verses found';
+
+  @override
+  String get quranCopy => 'Copy';
+
+  @override
+  String get quranHighlight => 'Highlight';
+
+  @override
+  String get removeHighlight => 'Remove Highlight';
+
+  @override
+  String get quranShare => 'Share';
+
+  @override
+  String surahVerseFormat(String surahName, int verseNumber) {
+    return 'Surah $surahName, Verse $verseNumber';
+  }
+
+  @override
+  String get verse => 'Verse';
+
+  @override
+  String pageNumber(int page) {
+    return 'Page $page';
+  }
+
+  @override
+  String get quranTranslation => 'Translation';
+
+  @override
+  String get quranPageLoading => 'Loading page...';
+
+  @override
+  String get quranError => 'An error occurred';
+
+  @override
+  String get quranRetry => 'Retry';
+
+  @override
+  String get quranFormatMukabele => 'Mukabele Format';
+
+  @override
+  String get quranFormatHat1 => 'Hat 1';
+
+  @override
+  String get quranFormatHat2 => 'Hat 2';
+
+  @override
+  String get quranOk => 'OK';
+
+  @override
+  String get quranPageSettings => 'Page Settings';
+
+  @override
+  String get quranFontType => 'Font Type';
+
+  @override
+  String get quranFontSize => 'Font Size';
+
+  @override
+  String get quranAutoScroll => 'Auto Scroll';
+
+  @override
+  String get quranReset => 'Reset';
+
+  @override
+  String get quranClose => 'Close';
+
+  @override
+  String get besmele => 'Bismillāhirrahmānirrahīm';
+
+  @override
+  String get holyQuran => 'Holy Quran';
+
+  @override
+  String get quranSurahs => 'Surahs';
+
+  @override
+  String get quranJuz => 'Juz';
+
+  @override
+  String get quranJuzListNotFound => 'Juz list not found';
+
+  @override
+  String juzNumber(int juz) {
+    return 'Juz $juz';
+  }
+
+  @override
+  String get deleteBookmark => 'Delete Bookmark?';
+
+  @override
+  String get deleteBookmarkConfirmation =>
+      'Are you sure you want to delete this bookmark?';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get bookmarksTitle => 'Bookmarks';
+
+  @override
+  String get noBookmarksYet => 'No bookmarks yet';
+
+  @override
+  String get returnToBooks => 'Return to Books';
+
+  @override
+  String get selectedText => 'Selected Text';
+
+  @override
+  String get selectHighlightColor => 'Select Highlight Color';
+
+  @override
+  String get quranHolyQuran => 'Holy Quran';
 }

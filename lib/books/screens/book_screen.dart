@@ -1,13 +1,13 @@
 // ignore_for_file: unrelated_type_equality_checks, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:namaz_vakti_app/components/scaffold_layout.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:android_intent_plus/android_intent.dart';
+
 import 'dart:io' show Platform;
 import 'package:namaz_vakti_app/books/shared/models/book_model.dart';
 import 'package:namaz_vakti_app/books/features/book/screens/book_page_screen.dart';
@@ -15,11 +15,13 @@ import 'package:namaz_vakti_app/books/features/book/services/book_progress_servi
 import 'package:namaz_vakti_app/books/features/book/ui/color_extractor.dart';
 import 'package:namaz_vakti_app/books/features/book/widgets/book_bookmark_indicator.dart';
 import 'package:namaz_vakti_app/books/features/book/services/audio_page_service.dart';
-import 'package:namaz_vakti_app/books/other_books.dart';
 import 'no_internet_screen.dart';
 import 'package:namaz_vakti_app/books/features/book/services/book_info_service.dart';
 import 'package:namaz_vakti_app/l10n/app_localization.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:namaz_vakti_app/books/other_books.dart';
+import 'package:namaz_vakti_app/quran/screens/modular_quran_page_screen.dart';
+import 'package:namaz_vakti_app/books/features/book/screens/bookmarks_screen.dart';
+import 'package:namaz_vakti_app/books/features/book/services/bookmark_service.dart';
 
 class BookScreen extends StatefulWidget {
   const BookScreen({super.key});
@@ -55,8 +57,6 @@ class BookScreenState extends State<BookScreen> {
   // Yer işareti göstergelerini yenilemek için key
   int _bookmarkRefreshCounter = 0;
 
-  // WebView controller
-  late final WebViewController _webViewController;
 
   @override
   void initState() {
@@ -67,46 +67,10 @@ class BookScreenState extends State<BookScreen> {
     // Stop any audio playback when returning to the home screen
     AudioPageService().stopAudioAndClearPlayer();
 
-    // Initialize WebView controller
-    _initializeWebView();
 
     _initializeData();
   }
 
-  void _initializeWebView() {
-    _webViewController = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onProgress: (int progress) {
-            debugPrint('WebView loading progress: $progress%');
-          },
-          onPageStarted: (String url) {
-            debugPrint('Page started loading: $url');
-          },
-          onPageFinished: (String url) async {
-            debugPrint('Page finished loading: $url');
-            // Sayfa yüklendikten sonra zoom seviyesini küçült
-            await Future.delayed(const Duration(milliseconds: 500));
-            await _webViewController.runJavaScript('''
-              document.body.style.zoom = "0.45";
-              var viewportMeta = document.querySelector('meta[name="viewport"]');
-              if (viewportMeta) {
-                viewportMeta.setAttribute('content', 'width=device-width, initial-scale=0.75, maximum-scale=3.0, user-scalable=yes');
-              } else {
-                var meta = document.createElement('meta');
-                meta.name = "viewport";
-                meta.content = "width=device-width, initial-scale=0.75, maximum-scale=3.0, user-scalable=yes";
-                document.getElementsByTagName('head')[0].appendChild(meta);
-              }
-            ''');
-          },
-          onWebResourceError: (WebResourceError error) {
-            debugPrint('Page resource error: ${error.description}');
-          },
-        ),
-      );
-  }
 
   @override
   void didChangeDependencies() {
@@ -246,12 +210,7 @@ class BookScreenState extends State<BookScreen> {
   }
 
   Future<void> _openWifiSettings() async {
-    if (Platform.isAndroid) {
-      const intent = AndroidIntent(
-        action: 'android.settings.WIFI_SETTINGS',
-      );
-      await intent.launch();
-    } else if (Platform.isIOS) {
+    if (Platform.isIOS) {
       final url = Uri.parse('App-Prefs:root=WIFI');
       if (await canLaunchUrl(url)) {
         await launchUrl(url);
@@ -394,10 +353,12 @@ class BookScreenState extends State<BookScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 2),
-                  // Info butonu
-
-                  GestureDetector(
+                  // Kuran için ilerleme çubuğunu uzat
+                  if (book.code != 'quran')
+                    const SizedBox(width: 2),
+                  // Info butonu - sadece Kuran için değil
+                  if (book.code != 'quran')
+                    GestureDetector(
                     onTap: () {
                       showDialog(
                         context: context,
@@ -522,7 +483,10 @@ class BookScreenState extends State<BookScreen> {
                       );
                     },
                     child: const Icon(Icons.info_outline_rounded, size: 20),
-                  ),
+                    )
+                  else
+                    // Kuran için info butonunun yerine boş alan
+                    const SizedBox(width: 20, height: 20),
                 ],
               ),
             );
@@ -568,24 +532,47 @@ class BookScreenState extends State<BookScreen> {
                   final bookCoverColor = snapshot.data ?? Colors.blue;
                   return GestureDetector(
                     onTap: () async {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => BookPageScreen(
-                            bookCode: book.code,
-                            initialPage: getCurrentPage(book.code),
-                            appBarColor: bookCoverColor,
+                      if (book.code == 'quran') {
+                        // Quran için özel ekran
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ModularQuranPageScreen(
+                              initialPage: getCurrentPage(book.code).clamp(1, 604),
+                            ),
                           ),
-                        ),
-                      ).then((_) {
-                        if (mounted) {
-                          // Kitap sayfasından geri dönüldüğünde sadece ilgili kitabın yer işareti göstergesini güncelle
-                          setState(() {
-                            // Yer işareti göstergelerini yenilemek için sayacı artır
-                            _bookmarkRefreshCounter++;
-                          });
-                        }
-                      });
+                        ).then((_) async {
+                          if (mounted) {
+                            // Kuran'dan dönüldüğünde progress'i yenile
+                            await _progressService.refreshProgress();
+                            // Kitap sayfasından geri dönüldüğünde sadece ilgili kitabın yer işareti göstergesini güncelle
+                            setState(() {
+                              // Yer işareti göstergelerini yenilemek için sayacı artır
+                              _bookmarkRefreshCounter++;
+                            });
+                          }
+                        });
+                      } else {
+                        // Diğer kitaplar için normal ekran
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BookPageScreen(
+                              bookCode: book.code,
+                              initialPage: getCurrentPage(book.code),
+                              appBarColor: bookCoverColor,
+                            ),
+                          ),
+                        ).then((_) {
+                          if (mounted) {
+                            // Kitap sayfasından geri dönüldüğünde sadece ilgili kitabın yer işareti göstergesini güncelle
+                            setState(() {
+                              // Yer işareti göstergelerini yenilemek için sayacı artır
+                              _bookmarkRefreshCounter++;
+                            });
+                          }
+                        });
+                      }
                     },
                     child: _buildBookCard(book),
                   );
@@ -605,7 +592,7 @@ class BookScreenState extends State<BookScreen> {
   @override
   Widget build(BuildContext context) {
     return ScaffoldLayout(
-      title: AppLocalizations.of(context)!.booksTitle,
+      title: AppLocalizations.of(context)?.booksTitle ?? 'Kitaplar',
       actions: [
         Provider.of<ChangeSettings>(context).langCode == 'tr'
             ? IconButton(
@@ -613,11 +600,22 @@ class BookScreenState extends State<BookScreen> {
                   Navigator.pop(context);
                 },
                 icon: IconButton(
-                  onPressed: () {
-                    Navigator.pushNamed(
+                  onPressed: () async {
+                    // BookmarkService cache'ini temizle
+                    BookmarkService().clearCache();
+                    
+                    await Navigator.push(
                       context,
-                      '/bookmarks',
+                      MaterialPageRoute(
+                        builder: (context) => const BookmarksScreen(),
+                      ),
                     );
+                    
+                    // Geri döndüğünde badge'leri güncelle
+                    if (mounted) {
+                      debugPrint('BookScreen: Returned from BookmarksScreen, refreshing badges');
+                      refreshBookmarkIndicators();
+                    }
                   },
                   icon: const Icon(Icons.bookmark_rounded, size: 24),
                 ),
@@ -630,13 +628,16 @@ class BookScreenState extends State<BookScreen> {
       background: false,
       body: Provider.of<ChangeSettings>(context).langCode == 'tr'
           ? _buildBody()
-          : OtherBooksPage(language: Provider.of<ChangeSettings>(context).langCode!),
+          : OtherBooksPage(
+              language: Provider.of<ChangeSettings>(context).langCode ?? 'en',
+            ),
     );
   }
 
   // Yer işareti göstergelerini yenilemek için public metod
   void refreshBookmarkIndicators() {
     if (mounted) {
+      debugPrint('BookScreen: refreshBookmarkIndicators called, counter: $_bookmarkRefreshCounter -> ${_bookmarkRefreshCounter + 1}');
       setState(() {
         // Yer işareti göstergelerini yenilemek için sayacı artır
         _bookmarkRefreshCounter++;

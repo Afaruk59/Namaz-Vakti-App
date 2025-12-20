@@ -23,7 +23,6 @@ class BookUIComponentsManager {
   final BookThemeController themeController;
   final BookBookmarkController bookmarkController;
   final BookAudioController audioController;
-  final AudioPlayerService audioPlayerService;
   final Function(int) onPageSelected;
   final Function(String) onSearch;
 
@@ -46,7 +45,6 @@ class BookUIComponentsManager {
     required this.themeController,
     required this.bookmarkController,
     required this.audioController,
-    required this.audioPlayerService,
     required this.onPageSelected,
     required this.onSearch,
   });
@@ -170,7 +168,7 @@ class BookUIComponentsManager {
   }) {
     return BookBottomControls(
       pageController: pageController,
-      audioPlayerService: audioPlayerService,
+      audioPlayerService: audioController.audioPlayerService,
       appBarColor: appBarColor,
       bookCode: bookCode,
       showAudioProgress: showAudioProgress,
@@ -208,7 +206,7 @@ class BookUIComponentsManager {
       onPageSelected: onPageSelected,
       searchFunction: searchFunction,
       searchText: searchText,
-      audioPlayerService: audioPlayerService,
+      audioPlayerService: audioController.audioPlayerService,
       currentBookPage: currentBookPage,
     );
   }

@@ -1,18 +1,13 @@
 import 'package:flutter/material.dart';
 import 'dart:io' show Platform;
-import 'package:android_intent_plus/android_intent.dart';
+
 import 'package:url_launcher/url_launcher.dart';
 
 class NoInternetScreen extends StatelessWidget {
   const NoInternetScreen({super.key});
 
   Future<void> _openWifiSettings() async {
-    if (Platform.isAndroid) {
-      const intent = AndroidIntent(
-        action: 'android.settings.WIFI_SETTINGS',
-      );
-      await intent.launch();
-    } else if (Platform.isIOS) {
+    if (Platform.isIOS) {
       final url = Uri.parse('App-Prefs:root=WIFI');
       if (await canLaunchUrl(url)) {
         await launchUrl(url);

@@ -1,5 +1,6 @@
 // ignore_for_file: constant_identifier_names
 
+import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:namaz_vakti_app/books/features/book/audio/audio_player_service.dart';
 import 'package:namaz_vakti_app/books/features/book/models/book_page_model.dart';
@@ -16,10 +17,18 @@ class MediaController {
     return _instance ??= MediaController(audioPlayerService: audioPlayerService);
   }
   static const MethodChannel _channel =
-      MethodChannel('com.afaruk59.namaz_vakti_app/media_controls');
+      MethodChannel('com.afaruk59.namaz_vakti_app/book_media_controls');
+  static const MethodChannel _callbackChannel =
+      MethodChannel('com.afaruk59.namaz_vakti_app/book_media_callback');
   final AudioPlayerService _audioPlayerService;
   final BookProgressService _bookProgressService = BookProgressService();
   bool _isServiceRunning = false;
+
+  // Completion controller for iOS background audio completion
+  final StreamController<void> _completionController = StreamController<void>.broadcast();
+
+  // Public getter for completion stream
+  Stream<void> get completionStream => _completionController.stream;
 
   // Playback state sabitleri
   static const int STATE_NONE = 0;
@@ -30,22 +39,44 @@ class MediaController {
   // Kitap sınırları için değişkenler
   int _firstPage = 1;
   int _lastPage = 9999;
+  
+  // Metadata cache - kitap bilgilerini korumak için
+  String _cachedTitle = "";
+  String _cachedAuthor = "";
+  int _cachedPageNumber = 0;
+  int _cachedDuration = 30000;
 
   MediaController({required AudioPlayerService audioPlayerService})
       : _audioPlayerService = audioPlayerService {
     _setupListeners();
     _setupMethodCallHandler();
+    _setupCallbackHandler();
   }
 
   /// Servis başlatma
   Future<void> startService() async {
     try {
+      debugPrint('🔥🔥🔥 FLUTTER MediaController.startService() CALLED 🔥🔥🔥');
       if (!_isServiceRunning) {
+        debugPrint('🔥 FLUTTER: Calling iOS startService via method channel');
+        
+        // ÖNEMLİ: Kitap sistemi aktif olduğunda, Kuran sistemi handler'ını temizle
+        // Bu, method channel çakışmalarını önler
+        try {
+          await _channel.invokeMethod('clearQuranHandler');
+        } catch (e) {
+          debugPrint('MediaController: clearQuranHandler hatası (normal olabilir): $e');
+        }
+        
         await _channel.invokeMethod('startService');
         _isServiceRunning = true;
+        debugPrint('✅ FLUTTER: startService completed successfully');
 
         // Servis başlatıldıktan sonra kısa bir gecikme ekle
         await Future.delayed(const Duration(milliseconds: 200));
+        
+        // Ek güvenlik: Method channel handler'ını yeniden kur
+        _setupMethodCallHandler();
       }
     } catch (e) {
       debugPrint('MediaController startService hatası: $e');
@@ -68,6 +99,16 @@ class MediaController {
       await Future.delayed(const Duration(milliseconds: 100));
       await _channel.invokeMethod('stopService');
       _isServiceRunning = false;
+      
+      // ÖNEMLİ: Kitap sistemi durdurulduğunda playing_book_code'u temizle
+      // Bu, Kuran sistemi handler'larının aktif olmasını sağlar
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.remove('playing_book_code');
+        debugPrint('MediaController: playing_book_code temizlendi, Kuran sistemi handler\'ları aktif olabilir');
+      } catch (e) {
+        debugPrint('MediaController: playing_book_code temizlenemedi: $e');
+      }
     } catch (e) {
       debugPrint('MediaController stopService (agresif) hata: $e');
       _isServiceRunning = false;
@@ -77,19 +118,23 @@ class MediaController {
   /// Oynatma durumunu güncelleme
   Future<void> updatePlaybackState(int state) async {
     try {
-      // Sadece ses çalarken veya state PLAYING ise native'e gönder
-      if (!_audioPlayerService.isPlaying && state != STATE_PLAYING) {
-        // Eğer ses çalmıyorsa ve state PLAYING değilse, hiçbir şey yapma
-        return;
-      }
+      debugPrint(
+          'MediaController: updatePlaybackState called with state: $state, isPlaying: ${_audioPlayerService.isPlaying}');
+
       if (!_isServiceRunning) {
         await startService();
         await Future.delayed(const Duration(milliseconds: 100));
       }
+
+      // iOS'a playback state'i gönder
       await _channel.invokeMethod('updatePlaybackState', {'state': state.toInt()});
+
+      // Pozisyonu güncelle (eğer çalıyorsa)
       if (state == STATE_PLAYING) {
         await updatePosition(_audioPlayerService.position.inMilliseconds);
       }
+
+      debugPrint('MediaController: updatePlaybackState completed successfully');
     } catch (e) {
       debugPrint('MediaController updatePlaybackState hatası: $e');
     }
@@ -103,47 +148,78 @@ class MediaController {
     required int durationMs,
     int pageNumber = 0,
   }) async {
+    debugPrint('🔥🔥🔥 FLUTTER MediaController.updateMetadata() CALLED 🔥🔥🔥');
+    debugPrint(
+        '🔥 FLUTTER: Title: $title, Author: $author, Duration: $durationMs, Page: $pageNumber');
     try {
-      // Sadece ses çalarken notification başlat
-      if (_audioPlayerService.isPlaying) {
-        if (!_isServiceRunning) {
-          await startService();
-          await Future.delayed(const Duration(milliseconds: 200));
-        }
-
-        // Başlığa sayfa numarasını ekle
-        String displayTitle = pageNumber > 0 ? "$title - Sayfa $pageNumber" : title;
-
-        // Metadata'yı güncelle
-        await _channel.invokeMethod('updateMetadata', {
-          'title': displayTitle,
-          'author': author,
-          'coverUrl': coverUrl,
-          'duration': durationMs.toInt(),
-        });
-
-        // Kısa bir gecikme ekle
+      // iOS için her zaman servis başlat ve metadata güncelle
+      if (!_isServiceRunning) {
+        await startService();
         await Future.delayed(const Duration(milliseconds: 300));
-
-        // Metadata'yı tekrar güncelle
-        await _channel.invokeMethod('updateMetadata', {
-          'title': displayTitle,
-          'author': author,
-          'coverUrl': coverUrl,
-          'duration': durationMs.toInt(),
-        });
-
-        // Son bir kez daha güncelle
-        await Future.delayed(const Duration(milliseconds: 300));
-        await _channel.invokeMethod('updateMetadata', {
-          'title': displayTitle,
-          'author': author,
-          'coverUrl': coverUrl,
-          'duration': durationMs.toInt(),
-        });
       }
+
+      // Başlığa sayfa numarasını ekle ve boş değerleri kontrol et
+      String cleanTitle = title.isNotEmpty ? title : "Hakikat Kitabevi";
+      String cleanAuthor = author.isNotEmpty ? author : "Hakikat Kitabevi";
+      String displayTitle = pageNumber > 0 ? "$cleanTitle - Sayfa $pageNumber" : cleanTitle;
+      
+      // Süre kontrolü (eğer 0 ise varsayılan değer kullan)
+      int safeDuration = durationMs > 0 ? durationMs : 30000; // 30 saniye varsayılan
+      
+      // Cache'i güncelle - bu bilgiler play/pause sırasında korunacak
+      _cachedTitle = cleanTitle;
+      _cachedAuthor = cleanAuthor;
+      _cachedPageNumber = pageNumber;
+      _cachedDuration = safeDuration;
+
+      debugPrint('MediaController: Updating metadata - Title: $displayTitle, Author: $cleanAuthor, Duration: ${safeDuration}ms');
+      debugPrint('MediaController: Cached values - Title: $_cachedTitle, Author: $_cachedAuthor, Page: $_cachedPageNumber');
+
+      // Metadata'yı güncelle
+      await _channel.invokeMethod('updateMetadata', {
+        'title': displayTitle,
+        'author': cleanAuthor,
+        'coverUrl': coverUrl,
+        'duration': safeDuration,
+      });
+
+      // Kısa bir gecikme sonra playback state'i güncelle
+      await Future.delayed(const Duration(milliseconds: 100));
+      
+      // Playback state'i güncelle
+      if (_audioPlayerService.isPlaying) {
+        await updatePlaybackState(STATE_PLAYING);
+      } else {
+        await updatePlaybackState(STATE_PAUSED);
+      }
+
+      debugPrint('MediaController: Metadata and playback state updated successfully');
     } catch (e) {
       debugPrint('MediaController updateMetadata hatası: $e');
+    }
+  }
+
+  /// Cache'den metadata'yı restore et (play/pause sırasında kullan)
+  Future<void> _restoreMetadataFromCache() async {
+    if (_cachedTitle.isNotEmpty && _isServiceRunning) {
+      try {
+        String displayTitle = _cachedPageNumber > 0 
+            ? "$_cachedTitle - Sayfa $_cachedPageNumber" 
+            : _cachedTitle;
+            
+        debugPrint('MediaController: Restoring metadata from cache - Title: $displayTitle, Author: $_cachedAuthor');
+        
+        await _channel.invokeMethod('updateMetadata', {
+          'title': displayTitle,
+          'author': _cachedAuthor,
+          'coverUrl': '',
+          'duration': _cachedDuration,
+        });
+        
+        debugPrint('MediaController: Metadata restored from cache successfully');
+      } catch (e) {
+        debugPrint('MediaController: Error restoring metadata from cache: $e');
+      }
     }
   }
 
@@ -158,49 +234,41 @@ class MediaController {
   Future<void> updateForBookPage(BookPageModel bookPage, String bookTitle, String bookAuthor,
       {int pageNumber = 0}) async {
     try {
+      debugPrint(
+          'MediaController: updateForBookPage called - Title: $bookTitle, Page: $pageNumber, isPlaying: ${_audioPlayerService.isPlaying}');
+
+      // ÖNEMLİ: Kitap sistemi başlatıldığında playing_book_code'u ayarla
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('playing_book_code', _audioPlayerService.playingBookCode ?? '');
+
       // Her dinleme başlatıldığında method channel handler'ı tekrar ata
       _setupMethodCallHandler();
-      // Sadece ses çalarken notification başlat
-      if (_audioPlayerService.isPlaying) {
-        if (!_isServiceRunning) {
-          await startService();
-          await Future.delayed(const Duration(milliseconds: 200));
-        }
 
-        // Metadata güncelle
-        await updateMetadata(
-          title: bookTitle,
-          author: bookAuthor,
-          coverUrl: '',
-          durationMs: _audioPlayerService.duration.inMilliseconds > 0
-              ? _audioPlayerService.duration.inMilliseconds
-              : 30000,
-          pageNumber: pageNumber,
-        );
-
-        // Oynatma durumunu güncelle
-        final state = _audioPlayerService.isPlaying ? STATE_PLAYING : STATE_PAUSED;
-        await updatePlaybackState(state);
-
-        // Pozisyonu güncelle
-        if (_audioPlayerService.isPlaying) {
-          await updatePosition(_audioPlayerService.position.inMilliseconds);
-        }
-
-        // Kısa bir gecikme ekle
+      // iOS için her zaman servis başlat ve metadata güncelle
+      if (!_isServiceRunning) {
+        await startService();
         await Future.delayed(const Duration(milliseconds: 300));
-
-        // Metadata'yı tekrar güncelle
-        await updateMetadata(
-          title: bookTitle,
-          author: bookAuthor,
-          coverUrl: '',
-          durationMs: _audioPlayerService.duration.inMilliseconds > 0
-              ? _audioPlayerService.duration.inMilliseconds
-              : 30000,
-          pageNumber: pageNumber,
-        );
       }
+
+      // Kitap bilgilerini güvenli hale getir
+      String safeTitle = bookTitle.isNotEmpty ? bookTitle : "Hakikat Kitabevi";
+      String safeAuthor = bookAuthor.isNotEmpty ? bookAuthor : "Hakikat Kitabevi";
+      
+      // Süre bilgisini güvenli şekilde al
+      int safeDuration = _audioPlayerService.duration.inMilliseconds > 0
+          ? _audioPlayerService.duration.inMilliseconds
+          : 30000;
+
+      // Metadata güncelle
+      await updateMetadata(
+        title: safeTitle,
+        author: safeAuthor,
+        coverUrl: '',
+        durationMs: safeDuration,
+        pageNumber: pageNumber,
+      );
+
+      debugPrint('MediaController: updateForBookPage completed successfully');
     } catch (e) {
       debugPrint('MediaController updateForBookPage hatası: $e');
     }
@@ -209,9 +277,34 @@ class MediaController {
   /// Dinleyicileri ayarla
   void _setupListeners() {
     // Oynatma durumu değişikliklerini dinle
-    _audioPlayerService.playingStateStream.listen((isPlaying) {
+    _audioPlayerService.playingStateStream.listen((isPlaying) async {
+      debugPrint('MediaController: Playing state changed to $isPlaying');
+      
+      // Sadece playback state güncellemesi yap, metadata'yı korumaya çalış
       final state = isPlaying ? STATE_PLAYING : STATE_PAUSED;
-      updatePlaybackState(state);
+      
+      try {
+        // Önce cache'den metadata restore et (eğer cache doluysa)
+        if (_cachedTitle.isNotEmpty) {
+          await _restoreMetadataFromCache();
+          // Kısa bir gecikme sonra playback state güncelle
+          await Future.delayed(const Duration(milliseconds: 50));
+        }
+        
+        // Playback state'i güncelle
+        if (_isServiceRunning) {
+          await _channel.invokeMethod('updatePlaybackState', {'state': state});
+          
+          // Pozisyonu güncelle
+          if (isPlaying) {
+            await updatePosition(_audioPlayerService.position.inMilliseconds);
+          }
+        }
+        
+        debugPrint('MediaController: Playback state updated to $state with metadata preserved');
+      } catch (e) {
+        debugPrint('MediaController: Error updating playback state in listener: $e');
+      }
     });
 
     // Pozisyon değişikliklerini dinle
@@ -221,7 +314,7 @@ class MediaController {
 
     // Süre değişikliklerini dinle
     _audioPlayerService.durationStream.listen((duration) {
-      // Süre değiştiğinde metadata'yı güncelle
+      // Süre değiştiğinde sadece süre bilgisini güncelle, diğer metadata'ları koruma
       if (_isServiceRunning) {
         _channel.invokeMethod('updateMetadata', {
           'duration': duration.inMilliseconds.toInt(),
@@ -256,6 +349,12 @@ class MediaController {
   void updateCurrentPage(int currentPage, int totalPages) {
     _currentPage = currentPage;
     _totalPages = totalPages;
+    
+    // Cache'deki sayfa numarasını da güncelle
+    if (_cachedTitle.isNotEmpty) {
+      _cachedPageNumber = currentPage;
+      debugPrint('MediaController: Cache sayfa numarası güncellendi: $currentPage');
+    }
   }
 
   /// Kitabın ilk ve son sayfa bilgilerini yükle
@@ -282,22 +381,191 @@ class MediaController {
     }
   }
 
-  /// Method call handler'ı ayarla
-  void _setupMethodCallHandler() {
-    _channel.setMethodCallHandler((call) async {
+
+  /// Callback handler'ı ayarla (iOS -> Flutter çağrıları için)
+  void _setupCallbackHandler() {
+    _callbackChannel.setMethodCallHandler((call) async {
       try {
+        debugPrint('MediaController callback received: ${call.method}');
+        
+        // Hangi ses sisteminin aktif olduğunu kontrol et
+        final prefs = await SharedPreferences.getInstance();
+        final playingBookCode = prefs.getString('playing_book_code');
+        
+        debugPrint('MediaController: playing_book_code = $playingBookCode, method = ${call.method}');
+        
+        // Kuran sistemi aktifse, callback'i işleme
+        if (playingBookCode == 'quran') {
+          debugPrint('MediaController: Quran system active, ignoring callback');
+          return false; // Kuran sistemi için false döndür
+        }
+        
+        // Kitap sistemi için normal callback'ler
         switch (call.method) {
           case 'play':
             await _audioPlayerService.resumeAudio();
+            // Play durumunda metadata'yı cache'den restore et
+            await _restoreMetadataFromCache();
             return true;
           case 'pause':
             await _audioPlayerService.pauseAudio();
+            // Pause durumunda metadata'yı cache'den restore et
+            await _restoreMetadataFromCache();
             // Pause durumunda bildirim kontrollerinin kaybolmaması için
             // playback state'i duraklatılmış olarak güncelle
             await updatePlaybackState(STATE_PAUSED);
             return true;
           case 'stop':
-            await _audioPlayerService.stopAudio();
+            // iOS için ek güvenlik: stop işlemini güvenli bir şekilde gerçekleştir
+            try {
+              await _audioPlayerService.stopAudio();
+              // Stop işleminden sonra servisi de durdur
+              await Future.delayed(const Duration(milliseconds: 100));
+              await stopService();
+            } catch (e) {
+              debugPrint('MediaController callback stop error: $e');
+              // Hata durumunda da servisi durdur
+              await stopService();
+            }
+            return true;
+          case 'next':
+            // Sonraki sayfa işlemi - hemen sayfa değişimi yap
+            if (_onNextPage != null) {
+              // Önce cache'deki sayfa numarasını güncelle ve hemen metadata'yı restore et
+              if (_cachedTitle.isNotEmpty && _currentPage < _lastPage) {
+                _cachedPageNumber = _currentPage + 1;
+                await _restoreMetadataFromCache();
+              }
+              
+              // Playback state'i güncelle - kullanıcıya hemen geri bildirim ver
+              updatePlaybackState(STATE_PAUSED);
+
+              // Kitabın son sayfası kontrolü
+              await _loadBookBoundaries(); // Sınırları güncel tut
+
+              // Son sayfada değilsek sayfa değişimini gerçekleştir
+              if (_currentPage < _lastPage) {
+                // Sayfa değişimini gerçekleştir
+                try {
+                  // Flutter uygulama durumunu kontrol et ve ona göre işlem yap
+                  _checkApplicationStateAndExecute(() {
+                    _onNextPage!(_currentPage, _totalPages);
+                  });
+
+                  // Sayfa değişiminden sonra playback state'i tekrar güncelle
+                  updatePlaybackState(_audioPlayerService.isPlaying ? STATE_PLAYING : STATE_PAUSED);
+                } catch (e) {
+                  debugPrint('Sonraki sayfa işlemi hatası: $e');
+                  // Hata durumunda playback state'i güncelle
+                  updatePlaybackState(STATE_PAUSED);
+                }
+              } else {
+                debugPrint('MediaController: Son sayfadayız, sonraki sayfaya geçilemez');
+                // Kullanıcıya geri bildirim ver (sayfa değişmeyecek)
+                updatePlaybackState(_audioPlayerService.isPlaying ? STATE_PLAYING : STATE_PAUSED);
+              }
+            }
+            return true;
+          case 'previous':
+            // Önceki sayfa işlemi - hemen sayfa değişimi yap
+            if (_onPreviousPage != null) {
+              // Önce cache'deki sayfa numarasını güncelle ve hemen metadata'yı restore et
+              if (_cachedTitle.isNotEmpty && _currentPage > _firstPage) {
+                _cachedPageNumber = _currentPage - 1;
+                await _restoreMetadataFromCache();
+              }
+              
+              // Playback state'i güncelle - kullanıcıya hemen geri bildirim ver
+              updatePlaybackState(STATE_PAUSED);
+
+              // Kitabın ilk sayfası kontrolü
+              await _loadBookBoundaries(); // Sınırları güncel tut
+
+              // İlk sayfada değilsek sayfa değişimini gerçekleştir
+              if (_currentPage > _firstPage) {
+                // Sayfa değişimini gerçekleştir
+                try {
+                  // Flutter uygulama durumunu kontrol et ve ona göre işlem yap
+                  _checkApplicationStateAndExecute(() {
+                    _onPreviousPage!(_currentPage);
+                  });
+
+                  // Sayfa değişiminden sonra playback state'i tekrar güncelle
+                  updatePlaybackState(_audioPlayerService.isPlaying ? STATE_PLAYING : STATE_PAUSED);
+                } catch (e) {
+                  debugPrint('Önceki sayfa işlemi hatası: $e');
+                  // Hata durumunda playback state'i güncelle
+                  updatePlaybackState(STATE_PAUSED);
+                }
+              } else {
+                debugPrint('MediaController: İlk sayfadayız, önceki sayfaya geçilemez');
+                // Kullanıcıya geri bildirim ver (sayfa değişmeyecek)
+                updatePlaybackState(_audioPlayerService.isPlaying ? STATE_PLAYING : STATE_PAUSED);
+              }
+            }
+            return true;
+          case 'seekTo':
+            final position = call.arguments as int;
+            await _audioPlayerService.seekTo(Duration(milliseconds: position));
+            return true;
+          case 'audio_completed':
+            // iOS'tan gelen audio completion event'i
+            debugPrint('MediaController callback: Audio completion received from iOS');
+            // AudioPageService'e completion event'ini ilet
+            if (!_completionController.isClosed) {
+              _completionController.add(null);
+            }
+            return true;
+          default:
+            return null;
+        }
+      } catch (e) {
+        debugPrint('MediaController callback method call hatası: $e');
+        return false;
+      }
+    });
+  }
+
+  /// Method call handler'ı ayarla
+  void _setupMethodCallHandler() {
+    _channel.setMethodCallHandler((call) async {
+      try {
+        // ÖNEMLİ: Önce hangi sistemin aktif olduğunu kontrol et
+        final prefs = await SharedPreferences.getInstance();
+        final playingBookCode = prefs.getString('playing_book_code');
+        
+        // Eğer Kuran sistemi aktifse, kitap sistemi method call'larını işleme
+        if (playingBookCode == 'quran') {
+          debugPrint('MediaController: Kuran sistemi aktif, kitap method call\'ı işlenmedi: ${call.method}');
+          return false;
+        }
+        
+        switch (call.method) {
+          case 'play':
+            await _audioPlayerService.resumeAudio();
+            // Play durumunda metadata'yı cache'den restore et
+            await _restoreMetadataFromCache();
+            return true;
+          case 'pause':
+            await _audioPlayerService.pauseAudio();
+            // Pause durumunda metadata'yı cache'den restore et
+            await _restoreMetadataFromCache();
+            // Pause durumunda bildirim kontrollerinin kaybolmaması için
+            // playback state'i duraklatılmış olarak güncelle
+            await updatePlaybackState(STATE_PAUSED);
+            return true;
+          case 'stop':
+            // iOS için ek güvenlik: stop işlemini güvenli bir şekilde gerçekleştir
+            try {
+              await _audioPlayerService.stopAudio();
+              // Stop işleminden sonra servisi de durdur
+              await Future.delayed(const Duration(milliseconds: 100));
+              await stopService();
+            } catch (e) {
+              debugPrint('MediaController stop error: $e');
+              // Hata durumunda da servisi durdur
+              await stopService();
+            }
             return true;
           case 'next':
             // Sonraki sayfa işlemi - hemen sayfa değişimi yap
@@ -429,6 +697,12 @@ class MediaController {
               final bookPage = await apiService.getBookPage(bookCode, _currentPage);
               final bookTitle = await bookTitleService.getTitle(bookCode);
               final bookAuthor = await bookTitleService.getAuthor(bookCode);
+              
+              // Cache'i güncelle ve metadata'yı restore et
+              _cachedTitle = bookTitle.isNotEmpty ? bookTitle : "Hakikat Kitabevi";
+              _cachedAuthor = bookAuthor.isNotEmpty ? bookAuthor : "Hakikat Kitabevi";
+              _cachedPageNumber = _currentPage;
+              
               await updateForBookPage(
                 bookPage,
                 bookTitle,
@@ -436,7 +710,7 @@ class MediaController {
                 pageNumber: _currentPage,
               );
               debugPrint(
-                  'MediaController: Metadata güncellendi (lock screen sayfa değişimi sonrası)');
+                  'MediaController: Metadata güncellendi (lock screen sayfa değişimi sonrası) - $_cachedTitle, Sayfa $_currentPage');
 
               // --- YENİ: Flutter tarafına event gönder ---
               const MethodChannel lockScreenChannel = MethodChannel('lock_screen_events');
@@ -452,43 +726,64 @@ class MediaController {
               // --- YENİ SONU ---
             } catch (e) {
               debugPrint('MediaController: Metadata güncellenemedi (lock screen): $e');
+              // Hata durumunda cache'den restore et
+              await _restoreMetadataFromCache();
             }
+          } else {
+            // BookCode yoksa cache'den restore et
+            await _restoreMetadataFromCache();
           }
         } catch (e) {
           debugPrint('MediaController: Metadata güncellenemedi (lock screen): $e');
+          // Her durumda cache'den restore et
+          await _restoreMetadataFromCache();
         }
       });
       // --- YENİ SONU ---
 
-      // Kilit ekranında yapılan sayfa değişikliklerini kaydetmek için
-      // örneğin SharedPreferences'a kaydet
-      Future.delayed(const Duration(milliseconds: 200), () async {
-        try {
-          // Sayfa değişikliklerini AudioPlayerService üzerinden
-          // SharedPreferences'a kaydetmeyi dene
-          String? bookCode = await _audioPlayerService.getPlayingBookCode();
-          if (bookCode != null && bookCode.isNotEmpty) {
-            debugPrint(
-                'MediaController: Sayfa değişikliği, yeni sayfa: $_currentPage, bookCode: $bookCode');
-            // Direkt SharedPreferences'ı kullanarak sayfa değişikliğini kaydet
-            var prefs = await SharedPreferences.getInstance();
-            // Use a book-specific key to store the current page
-            await prefs.setInt('${bookCode}_current_audio_page', _currentPage);
-            // Also keep the global key for backward compatibility
-            await prefs.setInt('current_audio_book_page', _currentPage);
+            // Kilit ekranında yapılan sayfa değişikliklerini kaydetmek için
+            // örneğin SharedPreferences'a kaydet
+            Future.delayed(const Duration(milliseconds: 300), () async {
+              try {
+                // Sayfa değişikliklerini AudioPlayerService üzerinden
+                // SharedPreferences'a kaydetmeyi dene
+                String? bookCode = await _audioPlayerService.getPlayingBookCode();
+                if (bookCode != null && bookCode.isNotEmpty) {
+                  debugPrint(
+                      'MediaController: Sayfa değişikliği, yeni sayfa: $_currentPage, bookCode: $bookCode');
+                  // Direkt SharedPreferences'ı kullanarak sayfa değişikliğini kaydet
+                  var prefs = await SharedPreferences.getInstance();
+                  // Use a book-specific key to store the current page
+                  await prefs.setInt('${bookCode}_current_audio_page', _currentPage);
+                  // Also keep the global key for backward compatibility
+                  await prefs.setInt('current_audio_book_page', _currentPage);
 
-            // ÖNEMLİ: Kilit ekranından sayfa değişikliği yapıldığını belirtmek için bayrağı ayarla
-            // Bu, arka plandayken de sayfa değişikliğinin algılanmasını sağlar
-            await prefs.setBool('mini_player_changed_page', true);
+                  // ÖNEMLİ: Kilit ekranından sayfa değişikliği yapıldığını belirtmek için bayrağı ayarla
+                  // Bu, arka plandayken de sayfa değişikliğinin algılanmasını sağlar
+                  await prefs.setBool('mini_player_changed_page', true);
+                  
+                  // Native player'dan gelen sayfa değişikliği flag'ini ayarla
+                  await prefs.setBool('${bookCode}_native_page_change', true);
+                  
+                  // Sayfa atlama bilgisini kontrol et
+                  final lastRequestedPage = prefs.getInt('${bookCode}_last_requested_page') ?? 0;
+                  final actualLoadedPage = prefs.getInt('${bookCode}_actual_loaded_page') ?? 0;
+                  if (lastRequestedPage > 0 && actualLoadedPage > 0 && lastRequestedPage != actualLoadedPage) {
+                    debugPrint('MediaController: Sayfa atlama tespit edildi: $lastRequestedPage -> $actualLoadedPage');
+                    // Gerçek yüklenen sayfayı kullan
+                    _currentPage = actualLoadedPage;
+                    await prefs.setInt('${bookCode}_current_audio_page', actualLoadedPage);
+                    await prefs.setInt('current_audio_book_page', actualLoadedPage);
+                  }
 
-            debugPrint(
-                'MediaController: Sayfa değişikliği ve mini_player_changed_page bayrağı SharedPreferences\'a kaydedildi: $_currentPage');
+                  debugPrint(
+                      'MediaController: Sayfa değişikliği ve native_page_change bayrağı SharedPreferences\'a kaydedildi: $_currentPage');
 
-            // Arka planda otomatik sayfa güncelleme için broadcast channel ile mesaj gönder
-            try {
-              await _channel.invokeMethod('notifyPageChange', {
-                'bookCode': bookCode,
-                'pageNumber': _currentPage,
+                  // Arka planda otomatik sayfa güncelleme için broadcast channel ile mesaj gönder
+                  try {
+                    await _channel.invokeMethod('notifyPageChange', {
+                      'bookCode': bookCode,
+                      'pageNumber': _currentPage,
               });
               debugPrint('MediaController: Sayfa değişikliği bildirimi gönderildi');
             } catch (e) {

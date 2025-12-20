@@ -176,7 +176,7 @@
   },
   "off": "Off",
   "@off": {
-    "description": "Off switch title"
+    "description": "Alarm switch title"
   },
   "gapSliderTitle": "Time Gap",
   "@gapSliderTitle": {
@@ -358,5 +358,187 @@
   "locationFeatureTitle": "Find Your Location",
   "@locationFeatureTitle": {
     "description": "Location feature title"
+  },
+  "quranProstration": "Prostration",
+  "@quranProstration": {
+    "description": "Prostration text"
+  },
+  "quranPageDataError": "Error loading page data",
+  "@quranPageDataError": {
+    "description": "Page data loading error"
+  },
+  "quranNoVersesFound": "No verses found",
+  "@quranNoVersesFound": {
+    "description": "No verses found text"
+  },
+  "quranCopy": "Copy",
+  "@quranCopy": {
+    "description": "Copy text"
+  },
+  "quranHighlight": "Highlight",
+  "@quranHighlight": {
+    "description": "Highlight text"
+  },
+  "removeHighlight": "Remove Highlight",
+  "@removeHighlight": {
+    "description": "Remove highlight text"
+  },
+  "quranShare": "Share",
+  "@quranShare": {
+    "description": "Share text"
+  },
+  "surahVerseFormat": "Surah {surahName}, Verse {verseNumber}",
+  "@surahVerseFormat": {
+    "description": "Surah and Verse format",
+    "placeholders": {
+      "surahName": {
+        "type": "String",
+        "example": "Fatiha"
+      },
+      "verseNumber": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "verse": "Verse",
+  "@verse": {
+    "description": "Verse text"
+  },
+  "pageNumber": "Page {page}",
+  "@pageNumber": {
+    "description": "Page number format",
+    "placeholders": {
+      "page": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "quranTranslation": "Translation",
+  "@quranTranslation": {
+    "description": "Translation text"
+  },
+  "quranPageLoading": "Loading page...",
+  "@quranPageLoading": {
+    "description": "Page loading text"
+  },
+  "quranError": "An error occurred",
+  "@quranError": {
+    "description": "Error text"
+  },
+  "quranRetry": "Retry",
+  "@quranRetry": {
+    "description": "Retry text"
+  },
+  "quranFormatMukabele": "Mukabele Format",
+  "@quranFormatMukabele": {
+    "description": "Mukabele format"
+  },
+  "quranFormatHat1": "Hat 1",
+  "@quranFormatHat1": {
+    "description": "Hat 1 format"
+  },
+  "quranFormatHat2": "Hat 2",
+  "@quranFormatHat2": {
+    "description": "Hat 2 format"
+  },
+  "quranOk": "OK",
+  "@quranOk": {
+    "description": "OK text"
+  },
+  "quranPageSettings": "Page Settings",
+  "@quranPageSettings": {
+    "description": "Page settings title"
+  },
+  "quranFontType": "Font Type",
+  "@quranFontType": {
+    "description": "Font type setting"
+  },
+  "quranFontSize": "Font Size",
+  "@quranFontSize": {
+    "description": "Font size setting"
+  },
+  "quranAutoScroll": "Auto Scroll",
+  "@quranAutoScroll": {
+    "description": "Auto scroll setting"
+  },
+  "quranReset": "Reset",
+  "@quranReset": {
+    "description": "Reset setting"
+  },
+  "quranClose": "Close",
+  "@quranClose": {
+    "description": "Close setting"
+  },
+  "besmele": "Bismillāhirrahmānirrahīm",
+  "@besmele": {
+    "description": "Besmele text"
+  },
+  "holyQuran": "Holy Quran",
+  "@holyQuran": {
+    "description": "Holy Quran text"
+  },
+  "quranSurahs": "Surahs",
+  "@quranSurahs": {
+    "description": "Surahs text"
+  },
+  "quranJuz": "Juz",
+  "@quranJuz": {
+    "description": "Juz text"
+  },
+  "quranJuzListNotFound": "Juz list not found",
+  "@quranJuzListNotFound": {
+    "description": "Juz list not found text"
+  },
+  "juzNumber": "Juz {juz}",
+  "@juzNumber": {
+    "description": "Juz number format",
+    "placeholders": {
+      "juz": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "deleteBookmark": "Delete Bookmark?",
+  "@deleteBookmark": {
+    "description": "Delete bookmark title"
+  },
+  "deleteBookmarkConfirmation": "Are you sure you want to delete this bookmark?",
+  "@deleteBookmarkConfirmation": {
+    "description": "Delete bookmark confirmation"
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel text"
+  },
+  "delete": "Delete",
+  "@delete": {
+    "description": "Delete text"
+  },
+  "bookmarksTitle": "Bookmarks",
+  "@bookmarksTitle": {
+    "description": "Bookmarks title"
+  },
+  "noBookmarksYet": "No bookmarks yet",
+  "@noBookmarksYet": {
+    "description": "No bookmarks yet text"
+  },
+  "returnToBooks": "Return to Books",
+  "@returnToBooks": {
+    "description": "Return to books text"
+  },
+  "selectedText": "Selected Text",
+  "@selectedText": {
+    "description": "Selected text"
+  },
+  "selectHighlightColor": "Select Highlight Color",
+  "@selectHighlightColor": {
+    "description": "Select highlight color text"
+  },
+  "quranHolyQuran": "Holy Quran",
+  "@quranHolyQuran": {
+    "description": "Holy Quran text"
   }
 }

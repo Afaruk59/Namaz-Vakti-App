@@ -30,6 +30,7 @@ import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import androidx.media.session.MediaButtonReceiver
+import com.afaruk59.namaz_vakti_app.QuranMediaService
 
 class MainActivity : FlutterActivity() {
     companion object {
@@ -38,15 +39,33 @@ class MainActivity : FlutterActivity() {
     }
     private val CHANNEL = "com.afaruk59.namaz_vakti_app/media_controls"
     private val FLUTTER_CHANNEL = "com.afaruk59.namaz_vakti_app/media_service"
+    
+    // Kitap Audio Kanalları
+    private val BOOK_MEDIA_CONTROLS_CHANNEL = "com.afaruk59.namaz_vakti_app/book_media_controls"
+    private val BOOK_MEDIA_CALLBACK_CHANNEL = "com.afaruk59.namaz_vakti_app/book_media_callback"
+    
+    // Quran Audio Kanalları
+    private val QURAN_MEDIA_CONTROLS_CHANNEL = "com.afaruk59.namaz_vakti_app/quran_media_controls"
+    private val QURAN_MEDIA_CHANNEL = "com.afaruk59.namaz_vakti_app/quran_media"
+    private val QURAN_MEDIA_CALLBACK_CHANNEL = "com.afaruk59.namaz_vakti_app/quran_media_callback"
+
     private var mediaService: MediaService? = null
+    private var quranMediaService: QuranMediaService? = null
+    
     private var methodChannel: MethodChannel? = null
     private var flutterMethodChannel: MethodChannel? = null
+    private var bookMediaControlsChannel: MethodChannel? = null
+    private var bookMediaCallbackChannel: MethodChannel? = null
+    private var quranMediaControlsChannel: MethodChannel? = null
+    private var quranMediaChannel: MethodChannel? = null
+    private var quranMediaCallbackChannel: MethodChannel? = null
+    
     private var bound = false
+    private var quranBound = false
     private var pendingAction: String? = null
     private var isActivityResumed = false
     private var isProcessingAction = false
-    // Handler memory leak riskini önlemek için WeakReference kullanılabilir
-    // Ancak Activity context'i gerekli olmadığı için static Handler güvenli
+    
     private val handler = Handler(Looper.getMainLooper())
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
@@ -94,7 +113,7 @@ class MainActivity : FlutterActivity() {
                 }
             }
 
-            // Use background execution to ensure method calls work when app is in background
+        // Mevcut Media Service kanalı
         methodChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL)
         methodChannel?.setMethodCallHandler { call, result ->
             when (call.method) {
@@ -104,7 +123,6 @@ class MainActivity : FlutterActivity() {
                         bindService(intent, connection, Context.BIND_AUTO_CREATE)
                         startService(intent)
                         
-                        // Servis başlatıldıktan sonra kısa bir gecikme ile onResume metodunu çağır
                         handler.postDelayed({
                             methodChannel?.invokeMethod("onResume", null)
                         }, 500)
@@ -116,7 +134,6 @@ class MainActivity : FlutterActivity() {
                     }
                 }
                 "stopService" -> {
-                    // Önce aktif servise stopAudio komutu gönder
                     if (bound && mediaService != null) {
                         try {
                             mediaService?.stopAudio()
@@ -144,7 +161,6 @@ class MainActivity : FlutterActivity() {
                     val duration = call.argument<Number>("duration")?.toLong() ?: 0L
                     mediaService?.updateMetadata(title, author, coverUrl, duration)
                     
-                    // Metadata güncellendikten sonra kısa bir gecikme ile tekrar güncelle
                     handler.postDelayed({
                         mediaService?.updateMetadata(title, author, coverUrl, duration)
                     }, 300)
@@ -160,17 +176,14 @@ class MainActivity : FlutterActivity() {
             }
         }
         
-        // MediaService'den gelen bildirimler için Flutter ile iletişim kurulumu
         flutterMethodChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, FLUTTER_CHANNEL)
         flutterMethodChannel?.setMethodCallHandler { call, result ->
             when (call.method) {
                 "initMediaService" -> {
-                    // MediaService ile iletişim için Method Channel'ı kaydet
                     MediaService.methodChannel = flutterMethodChannel
                     result.success(null)
                 }
                 "audio_completed" -> {
-                    // Ses tamamlandığında Flutter'a "next" komutunu gönder
                     Log.d("MainActivity", "Audio completed, sending next command to Flutter")
                     try {
                         flutterMethodChannel?.invokeMethod("next", null)
@@ -181,7 +194,6 @@ class MainActivity : FlutterActivity() {
                     }
                 }
                 "audio_error" -> {
-                    // Ses hatası durumunda Flutter'a hata bildirimi gönder
                     Log.d("MainActivity", "Audio error received")
                     try {
                         flutterMethodChannel?.invokeMethod("audio_error", null)
@@ -192,14 +204,12 @@ class MainActivity : FlutterActivity() {
                     }
                 }
                 "getCurrentAudioPage" -> {
-                    // Şu anki ses sayfasını al
                     val prefs = getSharedPreferences("FlutterSharedPreferences", Context.MODE_PRIVATE)
                     val bookCode = prefs.getString("flutter.playing_book_code", "") ?: ""
                     val currentPage = prefs.getInt("flutter.${bookCode}_current_audio_page", 0)
                     result.success(currentPage)
                 }
                 "updateAudioPageState" -> {
-                    // Ses sayfası durumunu güncelle
                     val bookCode = call.argument<String>("bookCode") ?: ""
                     val currentPage = call.argument<Int>("currentPage") ?: 0
                     val firstPage = call.argument<Int>("firstPage") ?: 1
@@ -218,6 +228,104 @@ class MainActivity : FlutterActivity() {
                 else -> result.notImplemented()
             }
         }
+
+        // =================================================================================================
+        // YENİ EKLENEN KISIMLAR (KİTAP VE KURAN ENTEGRASYONU)
+        // =================================================================================================
+
+        // Kitap Medya Kontrolleri Kanalı
+        bookMediaControlsChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, BOOK_MEDIA_CONTROLS_CHANNEL)
+        bookMediaControlsChannel?.setMethodCallHandler { call, result ->
+            // Burada MediaService kullanılacak (çünkü kitaplar mevcut MediaService'i kullanıyor olabilir)
+            // Eğer kitaplar için ayrı servis gerekiyorsa BookMediaService oluşturulmalı, 
+            // ama example kodlarında BookMediaService vardı. Eğer taşınmadıysa mevcut MediaService adapte edilmeli.
+            // Şimdilik mevcut MediaService üzerinden yönlendirme yapalım.
+            
+            when (call.method) {
+                "startService" -> {
+                    val intent = Intent(this, MediaService::class.java)
+                    bindService(intent, connection, Context.BIND_AUTO_CREATE)
+                    startService(intent)
+                    result.success(true)
+                }
+                "stopService" -> {
+                    // Stop işlemi
+                    result.success(true)
+                }
+                // Diğer metodlar...
+                else -> result.notImplemented()
+            }
+        }
+
+        // Kitap Medya Callback Kanalı
+        bookMediaCallbackChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, BOOK_MEDIA_CALLBACK_CHANNEL)
+        
+        // Kuran Medya Kontrolleri Kanalı (QuranMediaService)
+        quranMediaControlsChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, QURAN_MEDIA_CONTROLS_CHANNEL)
+        quranMediaControlsChannel?.setMethodCallHandler { call, result ->
+            when (call.method) {
+                "startService" -> {
+                    try {
+                        val intent = Intent(this, QuranMediaService::class.java)
+                        bindService(intent, quranConnection, Context.BIND_AUTO_CREATE)
+                        startService(intent)
+                        result.success(true)
+                    } catch (e: Exception) {
+                        Log.e("MainActivity", "Quran Service start error: ${e.message}")
+                        result.error("SERVICE_START_ERROR", e.message, null)
+                    }
+                }
+                "stopService" -> {
+                    if (quranBound && quranMediaService != null) {
+                         quranMediaService?.stopAudio()
+                    }
+                    if (quranBound) {
+                        unbindService(quranConnection)
+                        quranBound = false
+                    }
+                    val intent = Intent(this, QuranMediaService::class.java)
+                    stopService(intent)
+                    result.success(true)
+                }
+                "updatePlaybackState" -> {
+                    val state = call.argument<Number>("state")?.toInt() ?: 0
+                    quranMediaService?.updatePlaybackState(state)
+                    result.success(true)
+                }
+                "updateMetadata" -> {
+                    val title = call.argument<String>("title") ?: ""
+                    val surahName = call.argument<String>("surahName") ?: ""
+                    val ayahNumber = call.argument<Int>("ayahNumber") ?: 0
+                    val duration = call.argument<Number>("duration")?.toLong() ?: 0L
+                    quranMediaService?.updateMetadata(title, surahName, ayahNumber, duration)
+                    result.success(true)
+                }
+                "updatePosition" -> {
+                    val position = call.argument<Number>("position")?.toLong() ?: 0L
+                    quranMediaService?.updatePosition(position)
+                    result.success(true)
+                }
+                "activateMediaSession" -> {
+                    quranMediaService?.activateMediaSession()
+                    result.success(true)
+                }
+                "deactivateMediaSession" -> {
+                    quranMediaService?.deactivateMediaSession()
+                    result.success(true)
+                }
+                else -> result.notImplemented()
+            }
+        }
+
+        // Kuran Medya Callback Kanalı
+        quranMediaCallbackChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, QURAN_MEDIA_CALLBACK_CHANNEL)
+        quranMediaCallbackChannel?.setMethodCallHandler { _, result ->
+             // Callback işlemleri
+             result.success(null)
+        }
+        
+        // Kuran Medya Genel Kanalı
+        quranMediaChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, QURAN_MEDIA_CHANNEL)
         
         // Intent'ten gelen action'ı işle
         intent?.let { handleIntent(it) }
@@ -251,26 +359,46 @@ class MainActivity : FlutterActivity() {
             mediaService = null
         }
     }
-
     
+    // Quran Service Connection
+    private val quranConnection = object : ServiceConnection {
+        override fun onServiceConnected(className: ComponentName, service: IBinder) {
+            val binder = service as QuranMediaService.LocalBinder
+            quranMediaService = binder.getService()
+            quranBound = true
+            
+            // MethodChannel'ı servise ilet
+            quranMediaControlsChannel?.let { channel ->
+                quranMediaService?.setMethodChannel(channel)
+            }
+        }
+
+        override fun onServiceDisconnected(arg0: ComponentName) {
+            quranBound = false
+            quranMediaService = null
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         isActivityResumed = true
         
-        // Bekleyen action'ı işle
         processPendingAction()
         
-        // Uygulama ön plana geldiğinde Flutter'a bildir
-        // Bu, medya kontrollerinin güncellenmesini sağlar
         handler.postDelayed({
             methodChannel?.invokeMethod("onResume", null)
         }, 300)
         
-        // Servis bağlantısını kontrol et ve gerekirse yeniden bağlan
+        // MediaService bağlantı kontrolü
         if (mediaService == null && bound) {
-            // Servis bağlantısını yeniden kur
             val intent = Intent(this, MediaService::class.java)
             bindService(intent, connection, Context.BIND_AUTO_CREATE)
+        }
+        
+        // QuranMediaService bağlantı kontrolü
+        if (quranMediaService == null && quranBound) {
+            val intent = Intent(this, QuranMediaService::class.java)
+            bindService(intent, quranConnection, Context.BIND_AUTO_CREATE)
         }
     }
     
@@ -291,14 +419,13 @@ class MainActivity : FlutterActivity() {
             if (action != null) {
                 Log.d("MainActivity", "Alınan intent action: $action")
                 
-                // Sayfa değişikliklerinde yeni bir Handler kullanarak Flutter'a bildir
                 Handler(Looper.getMainLooper()).postDelayed({
                     when (action) {
                         "next_page" -> flutterMethodChannel?.invokeMethod("next", null)
                         "previous_page" -> flutterMethodChannel?.invokeMethod("previous", null)
                         "toggle_play" -> flutterMethodChannel?.invokeMethod("togglePlay", null)
                     }
-                }, 300) // Kısa bir gecikme ile UI'ın hazır olmasını bekle
+                }, 300) 
             }
         } catch (e: Exception) {
             Log.e("MainActivity", "Intent işleme hatası: ${e.message}")
@@ -310,7 +437,6 @@ class MainActivity : FlutterActivity() {
             return
         }
         
-        // İşlem zaten devam ediyorsa ve yeni bir istek geldiyse, önceki işlemi iptal et
         isProcessingAction = false
         
         try {
@@ -318,20 +444,14 @@ class MainActivity : FlutterActivity() {
             
             when (pendingAction) {
                 "next_page" -> {
-                    // Sayfa değişim komutunu hemen işle
                     methodChannel?.invokeMethod("next", null)
-                    
-                    // Kısa bir gecikme ekleyerek UI'ın güncellenmesini bekle
                     handler.postDelayed({
                         isProcessingAction = false
                         pendingAction = null
                     }, 300)
                 }
                 "previous_page" -> {
-                    // Sayfa değişim komutunu hemen işle
                     methodChannel?.invokeMethod("previous", null)
-                    
-                    // Kısa bir gecikme ekleyerek UI'ın güncellenmesini bekle
                     handler.postDelayed({
                         isProcessingAction = false
                         pendingAction = null
@@ -350,7 +470,6 @@ class MainActivity : FlutterActivity() {
     }
 
     override fun onDestroy() {
-        // Handler callback'lerini temizle (memory leak önleme)
         handler.removeCallbacksAndMessages(null)
         
         if (bound) {
@@ -358,8 +477,19 @@ class MainActivity : FlutterActivity() {
             unbindService(connection)
             bound = false
         }
+        
+        if (quranBound) {
+            quranMediaService?.stopAudio()
+            unbindService(quranConnection)
+            quranBound = false
+        }
+        
         val intent = Intent(this, MediaService::class.java)
         stopService(intent)
+        
+        val quranIntent = Intent(this, QuranMediaService::class.java)
+        stopService(quranIntent)
+        
         super.onDestroy()
     }
 }

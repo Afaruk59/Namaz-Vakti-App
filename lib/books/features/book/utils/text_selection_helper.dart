@@ -106,7 +106,7 @@ class TextSelectionHelper {
     const appPromotion =
         'Namaz Vakti App: Dünya Genelinde Temkinli Namaz Vakitleri.';
     const appPromotionUrl =
-        'https://play.google.com/store/apps/details?id=com.afaruk59.namaz_vakti_app';
+        'https://play.google.com/store/apps/details?id=com.kurtkadiroglu.prayertimes';
 
     // Paylaşılacak metni oluştur
     final shareText = '$textToShare\n\n$pageUrl\n\n$appPromotion\n$appPromotionUrl';

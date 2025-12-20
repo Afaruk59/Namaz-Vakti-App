@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class BookAudioController {
   final String bookCode;
-  final AudioPlayerService audioPlayerService;
+  final AudioPlayerService audioPlayerService = AudioPlayerService.forContext('book');
   final AudioManager audioManager;
 
   // Callback when audio progress visibility changes
@@ -20,7 +20,6 @@ class BookAudioController {
 
   BookAudioController({
     required this.bookCode,
-    required this.audioPlayerService,
     required this.audioManager,
     required this.onShowAudioProgressChanged,
   });
@@ -162,7 +161,7 @@ class BookAudioController {
         }
 
         // If this is return from home screen with a saved position
-        if (!afterPageChange && startPosition != null && startPosition > 0) {
+        if (!afterPageChange && !fromBottomBar && startPosition != null && startPosition > 0) {
           debugPrint('RESUMING from saved position: $startPosition ms, autoResume: $autoResume');
 
           try {
