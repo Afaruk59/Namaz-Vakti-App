@@ -79,8 +79,7 @@ class _QuranTakipliViewState extends State<QuranTakipliView> {
 
   // Bir ayetin secde ayeti olup olmadığını kontrol eden metod
   bool _isSecdeAyeti(int sureNo, int ayetNo) {
-    return _secdeAyetleri.any(
-        (element) => element['sure'] == sureNo && element['ayet'] == ayetNo);
+    return _secdeAyetleri.any((element) => element['sure'] == sureNo && element['ayet'] == ayetNo);
   }
 
   // Secde ayeti için özel container oluşturan metod
@@ -151,14 +150,10 @@ class _QuranTakipliViewState extends State<QuranTakipliView> {
 
   Future<void> _loadHighlights() async {
     final pageNumber = widget.pageNumber;
-    final bookmarks =
-        await _bookmarkService.getPageBookmarks('quran', pageNumber);
+    final bookmarks = await _bookmarkService.getPageBookmarks('quran', pageNumber);
     setState(() {
       _highlights = bookmarks
-          .where((b) =>
-              b.selectedText != null &&
-              b.highlightColor != null &&
-              b.startIndex != null)
+          .where((b) => b.selectedText != null && b.highlightColor != null && b.startIndex != null)
           .map((b) => HighlightInfo(
                 text: b.selectedText!,
                 color: b.highlightColor!,
@@ -208,8 +203,7 @@ class _QuranTakipliViewState extends State<QuranTakipliView> {
       // GlobalKey'in mevcut context'i var mı kontrol et
       if (activeWordKey.currentContext != null) {
         // Kelimenin pozisyonunu ve boyutunu al
-        final RenderBox box =
-            activeWordKey.currentContext!.findRenderObject() as RenderBox;
+        final RenderBox box = activeWordKey.currentContext!.findRenderObject() as RenderBox;
         final position = box.localToGlobal(Offset.zero);
         final size = box.size;
 
@@ -222,23 +216,17 @@ class _QuranTakipliViewState extends State<QuranTakipliView> {
 
         // Kelimenin ekranın ortasına gelmesi için gerekli offset hesapla
         // Eğer kelime ekranın ortasından belirli bir mesafe uzaksa scroll yap
-        final threshold =
-            screenHeight * 0.15; // Ekran yüksekliğinin %15'i kadar tolerans
+        final threshold = screenHeight * 0.15; // Ekran yüksekliğinin %15'i kadar tolerans
 
-        if (wordPosition < screenCenter - threshold ||
-            wordPosition > screenCenter + threshold) {
+        if (wordPosition < screenCenter - threshold || wordPosition > screenCenter + threshold) {
           // Kelimenin tam olarak ekranın ortasına gelmesi için offset hesapla
-          final scrollOffset =
-              widget.scrollController.offset + (wordPosition - screenCenter);
+          final scrollOffset = widget.scrollController.offset + (wordPosition - screenCenter);
 
           // Scroll pozisyonunun sınırlarını kontrol et
-          final maxScrollExtent =
-              widget.scrollController.position.maxScrollExtent;
-          final minScrollExtent =
-              widget.scrollController.position.minScrollExtent;
+          final maxScrollExtent = widget.scrollController.position.maxScrollExtent;
+          final minScrollExtent = widget.scrollController.position.minScrollExtent;
 
-          final clampedOffset =
-              scrollOffset.clamp(minScrollExtent, maxScrollExtent);
+          final clampedOffset = scrollOffset.clamp(minScrollExtent, maxScrollExtent);
 
           // Animasyonlu scroll
           widget.scrollController.animateTo(
@@ -281,7 +269,7 @@ class _QuranTakipliViewState extends State<QuranTakipliView> {
         controller: widget.scrollController,
         child: SingleChildScrollView(
           controller: widget.scrollController,
-            padding: EdgeInsets.only(
+          padding: EdgeInsets.only(
             left: 8,
             right: 8,
             top: 8,
@@ -306,7 +294,8 @@ class _QuranTakipliViewState extends State<QuranTakipliView> {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Text(
-              AppLocalizations.of(context)?.quranPageDataError ?? 'Sayfa verisi yüklenemedi. Lütfen tekrar deneyin.',
+              AppLocalizations.of(context)?.quranPageDataError ??
+                  'Sayfa verisi yüklenemedi. Lütfen tekrar deneyin.',
               style: TextStyle(
                 fontSize: 18,
                 color: Colors.red,
@@ -328,7 +317,8 @@ class _QuranTakipliViewState extends State<QuranTakipliView> {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Text(
-              AppLocalizations.of(context)?.quranNoVersesFound ?? 'Bu sayfada gösterilecek ayet bulunamadı.',
+              AppLocalizations.of(context)?.quranNoVersesFound ??
+                  'Bu sayfada gösterilecek ayet bulunamadı.',
               style: TextStyle(
                 fontSize: 18,
                 color: Colors.orange,
@@ -347,9 +337,8 @@ class _QuranTakipliViewState extends State<QuranTakipliView> {
     int wordIndex = 0;
 
     // Arka plan rengine göre yazı rengini belirle
-    final Color textColor = widget.backgroundColor.computeLuminance() > 0.5
-        ? Color(0xFF2E1810)
-        : Colors.white;
+    final Color textColor =
+        widget.backgroundColor.computeLuminance() > 0.5 ? Color(0xFF2E1810) : Colors.white;
 
     // Sayfada secde ayeti var mı kontrol et
     bool sayfadaSecdeAyetiVar = false;
@@ -416,8 +405,7 @@ class _QuranTakipliViewState extends State<QuranTakipliView> {
         // Yeni sure başlıyor
         if (surahInfo != null) {
           // Sure başlığını, secde ayeti varsa contentWidgets'a, yoksa pageContentWidgets'a ekle
-          Widget surahHeader = _buildSurahHeader(
-              'سورة ${surahInfo['SureNameArabic']}', textColor);
+          Widget surahHeader = _buildSurahHeader('سورة ${surahInfo['SureNameArabic']}', textColor);
 
           if (sayfadaSecdeAyetiVar) {
             // Secde ayeti varsa, ilk sure başlığını çerçevenin dışına (contentWidgets'a) ekle
@@ -437,8 +425,7 @@ class _QuranTakipliViewState extends State<QuranTakipliView> {
           // Besmele kontrolü - Sadece surenin ilk ayetinden önce göster
           if (ayetNumber == 1 && surahInfo['BesmeleVisible'] == true) {
             // Besmele kelimelerini ayrı ayrı ekle (takip için)
-            final besmeleWords =
-                'بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحٖيمِ'.split(' ');
+            final besmeleWords = 'بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحٖيمِ'.split(' ');
 
             // Besmele için özel bir container oluştur
             List<Widget> besmeleWidgets = [];
@@ -465,10 +452,8 @@ class _QuranTakipliViewState extends State<QuranTakipliView> {
                       fontSize: widget.fontSize,
                       fontFamily: widget.selectedFont,
                       height: 1.5,
-                      color: Colors
-                          .red.shade700, // Besmele yazı rengini kırmızı yap
-                      fontWeight:
-                          FontWeight.normal, // Her zaman normal kalınlık
+                      color: Colors.red.shade700, // Besmele yazı rengini kırmızı yap
+                      fontWeight: FontWeight.normal, // Her zaman normal kalınlık
                     ),
                   ),
                 ),
@@ -483,8 +468,7 @@ class _QuranTakipliViewState extends State<QuranTakipliView> {
                   child: Center(
                     child: Wrap(
                       alignment: WrapAlignment.center,
-                      spacing:
-                          0, // Besmele kelimeleri arasındaki boşluğu kaldır
+                      spacing: 0, // Besmele kelimeleri arasındaki boşluğu kaldır
                       children: besmeleWidgets,
                     ),
                   ),
@@ -550,9 +534,7 @@ class _QuranTakipliViewState extends State<QuranTakipliView> {
                   fontFamily: widget.selectedFont,
                   height: 1.5,
                   // Yazı rengi her zaman kırmızı
-                  color: widget.activeWordIndex == wordIndex - 1
-                      ? Colors.red
-                      : Colors.red.shade700,
+                  color: widget.activeWordIndex == wordIndex - 1 ? Colors.red : Colors.red.shade700,
                   // Yazı kalınlığı: Aktif kelime veya secde ayeti ise kalın, değilse normal
                   fontWeight: widget.activeWordIndex == wordIndex - 1 || isSecde
                       ? FontWeight.bold
@@ -570,8 +552,7 @@ class _QuranTakipliViewState extends State<QuranTakipliView> {
             child: Center(
               child: Wrap(
                 alignment: WrapAlignment.center, // Ortada göster
-                spacing:
-                    0, // Fatiha suresi ilk ayet kelimelerinin arasındaki boşluğu kaldır
+                spacing: 0, // Fatiha suresi ilk ayet kelimelerinin arasındaki boşluğu kaldır
                 runSpacing: 5,
                 children: fatihaBirWidgets,
               ),
@@ -590,15 +571,13 @@ class _QuranTakipliViewState extends State<QuranTakipliView> {
           HighlightInfo? existingHighlight;
           bool isAlreadyHighlighted = false;
           try {
-            existingHighlight =
-                _highlights.firstWhere((h) => h.startIndex == i);
+            existingHighlight = _highlights.firstWhere((h) => h.startIndex == i);
             isAlreadyHighlighted = true;
           } catch (e) {
             existingHighlight = null;
             isAlreadyHighlighted = false;
           }
-          final highlightColor =
-              isAlreadyHighlighted ? existingHighlight!.color : null;
+          final highlightColor = isAlreadyHighlighted ? existingHighlight!.color : null;
           allWords.add(
             GestureDetector(
               onLongPressStart: (details) {
@@ -630,13 +609,10 @@ class _QuranTakipliViewState extends State<QuranTakipliView> {
                     fontSize: widget.fontSize,
                     fontFamily: widget.selectedFont,
                     height: 1.5,
-                    color: widget.activeWordIndex == wordIndex - 1
-                        ? Colors.red
-                        : textColor,
-                    fontWeight:
-                        widget.activeWordIndex == wordIndex - 1 || isSecde
-                            ? FontWeight.bold
-                            : FontWeight.normal,
+                    color: widget.activeWordIndex == wordIndex - 1 ? Colors.red : textColor,
+                    fontWeight: widget.activeWordIndex == wordIndex - 1 || isSecde
+                        ? FontWeight.bold
+                        : FontWeight.normal,
                   ),
                 ),
               ),
@@ -665,8 +641,7 @@ class _QuranTakipliViewState extends State<QuranTakipliView> {
     // Tüm sayfa içeriğini tek bir container içine al
     contentWidgets.add(
       _buildSecdeAyetiContainer(
-        isSecde:
-            sayfadaSecdeAyetiVar, // Sayfada secde ayeti varsa kırmızı çerçeve göster
+        isSecde: sayfadaSecdeAyetiVar, // Sayfada secde ayeti varsa kırmızı çerçeve göster
         backgroundColor: widget.backgroundColor == Colors.white
             ? Color(0xFFFAFAFA)
             : widget.backgroundColor.withOpacity(0.5),
@@ -692,8 +667,7 @@ class _QuranTakipliViewState extends State<QuranTakipliView> {
     final Color headerTextColor = textColor ?? Color(0xFF2E1810);
 
     return Padding(
-      padding: EdgeInsets.symmetric(
-          vertical: 10.0), // Add vertical padding around the header
+      padding: EdgeInsets.symmetric(vertical: 10.0), // Add vertical padding around the header
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         decoration: BoxDecoration(
@@ -750,10 +724,8 @@ class _QuranTakipliViewState extends State<QuranTakipliView> {
     return latinNumber;
   }
 
-  void _showCustomAyahMenu(
-      BuildContext context, String ayahText, int ayahIndex) async {
-    final RenderBox overlay =
-        Overlay.of(context).context.findRenderObject() as RenderBox;
+  void _showCustomAyahMenu(BuildContext context, String ayahText, int ayahIndex) async {
+    final RenderBox overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
     final Size screenSize = overlay.size;
     final Offset rawPosition = _popupPosition ?? Offset(100, 100);
 
@@ -761,8 +733,7 @@ class _QuranTakipliViewState extends State<QuranTakipliView> {
     HighlightInfo? existingHighlight;
     bool isAlreadyHighlighted = false;
     try {
-      existingHighlight =
-          _highlights.firstWhere((h) => h.startIndex == ayahIndex);
+      existingHighlight = _highlights.firstWhere((h) => h.startIndex == ayahIndex);
       isAlreadyHighlighted = true;
     } catch (e) {
       existingHighlight = null;
@@ -776,8 +747,8 @@ class _QuranTakipliViewState extends State<QuranTakipliView> {
     int? ayetNum;
     int? sureNum;
     if (quranAyats != null && ayahIndex < quranAyats.length) {
-      final ayetNumberStr = _convertArabicNumberToLatin(
-          quranAyats[ayahIndex]['AyetNumber']?.toString() ?? '');
+      final ayetNumberStr =
+          _convertArabicNumberToLatin(quranAyats[ayahIndex]['AyetNumber']?.toString() ?? '');
       sureNum = quranAyats[ayahIndex]['SureId'] as int?;
       ayetNum = int.tryParse(ayetNumberStr);
     }
@@ -819,8 +790,7 @@ class _QuranTakipliViewState extends State<QuranTakipliView> {
       TextButton.icon(
         icon: Icon(Icons.copy, color: Colors.deepPurple, size: iconSize),
         label: Text(AppLocalizations.of(context)?.quranCopy ?? 'Kopyala',
-            style:
-                TextStyle(color: Colors.deepPurple, fontSize: buttonFontSize)),
+            style: TextStyle(color: Colors.deepPurple, fontSize: buttonFontSize)),
         style: TextButton.styleFrom(
           padding: EdgeInsets.symmetric(horizontal: 7, vertical: 3),
           minimumSize: Size(0, 28),
@@ -833,11 +803,9 @@ class _QuranTakipliViewState extends State<QuranTakipliView> {
       ),
       !isAlreadyHighlighted
           ? TextButton.icon(
-              icon: Icon(Icons.highlight,
-                  color: Colors.deepPurple, size: iconSize),
+              icon: Icon(Icons.highlight, color: Colors.deepPurple, size: iconSize),
               label: Text(AppLocalizations.of(context)?.quranHighlight ?? 'Vurgula',
-                  style: TextStyle(
-                      color: Colors.deepPurple, fontSize: buttonFontSize)),
+                  style: TextStyle(color: Colors.deepPurple, fontSize: buttonFontSize)),
               style: TextButton.styleFrom(
                 padding: EdgeInsets.symmetric(horizontal: 7, vertical: 3),
                 minimumSize: Size(0, 28),
@@ -846,16 +814,13 @@ class _QuranTakipliViewState extends State<QuranTakipliView> {
               onPressed: () async {
                 Navigator.of(context).pop();
                 _showHighlightColorDialog(ayahText, ayahIndex);
-                if (widget.onHighlightChanged != null)
-                  widget.onHighlightChanged!();
+                if (widget.onHighlightChanged != null) widget.onHighlightChanged!();
               },
             )
           : TextButton.icon(
-              icon: Icon(Icons.highlight_off,
-                  color: Colors.deepPurple, size: iconSize),
+              icon: Icon(Icons.highlight_off, color: Colors.deepPurple, size: iconSize),
               label: Text(AppLocalizations.of(context)?.removeHighlight ?? 'Vurguyu Kaldır',
-                  style: TextStyle(
-                      color: Colors.deepPurple, fontSize: buttonFontSize)),
+                  style: TextStyle(color: Colors.deepPurple, fontSize: buttonFontSize)),
               style: TextButton.styleFrom(
                 padding: EdgeInsets.symmetric(horizontal: 7, vertical: 3),
                 minimumSize: Size(0, 28),
@@ -873,15 +838,13 @@ class _QuranTakipliViewState extends State<QuranTakipliView> {
                   startIndex: ayahIndex,
                   endIndex: ayahIndex,
                 );
-                if (widget.onHighlightChanged != null)
-                  widget.onHighlightChanged!();
+                if (widget.onHighlightChanged != null) widget.onHighlightChanged!();
               },
             ),
       TextButton.icon(
         icon: Icon(Icons.share, color: Colors.deepPurple, size: iconSize),
         label: Text(AppLocalizations.of(context)?.quranShare ?? 'Paylaş',
-            style:
-                TextStyle(color: Colors.deepPurple, fontSize: buttonFontSize)),
+            style: TextStyle(color: Colors.deepPurple, fontSize: buttonFontSize)),
         style: TextButton.styleFrom(
           padding: EdgeInsets.symmetric(horizontal: 7, vertical: 3),
           minimumSize: Size(0, 28),
@@ -896,23 +859,19 @@ class _QuranTakipliViewState extends State<QuranTakipliView> {
           final quranAyats = widget.pageData['QuranAyats'] as List<dynamic>?;
           if (quranAyats != null && ayahIndex < quranAyats.length) {
             surahId = quranAyats[ayahIndex]['SureId'] as int?;
-            ayetNumber = _convertArabicNumberToLatin(
-                quranAyats[ayahIndex]['AyetNumber']?.toString() ?? '');
-            sureName =
-                quranAyats[ayahIndex]['Sure']?['SureNameTurkish']?.toString();
+            ayetNumber =
+                _convertArabicNumberToLatin(quranAyats[ayahIndex]['AyetNumber']?.toString() ?? '');
+            sureName = quranAyats[ayahIndex]['Sure']?['SureNameTurkish']?.toString();
             if (sureName == null && surahId != null) {
               sureName = audioRepo.getSurahName(surahId);
             }
           }
           if (sureName == null || sureName.isEmpty) {
-            final surahInfo =
-                takipliService.getSurahInfoForAyah(widget.pageData, ayahIndex);
+            final surahInfo = takipliService.getSurahInfoForAyah(widget.pageData, ayahIndex);
             if (surahInfo != null) {
               surahId = surahInfo['surahNo'] as int?;
               sureName = surahInfo['surahNameTurkish']?.toString() ??
-                  (surahId != null
-                      ? audioRepo.getSurahName(surahId)
-                      : 'Bilinmeyen Sure');
+                  (surahId != null ? audioRepo.getSurahName(surahId) : 'Bilinmeyen Sure');
             }
           }
           // Arapça dil seçildiğinde veya meal kapalıysa sadece ayet paylaş
@@ -920,9 +879,13 @@ class _QuranTakipliViewState extends State<QuranTakipliView> {
           if (!widget.showMeal || langCode == 'ar') {
             // Meal kapalıysa veya Arapça dil seçildiyse doğrudan sadece ayet paylaş
             String shareText = '';
-            final localizedSurahName = sureName != null ? SurahLocalizationService.getLocalizedSurahName(sureName, context) : null;
-            final verseFormat = ayetNumber != null && localizedSurahName != null 
-                ? AppLocalizations.of(context)?.surahVerseFormat(localizedSurahName, int.parse(ayetNumber)) ?? '$localizedSurahName, ${AppLocalizations.of(context)?.verse ?? 'Verse'} $ayetNumber'
+            final localizedSurahName = sureName != null
+                ? SurahLocalizationService.getLocalizedSurahName(sureName, context)
+                : null;
+            final verseFormat = ayetNumber != null && localizedSurahName != null
+                ? AppLocalizations.of(context)
+                        ?.surahVerseFormat(localizedSurahName, int.parse(ayetNumber)) ??
+                    '$localizedSurahName, ${AppLocalizations.of(context)?.verse ?? 'Verse'} $ayetNumber'
                 : null;
             shareText +=
                 '(${AppLocalizations.of(context)?.pageNumber(widget.pageNumber + 1) ?? 'Page ${widget.pageNumber + 1}'}${verseFormat != null ? ' | $verseFormat' : ''})';
@@ -933,15 +896,20 @@ class _QuranTakipliViewState extends State<QuranTakipliView> {
           }
           // Direkt native paylaş menüsü göster
           String shareText = '';
-          final localizedSurahName = sureName != null ? SurahLocalizationService.getLocalizedSurahName(sureName, context) : null;
-          final verseFormat = ayetNumber != null && localizedSurahName != null 
-              ? AppLocalizations.of(context)?.surahVerseFormat(localizedSurahName, int.parse(ayetNumber)) ?? '$localizedSurahName, ${AppLocalizations.of(context)?.verse ?? 'Verse'} $ayetNumber'
+          final localizedSurahName = sureName != null
+              ? SurahLocalizationService.getLocalizedSurahName(sureName, context)
+              : null;
+          final verseFormat = ayetNumber != null && localizedSurahName != null
+              ? AppLocalizations.of(context)
+                      ?.surahVerseFormat(localizedSurahName, int.parse(ayetNumber)) ??
+                  '$localizedSurahName, ${AppLocalizations.of(context)?.verse ?? 'Verse'} $ayetNumber'
               : null;
           shareText +=
               '(${AppLocalizations.of(context)?.pageNumber(widget.pageNumber + 1) ?? 'Page ${widget.pageNumber + 1}'}${verseFormat != null ? ' | $verseFormat' : ''})';
           shareText += '\n\n$ayahText';
           if (mealText != null && mealText.isNotEmpty) {
-            shareText += '\n\n[${AppLocalizations.of(context)?.quranTranslation ?? 'Translation'}]: $mealText';
+            shareText +=
+                '\n\n[${AppLocalizations.of(context)?.quranTranslation ?? 'Translation'}]: $mealText';
           }
           await Share.share(shareText);
           Navigator.of(context).pop();
@@ -951,9 +919,8 @@ class _QuranTakipliViewState extends State<QuranTakipliView> {
     // Translation button removed
     // Overflow mantığı
     final bool useOverflow = allActionButtons.length > maxDirectButtons;
-    final List<Widget> directButtons = useOverflow
-        ? allActionButtons.sublist(0, maxDirectButtons)
-        : allActionButtons;
+    final List<Widget> directButtons =
+        useOverflow ? allActionButtons.sublist(0, maxDirectButtons) : allActionButtons;
     final List<Widget> overflowButtons =
         useOverflow ? allActionButtons.sublist(maxDirectButtons) : [];
     await showDialog(
@@ -995,8 +962,8 @@ class _QuranTakipliViewState extends State<QuranTakipliView> {
             double iconSize = 15.5;
             // Unused variables removed
             // Sadece uçlar yuvarlatılmış olsun (StadiumBorder gibi)
-            BorderRadius menuRadius = BorderRadius.horizontal(
-                left: Radius.circular(18), right: Radius.circular(18));
+            BorderRadius menuRadius =
+                BorderRadius.horizontal(left: Radius.circular(18), right: Radius.circular(18));
             // --- MENÜ WIDGET'I ---
             return Stack(
               children: [
@@ -1024,16 +991,13 @@ class _QuranTakipliViewState extends State<QuranTakipliView> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           if (!overflowMode && useOverflow) ...[
-                            ...directButtons.map((btn) => _slimButton(
-                                btn,
-                                buttonFontSize,
-                                iconSize)),
+                            ...directButtons
+                                .map((btn) => _slimButton(btn, buttonFontSize, iconSize)),
                             IconButton(
                               icon: Icon(Icons.more_horiz,
                                   color: Colors.deepPurple, size: iconSize + 2),
                               padding: EdgeInsets.zero,
-                              constraints:
-                                  BoxConstraints(minWidth: 32, minHeight: 24),
+                              constraints: BoxConstraints(minWidth: 32, minHeight: 24),
                               onPressed: () {
                                 setMenuState(() {
                                   overflowMode = true;
@@ -1045,23 +1009,18 @@ class _QuranTakipliViewState extends State<QuranTakipliView> {
                               icon: Icon(Icons.arrow_back,
                                   color: Colors.deepPurple, size: iconSize + 2),
                               padding: EdgeInsets.zero,
-                              constraints:
-                                  BoxConstraints(minWidth: 32, minHeight: 24),
+                              constraints: BoxConstraints(minWidth: 32, minHeight: 24),
                               onPressed: () {
                                 setMenuState(() {
                                   overflowMode = false;
                                 });
                               },
                             ),
-                            ...overflowButtons.map((btn) => _slimButton(
-                                btn,
-                                buttonFontSize,
-                                iconSize)),
+                            ...overflowButtons
+                                .map((btn) => _slimButton(btn, buttonFontSize, iconSize)),
                           ] else ...[
-                            ...allActionButtons.map((btn) => _slimButton(
-                                btn,
-                                buttonFontSize,
-                                iconSize)),
+                            ...allActionButtons
+                                .map((btn) => _slimButton(btn, buttonFontSize, iconSize)),
                           ]
                         ],
                       ),
@@ -1089,15 +1048,12 @@ class _QuranTakipliViewState extends State<QuranTakipliView> {
     String ayetNumber = '';
     int? surahId;
     String? mealText;
-    final surahInfo =
-        takipliService.getSurahInfoForAyah(widget.pageData, ayahIndex);
+    final surahInfo = takipliService.getSurahInfoForAyah(widget.pageData, ayahIndex);
     if (surahInfo != null) {
       surahId = surahInfo['surahNo'] as int?;
       // Önce Türkçe adı al, yoksa repo'dan getir
       sureName = surahInfo['surahNameTurkish']?.toString() ??
-          (surahId != null
-              ? audioRepo.getSurahName(surahId)
-              : 'Bilinmeyen Sure');
+          (surahId != null ? audioRepo.getSurahName(surahId) : 'Bilinmeyen Sure');
     }
     // Ayet numarasını Latin rakama çevir
     final quranAyats = widget.pageData['QuranAyats'] as List<dynamic>?;
@@ -1105,8 +1061,8 @@ class _QuranTakipliViewState extends State<QuranTakipliView> {
     int? ayetNum;
     int? sureNum;
     if (quranAyats != null && ayahIndex < quranAyats.length) {
-      ayetNumber = _convertArabicNumberToLatin(
-          quranAyats[ayahIndex]['AyetNumber']?.toString() ?? '');
+      ayetNumber =
+          _convertArabicNumberToLatin(quranAyats[ayahIndex]['AyetNumber']?.toString() ?? '');
       sureNum = quranAyats[ayahIndex]['SureId'] as int?;
       ayetNum = int.tryParse(ayetNumber);
     }
@@ -1137,10 +1093,12 @@ class _QuranTakipliViewState extends State<QuranTakipliView> {
       builder: (context) => HighlightColorDialog(
         onColorSelected: (color) async {
           setState(() {
-            final existing =
-                _highlights.indexWhere((h) => h.startIndex == ayahIndex);
-            final localizedSurahName = SurahLocalizationService.getLocalizedSurahName(sureName, context);
-            final verseFormat = AppLocalizations.of(context)?.surahVerseFormat(localizedSurahName, int.tryParse(ayetNumber) ?? 0) ?? '$localizedSurahName, $ayetNumber. Ayet';
+            final existing = _highlights.indexWhere((h) => h.startIndex == ayahIndex);
+            final localizedSurahName =
+                SurahLocalizationService.getLocalizedSurahName(sureName, context);
+            final verseFormat = AppLocalizations.of(context)
+                    ?.surahVerseFormat(localizedSurahName, int.tryParse(ayetNumber) ?? 0) ??
+                '$localizedSurahName, $ayetNumber. Ayet';
             String displayText = '$ayahText\n($verseFormat)';
             if (mealText != null && mealText.isNotEmpty) {
               displayText += '\n[Terceme]: $mealText';
@@ -1169,8 +1127,11 @@ class _QuranTakipliViewState extends State<QuranTakipliView> {
           });
           print(
               'Vurgu eklendi: Sayfa $pageNumber, AyetIndex $ayahIndex, Sure: $sureName, Ayet: $ayetNumber');
-          final localizedSurahName = SurahLocalizationService.getLocalizedSurahName(sureName, context);
-          final verseFormat = AppLocalizations.of(context)?.surahVerseFormat(localizedSurahName, int.tryParse(ayetNumber) ?? 0) ?? '$localizedSurahName, $ayetNumber. Ayet';
+          final localizedSurahName =
+              SurahLocalizationService.getLocalizedSurahName(sureName, context);
+          final verseFormat = AppLocalizations.of(context)
+                  ?.surahVerseFormat(localizedSurahName, int.tryParse(ayetNumber) ?? 0) ??
+              '$localizedSurahName, $ayetNumber. Ayet';
           String bookmarkText = '$ayahText\n($verseFormat)';
           if (mealText != null && mealText.isNotEmpty) {
             bookmarkText += '\n[Terceme]: $mealText';
@@ -1238,8 +1199,7 @@ class QuranTakipliError extends StatelessWidget {
 
 // Translation bubble classes removed
 
-Widget _slimButton(Widget btn, double fontSize, double iconSize,
-    {bool isActive = false}) {
+Widget _slimButton(Widget btn, double fontSize, double iconSize, {bool isActive = false}) {
   if (btn is TextButton) {
     return TextButton(
       onPressed: btn.onPressed,
