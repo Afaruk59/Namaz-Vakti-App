@@ -1,7 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
-import 'package:namaz_vakti_app/l10n/app_localization.dart';
 
 class HighlightColorDialog extends StatelessWidget {
   // Varsayılan renk seçenekleri
@@ -89,8 +88,8 @@ class HighlightColorDialog extends StatelessWidget {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(AppLocalizations.of(context)?.selectHighlightColor ?? 'Vurgu Rengi Seçin',
-                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                      const Text('Vurgu Rengi Seçin',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
                       const SizedBox(height: 12),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,

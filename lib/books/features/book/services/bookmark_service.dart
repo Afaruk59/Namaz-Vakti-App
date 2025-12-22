@@ -343,5 +343,4 @@ class BookmarkService {
       return null;
     }
   }
-
 }

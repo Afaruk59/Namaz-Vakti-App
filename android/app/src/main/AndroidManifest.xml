@@ -105,16 +105,6 @@
                 <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
         </service>
-
-        <service
-            android:name=".QuranMediaService"
-            android:exported="true"
-            android:foregroundServiceType="mediaPlayback">
-            <intent-filter>
-                <action android:name="android.intent.action.MEDIA_BUTTON" />
-                <action android:name="android.media.browse.MediaBrowserService" />
-            </intent-filter>
-        </service>
         
         <!-- MediaButtonReceiver için receiver tanımı -->
         <receiver android:name="androidx.media.session.MediaButtonReceiver" 

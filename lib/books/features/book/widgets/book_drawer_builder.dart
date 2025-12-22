@@ -24,12 +24,14 @@ class BookDrawerBuilder {
   }) {
     if (isFullScreen) return null;
 
-    return SizedBox(
+    final double appBarHeight = AppBar().preferredSize.height + MediaQuery.of(context).padding.top;
+
+    return Container(
       width: 280,
-      height: MediaQuery.of(context).size.height -
-          AppBar().preferredSize.height -
-          MediaQuery.of(context).padding.top -
-          60,
+      margin: EdgeInsets.only(
+        top: appBarHeight,
+        bottom: showAudioProgress ? 96 : 48,
+      ),
       child: Drawer(
         child: IndexDrawer(
           indexFuture: indexFuture,

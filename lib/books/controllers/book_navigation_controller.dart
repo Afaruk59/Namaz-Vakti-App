@@ -56,7 +56,7 @@ class BookNavigationController {
   void _updateMediaPageState() {
     if (currentBookCode.isEmpty) return;
 
-    const platform = MethodChannel('com.afaruk59.namaz_vakti_app/media_controls');
+    const platform = MethodChannel('com.afaruk59.namaz_vakti_app/media_service');
     try {
       platform.invokeMethod('updateAudioPageState', {
         'bookCode': currentBookCode,
@@ -73,7 +73,7 @@ class BookNavigationController {
   void initMediaService() {
     if (currentBookCode.isEmpty) return;
 
-    const platform = MethodChannel('com.afaruk59.namaz_vakti_app/media_controls');
+    const platform = MethodChannel('com.afaruk59.namaz_vakti_app/media_service');
     try {
       platform.invokeMethod('initMediaService');
       _updateMediaPageState();

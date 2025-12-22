@@ -6,49 +6,17 @@ import 'package:namaz_vakti_app/books/features/book/services/book_title_service.
 import 'package:namaz_vakti_app/books/features/book/screens/book_page_screen.dart';
 import 'package:namaz_vakti_app/books/screens/book_screen.dart';
 import 'package:namaz_vakti_app/data/change_settings.dart';
-import 'package:namaz_vakti_app/quran/screens/modular_quran_page_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:namaz_vakti_app/l10n/app_localization.dart';
-import 'package:namaz_vakti_app/quran/services/surah_localization_service.dart';
-import 'package:html_unescape/html_unescape.dart';
 
 class BookmarksScreen extends StatefulWidget {
   final String? initialBookCode;
+  final bool showMeal;
 
-  const BookmarksScreen({super.key, this.initialBookCode});
+  const BookmarksScreen({super.key, this.initialBookCode, this.showMeal = true});
 
   @override
   // ignore: library_private_types_in_public_api
   _BookmarksScreenState createState() => _BookmarksScreenState();
-}
-
-/// HTML kodlarını temizleyen yardımcı sınıf
-class _BookmarkTextCleaner {
-  static final HtmlUnescape _htmlUnescape = HtmlUnescape();
-  
-  /// HTML entity'leri ve taglarını temizler
-  static String cleanText(String text) {
-    if (text.isEmpty) return text;
-    
-    // HTML entity'leri decode et
-    String cleanedText = _htmlUnescape.convert(text);
-
-    // HTML taglarını ve footnote referanslarını temizle
-    cleanedText = cleanedText
-        .replaceAll(RegExp(r'<sup[^>]*foot_note=\d+[^>]*>.*?</sup>'), '') // Superscript footnote taglarını kaldır
-        .replaceAll(RegExp(r'<sup[^>]*>.*?</sup>'), '') // Diğer superscript taglarını kaldır
-        .replaceAll(RegExp(r'<[^>]*>'), '') // Kalan tüm HTML taglarını kaldır
-        .replaceAll(RegExp(r'foot_note=\d+'), '') // Kalan footnote referanslarını kaldır
-        .replaceAll(RegExp(r'[<>]'), '') // Kalan < > karakterlerini kaldır
-        .replaceAll(RegExp(r'\s+'), ' ') // Birden fazla boşluğu tek boşluğa çevir
-        .replaceAll(RegExp(r'\s*,\s*'), ', ') // Virgül etrafındaki boşlukları düzenle
-        .replaceAll(RegExp(r'\s*\.\s*'), '. ') // Nokta etrafındaki boşlukları düzenle
-        .replaceAll(RegExp(r"\s*'\s*"), "'") // Tek tırnak etrafındaki boşlukları düzenle
-        .trim(); // Başta ve sonda boşlukları temizle
-
-    return cleanedText;
-  }
 }
 
 class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderStateMixin {
@@ -61,7 +29,6 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
   Map<String, String> _bookTitles = {};
 
   bool _isLoading = true;
-  bool _showMeal = false; // SharedPreferences'dan alınacak
 
   @override
   void initState() {
@@ -71,16 +38,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
       length: 1,
       vsync: this,
     );
-    _loadShowMealPreference();
     _loadBookmarks();
-  }
-
-  // SharedPreferences'dan showMeal değerini yükle
-  Future<void> _loadShowMealPreference() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _showMeal = prefs.getBool('quran_show_meal') ?? false;
-    });
   }
 
   @override
@@ -182,7 +140,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
 
         for (var bookCode in bookCodes) {
           // Başlık yükleme
-          futures.add(_bookTitleService.getTitle(bookCode, context: context).then((title) {
+          futures.add(_bookTitleService.getTitle(bookCode).then((title) {
             bookTitles[bookCode] = title;
           }));
         }
@@ -213,19 +171,19 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(AppLocalizations.of(context)?.deleteBookmark ?? 'Yer İşaretini Sil'),
-          content: Text(AppLocalizations.of(context)?.deleteBookmarkConfirmation ?? 'Bu yer işaretini silmek istediğinizden emin misiniz?'),
+          title: const Text('Yer İşaretini Sil'),
+          content: const Text('Bu yer işaretini silmek istediğinizden emin misiniz?'),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: Text(AppLocalizations.of(context)?.cancel ?? 'İptal'),
+              child: const Text('İptal'),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(true),
               style: TextButton.styleFrom(
                 foregroundColor: Colors.red,
               ),
-              child: Text(AppLocalizations.of(context)?.delete ?? 'Sil'),
+              child: const Text('Sil'),
             ),
           ],
         );
@@ -248,23 +206,13 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: true,
-      onPopInvokedWithResult: (didPop, result) async {
-        if (didPop) {
-          debugPrint('BookmarksScreen: PopScope triggered, clearing cache and refreshing badges');
-          
-          // BookmarkService cache'ini temizle
-          _bookmarkService.clearCache();
-          
-          final homeScreenState = context.findAncestorStateOfType<BookScreenState>();
-          if (homeScreenState != null) {
-            debugPrint('BookmarksScreen: Found BookScreenState, calling refreshBookmarkIndicators');
-            homeScreenState.refreshBookmarkIndicators();
-          } else {
-            debugPrint('BookmarksScreen: BookScreenState not found in widget tree');
-          }
+    return WillPopScope(
+      onWillPop: () async {
+        final homeScreenState = context.findAncestorStateOfType<BookScreenState>();
+        if (homeScreenState != null) {
+          homeScreenState.refreshBookmarkIndicators();
         }
+        return true;
       },
       child: Stack(
         children: [
@@ -284,7 +232,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
           ),
           Scaffold(
             appBar: AppBar(
-              title: Text(AppLocalizations.of(context)?.bookmarksTitle ?? 'Yer İşaretleri'),
+              title: const Text('Yer İşaretleri'),
               bottom: _isLoading || _bookCodes.isEmpty || _tabController == null
                   ? null
                   : TabBar(
@@ -325,18 +273,15 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
             size: 64,
           ),
           const SizedBox(height: 16),
-          Text(
-            AppLocalizations.of(context)?.noBookmarksYet ?? 'Henüz yer işareti eklenmemiş',
-            style: const TextStyle(
+          const Text(
+            'Henüz yer işareti eklenmemiş',
+            style: TextStyle(
               fontSize: 18,
             ),
           ),
           const SizedBox(height: 24),
           FilledButton.tonal(
             onPressed: () {
-              // BookmarkService cache'ini temizle
-              _bookmarkService.clearCache();
-              
               // Ana ekrana dönmeden önce tüm bookmark göstergelerini yenile
               final homeScreenState = context.findAncestorStateOfType<BookScreenState>();
               if (homeScreenState != null) {
@@ -344,7 +289,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
               }
               Navigator.pop(context);
             },
-            child: Text(AppLocalizations.of(context)?.returnToBooks ?? 'Kitaplara Dön'),
+            child: const Text('Kitaplara Dön'),
           ),
         ],
       ),
@@ -390,16 +335,6 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
       itemCount: bookmarks.length,
       itemBuilder: (context, index) {
         final bookmark = bookmarks[index];
-        final isQuran = bookCode == 'quran';
-        String? sureName;
-        String? ayetNumber;
-        if (isQuran) {
-          sureName = bookmark.surahName != null 
-              ? SurahLocalizationService.getLocalizedSurahName(bookmark.surahName!, context)
-              : null;
-          ayetNumber = bookmark.ayahNumber;
-        }
-        
         return Card(
           color: Theme.of(context).cardColor,
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -408,22 +343,12 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
             children: [
               ListTile(
                 leading: CircleAvatar(
-                  child: isQuran
-                      ? const Icon(Icons.menu_book, color: Colors.white)
-                      : Text(
-                          bookmark.pageNumber.toString(),
-                          style: const TextStyle(color: Colors.white),
-                        ),
+                  child: Text(
+                    bookmark.pageNumber.toString(),
+                  ),
                 ),
-                title: isQuran
-                    ? Text(AppLocalizations.of(context)?.quranHolyQuran ?? 'Kuran-ı Kerim')
-                    : Text(AppLocalizations.of(context)?.pageNumber(bookmark.pageNumber) ?? 'Sayfa ${bookmark.pageNumber}'),
-                subtitle: isQuran
-                    ? Text(
-                        '${AppLocalizations.of(context)?.pageNumber(bookmark.pageNumber) ?? 'Sayfa ${bookmark.pageNumber}'}${sureName != null ? ' | $sureName' : ''}${ayetNumber != null ? ' | $ayetNumber. ${AppLocalizations.of(context)?.verse ?? 'Ayet'}' : ''}',
-                        style: const TextStyle(fontSize: 13),
-                      )
-                    : Text(_bookTitles[bookCode] ?? bookCode),
+                title: Text('Sayfa ${bookmark.pageNumber}'),
+                subtitle: Text(_bookTitles[bookCode] ?? bookCode),
                 trailing: IconButton(
                   icon: const Icon(Icons.delete),
                   onPressed: () async {
@@ -436,49 +361,23 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
                         startIndex: bookmark.startIndex,
                         endIndex: bookmark.endIndex,
                       );
-                      
-                      // BookmarkService cache'ini temizle
-                      _bookmarkService.clearCache();
-                      
-                      // Bookmark'ları yeniden yükle
                       _loadBookmarks();
-                      
-                      // Ana ekrandaki badge'leri güncelle
-                      final homeScreenState = context.findAncestorStateOfType<BookScreenState>();
-                      if (homeScreenState != null) {
-                        homeScreenState.refreshBookmarkIndicators();
-                      }
                     }
                   },
                 ),
                 onTap: () {
-                  if (bookCode == 'quran') {
-                    // Quran için ModularQuranPageScreen kullan
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ModularQuranPageScreen(
-                          initialPage: bookmark.pageNumber,
-                        ),
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => BookPageScreen(
+                        bookCode: bookCode,
+                        initialPage: bookmark.pageNumber,
+                        forceRefresh: true, // Vurgulamaları yeniden yükle
                       ),
-                    ).then((_) {
-                      _loadBookmarks();
-                    });
-                  } else {
-                    // Diğer kitaplar için BookPageScreen kullan
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => BookPageScreen(
-                          bookCode: bookCode,
-                          initialPage: bookmark.pageNumber,
-                          forceRefresh: true, // Vurgulamaları yeniden yükle
-                        ),
-                      ),
-                    ).then((_) {
-                      _loadBookmarks();
-                    });
-                  }
+                    ),
+                  ).then((_) {
+                    _loadBookmarks();
+                  });
                 },
               ),
               if (bookmark.selectedText != null && bookmark.selectedText!.isNotEmpty)
@@ -490,9 +389,9 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
                       const Divider(),
                       Row(
                         children: [
-                          Text(
-                            AppLocalizations.of(context)?.selectedText ?? 'Seçilen Metin:',
-                            style: const TextStyle(
+                          const Text(
+                            'Seçilen Metin:',
+                            style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
                             ),
@@ -516,33 +415,18 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
                       const SizedBox(height: 4),
                       GestureDetector(
                         onTap: () {
-                          if (bookCode == 'quran') {
-                            // Quran için ModularQuranPageScreen kullan
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ModularQuranPageScreen(
-                                  initialPage: bookmark.pageNumber,
-                                ),
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BookPageScreen(
+                                bookCode: bookCode,
+                                initialPage: bookmark.pageNumber,
+                                forceRefresh: true,
                               ),
-                            ).then((_) {
-                              _loadBookmarks();
-                            });
-                          } else {
-                            // Diğer kitaplar için BookPageScreen kullan
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => BookPageScreen(
-                                  bookCode: bookCode,
-                                  initialPage: bookmark.pageNumber,
-                                  forceRefresh: true,
-                                ),
-                              ),
-                            ).then((_) {
-                              _loadBookmarks();
-                            });
-                          }
+                            ),
+                          ).then((_) {
+                            _loadBookmarks();
+                          });
                         },
                         child: Container(
                           padding: const EdgeInsets.all(8),
@@ -550,38 +434,16 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
                             color: bookmark.highlightColor?.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: isQuran &&
-                                  bookmark.selectedText != null &&
-                                  bookmark.selectedText!.contains('[Terceme]:')
-                              ? _QuranBookmarkExpandable(
-                                  arabicText: _BookmarkTextCleaner.cleanText(
-                                    bookmark.selectedText!
-                                        .split('[Terceme]:')[0]
-                                        .trim()
-                                  ),
-                                  mealText: bookmark.selectedText!
-                                              .split('[Terceme]:')
-                                              .length >
-                                          1
-                                      ? _BookmarkTextCleaner.cleanText(
-                                          bookmark.selectedText!
-                                              .split('[Terceme]:')[1]
-                                              .trim()
-                                        )
-                                      : null,
-                                  showMeal: _showMeal,
-                                  highlightColor: bookmark.highlightColor,
-                                )
-                              : Text(
-                                  _BookmarkTextCleaner.cleanText(bookmark.selectedText!),
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontStyle: FontStyle.italic,
-                                    backgroundColor: bookmark.highlightColor?.withOpacity(0.2),
-                                  ),
-                                  maxLines: 3,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
+                          child: Text(
+                            bookmark.selectedText!,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontStyle: FontStyle.italic,
+                              backgroundColor: bookmark.highlightColor?.withOpacity(0.2),
+                            ),
+                            maxLines: 3,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                       ),
                     ],
@@ -591,72 +453,6 @@ class _BookmarksScreenState extends State<BookmarksScreen> with TickerProviderSt
           ),
         );
       },
-    );
-  }
-}
-
-class _QuranBookmarkExpandable extends StatefulWidget {
-  final String arabicText;
-  final String? mealText;
-  final bool showMeal;
-  final Color? highlightColor;
-  
-  const _QuranBookmarkExpandable({
-    required this.arabicText,
-    this.mealText,
-    required this.showMeal,
-    this.highlightColor,
-  });
-
-  @override
-  State<_QuranBookmarkExpandable> createState() => _QuranBookmarkExpandableState();
-}
-
-class _QuranBookmarkExpandableState extends State<_QuranBookmarkExpandable> {
-  bool _expanded = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final hasMeal = widget.mealText != null && widget.mealText!.isNotEmpty;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Expanded(
-              child: Text(
-                _BookmarkTextCleaner.cleanText(widget.arabicText),
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  backgroundColor: widget.highlightColor?.withOpacity(0.2),
-                ),
-              ),
-            ),
-            if (widget.showMeal && hasMeal)
-              IconButton(
-                icon: Icon(_expanded ? Icons.expand_less : Icons.expand_more),
-                onPressed: () {
-                  setState(() {
-                    _expanded = !_expanded;
-                  });
-                },
-              ),
-          ],
-        ),
-        if (_expanded && widget.showMeal && hasMeal)
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: Text(
-              _BookmarkTextCleaner.cleanText(widget.mealText!),
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[800],
-                backgroundColor: widget.highlightColor?.withOpacity(0.1),
-              ),
-            ),
-          ),
-      ],
     );
   }
 }

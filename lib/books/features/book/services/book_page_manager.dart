@@ -2,7 +2,6 @@ import 'package:namaz_vakti_app/books/features/book/models/book_page_model.dart'
 import 'package:namaz_vakti_app/books/features/book/services/api_service.dart';
 import 'package:namaz_vakti_app/books/features/book/services/book_progress_service.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class BookPageManager {
   final String bookCode;
@@ -201,23 +200,11 @@ class BookPageManager {
       }
 
       // Geçerli bir sayfa bulundu, sayfayı güncelle
-      debugPrint('Updating to valid page $foundValidPageNumber (originally requested: $pageNumber)');
+      debugPrint('Updating to valid page $foundValidPageNumber');
       await bookProgressService.setCurrentPage(bookCode, foundValidPageNumber!);
       _currentPage = foundValidPageNumber;
       onPageLoaded(bookPage);
       onPageChanged(foundValidPageNumber);
-      
-      // Eğer atlanan sayfalar varsa, bunu SharedPreferences'a kaydet
-      if (foundValidPageNumber != pageNumber) {
-        debugPrint('Skipped empty pages from $pageNumber to $foundValidPageNumber');
-        try {
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.setInt('${bookCode}_last_requested_page', pageNumber);
-          await prefs.setInt('${bookCode}_actual_loaded_page', foundValidPageNumber);
-        } catch (e) {
-          debugPrint('Error saving page skip info: $e');
-        }
-      }
 
       // Sonraki ve önceki sayfaları ön belleğe al
       preloadAdjacentPages(foundValidPageNumber);

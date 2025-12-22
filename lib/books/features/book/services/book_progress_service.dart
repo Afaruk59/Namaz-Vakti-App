@@ -38,16 +38,11 @@ class BookProgressService {
       '011',
       '012',
       '013',
-      '014',
-      'quran' // Kuran için özel durum
+      '014'
     ];
 
-    // Kuran için özel durum - toplam sayfa sayısını manuel olarak set et
-    _totalPages['quran'] = 604; // Kuran'ın toplam sayfa sayısı
-    _firstValidPages['quran'] = 0; // Kuran'ın ilk sayfası 0
-
     // Tüm kitapların sayfa sayılarını paralel olarak çekelim
-    final futures = bookCodes.where((code) => code != 'quran').map((bookCode) => _fetchBookTotalPages(bookCode));
+    final futures = bookCodes.map((bookCode) => _fetchBookTotalPages(bookCode));
     await Future.wait(futures);
   }
 
@@ -113,8 +108,7 @@ class BookProgressService {
       '011',
       '012',
       '013',
-      '014',
-      'quran' // Kuran için özel durum
+      '014'
     ];
 
     for (String bookCode in bookCodes) {
@@ -149,13 +143,6 @@ class BookProgressService {
   }
 
   int getCurrentPage(String bookCode) {
-    // Quran için özel kontrol
-    if (bookCode == 'quran') {
-      return _currentPages[bookCode] ??
-          _prefs?.getInt('${bookCode}_current_page') ??
-          1; // Quran için varsayılan 1. sayfa
-    }
-    
     return _currentPages[bookCode] ??
         _prefs?.getInt('${bookCode}_current_page') ??
         getFirstValidPage(bookCode);

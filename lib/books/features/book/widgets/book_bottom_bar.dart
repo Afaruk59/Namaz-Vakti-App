@@ -42,13 +42,9 @@ class BookBottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(
-        bottom: (MediaQuery.of(context).padding.bottom),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-        child: Container(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Container(
         height: 54,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(27),
@@ -184,7 +180,6 @@ class BookBottomBar extends StatelessWidget {
                 ),
               ),
           ],
-        ),
         ),
       ),
     );

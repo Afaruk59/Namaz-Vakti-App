@@ -1,22 +1,23 @@
 import 'package:namaz_vakti_app/books/features/book/audio/audio_player_service.dart';
 import 'package:namaz_vakti_app/books/features/book/audio/media_controller.dart';
 import 'package:namaz_vakti_app/books/features/book/models/book_page_model.dart';
-import 'package:namaz_vakti_app/books/features/book/services/book_title_service.dart';
 import 'package:flutter/material.dart';
 
 /// Ses oynatma işlemlerini yöneten servis sınıfı
 class AudioManager {
-  final AudioPlayerService _audioPlayerService = AudioPlayerService.forContext('book');
+  final AudioPlayerService _audioPlayerService;
   final MediaController _mediaController;
   final Function(bool) onShowAudioProgressChanged;
   String _currentBookTitle = "";
   String _currentBookAuthor = "";
 
   AudioManager({
+    required AudioPlayerService audioPlayerService,
     required this.onShowAudioProgressChanged,
     required String bookTitle,
     required String bookAuthor,
-  })  : _mediaController = MediaController.singleton(AudioPlayerService.forContext('book')),
+  })  : _audioPlayerService = audioPlayerService,
+        _mediaController = MediaController(audioPlayerService: audioPlayerService),
         _currentBookTitle = bookTitle,
         _currentBookAuthor = bookAuthor;
 
@@ -63,9 +64,6 @@ class AudioManager {
         // Pause durumunda _showAudioProgress'i true olarak tut
         onShowAudioProgressChanged(true);
 
-        // Metadata'yı güncelle (pause durumunda da kitap bilgisi korunmalı)
-        await _updateMetadataForCurrentState(pageNumber);
-
         // Kilit ekranı kontrollerini güncelle - duraklatıldı
         await _mediaController.updatePlaybackState(MediaController.STATE_PAUSED);
 
@@ -74,9 +72,6 @@ class AudioManager {
       } else {
         await _audioPlayerService.resumeAudio();
         onShowAudioProgressChanged(true);
-
-        // Metadata'yı güncelle (resume durumunda da kitap bilgisi korunmalı)
-        await _updateMetadataForCurrentState(pageNumber);
 
         // Kilit ekranı kontrollerini güncelle - çalıyor
         await _mediaController.updatePlaybackState(MediaController.STATE_PLAYING);
@@ -123,7 +118,7 @@ class AudioManager {
         await _mediaController.updatePlaybackState(MediaController.STATE_PLAYING);
 
         // Kısa bir gecikme sonra metadata'yı tekrar güncelle
-        await Future.delayed(const Duration(milliseconds: 100));
+        await Future.delayed(const Duration(milliseconds: 300));
 
         // Ses çalma durumunu tekrar kontrol et ve güncelle
         if (_audioPlayerService.isPlaying) {
@@ -320,9 +315,8 @@ class AudioManager {
 
   /// Kitap bilgilerini günceller
   void updateBookInfo(String title, String author) {
-    _currentBookTitle = title.isNotEmpty ? title : "Hakikat Kitabevi";
-    _currentBookAuthor = author.isNotEmpty ? author : "Hakikat Kitabevi";
-    debugPrint('AudioManager: Book info updated - Title: $_currentBookTitle, Author: $_currentBookAuthor');
+    _currentBookTitle = title;
+    _currentBookAuthor = author;
   }
 
   /// Mevcut sayfa bilgisini güncelle
@@ -491,9 +485,6 @@ class AudioManager {
   /// Oynatma hızı
   double get playbackSpeed => _audioPlayerService.playbackSpeed;
 
-  /// MediaController'a erişim
-  MediaController get mediaController => _mediaController;
-
   /// Medya servisini başlat
   Future<void> startService() async {
     try {
@@ -502,51 +493,6 @@ class AudioManager {
       debugPrint('MediaController service started');
     } catch (e) {
       debugPrint('Error starting media service: $e');
-    }
-  }
-
-  /// Mevcut durum için metadata günceller (kitap bilgisini korur)
-  Future<void> _updateMetadataForCurrentState(int pageNumber) async {
-    try {
-      // Kitap bilgilerinin boş olmadığından emin ol
-      String safeTitle = _currentBookTitle.isNotEmpty ? _currentBookTitle : "Hakikat Kitabevi";
-      String safeAuthor = _currentBookAuthor.isNotEmpty ? _currentBookAuthor : "Hakikat Kitabevi";
-      
-      // Eğer kitap bilgileri boşsa, bunları yeniden yükle
-      if (_currentBookTitle.isEmpty || _currentBookAuthor.isEmpty) {
-        String? bookCode = await _audioPlayerService.getPlayingBookCode();
-        if (bookCode != null && bookCode.isNotEmpty) {
-          final bookTitleService = BookTitleService();
-          final title = await bookTitleService.getTitle(bookCode);
-          final author = await bookTitleService.getAuthor(bookCode);
-          
-          safeTitle = title.isNotEmpty ? title : "Hakikat Kitabevi";
-          safeAuthor = author.isNotEmpty ? author : "Hakikat Kitabevi";
-          
-          // Güncel bilgileri kaydet
-          updateBookInfo(safeTitle, safeAuthor);
-          
-          debugPrint('AudioManager: Kitap bilgileri yeniden yüklendi - Title: $safeTitle, Author: $safeAuthor');
-        }
-      }
-      
-      // Süre bilgisini güvenli şekilde al
-      int safeDuration = _audioPlayerService.duration.inMilliseconds > 0
-          ? _audioPlayerService.duration.inMilliseconds
-          : 30000; // 30 saniye varsayılan
-
-      // Metadata'yı güncelle
-      await _mediaController.updateMetadata(
-        title: safeTitle,
-        author: safeAuthor,
-        coverUrl: '',
-        durationMs: safeDuration,
-        pageNumber: pageNumber,
-      );
-      
-      debugPrint('AudioManager: Metadata güncellendi - $safeTitle, Sayfa $pageNumber');
-    } catch (e) {
-      debugPrint('AudioManager: Metadata güncelleme hatası: $e');
     }
   }
 
@@ -561,8 +507,15 @@ class AudioManager {
         // Kısa bir gecikme ekle
         await Future.delayed(const Duration(milliseconds: 200));
 
-        // Mevcut durum için metadata güncelle (kitap bilgisini korur)
-        await _updateMetadataForCurrentState(currentPage);
+        // Metadata'yı güncelle (her zaman başlığa sayfa numarasını ekle)
+        await _mediaController.updateMetadata(
+          title: '$_currentBookTitle - Sayfa $currentPage',
+          author: _currentBookAuthor,
+          coverUrl: '',
+          durationMs: _audioPlayerService.duration.inMilliseconds > 0
+              ? _audioPlayerService.duration.inMilliseconds
+              : 30000,
+        );
 
         // Oynatma durumunu güncelle
         final state = _audioPlayerService.isPlaying
@@ -572,8 +525,6 @@ class AudioManager {
 
         // Pozisyonu güncelle
         await _mediaController.updatePosition(_audioPlayerService.position.inMilliseconds);
-        
-        debugPrint('AudioManager: Kilit ekranı metadata güncellendi - Sayfa $currentPage');
       }
     } catch (e) {
       debugPrint('Error updating lock screen: $e');
