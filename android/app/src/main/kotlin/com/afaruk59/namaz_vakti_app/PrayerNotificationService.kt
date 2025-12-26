@@ -423,21 +423,6 @@ class PrayerNotificationService : Service() {
         val now = Calendar.getInstance()
         val currentTime = now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE)
         
-        // Yatsı'dan sonra gece 12'ye kadar alarm kurma
-        val yatsiTime = try {
-            val timeParts = prayerTimes!![6].split(":")
-            timeParts[0].toInt() * 60 + timeParts[1].toInt()
-        } catch (e: Exception) {
-            Log.e(TAG, "Error parsing Yatsi time: ${e.message}")
-            return -1
-        }
-        
-        // Eğer Yatsı'dan sonra ve gece 12'den önceyse alarm kurma
-        if (currentTime >= yatsiTime && currentTime < 24 * 60) {
-            Log.d(TAG, "After Yatsi prayer, no alarms until midnight")
-            return -1
-        }
-        
         // Vakitleri sırayla kontrol et ve bir sonraki aktif vakti bul
         for (i in 0 until 7) {
             try {
