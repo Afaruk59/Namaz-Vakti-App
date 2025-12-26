@@ -88,11 +88,6 @@
         
         <!-- Cihaz başlangıcında bildirimleri başlatmak için -->
         <receiver
-            android:name=".AlarmReceiver"
-            android:exported="false">
-        </receiver>
-
-        <receiver
             android:name=".BootCompleteReceiver"
             android:exported="true">
             <intent-filter>

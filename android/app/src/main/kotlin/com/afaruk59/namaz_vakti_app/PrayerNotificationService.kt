@@ -47,8 +47,6 @@ import android.os.Looper
 import android.media.AudioAttributes
 import android.media.RingtoneManager
 import android.net.Uri
-import android.media.MediaPlayer
-import android.os.PowerManager
 
 class PrayerNotificationService : Service() {
     companion object {
@@ -69,12 +67,11 @@ class PrayerNotificationService : Service() {
         
         private const val FOREGROUND_NOTIFICATION_ID = 1
         private const val PRAYER_NOTIFICATION_ID_START = 100
-        const val ACTION_START_SERVICE = "com.afaruk59.namaz_vakti_app.ACTION_START_SERVICE"
-        const val ACTION_STOP_SERVICE = "com.afaruk59.namaz_vakti_app.ACTION_STOP_SERVICE"
-        const val ACTION_PRAYER_TIME = "com.afaruk59.namaz_vakti_app.ACTION_PRAYER_TIME"
-        const val ACTION_CHECK_ALARMS = "com.afaruk59.namaz_vakti_app.ACTION_CHECK_ALARMS"
-        const val ACTION_UPDATE_TIMES = "com.afaruk59.namaz_vakti_app.ACTION_UPDATE_TIMES"
-        const val ACTION_STOP_ALARM = "com.afaruk59.namaz_vakti_app.ACTION_STOP_ALARM"
+        private const val ACTION_START_SERVICE = "com.afaruk59.namaz_vakti_app.ACTION_START_SERVICE"
+        private const val ACTION_STOP_SERVICE = "com.afaruk59.namaz_vakti_app.ACTION_STOP_SERVICE"
+        private const val ACTION_PRAYER_TIME = "com.afaruk59.namaz_vakti_app.ACTION_PRAYER_TIME"
+        private const val ACTION_CHECK_ALARMS = "com.afaruk59.namaz_vakti_app.ACTION_CHECK_ALARMS"
+        private const val ACTION_UPDATE_TIMES = "com.afaruk59.namaz_vakti_app.ACTION_UPDATE_TIMES"
         private const val PREFS_NAME = "FlutterSharedPreferences"
         private const val BASE_URL = "https://www.namazvakti.com/XML.php?cityID="
         
@@ -141,10 +138,6 @@ class PrayerNotificationService : Service() {
     private var lastCurrentPrayerIndex: Int = -2 // -2 means not initialized
     private var lastCountdownText: String = ""
     private var lastAlarmConfigHash: String = ""
-    
-    // MediaPlayer ve WakeLock değişkenleri eklendi
-    private var mediaPlayer: MediaPlayer? = null
-    private var wakeLock: PowerManager.WakeLock? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -206,14 +199,9 @@ class PrayerNotificationService : Service() {
                     sendPrayerNotification(prayerIndex)
                 }
             }
-             ACTION_STOP_ALARM -> {
-                 stopAlarmSound() // MediaPlayer'ı durdur
-                 val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                 val intentId = intent.getIntExtra("notification_id", -1)
-                 if (intentId != -1) {
-                     notificationManager.cancel(intentId)
-                 }
-             }
+            ACTION_CHECK_ALARMS -> {
+                checkAndUpdateAlarms()
+            }
         }
         
         return START_REDELIVER_INTENT
@@ -271,11 +259,11 @@ class PrayerNotificationService : Service() {
     }
     
     private fun cancelPeriodicChecks() {
-        val alarmCheckIntent = Intent(this, AlarmReceiver::class.java).apply {
+        val alarmCheckIntent = Intent(this, PrayerNotificationService::class.java).apply {
             action = ACTION_CHECK_ALARMS
         }
         
-        val alarmCheckPendingIntent = PendingIntent.getBroadcast(
+        val alarmCheckPendingIntent = PendingIntent.getService(
             this,
             1000,
             alarmCheckIntent,
@@ -374,10 +362,10 @@ class PrayerNotificationService : Service() {
     }
     
     private fun scheduleNextPeriodicCheck() {
-        val nextCheckIntent = Intent(this, AlarmReceiver::class.java).apply {
+        val nextCheckIntent = Intent(this, PrayerNotificationService::class.java).apply {
             action = ACTION_CHECK_ALARMS
         }
-        val nextCheckPendingIntent = PendingIntent.getBroadcast(
+        val nextCheckPendingIntent = PendingIntent.getService(
             this,
             1000,
             nextCheckIntent,
@@ -434,7 +422,21 @@ class PrayerNotificationService : Service() {
         
         val now = Calendar.getInstance()
         val currentTime = now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE)
-
+        
+        // Yatsı'dan sonra gece 12'ye kadar alarm kurma
+        val yatsiTime = try {
+            val timeParts = prayerTimes!![6].split(":")
+            timeParts[0].toInt() * 60 + timeParts[1].toInt()
+        } catch (e: Exception) {
+            Log.e(TAG, "Error parsing Yatsi time: ${e.message}")
+            return -1
+        }
+        
+        // Eğer Yatsı'dan sonra ve gece 12'den önceyse alarm kurma
+        if (currentTime >= yatsiTime && currentTime < 24 * 60) {
+            Log.d(TAG, "After Yatsi prayer, no alarms until midnight")
+            return -1
+        }
         
         // Vakitleri sırayla kontrol et ve bir sonraki aktif vakti bul
         for (i in 0 until 7) {
@@ -530,12 +532,12 @@ class PrayerNotificationService : Service() {
                 return
             }
             
-            val intent = Intent(this, AlarmReceiver::class.java).apply {
+            val intent = Intent(this, PrayerNotificationService::class.java).apply {
                 action = ACTION_PRAYER_TIME
                 putExtra("prayer_index", prayerIndex)
             }
             
-            val pendingIntent = PendingIntent.getBroadcast(
+            val pendingIntent = PendingIntent.getService(
                 this,
                 prayerIndex,
                 intent,
@@ -564,11 +566,11 @@ class PrayerNotificationService : Service() {
     
     private fun cancelAllAlarms() {
         for (i in 0 until 7) {
-            val intent = Intent(this, AlarmReceiver::class.java).apply {
+            val intent = Intent(this, PrayerNotificationService::class.java).apply {
                 action = ACTION_PRAYER_TIME
                 putExtra("prayer_index", i)
             }
-            val pendingIntent = PendingIntent.getBroadcast(
+            val pendingIntent = PendingIntent.getService(
                 this,
                 i,
                 intent,
@@ -832,7 +834,7 @@ class PrayerNotificationService : Service() {
             }
             notificationManager.createNotificationChannel(mainChannel)
             
-            // Bildirim sesi için channel (Sessiz, MediaPlayer çalacak)
+            // Bildirim sesi için channel
             val soundChannel0 = NotificationChannel(
                 NOTIFICATION_CHANNEL_ID_SOUND_0,
                 "Namaz Vakti - Bildirim Sesi",
@@ -843,11 +845,17 @@ class PrayerNotificationService : Service() {
                 enableLights(true)
                 setShowBadge(true)
                 lockscreenVisibility = Notification.VISIBILITY_PUBLIC
-                setSound(null, null)
+                setSound(
+                    RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
+                    AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .build()
+                )
             }
             notificationManager.createNotificationChannel(soundChannel0)
             
-            // Alarm sesi için channel (Sessiz)
+            // Alarm sesi için channel
             val soundChannel1 = NotificationChannel(
                 NOTIFICATION_CHANNEL_ID_SOUND_1,
                 "Namaz Vakti - Alarm Sesi",
@@ -858,11 +866,17 @@ class PrayerNotificationService : Service() {
                 enableLights(true)
                 setShowBadge(true)
                 lockscreenVisibility = Notification.VISIBILITY_PUBLIC
-                setSound(null, null)
+                setSound(
+                    RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM),
+                    AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .build()
+                )
             }
             notificationManager.createNotificationChannel(soundChannel1)
             
-            // Ezan sesi channel'ları - Her vakit için ayrı (Hepsi sessiz)
+            // Ezan sesi channel'ları - Her vakit için ayrı
             createEzanChannels(notificationManager)
             
             Log.d(TAG, "All notification channels created")
@@ -872,10 +886,7 @@ class PrayerNotificationService : Service() {
     private fun createEzanChannels(notificationManager: NotificationManager) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             
-            // Tüm kanallar sessiz (setSound(null, null)) olarak ayarlandı
-            // Ses çalma işlemi MediaPlayer ile yapılacak
-
-            // İmsak
+            // İmsak - Normal bildirim sesi
             val imsakChannel = NotificationChannel(
                 NOTIFICATION_CHANNEL_ID_EZAN_IMSAK,
                 "Namaz Vakti - İmsak",
@@ -886,11 +897,17 @@ class PrayerNotificationService : Service() {
                 enableLights(true)
                 setShowBadge(true)
                 lockscreenVisibility = Notification.VISIBILITY_PUBLIC
-                setSound(null, null)
+                setSound(
+                    RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
+                    AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .build()
+                )
             }
             notificationManager.createNotificationChannel(imsakChannel)
             
-            // Sabah
+            // Sabah - Sabah ezanı
             val sabahChannel = NotificationChannel(
                 NOTIFICATION_CHANNEL_ID_EZAN_SABAH,
                 "Namaz Vakti - Sabah Ezanı",
@@ -901,11 +918,17 @@ class PrayerNotificationService : Service() {
                 enableLights(true)
                 setShowBadge(true)
                 lockscreenVisibility = Notification.VISIBILITY_PUBLIC
-                setSound(null, null)
+                setSound(
+                    Uri.parse("android.resource://" + packageName + "/" + R.raw.sabah),
+                    AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .build()
+                )
             }
             notificationManager.createNotificationChannel(sabahChannel)
             
-            // Güneş
+            // Güneş - Normal bildirim sesi
             val gunesChannel = NotificationChannel(
                 NOTIFICATION_CHANNEL_ID_EZAN_GUNES,
                 "Namaz Vakti - Güneş",
@@ -916,11 +939,17 @@ class PrayerNotificationService : Service() {
                 enableLights(true)
                 setShowBadge(true)
                 lockscreenVisibility = Notification.VISIBILITY_PUBLIC
-                setSound(null, null)
+                setSound(
+                    RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
+                    AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .build()
+                )
             }
             notificationManager.createNotificationChannel(gunesChannel)
             
-            // Öğle
+            // Öğle - Öğle ezanı
             val ogleChannel = NotificationChannel(
                 NOTIFICATION_CHANNEL_ID_EZAN_OGLE,
                 "Namaz Vakti - Öğle Ezanı",
@@ -931,11 +960,17 @@ class PrayerNotificationService : Service() {
                 enableLights(true)
                 setShowBadge(true)
                 lockscreenVisibility = Notification.VISIBILITY_PUBLIC
-                setSound(null, null)
+                setSound(
+                    Uri.parse("android.resource://" + packageName + "/" + R.raw.ogle),
+                    AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .build()
+                )
             }
             notificationManager.createNotificationChannel(ogleChannel)
             
-            // İkindi
+            // İkindi - İkindi ezanı
             val ikindiChannel = NotificationChannel(
                 NOTIFICATION_CHANNEL_ID_EZAN_IKINDI,
                 "Namaz Vakti - İkindi Ezanı",
@@ -946,11 +981,17 @@ class PrayerNotificationService : Service() {
                 enableLights(true)
                 setShowBadge(true)
                 lockscreenVisibility = Notification.VISIBILITY_PUBLIC
-                setSound(null, null)
+                setSound(
+                    Uri.parse("android.resource://" + packageName + "/" + R.raw.ikindi),
+                    AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .build()
+                )
             }
             notificationManager.createNotificationChannel(ikindiChannel)
             
-            // Akşam
+            // Akşam - Akşam ezanı
             val aksamChannel = NotificationChannel(
                 NOTIFICATION_CHANNEL_ID_EZAN_AKSAM,
                 "Namaz Vakti - Akşam Ezanı",
@@ -961,11 +1002,17 @@ class PrayerNotificationService : Service() {
                 enableLights(true)
                 setShowBadge(true)
                 lockscreenVisibility = Notification.VISIBILITY_PUBLIC
-                setSound(null, null)
+                setSound(
+                    Uri.parse("android.resource://" + packageName + "/" + R.raw.aksam),
+                    AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .build()
+                )
             }
             notificationManager.createNotificationChannel(aksamChannel)
             
-            // Yatsı
+            // Yatsı - Yatsı ezanı
             val yatsiChannel = NotificationChannel(
                 NOTIFICATION_CHANNEL_ID_EZAN_YATSI,
                 "Namaz Vakti - Yatsı Ezanı",
@@ -976,11 +1023,17 @@ class PrayerNotificationService : Service() {
                 enableLights(true)
                 setShowBadge(true)
                 lockscreenVisibility = Notification.VISIBILITY_PUBLIC
-                setSound(null, null)
+                setSound(
+                    Uri.parse("android.resource://" + packageName + "/" + R.raw.yatsi),
+                    AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .build()
+                )
             }
             notificationManager.createNotificationChannel(yatsiChannel)
             
-            Log.d(TAG, "Ezan channels created for all prayer times (Silent Mode)")
+            Log.d(TAG, "Ezan channels created for all prayer times")
         }
     }
     
@@ -1306,9 +1359,6 @@ class PrayerNotificationService : Service() {
     private fun sendPrayerNotification(prayerIndex: Int) {
         Log.i(TAG, "🔔 Sending Notification: Prayer Index $prayerIndex")
         
-        // 1. Önce sesi başlat (MediaPlayer ile)
-        playAlarmSound(prayerIndex)
-        
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         
         val cityName = prefs.getString("flutter.name", "") ?: ""
@@ -1327,18 +1377,6 @@ class PrayerNotificationService : Service() {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         val pendingIntent = PendingIntent.getActivity(
             this, prayerIndex, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-        )
-        
-        // Sesi durdurma intenti - ACTION_STOP_ALARM
-        val stopIntent = Intent(this, AlarmReceiver::class.java).apply {
-            action = ACTION_STOP_ALARM
-            putExtra("notification_id", PRAYER_NOTIFICATION_ID_START + prayerIndex)
-        }
-        val stopPendingIntent = PendingIntent.getBroadcast(
-            this, 
-            prayerIndex + 1000, 
-            stopIntent, 
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
         
         val notificationTitle = getString(R.string.prayer_time_notification_title, prayerName)
@@ -1364,7 +1402,6 @@ class PrayerNotificationService : Service() {
         Log.v(TAG, "Notification content: Title='$notificationTitle', Text='$notificationText'")
         
         // Ses tercihine göre doğru channel'ı seç
-        // NOT: Artık channel'ların hepsinin sesi kapalı, sadece öncelik ve gruplama için kullanılıyor
         val channelId = getNotificationChannelId(prayerIndex)
         Log.d(TAG, "Selected Channel: $channelId")
         
@@ -1377,8 +1414,6 @@ class PrayerNotificationService : Service() {
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
             .setVibrate(longArrayOf(1000, 1000, 1000, 1000, 1000))
-            .addAction(android.R.drawable.ic_lock_silent_mode_off, "Sesi Durdur", stopPendingIntent)
-            .setDeleteIntent(stopPendingIntent) // Bildirim silinince de sesi durdur
             .build()
         
         try {
@@ -1396,104 +1431,6 @@ class PrayerNotificationService : Service() {
         }
     }
     
-    // YENİ EKLENEN FONKSİYONLAR (Manuel Ses Yönetimi)
-
-    private fun playAlarmSound(prayerIndex: Int) {
-        stopAlarmSound() // Varsa önceki sesi durdur
-        
-        try {
-            // WakeLock al - Ses çalarken CPU uyumasın
-            val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
-            wakeLock = powerManager.newWakeLock(
-                PowerManager.PARTIAL_WAKE_LOCK,
-                "NamazVakti::AlarmWakelock"
-            )
-            wakeLock?.acquire(10 * 60 * 1000L) // Max 10 dakika
-            
-            val soundPreference = getSoundPreference(prayerIndex)
-            val soundUri = when (soundPreference) {
-                0 -> RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-                1 -> RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-                2 -> {
-                    // Ezan sesi - Vakit indeksine göre raw dosyasını seç
-                    val resId = when (prayerIndex) {
-                        1 -> R.raw.sabah
-                        3 -> R.raw.ogle
-                        4 -> R.raw.ikindi
-                        5 -> R.raw.aksam
-                        6 -> R.raw.yatsi
-                        else -> -1
-                    }
-                    
-                    if (resId != -1) {
-                        Uri.parse("android.resource://" + packageName + "/" + resId)
-                    } else {
-                        // Eğer özel ezan dosyası yoksa varsayılan bildirimi çal
-                        RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-                    }
-                }
-                else -> RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-            }
-            
-            mediaPlayer = MediaPlayer().apply {
-                setDataSource(applicationContext, soundUri)
-                setAudioAttributes(
-                    AudioAttributes.Builder()
-                        .setUsage(AudioAttributes.USAGE_ALARM)
-                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                        .build()
-                )
-                isLooping = false
-                prepare()
-                start()
-                setOnCompletionListener {
-                    stopAlarmSound()
-                }
-            }
-            
-            Log.i(TAG, "🎵 Alarm sound playing for prayer $prayerIndex using MediaPlayer")
-            
-        } catch (e: Exception) {
-            Log.e(TAG, "Error playing alarm sound: ${e.message}")
-            stopAlarmSound()
-        }
-    }
-    
-    private fun stopAlarmSound() {
-        try {
-            mediaPlayer?.let {
-                if (it.isPlaying) {
-                    it.stop()
-                }
-                it.release()
-            }
-            mediaPlayer = null
-            
-            wakeLock?.let {
-                if (it.isHeld) {
-                    it.release()
-                }
-            }
-            wakeLock = null
-            
-            Log.d(TAG, "🔇 Alarm sound stopped and resources released")
-        } catch (e: Exception) {
-            Log.e(TAG, "Error stopping alarm sound: ${e.message}")
-        }
-    }
-    
-    private fun getSoundPreference(prayerIndex: Int): Int {
-         try {
-            return prefs.getLong("flutter.${prayerIndex}voice", 0).toInt()
-         } catch (e: Exception) {
-             try {
-                return prefs.getInt("flutter.${prayerIndex}voice", 0)
-             } catch (e2: Exception) {
-                 return 0
-             }
-         }
-    }
-    
     override fun onBind(intent: Intent?): IBinder? {
         return null
     }
@@ -1501,33 +1438,6 @@ class PrayerNotificationService : Service() {
     override fun onDestroy() {
         Log.d(TAG, "Service destroyed")
         super.onDestroy()
-    }
-}
-
-class AlarmReceiver : BroadcastReceiver() {
-    override fun onReceive(context: Context, intent: Intent) {
-        Log.d("AlarmReceiver", "⏰ Alarm Received: ${intent.action}")
-        
-        // Servisi başlatmak için yeni intent oluştur
-        val serviceIntent = Intent(context, PrayerNotificationService::class.java).apply {
-            action = intent.action
-            // Varsa extra verileri de taşı
-            if (intent.extras != null) {
-                putExtras(intent.extras!!)
-            }
-        }
-        
-        // Android 12+ için arka plan başlatma kısıtlamalarına dikkat
-        // AlarmManager ile tetiklendiği için kısa süreli muafiyet var
-        try {
-            if (VERSION.SDK_INT >= VERSION_CODES.O) {
-                context.startForegroundService(serviceIntent)
-            } else {
-                context.startService(serviceIntent)
-            }
-        } catch (e: Exception) {
-            Log.e("AlarmReceiver", "Failed to start service: ${e.message}")
-        }
     }
 }
 
