@@ -138,6 +138,10 @@ class PrayerNotificationService : Service() {
     private var lastCurrentPrayerIndex: Int = -2 // -2 means not initialized
     private var lastCountdownText: String = ""
     private var lastAlarmConfigHash: String = ""
+    
+    // Çift bildirim kontrolü için
+    private var lastNotificationTime: Long = 0
+    private var lastNotificationIndex: Int = -1
 
     override fun onCreate() {
         super.onCreate()
@@ -1342,6 +1346,20 @@ class PrayerNotificationService : Service() {
     }
     
     private fun sendPrayerNotification(prayerIndex: Int) {
+        val currentTime = System.currentTimeMillis()
+        // Aynı vakit için 60 saniye içinde tekrar bildirim gelirse engelle (Double notification fix)
+        if (prayerIndex == lastNotificationIndex && (currentTime - lastNotificationTime) < 60 * 1000) {
+            Log.w(TAG, "⚠️ Duplicate notification blocked for prayer index $prayerIndex (Time diff: ${currentTime - lastNotificationTime}ms)")
+            // Yine de bir sonraki alarmı planlamayı dene, belki önceki planlama çalışmamıştır
+            Handler(Looper.getMainLooper()).postDelayed({
+                schedulePrayerAlarms()
+            }, 1000)
+            return
+        }
+        
+        lastNotificationIndex = prayerIndex
+        lastNotificationTime = currentTime
+        
         Log.i(TAG, "🔔 Sending Notification: Prayer Index $prayerIndex")
         
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

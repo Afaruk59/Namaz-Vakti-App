@@ -22,7 +22,7 @@ import 'dart:io';
 
 class ChangeSettings with ChangeNotifier {
   static late SharedPreferences _settings;
-  String version = '1.5.5';
+  String version = '1.5.6';
 
   bool otoLocal = false;
 
