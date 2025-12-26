@@ -280,5 +280,80 @@
   "datesFeature": "Религиозные даты",
   "datesFeatureDesc": "Календарь благословенных ночей, праздников и важных дней.",
   "locationDescription": "Найдите свое местоположение или найдите его автоматически для точного расчета времени намаза.",
-  "locationFeatureTitle": "Найдите свое местоположение"
+  "locationFeatureTitle": "Найдите свое местоположение",
+  "besmele": "Басмала",
+  "quranOk": "OK",
+  "quranFormatMukabele": "Мукабеле",
+  "quranFormatHat1": "Письмо 1",
+  "quranFormatHat2": "Письмо 2",
+  "quranPageSettings": "Настройки страницы",
+  "quranFontType": "Тип шрифта",
+  "quranFontSize": "Размер шрифта",
+  "quranAutoScroll": "Автопрокрутка",
+  "quranReset": "Сбросить",
+  "quranClose": "Закрыть",
+  "quranProstration": "Земной поклон",
+  "quranPageDataError": "Не удалось загрузить данные страницы",
+  "quranNoVersesFound": "Аяты не найдены",
+  "quranCopy": "Копировать",
+  "quranHighlight": "Выделить",
+  "removeHighlight": "Снять выделение",
+  "quranShare": "Поделиться",
+  "verse": "Аят",
+  "quranTranslation": "Перевод",
+  "quranPageLoading": "Загрузка страницы...",
+  "quranError": "Ошибка",
+  "quranRetry": "Повторить",
+  "quranHolyQuran": "Священный Коран",
+  "surahVerseFormat": "Сура {surahName} {verse} {verseNumber}",
+  "@surahVerseFormat": {
+    "description": "Format string for surah and verse",
+    "placeholders": {
+      "surahName": {
+        "type": "String",
+        "example": "Аль-Фатиха"
+      },
+      "verseNumber": {
+        "type": "int",
+        "example": "1"
+      },
+      "verse": {
+        "type": "String",
+        "example": "Аят"
+      }
+    }
+  },
+  "pageNumber": "Страница {pageNum}",
+  "@pageNumber": {
+    "description": "Page number format",
+    "placeholders": {
+      "pageNum": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "deleteBookmark": "Удалить закладку",
+  "deleteBookmarkConfirmation": "Вы уверены, что хотите удалить эту закладку?",
+  "cancel": "Отмена",
+  "delete": "Удалить",
+  "bookmarksTitle": "Закладки",
+  "noBookmarksYet": "Закладок пока нет",
+  "returnToBooks": "Вернуться к книгам",
+  "selectedText": "Выбранный текст",
+  "selectHighlightColor": "Выберите цвет выделения",
+  "quranSurahs": "Суры",
+  "quranJuz": "Джуз",
+  "quranJuzListNotFound": "Список джузов не найден",
+  "juzNumber": "Джуз {juzNum}",
+  "@juzNumber": {
+    "description": "Juz number format",
+    "placeholders": {
+      "juzNum": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "holyQuran": "Священный Коран"
 }

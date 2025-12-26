@@ -38,16 +38,32 @@ class MainActivity : FlutterActivity() {
     }
     private val CHANNEL = "com.afaruk59.namaz_vakti_app/media_controls"
     private val FLUTTER_CHANNEL = "com.afaruk59.namaz_vakti_app/media_service"
+    private val CHANNEL_QURAN_MEDIA_CONTROLS = "com.afaruk59.namaz_vakti_app/quran_media_controls"
+    private val CHANNEL_QURAN_MEDIA_CALLBACK = "com.afaruk59.namaz_vakti_app/quran_media_callback"
+    private val CHANNEL_BOOK_MEDIA_CONTROLS = "com.afaruk59.namaz_vakti_app/book_media_controls"
+    private val CHANNEL_BOOK_MEDIA_CALLBACK = "com.afaruk59.namaz_vakti_app/book_media_callback"
     private var mediaService: MediaService? = null
+    private var quranMediaService: QuranMediaService? = null
+    private var bookMediaService: BookMediaService? = null
     private var methodChannel: MethodChannel? = null
     private var flutterMethodChannel: MethodChannel? = null
+    private var quranMethodChannel: MethodChannel? = null
+    private var bookMethodChannel: MethodChannel? = null
     private var bound = false
+    private var quranBound = false
+    private var bookBound = false
     private var pendingAction: String? = null
     private var isActivityResumed = false
     private var isProcessingAction = false
     // Handler memory leak riskini önlemek için WeakReference kullanılabilir
     // Ancak Activity context'i gerekli olmadığı için static Handler güvenli
     private val handler = Handler(Looper.getMainLooper())
+    
+    // Debounce için değişkenler
+    private var lastPlaybackState = -1
+    private var lastPosition = -1L
+    private var lastMetadataUpdate = 0L
+    private val metadataDebounceDelay = 500L
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -219,6 +235,18 @@ class MainActivity : FlutterActivity() {
             }
         }
         
+        // Quran media controls channel
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL_QURAN_MEDIA_CONTROLS)
+            .setMethodCallHandler { call, result ->
+                handleQuranMediaControls(call, result)
+            }
+        
+        // Book media controls channel
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL_BOOK_MEDIA_CONTROLS)
+            .setMethodCallHandler { call, result ->
+                handleBookMediaControls(call, result)
+            }
+        
         // Intent'ten gelen action'ı işle
         intent?.let { handleIntent(it) }
     }
@@ -249,6 +277,52 @@ class MainActivity : FlutterActivity() {
         override fun onServiceDisconnected(arg0: ComponentName) {
             bound = false
             mediaService = null
+        }
+    }
+    
+    private val quranConnection = object : ServiceConnection {
+        override fun onServiceConnected(className: ComponentName, service: IBinder) {
+            val binder = service as QuranMediaService.LocalBinder
+            quranMediaService = binder.getService()
+            quranBound = true
+            
+            Log.d("MainActivity", "QuranMediaService connected successfully")
+            
+            // MethodChannel'ı servise ilet
+            flutterEngine?.dartExecutor?.binaryMessenger?.let { messenger ->
+                val methodChannel = MethodChannel(messenger, CHANNEL_QURAN_MEDIA_CALLBACK)
+                quranMediaService?.setMethodChannel(methodChannel)
+                Log.d("MainActivity", "MethodChannel set to QuranMediaService")
+            }
+        }
+
+        override fun onServiceDisconnected(arg0: ComponentName) {
+            quranBound = false
+            quranMediaService = null
+            Log.d("MainActivity", "QuranMediaService disconnected")
+        }
+    }
+    
+    private val bookConnection = object : ServiceConnection {
+        override fun onServiceConnected(className: ComponentName, service: IBinder) {
+            val binder = service as BookMediaService.LocalBinder
+            bookMediaService = binder.getService()
+            bookBound = true
+            
+            Log.d("MainActivity", "BookMediaService connected successfully")
+            
+            // MethodChannel'ı servise ilet
+            flutterEngine?.dartExecutor?.binaryMessenger?.let { messenger ->
+                val methodChannel = MethodChannel(messenger, CHANNEL_BOOK_MEDIA_CALLBACK)
+                bookMediaService?.setMethodChannel(methodChannel)
+                Log.d("MainActivity", "MethodChannel set to BookMediaService")
+            }
+        }
+
+        override fun onServiceDisconnected(arg0: ComponentName) {
+            bookBound = false
+            bookMediaService = null
+            Log.d("MainActivity", "BookMediaService disconnected")
         }
     }
 
@@ -360,6 +434,311 @@ class MainActivity : FlutterActivity() {
         }
         val intent = Intent(this, MediaService::class.java)
         stopService(intent)
+        
+        if (quranBound) {
+            quranMediaService?.stopAudio()
+            unbindService(quranConnection)
+            quranBound = false
+        }
+        val quranIntent = Intent(this, QuranMediaService::class.java)
+        stopService(quranIntent)
+        
+        if (bookBound) {
+            bookMediaService?.stopAudio()
+            unbindService(bookConnection)
+            bookBound = false
+        }
+        val bookIntent = Intent(this, BookMediaService::class.java)
+        stopService(bookIntent)
+        
         super.onDestroy()
+    }
+    
+    // Quran media controls handler
+    private fun handleQuranMediaControls(call: io.flutter.plugin.common.MethodCall, result: io.flutter.plugin.common.MethodChannel.Result) {
+        when (call.method) {
+            "startService" -> {
+                startQuranMediaService()
+                result.success(true)
+            }
+            "stopService" -> {
+                stopQuranMediaService()
+                result.success(true)
+            }
+            "updatePlaybackState" -> {
+                val state = call.argument<Int>("state") ?: 0
+                updateQuranPlaybackState(state)
+                result.success(true)
+            }
+            "updateMetadata" -> {
+                val title = call.argument<String>("title") ?: ""
+                val surahName = call.argument<String>("surahName") ?: ""
+                val ayahNumber = call.argument<Int>("ayahNumber") ?: 0
+                val duration = call.argument<Number>("duration")?.toLong() ?: 0L
+                updateQuranMetadata(title, surahName, ayahNumber, duration)
+                result.success(true)
+            }
+            "updatePosition" -> {
+                val position = call.argument<Number>("position")?.toLong() ?: 0L
+                updateQuranPosition(position)
+                result.success(true)
+            }
+            "stopAudio" -> {
+                stopQuranAudio()
+                result.success(true)
+            }
+            "initMediaService" -> {
+                startQuranMediaService()
+                result.success(true)
+            }
+            else -> result.notImplemented()
+        }
+    }
+    
+    // Quran Media Service Methods
+    private fun startQuranMediaService() {
+        try {
+            Log.d("MainActivity", "Starting quran media service")
+            
+            // Önce Book MediaSession'ını deaktive et (eğer varsa)
+            if (bound) {
+                mediaService?.stopAudio()
+            }
+            
+            val intent = Intent(this, QuranMediaService::class.java)
+            bindService(intent, quranConnection, Context.BIND_AUTO_CREATE)
+            startService(intent)
+            
+            // Quran MediaSession'ını aktive et
+            Handler(Looper.getMainLooper()).postDelayed({
+                if (quranBound) {
+                    quranMediaService?.activateMediaSession()
+                }
+            }, 500)
+            
+            Log.d("MainActivity", "Quran media service started")
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error starting quran media service: ${e.message}")
+        }
+    }
+    
+    private fun stopQuranMediaService() {
+        try {
+            Log.d("MainActivity", "Stopping quran media service")
+            if (quranBound) {
+                quranMediaService?.stopAudio()
+                unbindService(quranConnection)
+                quranBound = false
+            }
+            val intent = Intent(this, QuranMediaService::class.java)
+            stopService(intent)
+            Log.d("MainActivity", "Quran media service stopped")
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error stopping quran media service: ${e.message}")
+        }
+    }
+    
+    private fun updateQuranPlaybackState(state: Int) {
+        try {
+            if (lastPlaybackState != state) {
+                Log.d("MainActivity", "Updating quran playback state: $state")
+                if (quranBound) {
+                    quranMediaService?.updatePlaybackState(state)
+                }
+                lastPlaybackState = state
+            }
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error updating quran playback state: ${e.message}")
+        }
+    }
+    
+    private fun updateQuranMetadata(title: String, surahName: String, ayahNumber: Int, duration: Long) {
+        try {
+            val currentTime = System.currentTimeMillis()
+            if (currentTime - lastMetadataUpdate > metadataDebounceDelay) {
+                Log.d("MainActivity", "Updating quran metadata: $title - $surahName:$ayahNumber")
+                if (quranBound) {
+                    quranMediaService?.updateMetadata(title, surahName, ayahNumber, duration)
+                }
+                lastMetadataUpdate = currentTime
+            }
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error updating quran metadata: ${e.message}")
+        }
+    }
+    
+    private fun updateQuranPosition(position: Long) {
+        try {
+            if (kotlin.math.abs(position - lastPosition) > 1000) {
+                Log.d("MainActivity", "Updating quran position: $position")
+                if (quranBound) {
+                    quranMediaService?.updatePosition(position)
+                }
+                lastPosition = position
+            }
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error updating quran position: ${e.message}")
+        }
+    }
+    
+    private fun stopQuranAudio() {
+        try {
+            Log.d("MainActivity", "Stopping quran audio")
+            if (quranBound) {
+                quranMediaService?.stopAudio()
+            }
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error stopping quran audio: ${e.message}")
+        }
+    }
+    
+    // Book media controls handler
+    private fun handleBookMediaControls(call: io.flutter.plugin.common.MethodCall, result: io.flutter.plugin.common.MethodChannel.Result) {
+        when (call.method) {
+            "startService" -> {
+                startBookMediaService()
+                result.success(true)
+            }
+            "stopService" -> {
+                stopBookMediaService()
+                result.success(true)
+            }
+            "updatePlaybackState" -> {
+                val state = call.argument<Int>("state") ?: 0
+                updateBookPlaybackState(state)
+                result.success(true)
+            }
+            "updateMetadata" -> {
+                val title = call.argument<String>("title") ?: ""
+                val author = call.argument<String>("author") ?: ""
+                val coverUrl = call.argument<String>("coverUrl") ?: ""
+                val duration = call.argument<Number>("duration")?.toLong() ?: 0L
+                updateBookMetadata(title, author, coverUrl, duration)
+                result.success(true)
+            }
+            "updatePosition" -> {
+                val position = call.argument<Number>("position")?.toLong() ?: 0L
+                updateBookPosition(position)
+                result.success(true)
+            }
+            "updateAudioPageState" -> {
+                val bookCode = call.argument<String>("bookCode") ?: ""
+                val currentPage = call.argument<Int>("currentPage") ?: 0
+                val firstPage = call.argument<Int>("firstPage") ?: 1
+                val lastPage = call.argument<Int>("lastPage") ?: 9999
+                updateBookPageState(bookCode, currentPage, firstPage, lastPage)
+                result.success(true)
+            }
+            "stopAudio" -> {
+                stopBookAudio()
+                result.success(true)
+            }
+            "initMediaService" -> {
+                startBookMediaService()
+                result.success(true)
+            }
+            "clearQuranHandler" -> {
+                // Book media için Quran handler temizleme - boş bırak
+                result.success(true)
+            }
+            else -> result.notImplemented()
+        }
+    }
+    
+    // Book Media Service Methods
+    private fun startBookMediaService() {
+        try {
+            Log.d("MainActivity", "Starting book media service")
+            
+            // Önce Quran MediaSession'ını deaktive et (eğer varsa)
+            if (quranBound) {
+                quranMediaService?.stopAudio()
+            }
+            
+            val intent = Intent(this, BookMediaService::class.java)
+            bindService(intent, bookConnection, Context.BIND_AUTO_CREATE)
+            startService(intent)
+            
+            // Book MediaSession'ını aktive et
+            Handler(Looper.getMainLooper()).postDelayed({
+                if (bookBound) {
+                    bookMediaService?.activateMediaSession()
+                }
+            }, 500)
+            
+            Log.d("MainActivity", "Book media service started")
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error starting book media service: ${e.message}")
+        }
+    }
+    
+    private fun stopBookMediaService() {
+        try {
+            Log.d("MainActivity", "Stopping book media service")
+            if (bookBound) {
+                bookMediaService?.stopAudio()
+                unbindService(bookConnection)
+                bookBound = false
+            }
+            val intent = Intent(this, BookMediaService::class.java)
+            stopService(intent)
+            Log.d("MainActivity", "Book media service stopped")
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error stopping book media service: ${e.message}")
+        }
+    }
+    
+    private fun updateBookPlaybackState(state: Int) {
+        try {
+            Log.d("MainActivity", "Updating book playback state: $state")
+            if (bookBound) {
+                bookMediaService?.updatePlaybackState(state)
+            }
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error updating book playback state: ${e.message}")
+        }
+    }
+    
+    private fun updateBookMetadata(title: String, author: String, coverUrl: String, duration: Long) {
+        try {
+            Log.d("MainActivity", "Updating book metadata: $title - $author")
+            if (bookBound) {
+                bookMediaService?.updateMetadata(title, author, coverUrl, duration)
+            }
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error updating book metadata: ${e.message}")
+        }
+    }
+    
+    private fun updateBookPosition(position: Long) {
+        try {
+            if (bookBound) {
+                bookMediaService?.updatePosition(position)
+            }
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error updating book position: ${e.message}")
+        }
+    }
+    
+    private fun updateBookPageState(bookCode: String, currentPage: Int, firstPage: Int, lastPage: Int) {
+        try {
+            Log.d("MainActivity", "Updating book page state: $bookCode, page: $currentPage")
+            if (bookBound) {
+                bookMediaService?.updatePageState(bookCode, currentPage, firstPage, lastPage)
+            }
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error updating book page state: ${e.message}")
+        }
+    }
+    
+    private fun stopBookAudio() {
+        try {
+            Log.d("MainActivity", "Stopping book audio")
+            if (bookBound) {
+                bookMediaService?.stopAudio()
+            }
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error stopping book audio: ${e.message}")
+        }
     }
 }

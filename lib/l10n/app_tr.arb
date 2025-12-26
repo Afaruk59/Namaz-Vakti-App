@@ -805,5 +805,191 @@
   "locationFeatureTitle": "Konumunuzu Bulun",
   "@locationFeatureTitle": {
     "description": "Location feature title"
+  },
+  "besmele": "Besmele",
+  "@besmele": {
+    "description": "Besmele text"
+  },
+  "quranOk": "Tamam",
+  "@quranOk": {
+    "description": "OK button text for Quran"
+  },
+  "quranFormatMukabele": "Mukabele",
+  "@quranFormatMukabele": {
+    "description": "Mukabele format for Quran"
+  },
+  "quranFormatHat1": "Hat 1",
+  "@quranFormatHat1": {
+    "description": "Hat 1 format for Quran"
+  },
+  "quranFormatHat2": "Hat 2",
+  "@quranFormatHat2": {
+    "description": "Hat 2 format for Quran"
+  },
+  "quranPageSettings": "Sayfa Ayarları",
+  "@quranPageSettings": {
+    "description": "Page settings for Quran"
+  },
+  "quranFontType": "Yazı Tipi",
+  "@quranFontType": {
+    "description": "Font type for Quran"
+  },
+  "quranFontSize": "Yazı Boyutu",
+  "@quranFontSize": {
+    "description": "Font size for Quran"
+  },
+  "quranAutoScroll": "Otomatik Kaydır",
+  "@quranAutoScroll": {
+    "description": "Auto scroll for Quran"
+  },
+  "quranReset": "Sıfırla",
+  "@quranReset": {
+    "description": "Reset button for Quran"
+  },
+  "quranClose": "Kapat",
+  "@quranClose": {
+    "description": "Close button for Quran"
+  },
+  "quranProstration": "Secde",
+  "@quranProstration": {
+    "description": "Prostration for Quran"
+  },
+  "quranPageDataError": "Sayfa verisi yüklenemedi",
+  "@quranPageDataError": {
+    "description": "Page data error for Quran"
+  },
+  "quranNoVersesFound": "Ayet bulunamadı",
+  "@quranNoVersesFound": {
+    "description": "No verses found for Quran"
+  },
+  "quranCopy": "Kopyala",
+  "@quranCopy": {
+    "description": "Copy button for Quran"
+  },
+  "quranHighlight": "Vurgula",
+  "@quranHighlight": {
+    "description": "Highlight button for Quran"
+  },
+  "removeHighlight": "Vurguyu Kaldır",
+  "@removeHighlight": {
+    "description": "Remove highlight button for Quran"
+  },
+  "quranShare": "Paylaş",
+  "@quranShare": {
+    "description": "Share button for Quran"
+  },
+  "verse": "Ayet",
+  "@verse": {
+    "description": "Verse text for Quran"
+  },
+  "quranTranslation": "Meal",
+  "@quranTranslation": {
+    "description": "Translation text for Quran"
+  },
+  "quranPageLoading": "Sayfa yükleniyor...",
+  "@quranPageLoading": {
+    "description": "Page loading text for Quran"
+  },
+  "quranError": "Hata",
+  "@quranError": {
+    "description": "Error text for Quran"
+  },
+  "quranRetry": "Tekrar Dene",
+  "@quranRetry": {
+    "description": "Retry button for Quran"
+  },
+  "quranHolyQuran": "Kuran-ı Kerim",
+  "@quranHolyQuran": {
+    "description": "Holy Quran text"
+  },
+  "surahVerseFormat": "{surahName} Suresi {verseNumber}. {verse}",
+  "@surahVerseFormat": {
+    "description": "Format string for surah and verse",
+    "placeholders": {
+      "surahName": {
+        "type": "String",
+        "example": "Fatiha"
+      },
+      "verseNumber": {
+        "type": "int",
+        "example": "1"
+      },
+      "verse": {
+        "type": "String",
+        "example": "Ayet"
+      }
+    }
+  },
+  "pageNumber": "Sayfa {pageNum}",
+  "@pageNumber": {
+    "description": "Page number format",
+    "placeholders": {
+      "pageNum": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "deleteBookmark": "Yer İşaretini Sil",
+  "@deleteBookmark": {
+    "description": "Delete bookmark dialog title"
+  },
+  "deleteBookmarkConfirmation": "Bu yer işaretini silmek istediğinizden emin misiniz?",
+  "@deleteBookmarkConfirmation": {
+    "description": "Delete bookmark confirmation message"
+  },
+  "cancel": "İptal",
+  "@cancel": {
+    "description": "Cancel button text"
+  },
+  "delete": "Sil",
+  "@delete": {
+    "description": "Delete button text"
+  },
+  "bookmarksTitle": "Yer İşaretleri",
+  "@bookmarksTitle": {
+    "description": "Bookmarks page title"
+  },
+  "noBookmarksYet": "Henüz yer işareti eklenmemiş",
+  "@noBookmarksYet": {
+    "description": "No bookmarks yet message"
+  },
+  "returnToBooks": "Kitaplara Dön",
+  "@returnToBooks": {
+    "description": "Return to books button text"
+  },
+  "selectedText": "Seçili Metin",
+  "@selectedText": {
+    "description": "Selected text label"
+  },
+  "selectHighlightColor": "Vurgu Rengi Seç",
+  "@selectHighlightColor": {
+    "description": "Select highlight color dialog title"
+  },
+  "quranSurahs": "Sureler",
+  "@quranSurahs": {
+    "description": "Quran surahs tab title"
+  },
+  "quranJuz": "Cüzler",
+  "@quranJuz": {
+    "description": "Quran juz tab title"
+  },
+  "quranJuzListNotFound": "Cüz listesi bulunamadı",
+  "@quranJuzListNotFound": {
+    "description": "Quran juz list not found message"
+  },
+  "juzNumber": "{juzNum}. Cüz",
+  "@juzNumber": {
+    "description": "Juz number format",
+    "placeholders": {
+      "juzNum": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "holyQuran": "Kuran-ı Kerim",
+  "@holyQuran": {
+    "description": "Holy Quran text"
   }
 }

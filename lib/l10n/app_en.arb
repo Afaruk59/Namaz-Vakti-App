@@ -358,5 +358,191 @@
   "locationFeatureTitle": "Find Your Location",
   "@locationFeatureTitle": {
     "description": "Location feature title"
+  },
+  "besmele": "Basmala",
+  "@besmele": {
+    "description": "Besmele text"
+  },
+  "quranOk": "OK",
+  "@quranOk": {
+    "description": "OK button text for Quran"
+  },
+  "quranFormatMukabele": "Mukabele",
+  "@quranFormatMukabele": {
+    "description": "Mukabele format for Quran"
+  },
+  "quranFormatHat1": "Hat 1",
+  "@quranFormatHat1": {
+    "description": "Hat 1 format for Quran"
+  },
+  "quranFormatHat2": "Hat 2",
+  "@quranFormatHat2": {
+    "description": "Hat 2 format for Quran"
+  },
+  "quranPageSettings": "Page Settings",
+  "@quranPageSettings": {
+    "description": "Page settings for Quran"
+  },
+  "quranFontType": "Font Type",
+  "@quranFontType": {
+    "description": "Font type for Quran"
+  },
+  "quranFontSize": "Font Size",
+  "@quranFontSize": {
+    "description": "Font size for Quran"
+  },
+  "quranAutoScroll": "Auto Scroll",
+  "@quranAutoScroll": {
+    "description": "Auto scroll for Quran"
+  },
+  "quranReset": "Reset",
+  "@quranReset": {
+    "description": "Reset button for Quran"
+  },
+  "quranClose": "Close",
+  "@quranClose": {
+    "description": "Close button for Quran"
+  },
+  "quranProstration": "Prostration",
+  "@quranProstration": {
+    "description": "Prostration for Quran"
+  },
+  "quranPageDataError": "Page data could not be loaded",
+  "@quranPageDataError": {
+    "description": "Page data error for Quran"
+  },
+  "quranNoVersesFound": "No verses found",
+  "@quranNoVersesFound": {
+    "description": "No verses found for Quran"
+  },
+  "quranCopy": "Copy",
+  "@quranCopy": {
+    "description": "Copy button for Quran"
+  },
+  "quranHighlight": "Highlight",
+  "@quranHighlight": {
+    "description": "Highlight button for Quran"
+  },
+  "removeHighlight": "Remove Highlight",
+  "@removeHighlight": {
+    "description": "Remove highlight button for Quran"
+  },
+  "quranShare": "Share",
+  "@quranShare": {
+    "description": "Share button for Quran"
+  },
+  "verse": "Verse",
+  "@verse": {
+    "description": "Verse text for Quran"
+  },
+  "quranTranslation": "Translation",
+  "@quranTranslation": {
+    "description": "Translation text for Quran"
+  },
+  "quranPageLoading": "Loading page...",
+  "@quranPageLoading": {
+    "description": "Page loading text for Quran"
+  },
+  "quranError": "Error",
+  "@quranError": {
+    "description": "Error text for Quran"
+  },
+  "quranRetry": "Retry",
+  "@quranRetry": {
+    "description": "Retry button for Quran"
+  },
+  "quranHolyQuran": "Holy Quran",
+  "@quranHolyQuran": {
+    "description": "Holy Quran text"
+  },
+  "surahVerseFormat": "Surah {surahName} {verse} {verseNumber}",
+  "@surahVerseFormat": {
+    "description": "Format string for surah and verse",
+    "placeholders": {
+      "surahName": {
+        "type": "String",
+        "example": "Al-Fatiha"
+      },
+      "verseNumber": {
+        "type": "int",
+        "example": "1"
+      },
+      "verse": {
+        "type": "String",
+        "example": "Verse"
+      }
+    }
+  },
+  "pageNumber": "Page {pageNum}",
+  "@pageNumber": {
+    "description": "Page number format",
+    "placeholders": {
+      "pageNum": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "deleteBookmark": "Delete Bookmark",
+  "@deleteBookmark": {
+    "description": "Delete bookmark dialog title"
+  },
+  "deleteBookmarkConfirmation": "Are you sure you want to delete this bookmark?",
+  "@deleteBookmarkConfirmation": {
+    "description": "Delete bookmark confirmation message"
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel button text"
+  },
+  "delete": "Delete",
+  "@delete": {
+    "description": "Delete button text"
+  },
+  "bookmarksTitle": "Bookmarks",
+  "@bookmarksTitle": {
+    "description": "Bookmarks page title"
+  },
+  "noBookmarksYet": "No bookmarks yet",
+  "@noBookmarksYet": {
+    "description": "No bookmarks yet message"
+  },
+  "returnToBooks": "Return to Books",
+  "@returnToBooks": {
+    "description": "Return to books button text"
+  },
+  "selectedText": "Selected Text",
+  "@selectedText": {
+    "description": "Selected text label"
+  },
+  "selectHighlightColor": "Select Highlight Color",
+  "@selectHighlightColor": {
+    "description": "Select highlight color dialog title"
+  },
+  "quranSurahs": "Surahs",
+  "@quranSurahs": {
+    "description": "Quran surahs tab title"
+  },
+  "quranJuz": "Juz",
+  "@quranJuz": {
+    "description": "Quran juz tab title"
+  },
+  "quranJuzListNotFound": "Juz list not found",
+  "@quranJuzListNotFound": {
+    "description": "Quran juz list not found message"
+  },
+  "juzNumber": "Juz {juzNum}",
+  "@juzNumber": {
+    "description": "Juz number format",
+    "placeholders": {
+      "juzNum": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "holyQuran": "Holy Quran",
+  "@holyQuran": {
+    "description": "Holy Quran text"
   }
 }

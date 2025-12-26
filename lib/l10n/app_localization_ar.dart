@@ -633,4 +633,131 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get locationFeatureTitle => 'ابحث عن موقعك';
+
+  @override
+  String get besmele => 'البسملة';
+
+  @override
+  String get quranOk => 'موافق';
+
+  @override
+  String get quranFormatMukabele => 'المقابلة';
+
+  @override
+  String get quranFormatHat1 => 'الخط 1';
+
+  @override
+  String get quranFormatHat2 => 'الخط 2';
+
+  @override
+  String get quranPageSettings => 'إعدادات الصفحة';
+
+  @override
+  String get quranFontType => 'نوع الخط';
+
+  @override
+  String get quranFontSize => 'حجم الخط';
+
+  @override
+  String get quranAutoScroll => 'التمرير التلقائي';
+
+  @override
+  String get quranReset => 'إعادة تعيين';
+
+  @override
+  String get quranClose => 'إغلاق';
+
+  @override
+  String get quranProstration => 'السجدة';
+
+  @override
+  String get quranPageDataError => 'فشل تحميل بيانات الصفحة';
+
+  @override
+  String get quranNoVersesFound => 'لم يتم العثور على آيات';
+
+  @override
+  String get quranCopy => 'نسخ';
+
+  @override
+  String get quranHighlight => 'تمييز';
+
+  @override
+  String get removeHighlight => 'إزالة التمييز';
+
+  @override
+  String get quranShare => 'مشاركة';
+
+  @override
+  String get verse => 'آية';
+
+  @override
+  String get quranTranslation => 'ترجمة';
+
+  @override
+  String get quranPageLoading => 'جاري تحميل الصفحة...';
+
+  @override
+  String get quranError => 'خطأ';
+
+  @override
+  String get quranRetry => 'إعادة المحاولة';
+
+  @override
+  String get quranHolyQuran => 'القرآن الكريم';
+
+  @override
+  String surahVerseFormat(String surahName, int verseNumber, String verse) {
+    return 'سورة $surahName $verse $verseNumber';
+  }
+
+  @override
+  String pageNumber(int pageNum) {
+    return 'صفحة $pageNum';
+  }
+
+  @override
+  String get deleteBookmark => 'حذف العلامة المرجعية';
+
+  @override
+  String get deleteBookmarkConfirmation =>
+      'هل أنت متأكد أنك تريد حذف هذه العلامة المرجعية؟';
+
+  @override
+  String get cancel => 'إلغاء';
+
+  @override
+  String get delete => 'حذف';
+
+  @override
+  String get bookmarksTitle => 'العلامات المرجعية';
+
+  @override
+  String get noBookmarksYet => 'لا توجد علامات مرجعية بعد';
+
+  @override
+  String get returnToBooks => 'العودة إلى الكتب';
+
+  @override
+  String get selectedText => 'النص المحدد';
+
+  @override
+  String get selectHighlightColor => 'حدد لون التمييز';
+
+  @override
+  String get quranSurahs => 'السور';
+
+  @override
+  String get quranJuz => 'الأجزاء';
+
+  @override
+  String get quranJuzListNotFound => 'قائمة الأجزاء غير موجودة';
+
+  @override
+  String juzNumber(int juzNum) {
+    return 'الجزء $juzNum';
+  }
+
+  @override
+  String get holyQuran => 'القرآن الكريم';
 }

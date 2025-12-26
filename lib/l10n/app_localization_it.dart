@@ -644,4 +644,131 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get locationFeatureTitle => 'Trova la tua posizione';
+
+  @override
+  String get besmele => 'Basmala';
+
+  @override
+  String get quranOk => 'OK';
+
+  @override
+  String get quranFormatMukabele => 'Mukabele';
+
+  @override
+  String get quranFormatHat1 => 'Scrittura 1';
+
+  @override
+  String get quranFormatHat2 => 'Scrittura 2';
+
+  @override
+  String get quranPageSettings => 'Impostazioni pagina';
+
+  @override
+  String get quranFontType => 'Tipo di carattere';
+
+  @override
+  String get quranFontSize => 'Dimensione carattere';
+
+  @override
+  String get quranAutoScroll => 'Scorrimento automatico';
+
+  @override
+  String get quranReset => 'Ripristina';
+
+  @override
+  String get quranClose => 'Chiudi';
+
+  @override
+  String get quranProstration => 'Prostrazione';
+
+  @override
+  String get quranPageDataError => 'Impossibile caricare i dati della pagina';
+
+  @override
+  String get quranNoVersesFound => 'Nessun versetto trovato';
+
+  @override
+  String get quranCopy => 'Copia';
+
+  @override
+  String get quranHighlight => 'Evidenzia';
+
+  @override
+  String get removeHighlight => 'Rimuovi evidenziazione';
+
+  @override
+  String get quranShare => 'Condividi';
+
+  @override
+  String get verse => 'Versetto';
+
+  @override
+  String get quranTranslation => 'Traduzione';
+
+  @override
+  String get quranPageLoading => 'Caricamento pagina...';
+
+  @override
+  String get quranError => 'Errore';
+
+  @override
+  String get quranRetry => 'Riprova';
+
+  @override
+  String get quranHolyQuran => 'Santo Corano';
+
+  @override
+  String surahVerseFormat(String surahName, int verseNumber, String verse) {
+    return 'Sura $surahName $verse $verseNumber';
+  }
+
+  @override
+  String pageNumber(int pageNum) {
+    return 'Pagina $pageNum';
+  }
+
+  @override
+  String get deleteBookmark => 'Elimina segnalibro';
+
+  @override
+  String get deleteBookmarkConfirmation =>
+      'Sei sicuro di voler eliminare questo segnalibro?';
+
+  @override
+  String get cancel => 'Annulla';
+
+  @override
+  String get delete => 'Elimina';
+
+  @override
+  String get bookmarksTitle => 'Segnalibri';
+
+  @override
+  String get noBookmarksYet => 'Nessun segnalibro ancora';
+
+  @override
+  String get returnToBooks => 'Torna ai libri';
+
+  @override
+  String get selectedText => 'Testo selezionato';
+
+  @override
+  String get selectHighlightColor => 'Seleziona colore evidenziazione';
+
+  @override
+  String get quranSurahs => 'Sure';
+
+  @override
+  String get quranJuz => 'Juz';
+
+  @override
+  String get quranJuzListNotFound => 'Elenco Juz non trovato';
+
+  @override
+  String juzNumber(int juzNum) {
+    return 'Juz $juzNum';
+  }
+
+  @override
+  String get holyQuran => 'Santo Corano';
 }

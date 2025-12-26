@@ -643,4 +643,131 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get locationFeatureTitle => 'Finden Sie Ihren Standort';
+
+  @override
+  String get besmele => 'Basmala';
+
+  @override
+  String get quranOk => 'OK';
+
+  @override
+  String get quranFormatMukabele => 'Mukabele';
+
+  @override
+  String get quranFormatHat1 => 'Schrift 1';
+
+  @override
+  String get quranFormatHat2 => 'Schrift 2';
+
+  @override
+  String get quranPageSettings => 'Seiteneinstellungen';
+
+  @override
+  String get quranFontType => 'Schriftart';
+
+  @override
+  String get quranFontSize => 'Schriftgröße';
+
+  @override
+  String get quranAutoScroll => 'Auto-Scroll';
+
+  @override
+  String get quranReset => 'Zurücksetzen';
+
+  @override
+  String get quranClose => 'Schließen';
+
+  @override
+  String get quranProstration => 'Niederwerfung';
+
+  @override
+  String get quranPageDataError => 'Seitendaten konnten nicht geladen werden';
+
+  @override
+  String get quranNoVersesFound => 'Keine Verse gefunden';
+
+  @override
+  String get quranCopy => 'Kopieren';
+
+  @override
+  String get quranHighlight => 'Hervorheben';
+
+  @override
+  String get removeHighlight => 'Hervorhebung entfernen';
+
+  @override
+  String get quranShare => 'Teilen';
+
+  @override
+  String get verse => 'Vers';
+
+  @override
+  String get quranTranslation => 'Übersetzung';
+
+  @override
+  String get quranPageLoading => 'Seite wird geladen...';
+
+  @override
+  String get quranError => 'Fehler';
+
+  @override
+  String get quranRetry => 'Erneut versuchen';
+
+  @override
+  String get quranHolyQuran => 'Heiliger Koran';
+
+  @override
+  String surahVerseFormat(String surahName, int verseNumber, String verse) {
+    return 'Sure $surahName $verse $verseNumber';
+  }
+
+  @override
+  String pageNumber(int pageNum) {
+    return 'Seite $pageNum';
+  }
+
+  @override
+  String get deleteBookmark => 'Lesezeichen löschen';
+
+  @override
+  String get deleteBookmarkConfirmation =>
+      'Möchten Sie dieses Lesezeichen wirklich löschen?';
+
+  @override
+  String get cancel => 'Abbrechen';
+
+  @override
+  String get delete => 'Löschen';
+
+  @override
+  String get bookmarksTitle => 'Lesezeichen';
+
+  @override
+  String get noBookmarksYet => 'Noch keine Lesezeichen';
+
+  @override
+  String get returnToBooks => 'Zurück zu Büchern';
+
+  @override
+  String get selectedText => 'Ausgewählter Text';
+
+  @override
+  String get selectHighlightColor => 'Markierungsfarbe auswählen';
+
+  @override
+  String get quranSurahs => 'Suren';
+
+  @override
+  String get quranJuz => 'Juz';
+
+  @override
+  String get quranJuzListNotFound => 'Juz-Liste nicht gefunden';
+
+  @override
+  String juzNumber(int juzNum) {
+    return 'Juz $juzNum';
+  }
+
+  @override
+  String get holyQuran => 'Heiliger Koran';
 }

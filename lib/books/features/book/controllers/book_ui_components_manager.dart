@@ -5,7 +5,6 @@ import 'package:namaz_vakti_app/books/features/book/controllers/book_page_contro
 import 'package:namaz_vakti_app/books/features/book/controllers/book_theme_controller.dart';
 import 'package:namaz_vakti_app/books/features/book/controllers/book_bookmark_controller.dart';
 import 'package:namaz_vakti_app/books/features/book/controllers/book_audio_controller.dart';
-import 'package:namaz_vakti_app/books/features/book/audio/audio_player_service.dart';
 import 'package:namaz_vakti_app/books/features/book/widgets/book_drawer_builder.dart';
 import 'package:namaz_vakti_app/books/shared/models/index_item_model.dart';
 import 'package:namaz_vakti_app/books/features/book/widgets/book_content_wrapper.dart';
@@ -23,7 +22,6 @@ class BookUIComponentsManager {
   final BookThemeController themeController;
   final BookBookmarkController bookmarkController;
   final BookAudioController audioController;
-  final AudioPlayerService audioPlayerService;
   final Function(int) onPageSelected;
   final Function(String) onSearch;
 
@@ -46,7 +44,6 @@ class BookUIComponentsManager {
     required this.themeController,
     required this.bookmarkController,
     required this.audioController,
-    required this.audioPlayerService,
     required this.onPageSelected,
     required this.onSearch,
   });
@@ -170,7 +167,7 @@ class BookUIComponentsManager {
   }) {
     return BookBottomControls(
       pageController: pageController,
-      audioPlayerService: audioPlayerService,
+      audioPlayerService: audioController.audioPlayerService,
       appBarColor: appBarColor,
       bookCode: bookCode,
       showAudioProgress: showAudioProgress,
@@ -208,7 +205,7 @@ class BookUIComponentsManager {
       onPageSelected: onPageSelected,
       searchFunction: searchFunction,
       searchText: searchText,
-      audioPlayerService: audioPlayerService,
+      audioPlayerService: audioController.audioPlayerService,
       currentBookPage: currentBookPage,
     );
   }

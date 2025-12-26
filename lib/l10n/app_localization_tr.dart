@@ -641,4 +641,131 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get locationFeatureTitle => 'Konumunuzu Bulun';
+
+  @override
+  String get besmele => 'Besmele';
+
+  @override
+  String get quranOk => 'Tamam';
+
+  @override
+  String get quranFormatMukabele => 'Mukabele';
+
+  @override
+  String get quranFormatHat1 => 'Hat 1';
+
+  @override
+  String get quranFormatHat2 => 'Hat 2';
+
+  @override
+  String get quranPageSettings => 'Sayfa Ayarları';
+
+  @override
+  String get quranFontType => 'Yazı Tipi';
+
+  @override
+  String get quranFontSize => 'Yazı Boyutu';
+
+  @override
+  String get quranAutoScroll => 'Otomatik Kaydır';
+
+  @override
+  String get quranReset => 'Sıfırla';
+
+  @override
+  String get quranClose => 'Kapat';
+
+  @override
+  String get quranProstration => 'Secde';
+
+  @override
+  String get quranPageDataError => 'Sayfa verisi yüklenemedi';
+
+  @override
+  String get quranNoVersesFound => 'Ayet bulunamadı';
+
+  @override
+  String get quranCopy => 'Kopyala';
+
+  @override
+  String get quranHighlight => 'Vurgula';
+
+  @override
+  String get removeHighlight => 'Vurguyu Kaldır';
+
+  @override
+  String get quranShare => 'Paylaş';
+
+  @override
+  String get verse => 'Ayet';
+
+  @override
+  String get quranTranslation => 'Meal';
+
+  @override
+  String get quranPageLoading => 'Sayfa yükleniyor...';
+
+  @override
+  String get quranError => 'Hata';
+
+  @override
+  String get quranRetry => 'Tekrar Dene';
+
+  @override
+  String get quranHolyQuran => 'Kuran-ı Kerim';
+
+  @override
+  String surahVerseFormat(String surahName, int verseNumber, String verse) {
+    return '$surahName Suresi $verseNumber. $verse';
+  }
+
+  @override
+  String pageNumber(int pageNum) {
+    return 'Sayfa $pageNum';
+  }
+
+  @override
+  String get deleteBookmark => 'Yer İşaretini Sil';
+
+  @override
+  String get deleteBookmarkConfirmation =>
+      'Bu yer işaretini silmek istediğinizden emin misiniz?';
+
+  @override
+  String get cancel => 'İptal';
+
+  @override
+  String get delete => 'Sil';
+
+  @override
+  String get bookmarksTitle => 'Yer İşaretleri';
+
+  @override
+  String get noBookmarksYet => 'Henüz yer işareti eklenmemiş';
+
+  @override
+  String get returnToBooks => 'Kitaplara Dön';
+
+  @override
+  String get selectedText => 'Seçili Metin';
+
+  @override
+  String get selectHighlightColor => 'Vurgu Rengi Seç';
+
+  @override
+  String get quranSurahs => 'Sureler';
+
+  @override
+  String get quranJuz => 'Cüzler';
+
+  @override
+  String get quranJuzListNotFound => 'Cüz listesi bulunamadı';
+
+  @override
+  String juzNumber(int juzNum) {
+    return '$juzNum. Cüz';
+  }
+
+  @override
+  String get holyQuran => 'Kuran-ı Kerim';
 }

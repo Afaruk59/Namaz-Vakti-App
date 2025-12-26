@@ -50,9 +50,11 @@ class _BookBookmarkIndicatorState extends State<BookBookmarkIndicator> {
 
       // Yer işareti sayısını al
       final count = await _bookmarkService.getBookmarkCount(widget.bookCode);
+      debugPrint('BookBookmarkIndicator: Loading bookmark count for ${widget.bookCode}: $count (previous: $_bookmarkCount)');
 
       // Eğer widget hala monte edilmişse ve sayı değiştiyse güncelle
       if (mounted && count != _bookmarkCount) {
+        debugPrint('BookBookmarkIndicator: Updating bookmark count for ${widget.bookCode}: $_bookmarkCount -> $count');
         setState(() {
           _bookmarkCount = count;
           _isLoading = false;
@@ -88,10 +90,12 @@ class _BookBookmarkIndicatorState extends State<BookBookmarkIndicator> {
           MaterialPageRoute(
             builder: (context) => BookmarksScreen(
               initialBookCode: widget.bookCode,
-              showMeal: false,
             ),
           ),
         ).then((_) {
+          // BookmarkService cache'ini temizle
+          BookmarkService().clearCache();
+          
           // Geri döndüğünde yer işareti sayısını güncelle
           _loadBookmarkCount();
 

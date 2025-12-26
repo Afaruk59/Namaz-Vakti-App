@@ -274,5 +274,80 @@
   "datesFeature": "Date religiose",
   "datesFeatureDesc": "Calendario delle notti benedette, festività e giorni importanti.",
   "locationDescription": "Cerca la tua posizione o trovala automaticamente per calcolare con precisione gli orari di preghiera.",
-  "locationFeatureTitle": "Trova la tua posizione"
+  "locationFeatureTitle": "Trova la tua posizione",
+  "besmele": "Basmala",
+  "quranOk": "OK",
+  "quranFormatMukabele": "Mukabele",
+  "quranFormatHat1": "Scrittura 1",
+  "quranFormatHat2": "Scrittura 2",
+  "quranPageSettings": "Impostazioni pagina",
+  "quranFontType": "Tipo di carattere",
+  "quranFontSize": "Dimensione carattere",
+  "quranAutoScroll": "Scorrimento automatico",
+  "quranReset": "Ripristina",
+  "quranClose": "Chiudi",
+  "quranProstration": "Prostrazione",
+  "quranPageDataError": "Impossibile caricare i dati della pagina",
+  "quranNoVersesFound": "Nessun versetto trovato",
+  "quranCopy": "Copia",
+  "quranHighlight": "Evidenzia",
+  "removeHighlight": "Rimuovi evidenziazione",
+  "quranShare": "Condividi",
+  "verse": "Versetto",
+  "quranTranslation": "Traduzione",
+  "quranPageLoading": "Caricamento pagina...",
+  "quranError": "Errore",
+  "quranRetry": "Riprova",
+  "quranHolyQuran": "Santo Corano",
+  "surahVerseFormat": "Sura {surahName} {verse} {verseNumber}",
+  "@surahVerseFormat": {
+    "description": "Format string for surah and verse",
+    "placeholders": {
+      "surahName": {
+        "type": "String",
+        "example": "Al-Fatiha"
+      },
+      "verseNumber": {
+        "type": "int",
+        "example": "1"
+      },
+      "verse": {
+        "type": "String",
+        "example": "Versetto"
+      }
+    }
+  },
+  "pageNumber": "Pagina {pageNum}",
+  "@pageNumber": {
+    "description": "Page number format",
+    "placeholders": {
+      "pageNum": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "deleteBookmark": "Elimina segnalibro",
+  "deleteBookmarkConfirmation": "Sei sicuro di voler eliminare questo segnalibro?",
+  "cancel": "Annulla",
+  "delete": "Elimina",
+  "bookmarksTitle": "Segnalibri",
+  "noBookmarksYet": "Nessun segnalibro ancora",
+  "returnToBooks": "Torna ai libri",
+  "selectedText": "Testo selezionato",
+  "selectHighlightColor": "Seleziona colore evidenziazione",
+  "quranSurahs": "Sure",
+  "quranJuz": "Juz",
+  "quranJuzListNotFound": "Elenco Juz non trovato",
+  "juzNumber": "Juz {juzNum}",
+  "@juzNumber": {
+    "description": "Juz number format",
+    "placeholders": {
+      "juzNum": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "holyQuran": "Santo Corano"
 }

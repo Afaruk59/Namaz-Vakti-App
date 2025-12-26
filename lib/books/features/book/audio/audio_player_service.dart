@@ -2,14 +2,14 @@ import 'package:audioplayers/audioplayers.dart';
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AudioPlayerService {
-  // Singleton instance
-  static AudioPlayerService? _instance;
+  // Context-based instances
+  static final Map<String, AudioPlayerService> _instances = {};
 
-  // Method channel for Android communication
-  static const MethodChannel _platform =
-      MethodChannel('com.afaruk59.namaz_vakti_app/media_service');
+  // Method channel for Android communication - context-specific
+  final MethodChannel _platform;
 
   // AudioPlayer instance
   AudioPlayer? _audioPlayer;
@@ -20,6 +20,7 @@ class AudioPlayerService {
   String? _playingBookCode; // Çalınan kitap kodu
   DateTime? _lastPositionUpdateTime; // Son pozisyon güncelleme zamanı
   bool _isHandlingCompletion = false; // Tamamlanma işlemi zaten yürütülüyor mu
+  bool _isStoppingIntentionally = false; // Kasıtlı olarak durduruldu mu
 
   // Convenience getter for playingBookCode
   String? get playingBookCode => _playingBookCode;
@@ -34,6 +35,10 @@ class AudioPlayerService {
   StreamController<double>? _playbackRateController;
   StreamController<void>? _completionController;
 
+  // Seeking debounce
+  Timer? _seekDebounceTimer;
+  Duration? _pendingSeekPosition;
+
   // Streams
   Stream<bool> get playingStateStream => _playingStateController!.stream;
   Stream<Duration> get positionStream => _positionController!.stream;
@@ -41,14 +46,23 @@ class AudioPlayerService {
   Stream<double> get playbackRateStream => _playbackRateController!.stream;
   Stream<void> get completionStream => _completionController!.stream;
 
-  // Factory constructor to return the same instance
+  // Context identifier
+  final String _contextId;
+
+  // Factory constructor to return context-specific instance
+  factory AudioPlayerService.forContext(String contextId) {
+    _instances[contextId] ??= AudioPlayerService._internal(contextId);
+    return _instances[contextId]!;
+  }
+
+  // Legacy factory constructor for backward compatibility (defaults to 'book')
   factory AudioPlayerService() {
-    _instance ??= AudioPlayerService._internal();
-    return _instance!;
+    return AudioPlayerService.forContext('book');
   }
 
   // Private constructor
-  AudioPlayerService._internal() {
+  AudioPlayerService._internal(this._contextId)
+      : _platform = MethodChannel('com.afaruk59.namaz_vakti_app/${_contextId}_media_controls') {
     _initialize();
   }
 
@@ -75,10 +89,11 @@ class AudioPlayerService {
     if (_audioPlayer == null) return;
 
     _audioPlayer!.onPlayerStateChanged.listen((state) {
-      debugPrint('AudioPlayerService: Player state changed to: $state');
+      debugPrint(
+          'AudioPlayerService: Player state changed to: $state, isStoppingIntentionally: $_isStoppingIntentionally');
 
-      // Hata durumlarını kontrol et
-      if (state == PlayerState.stopped && isPlaying) {
+      // Hata durumlarını kontrol et - sadece kasıtlı olmayan durmalarda hata ver
+      if (state == PlayerState.stopped && isPlaying && !_isStoppingIntentionally) {
         debugPrint('AudioPlayerService: Player stopped unexpectedly, treating as error');
         // Beklenmeyen durma durumunu hata olarak değerlendir
         isPlaying = false;
@@ -89,13 +104,22 @@ class AudioPlayerService {
         // Hata durumunda completion handling'i sıfırla
         _isHandlingCompletion = false;
 
-        // Android servisine hata durumunu bildir
+        // Android servisine hata durumunu bildir (sadece Android'de)
         try {
-          _platform.invokeMethod('audio_error', {'error': 'Player stopped unexpectedly'});
+          // Platform kontrolü yaparak sadece Android'de çağır
+          if (defaultTargetPlatform == TargetPlatform.android) {
+            _platform.invokeMethod('audio_error', {'error': 'Player stopped unexpectedly'});
+          }
         } catch (e) {
-          debugPrint('AudioPlayerService: Failed to notify Android service about error: $e');
+          debugPrint('AudioPlayerService: Failed to notify service about error: $e');
         }
         return;
+      }
+
+      // Kasıtlı durdurma işlemi tamamlandıysa flag'i sıfırla
+      if (state == PlayerState.stopped && _isStoppingIntentionally) {
+        debugPrint('AudioPlayerService: Player stopped intentionally');
+        _isStoppingIntentionally = false;
       }
 
       isPlaying = state == PlayerState.playing;
@@ -158,14 +182,21 @@ class AudioPlayerService {
           _completionController!.add(null); // Broadcast completion event
         }
 
-        // Notify Android service about audio completion for background handling
+        // Notify native service about audio completion for background handling
         // This should work even when bookCode is null (app in background)
         try {
-          await _platform.invokeMethod('audio_completed');
-          debugPrint('AudioPlayerService: Audio completion notification sent to Android service');
+          if (defaultTargetPlatform == TargetPlatform.android) {
+            await _platform.invokeMethod('audio_completed');
+            debugPrint('AudioPlayerService: Audio completion notification sent to Android service');
+          } else if (defaultTargetPlatform == TargetPlatform.iOS) {
+            // iOS için ana method channel üzerinden bildir (daha güvenilir)
+            await _platform.invokeMethod('audio_completed');
+            debugPrint(
+                'AudioPlayerService: Audio completion notification sent to iOS via main channel');
+          }
         } catch (e) {
           debugPrint(
-              'AudioPlayerService: Failed to notify Android service about audio completion: $e');
+              'AudioPlayerService: Failed to notify native service about audio completion: $e');
         }
 
         // Reset the completion handling flag after a short delay
@@ -199,6 +230,10 @@ class AudioPlayerService {
       // Önce mevcut sesi durdur
       await stopAudio();
 
+      // Yeni ses başlatılacağı için flag'leri sıfırla
+      _isStoppingIntentionally = false;
+      _isHandlingCompletion = false;
+
       // Kısa bir bekleme ekleyerek önceki ses dosyasının tamamen durmasını sağla
       await Future.delayed(const Duration(milliseconds: 100));
 
@@ -218,7 +253,7 @@ class AudioPlayerService {
       debugPrint('Audio playback started successfully for URL: $audioUrl');
 
       // Kısa bir gecikme sonra çalma durumunu tekrar kontrol et
-      await Future.delayed(const Duration(milliseconds: 300));
+      await Future.delayed(const Duration(milliseconds: 100));
       if (_audioPlayer!.state != PlayerState.playing) {
         debugPrint(
             'Warning: Audio player state is not playing after 300ms. Current state: ${_audioPlayer!.state}');
@@ -232,10 +267,10 @@ class AudioPlayerService {
 
       // Ek güvenlik: Ekran kilitleme durumlarında daha güvenli olması için
       // bir süre sonra durumu tekrar kontrol et
-      await Future.delayed(const Duration(seconds: 2));
+      await Future.delayed(const Duration(milliseconds: 500));
       if (_audioPlayer != null && _audioPlayer!.state == PlayerState.stopped && isPlaying) {
         debugPrint(
-            'AudioPlayerService: Player stopped unexpectedly after 2 seconds, attempting recovery');
+            'AudioPlayerService: Player stopped unexpectedly after 500ms, attempting recovery');
         // Beklenmeyen durma durumunda recovery dene
         try {
           await _audioPlayer!.resume();
@@ -273,6 +308,10 @@ class AudioPlayerService {
         debugPrint(
             'AudioPlayerService.pauseAudio called, current position: ${position.inSeconds}s');
 
+        // iOS için ek güvenlik: completion handling'i geçici olarak devre dışı bırak
+        bool wasHandlingCompletion = _isHandlingCompletion;
+        _isHandlingCompletion = true;
+
         // Mevcut pozisyonu kaydet
         position = await _audioPlayer!.getCurrentPosition() ?? position;
 
@@ -289,6 +328,9 @@ class AudioPlayerService {
 
         // Bildirim kontrollerinin kaybolmaması için kısa bir gecikme ekle
         await Future.delayed(const Duration(milliseconds: 100));
+
+        // Completion handling'i eski durumuna geri getir
+        _isHandlingCompletion = wasHandlingCompletion;
       }
     } catch (e) {
       debugPrint('Error pausing audio: $e');
@@ -297,6 +339,8 @@ class AudioPlayerService {
       if (!_playingStateController!.isClosed) {
         _playingStateController!.add(isPlaying);
       }
+      // Hata durumunda completion handling'i sıfırla
+      _isHandlingCompletion = false;
     }
   }
 
@@ -341,6 +385,12 @@ class AudioPlayerService {
       if (_audioPlayer != null) {
         debugPrint('AudioPlayerService.stopAudio called from Flutter.');
 
+        // Kasıtlı durdurma işlemi başladığını belirt
+        _isStoppingIntentionally = true;
+
+        // iOS için ek güvenlik: completion handling'i devre dışı bırak
+        _isHandlingCompletion = true;
+
         // Önce pozisyonu sıfırla
         position = Duration.zero;
         if (!_positionController!.isClosed) {
@@ -359,6 +409,21 @@ class AudioPlayerService {
         // Çalınan kitap kodunu temizle - bu bildirim kontrollerinin kaldırılmasına yardımcı olur
         await setPlayingBookCode(null);
 
+        // ÖNEMLİ: SharedPreferences'tan da playing_book_code'u temizle
+        // Bu, method channel handler'larının düzgün çalışmasını sağlar
+        try {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.remove('playing_book_code');
+          debugPrint('AudioPlayerService: playing_book_code SharedPreferences\'tan temizlendi');
+        } catch (e) {
+          debugPrint(
+              'AudioPlayerService: playing_book_code SharedPreferences\'tan temizlenemedi: $e');
+        }
+
+        // iOS için ek güvenlik: kısa bir gecikme sonra completion handling'i tekrar aktif et
+        await Future.delayed(const Duration(milliseconds: 500));
+        _isHandlingCompletion = false;
+
         debugPrint(
             'AudioPlayerService.stopAudio completed - bildirim kontrollerini kaldırma tamamlandı');
       }
@@ -369,10 +434,32 @@ class AudioPlayerService {
       if (!_playingStateController!.isClosed) {
         _playingStateController!.add(isPlaying);
       }
+      // Hata durumunda flag'leri sıfırla
+      _isHandlingCompletion = false;
+      _isStoppingIntentionally = false;
     }
   }
 
   Future<void> seekTo(Duration position) async {
+    try {
+      if (_audioPlayer != null) {
+        // Debounce seeking işlemi
+        _pendingSeekPosition = position;
+        _seekDebounceTimer?.cancel();
+        _seekDebounceTimer = Timer(Duration(milliseconds: 20), () async {
+          if (_pendingSeekPosition != null) {
+            await _performSeek(_pendingSeekPosition!);
+            _pendingSeekPosition = null;
+          }
+        });
+      }
+    } catch (e) {
+      debugPrint('AudioPlayerService seek error: $e');
+    }
+  }
+
+  /// Gerçek seek işlemini gerçekleştirir
+  Future<void> _performSeek(Duration position) async {
     try {
       if (_audioPlayer != null) {
         debugPrint('AudioPlayerService: Seeking to position ${position.inSeconds}s');
@@ -387,26 +474,10 @@ class AudioPlayerService {
         // Seek işlemini gerçekleştir
         await _audioPlayer!.seek(position);
 
-        // Hemen pozisyonu güncelle
+        // Pozisyonu güncelle
         this.position = position;
         if (!_positionController!.isClosed) {
           _positionController!.add(position);
-        }
-
-        // Seek işlemi tamamlanması için biraz bekle ve pozisyonu doğrula
-        await Future.delayed(const Duration(milliseconds: 150));
-        final actualPosition = await _audioPlayer!.getCurrentPosition();
-        if (actualPosition != null) {
-          this.position = actualPosition;
-          if (!_positionController!.isClosed) {
-            _positionController!.add(actualPosition);
-          }
-
-          // İkinci bir güncelleme ile emin ol
-          await Future.delayed(const Duration(milliseconds: 50));
-          if (!_positionController!.isClosed) {
-            _positionController!.add(actualPosition);
-          }
         }
 
         debugPrint('AudioPlayerService: Seek completed to ${this.position.inSeconds}s');
@@ -471,6 +542,8 @@ class AudioPlayerService {
       isPlaying = false;
       position = Duration.zero;
       duration = Duration.zero;
+      _isHandlingCompletion = false;
+      _isStoppingIntentionally = false;
 
       // Notify listeners
       if (!_playingStateController!.isClosed) {
@@ -489,6 +562,11 @@ class AudioPlayerService {
 
   void dispose() {
     try {
+      // Timer'ı temizle
+      _seekDebounceTimer?.cancel();
+      _seekDebounceTimer = null;
+      _pendingSeekPosition = null;
+
       // Önce ses oynatıcıyı durdur
       try {
         if (_audioPlayer != null) {
@@ -546,8 +624,8 @@ class AudioPlayerService {
         debugPrint('_completionController kapatma hatası: $e');
       }
 
-      // Singleton instance'ı sıfırla
-      _instance = null;
+      // Context-specific instance'ı sıfırla
+      _instances.remove(_contextId);
     } catch (e) {
       debugPrint('AudioPlayerService dispose genel hatası: $e');
     }
@@ -557,6 +635,20 @@ class AudioPlayerService {
   Future<void> setPlayingBookCode(String? bookCode) async {
     _playingBookCode = bookCode;
     debugPrint('AudioPlayerService: Playing book code set to: $bookCode');
+
+    // SharedPreferences'a da kaydet
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      if (bookCode != null) {
+        await prefs.setString('playing_book_code', bookCode);
+        debugPrint('AudioPlayerService: playing_book_code saved to SharedPreferences: $bookCode');
+      } else {
+        await prefs.remove('playing_book_code');
+        debugPrint('AudioPlayerService: playing_book_code removed from SharedPreferences');
+      }
+    } catch (e) {
+      debugPrint('AudioPlayerService: Error saving playing_book_code to SharedPreferences: $e');
+    }
 
     if (bookCode == null) {
       _isHandlingCompletion = false; // Reset completion handling if book code is cleared

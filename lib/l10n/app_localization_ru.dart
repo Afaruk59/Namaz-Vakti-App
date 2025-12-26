@@ -641,4 +641,131 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get locationFeatureTitle => 'Найдите свое местоположение';
+
+  @override
+  String get besmele => 'Басмала';
+
+  @override
+  String get quranOk => 'OK';
+
+  @override
+  String get quranFormatMukabele => 'Мукабеле';
+
+  @override
+  String get quranFormatHat1 => 'Письмо 1';
+
+  @override
+  String get quranFormatHat2 => 'Письмо 2';
+
+  @override
+  String get quranPageSettings => 'Настройки страницы';
+
+  @override
+  String get quranFontType => 'Тип шрифта';
+
+  @override
+  String get quranFontSize => 'Размер шрифта';
+
+  @override
+  String get quranAutoScroll => 'Автопрокрутка';
+
+  @override
+  String get quranReset => 'Сбросить';
+
+  @override
+  String get quranClose => 'Закрыть';
+
+  @override
+  String get quranProstration => 'Земной поклон';
+
+  @override
+  String get quranPageDataError => 'Не удалось загрузить данные страницы';
+
+  @override
+  String get quranNoVersesFound => 'Аяты не найдены';
+
+  @override
+  String get quranCopy => 'Копировать';
+
+  @override
+  String get quranHighlight => 'Выделить';
+
+  @override
+  String get removeHighlight => 'Снять выделение';
+
+  @override
+  String get quranShare => 'Поделиться';
+
+  @override
+  String get verse => 'Аят';
+
+  @override
+  String get quranTranslation => 'Перевод';
+
+  @override
+  String get quranPageLoading => 'Загрузка страницы...';
+
+  @override
+  String get quranError => 'Ошибка';
+
+  @override
+  String get quranRetry => 'Повторить';
+
+  @override
+  String get quranHolyQuran => 'Священный Коран';
+
+  @override
+  String surahVerseFormat(String surahName, int verseNumber, String verse) {
+    return 'Сура $surahName $verse $verseNumber';
+  }
+
+  @override
+  String pageNumber(int pageNum) {
+    return 'Страница $pageNum';
+  }
+
+  @override
+  String get deleteBookmark => 'Удалить закладку';
+
+  @override
+  String get deleteBookmarkConfirmation =>
+      'Вы уверены, что хотите удалить эту закладку?';
+
+  @override
+  String get cancel => 'Отмена';
+
+  @override
+  String get delete => 'Удалить';
+
+  @override
+  String get bookmarksTitle => 'Закладки';
+
+  @override
+  String get noBookmarksYet => 'Закладок пока нет';
+
+  @override
+  String get returnToBooks => 'Вернуться к книгам';
+
+  @override
+  String get selectedText => 'Выбранный текст';
+
+  @override
+  String get selectHighlightColor => 'Выберите цвет выделения';
+
+  @override
+  String get quranSurahs => 'Суры';
+
+  @override
+  String get quranJuz => 'Джуз';
+
+  @override
+  String get quranJuzListNotFound => 'Список джузов не найден';
+
+  @override
+  String juzNumber(int juzNum) {
+    return 'Джуз $juzNum';
+  }
+
+  @override
+  String get holyQuran => 'Священный Коран';
 }

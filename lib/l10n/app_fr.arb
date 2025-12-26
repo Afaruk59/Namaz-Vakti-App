@@ -280,5 +280,80 @@
   "datesFeature": "Dates religieuses",
   "datesFeatureDesc": "Calendrier des nuits bénies, jours fériés et jours importants.",
   "locationDescription": "Recherchez votre emplacement ou trouvez-le automatiquement pour calculer avec précision les horaires de prière.",
-  "locationFeatureTitle": "Trouvez votre emplacement"
+  "locationFeatureTitle": "Trouvez votre emplacement",
+  "besmele": "Basmala",
+  "quranOk": "OK",
+  "quranFormatMukabele": "Mukabele",
+  "quranFormatHat1": "Écriture 1",
+  "quranFormatHat2": "Écriture 2",
+  "quranPageSettings": "Paramètres de page",
+  "quranFontType": "Type de police",
+  "quranFontSize": "Taille de police",
+  "quranAutoScroll": "Défilement automatique",
+  "quranReset": "Réinitialiser",
+  "quranClose": "Fermer",
+  "quranProstration": "Prosternation",
+  "quranPageDataError": "Impossible de charger les données de la page",
+  "quranNoVersesFound": "Aucun verset trouvé",
+  "quranCopy": "Copier",
+  "quranHighlight": "Surligner",
+  "removeHighlight": "Supprimer le surlignage",
+  "quranShare": "Partager",
+  "verse": "Verset",
+  "quranTranslation": "Traduction",
+  "quranPageLoading": "Chargement de la page...",
+  "quranError": "Erreur",
+  "quranRetry": "Réessayer",
+  "quranHolyQuran": "Saint Coran",
+  "surahVerseFormat": "Sourate {surahName} {verse} {verseNumber}",
+  "@surahVerseFormat": {
+    "description": "Format string for surah and verse",
+    "placeholders": {
+      "surahName": {
+        "type": "String",
+        "example": "Al-Fatiha"
+      },
+      "verseNumber": {
+        "type": "int",
+        "example": "1"
+      },
+      "verse": {
+        "type": "String",
+        "example": "Verset"
+      }
+    }
+  },
+  "pageNumber": "Page {pageNum}",
+  "@pageNumber": {
+    "description": "Page number format",
+    "placeholders": {
+      "pageNum": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "deleteBookmark": "Supprimer le signet",
+  "deleteBookmarkConfirmation": "Êtes-vous sûr de vouloir supprimer ce signet ?",
+  "cancel": "Annuler",
+  "delete": "Supprimer",
+  "bookmarksTitle": "Signets",
+  "noBookmarksYet": "Aucun signet pour l'instant",
+  "returnToBooks": "Retour aux livres",
+  "selectedText": "Texte sélectionné",
+  "selectHighlightColor": "Sélectionner la couleur de surlignage",
+  "quranSurahs": "Sourates",
+  "quranJuz": "Juz",
+  "quranJuzListNotFound": "Liste Juz introuvable",
+  "juzNumber": "Juz {juzNum}",
+  "@juzNumber": {
+    "description": "Juz number format",
+    "placeholders": {
+      "juzNum": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "holyQuran": "Saint Coran"
 }

@@ -647,4 +647,132 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get locationFeatureTitle => 'Trouvez votre emplacement';
+
+  @override
+  String get besmele => 'Basmala';
+
+  @override
+  String get quranOk => 'OK';
+
+  @override
+  String get quranFormatMukabele => 'Mukabele';
+
+  @override
+  String get quranFormatHat1 => 'Écriture 1';
+
+  @override
+  String get quranFormatHat2 => 'Écriture 2';
+
+  @override
+  String get quranPageSettings => 'Paramètres de page';
+
+  @override
+  String get quranFontType => 'Type de police';
+
+  @override
+  String get quranFontSize => 'Taille de police';
+
+  @override
+  String get quranAutoScroll => 'Défilement automatique';
+
+  @override
+  String get quranReset => 'Réinitialiser';
+
+  @override
+  String get quranClose => 'Fermer';
+
+  @override
+  String get quranProstration => 'Prosternation';
+
+  @override
+  String get quranPageDataError =>
+      'Impossible de charger les données de la page';
+
+  @override
+  String get quranNoVersesFound => 'Aucun verset trouvé';
+
+  @override
+  String get quranCopy => 'Copier';
+
+  @override
+  String get quranHighlight => 'Surligner';
+
+  @override
+  String get removeHighlight => 'Supprimer le surlignage';
+
+  @override
+  String get quranShare => 'Partager';
+
+  @override
+  String get verse => 'Verset';
+
+  @override
+  String get quranTranslation => 'Traduction';
+
+  @override
+  String get quranPageLoading => 'Chargement de la page...';
+
+  @override
+  String get quranError => 'Erreur';
+
+  @override
+  String get quranRetry => 'Réessayer';
+
+  @override
+  String get quranHolyQuran => 'Saint Coran';
+
+  @override
+  String surahVerseFormat(String surahName, int verseNumber, String verse) {
+    return 'Sourate $surahName $verse $verseNumber';
+  }
+
+  @override
+  String pageNumber(int pageNum) {
+    return 'Page $pageNum';
+  }
+
+  @override
+  String get deleteBookmark => 'Supprimer le signet';
+
+  @override
+  String get deleteBookmarkConfirmation =>
+      'Êtes-vous sûr de vouloir supprimer ce signet ?';
+
+  @override
+  String get cancel => 'Annuler';
+
+  @override
+  String get delete => 'Supprimer';
+
+  @override
+  String get bookmarksTitle => 'Signets';
+
+  @override
+  String get noBookmarksYet => 'Aucun signet pour l\'instant';
+
+  @override
+  String get returnToBooks => 'Retour aux livres';
+
+  @override
+  String get selectedText => 'Texte sélectionné';
+
+  @override
+  String get selectHighlightColor => 'Sélectionner la couleur de surlignage';
+
+  @override
+  String get quranSurahs => 'Sourates';
+
+  @override
+  String get quranJuz => 'Juz';
+
+  @override
+  String get quranJuzListNotFound => 'Liste Juz introuvable';
+
+  @override
+  String juzNumber(int juzNum) {
+    return 'Juz $juzNum';
+  }
+
+  @override
+  String get holyQuran => 'Saint Coran';
 }

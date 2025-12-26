@@ -103,8 +103,7 @@ class TextSelectionHelper {
         'http://www.hakikatkitabevi.net/bookread.php?bookCode=$bookCode&bookPage=$pageNumber';
 
     // Uygulama tanıtım metni
-    const appPromotion =
-        'Namaz Vakti App: Dünya Genelinde Temkinli Namaz Vakitleri.';
+    const appPromotion = 'Namaz Vakti App: Dünya Genelinde Temkinli Namaz Vakitleri.';
     const appPromotionUrl =
         'https://play.google.com/store/apps/details?id=com.afaruk59.namaz_vakti_app';
 

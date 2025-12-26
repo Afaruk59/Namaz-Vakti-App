@@ -106,6 +106,20 @@
             </intent-filter>
         </service>
         
+        <!-- QuranMediaService for quran audio playback controls -->
+        <service
+            android:name=".QuranMediaService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback" />
+        
+        <!-- BookMediaService for book audio playback controls -->
+        <service
+            android:name=".BookMediaService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback" />
+        
         <!-- MediaButtonReceiver için receiver tanımı -->
         <receiver android:name="androidx.media.session.MediaButtonReceiver" 
                   android:exported="true">

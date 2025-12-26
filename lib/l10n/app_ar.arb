@@ -280,5 +280,80 @@
   "datesFeature": "التواريخ الدينية",
   "datesFeatureDesc": "تقويم الليالي المباركة والعطلات والأيام المهمة.",
   "locationDescription": "ابحث عن موقعك أو ابحث عنه تلقائيًا لحساب أوقات الصلاة بدقة.",
-  "locationFeatureTitle": "ابحث عن موقعك"
+  "locationFeatureTitle": "ابحث عن موقعك",
+  "besmele": "البسملة",
+  "quranOk": "موافق",
+  "quranFormatMukabele": "المقابلة",
+  "quranFormatHat1": "الخط 1",
+  "quranFormatHat2": "الخط 2",
+  "quranPageSettings": "إعدادات الصفحة",
+  "quranFontType": "نوع الخط",
+  "quranFontSize": "حجم الخط",
+  "quranAutoScroll": "التمرير التلقائي",
+  "quranReset": "إعادة تعيين",
+  "quranClose": "إغلاق",
+  "quranProstration": "السجدة",
+  "quranPageDataError": "فشل تحميل بيانات الصفحة",
+  "quranNoVersesFound": "لم يتم العثور على آيات",
+  "quranCopy": "نسخ",
+  "quranHighlight": "تمييز",
+  "removeHighlight": "إزالة التمييز",
+  "quranShare": "مشاركة",
+  "verse": "آية",
+  "quranTranslation": "ترجمة",
+  "quranPageLoading": "جاري تحميل الصفحة...",
+  "quranError": "خطأ",
+  "quranRetry": "إعادة المحاولة",
+  "quranHolyQuran": "القرآن الكريم",
+  "surahVerseFormat": "سورة {surahName} {verse} {verseNumber}",
+  "@surahVerseFormat": {
+    "description": "Format string for surah and verse",
+    "placeholders": {
+      "surahName": {
+        "type": "String",
+        "example": "الفاتحة"
+      },
+      "verseNumber": {
+        "type": "int",
+        "example": "1"
+      },
+      "verse": {
+        "type": "String",
+        "example": "آية"
+      }
+    }
+  },
+  "pageNumber": "صفحة {pageNum}",
+  "@pageNumber": {
+    "description": "Page number format",
+    "placeholders": {
+      "pageNum": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "deleteBookmark": "حذف العلامة المرجعية",
+  "deleteBookmarkConfirmation": "هل أنت متأكد أنك تريد حذف هذه العلامة المرجعية؟",
+  "cancel": "إلغاء",
+  "delete": "حذف",
+  "bookmarksTitle": "العلامات المرجعية",
+  "noBookmarksYet": "لا توجد علامات مرجعية بعد",
+  "returnToBooks": "العودة إلى الكتب",
+  "selectedText": "النص المحدد",
+  "selectHighlightColor": "حدد لون التمييز",
+  "quranSurahs": "السور",
+  "quranJuz": "الأجزاء",
+  "quranJuzListNotFound": "قائمة الأجزاء غير موجودة",
+  "juzNumber": "الجزء {juzNum}",
+  "@juzNumber": {
+    "description": "Juz number format",
+    "placeholders": {
+      "juzNum": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "holyQuran": "القرآن الكريم"
 }

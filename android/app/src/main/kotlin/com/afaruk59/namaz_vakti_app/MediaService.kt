@@ -19,7 +19,6 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.core.app.NotificationCompat
-import androidx.media.session.MediaButtonReceiver
 import io.flutter.plugin.common.MethodChannel
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
@@ -43,7 +42,7 @@ class MediaService : Service() {
     companion object {
         private const val NOTIFICATION_ID = 2
         private const val CHANNEL_ID = "media_playback_channel"
-        private const val MEDIA_SESSION_TAG = "kitap_oku_media_session"
+        private const val MEDIA_SESSION_TAG = "prayertimes_media_session"
         var methodChannel: MethodChannel? = null
     }
 
@@ -76,7 +75,6 @@ class MediaService : Service() {
             
             // MediaButtonReceiver için PendingIntent oluştur
             val mediaButtonIntent = Intent(Intent.ACTION_MEDIA_BUTTON)
-            mediaButtonIntent.setClass(this@MediaService, MediaButtonReceiver::class.java)
             val pendingIntent = PendingIntent.getBroadcast(
                 this@MediaService, 0, mediaButtonIntent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
@@ -87,10 +85,11 @@ class MediaService : Service() {
         mediaSession.setCallback(object : MediaSessionCompat.Callback() {
             override fun onPlay() {
                 try {
+                    println("MediaService: onPlay called")
                     methodChannel?.invokeMethod("play", null)
                     updatePlaybackState(PlaybackStateCompat.STATE_PLAYING)
                 } catch (e: Exception) {
-                    android.util.Log.e("MediaService", "onPlay error: ${e.message}")
+                    println("MediaService onPlay error: ${e.message}")
                     // Hata durumunda güvenli bir şekilde durumu güncelle
                     updatePlaybackState(PlaybackStateCompat.STATE_PAUSED)
                 }
@@ -98,10 +97,11 @@ class MediaService : Service() {
 
             override fun onPause() {
                 try {
+                    println("MediaService: onPause called")
                     methodChannel?.invokeMethod("pause", null)
                     updatePlaybackState(PlaybackStateCompat.STATE_PAUSED)
                 } catch (e: Exception) {
-                    android.util.Log.e("MediaService", "onPause error: ${e.message}")
+                    println("MediaService onPause error: ${e.message}")
                     // Hata durumunda güvenli bir şekilde durumu güncelle
                     updatePlaybackState(PlaybackStateCompat.STATE_PAUSED)
                 }
@@ -111,7 +111,7 @@ class MediaService : Service() {
                 try {
                     updatePlaybackState(PlaybackStateCompat.STATE_STOPPED)
                 } catch (e: Exception) {
-                    android.util.Log.e("MediaService", "onStop error: ${e.message}")
+                    println("MediaService onStop error: ${e.message}")
                     // Hata durumunda güvenli bir şekilde durumu güncelle
                     updatePlaybackState(PlaybackStateCompat.STATE_STOPPED)
                 }
@@ -119,44 +119,12 @@ class MediaService : Service() {
 
             override fun onSkipToNext() {
                 try {
-                    // Sayfa sınırlarını SharedPreferences'tan kontrol et
-                    val prefs = applicationContext.getSharedPreferences("FlutterSharedPreferences", Context.MODE_PRIVATE)
-                    val bookCode = prefs.getString("flutter.playing_book_code", "") ?: ""
-                    val currentPage = prefs.getInt("flutter.${bookCode}_current_audio_page", 0)
-                    val lastPage = prefs.getInt("flutter.${bookCode}_last_page", 9999)
-                    
-                    // Son sayfada olup olmadığımızı kontrol et
-                    if (currentPage >= lastPage) {
-                        android.util.Log.d("MediaService", "Son sayfadayız, sonraki sayfaya geçilemez")
-                        // Kullanıcıya geri bildirim ver - durumu güncelle ama sayfa değiştirme
-                        updatePlaybackState(if (isPlaying) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED)
-                        return
-                    }
-                    
-                    // Sayfa değişim komutunu işle ve Flutter uygulamasını ön plana getir
-                    val intent = packageManager.getLaunchIntentForPackage(packageName)?.apply {
-                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
-                        putExtra("action", "next_page")
-                    }
-                    
-                    // Kullanıcıya hemen geri bildirim vermek için playback state'i güncelle
-                    updatePlaybackState(PlaybackStateCompat.STATE_PAUSED)
-                    
-                    // Uygulamayı ön plana getir, komutu MainActivity'de işle
-                    if (intent != null) {
-                        try {
-                            startActivity(intent)
-                        } catch (e: Exception) {
-                            android.util.Log.e("MediaService", "Uygulamayı ön plana getirme hatası: ${e.message}")
-                            // Uygulama ön plana getirilemezse doğrudan method channel üzerinden çağır
-                            methodChannel?.invokeMethod("next", null)
-                        }
-                    } else {
-                        // Intent oluşturulamadıysa doğrudan method channel üzerinden çağır
-                        methodChannel?.invokeMethod("next", null)
-                    }
+                    println("MediaService: onSkipToNext called")
+                    // Doğrudan method channel üzerinden çağır - sayfa kontrolü Flutter'da yapılacak
+                    methodChannel?.invokeMethod("next", null)
+                    println("MediaService: next method called via methodChannel")
                 } catch (e: Exception) {
-                    android.util.Log.e("MediaService", "Sonraki sayfa kontrol hatası: ${e.message}")
+                    println("Sonraki sayfa kontrol hatası: ${e.message}")
                     // Hata durumunda normal işleme devam et
                     methodChannel?.invokeMethod("next", null)
                 }
@@ -164,44 +132,12 @@ class MediaService : Service() {
 
             override fun onSkipToPrevious() {
                 try {
-                    // Sayfa sınırlarını SharedPreferences'tan kontrol et
-                    val prefs = applicationContext.getSharedPreferences("FlutterSharedPreferences", Context.MODE_PRIVATE)
-                    val bookCode = prefs.getString("flutter.playing_book_code", "") ?: ""
-                    val currentPage = prefs.getInt("flutter.${bookCode}_current_audio_page", 0)
-                    val firstPage = prefs.getInt("flutter.${bookCode}_first_page", 1)
-                    
-                    // İlk sayfada olup olmadığımızı kontrol et
-                    if (currentPage <= firstPage) {
-                        android.util.Log.d("MediaService", "İlk sayfadayız, önceki sayfaya geçilemez")
-                        // Kullanıcıya geri bildirim ver - durumu güncelle ama sayfa değiştirme
-                        updatePlaybackState(if (isPlaying) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED)
-                        return
-                    }
-                    
-                    // Sayfa değişim komutunu işle ve Flutter uygulamasını ön plana getir
-                    val intent = packageManager.getLaunchIntentForPackage(packageName)?.apply {
-                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
-                        putExtra("action", "previous_page")
-                    }
-                    
-                    // Kullanıcıya hemen geri bildirim vermek için playback state'i güncelle
-                    updatePlaybackState(PlaybackStateCompat.STATE_PAUSED)
-                    
-                    // Uygulamayı ön plana getir, komutu MainActivity'de işle
-                    if (intent != null) {
-                        try {
-                            startActivity(intent)
-                        } catch (e: Exception) {
-                            android.util.Log.e("MediaService", "Uygulamayı ön plana getirme hatası (previous): ${e.message}")
-                            // Uygulama ön plana getirilemezse doğrudan method channel üzerinden çağır
-                            methodChannel?.invokeMethod("previous", null)
-                        }
-                    } else {
-                        // Intent oluşturulamadıysa doğrudan method channel üzerinden çağır
-                        methodChannel?.invokeMethod("previous", null)
-                    }
+                    println("MediaService: onSkipToPrevious called")
+                    // Doğrudan method channel üzerinden çağır - sayfa kontrolü Flutter'da yapılacak
+                    methodChannel?.invokeMethod("previous", null)
+                    println("MediaService: previous method called via methodChannel")
                 } catch (e: Exception) {
-                    android.util.Log.e("MediaService", "Önceki sayfa kontrol hatası: ${e.message}")
+                    println("Önceki sayfa kontrol hatası: ${e.message}")
                     // Hata durumunda normal işleme devam et
                     methodChannel?.invokeMethod("previous", null)
                 }
@@ -233,7 +169,7 @@ class MediaService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        MediaButtonReceiver.handleIntent(mediaSession, intent)
+        // MediaButtonReceiver.handleIntent(mediaSession, intent)
 
         // Sadece ses çalarken veya duraklatılmışken bildirim göster
         try {
@@ -246,7 +182,7 @@ class MediaService : Service() {
                 notificationManager.cancel(NOTIFICATION_ID)
             }
         } catch (e: Exception) {
-            android.util.Log.e("MediaService", "Servis başlatma hatası: ${e.message}")
+            println("Servis başlatma hatası: ${e.message}")
         }
 
         return START_NOT_STICKY
@@ -260,8 +196,6 @@ class MediaService : Service() {
         stopForeground(true)
         mediaSession.release()
         executor?.shutdown()
-        // Handler callback'lerini temizle
-        Handler(Looper.getMainLooper()).removeCallbacksAndMessages(null)
         super.onDestroy()
     }
 
@@ -298,7 +232,7 @@ class MediaService : Service() {
     }
 
     fun stopAudio() {
-        android.util.Log.d("MediaService", "stopAudio called. isPlaying: $isPlaying")
+        println("MediaService: stopAudio called. isPlaying: $isPlaying")
         isPlaying = false
         stopPositionUpdates()
         
@@ -321,7 +255,7 @@ class MediaService : Service() {
         val metadataBuilder = MediaMetadataCompat.Builder()
             .putString(MediaMetadataCompat.METADATA_KEY_TITLE, title)
             .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, author)
-            .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, "Kitap Oku")
+            .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, "Prayer Times")
             .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, durationMs)
         
         // Varsayılan bir bitmap kullan
@@ -387,10 +321,10 @@ class MediaService : Service() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
-                "Kitap Oku Medya Oynatma",
+                "Prayer Times Medya Oynatma",
                 NotificationManager.IMPORTANCE_LOW
             ).apply {
-                description = "Kitap Oku uygulaması için medya oynatma bildirimleri"
+                description = "Prayer Times uygulaması için medya oynatma bildirimleri"
                 setShowBadge(false)
             }
             
@@ -421,11 +355,11 @@ class MediaService : Service() {
             // Medya kontrollerini ekle
             setContentTitle(mediaMetadata?.getString(MediaMetadataCompat.METADATA_KEY_TITLE) ?: bookTitle)
             setContentText(mediaMetadata?.getString(MediaMetadataCompat.METADATA_KEY_ARTIST) ?: bookAuthor)
-            setSubText("Kitap Oku")
+            setSubText("Prayer Times")
             setLargeIcon(mediaMetadata?.getBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART))
             setSmallIcon(R.mipmap.ic_launcher)
             setContentIntent(contentIntent ?: controller.sessionActivity)
-            setDeleteIntent(MediaButtonReceiver.buildMediaButtonPendingIntent(this@MediaService, PlaybackStateCompat.ACTION_STOP))
+            setDeleteIntent(createMediaButtonPendingIntent(PlaybackStateCompat.ACTION_STOP))
             setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             setOngoing(true) // Bildirimi kalıcı yap
             
@@ -434,14 +368,14 @@ class MediaService : Service() {
                 .setMediaSession(mediaSession.sessionToken)
                 .setShowActionsInCompactView(0, 1, 2)
                 .setShowCancelButton(true)
-                .setCancelButtonIntent(MediaButtonReceiver.buildMediaButtonPendingIntent(this@MediaService, PlaybackStateCompat.ACTION_STOP)))
+                .setCancelButtonIntent(createMediaButtonPendingIntent(PlaybackStateCompat.ACTION_STOP)))
             
             // Önceki düğmesi
             addAction(
                 NotificationCompat.Action(
                     android.R.drawable.ic_media_previous,
                     "Önceki",
-                    MediaButtonReceiver.buildMediaButtonPendingIntent(this@MediaService, PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS)
+                    createMediaButtonPendingIntent(PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS)
                 )
             )
             
@@ -454,7 +388,7 @@ class MediaService : Service() {
                 NotificationCompat.Action(
                     playPauseIcon,
                     if (playbackState?.state == PlaybackStateCompat.STATE_PLAYING) "Duraklat" else "Oynat",
-                    MediaButtonReceiver.buildMediaButtonPendingIntent(this@MediaService, playPauseAction)
+                    createMediaButtonPendingIntent(playPauseAction)
                 )
             )
             
@@ -463,7 +397,7 @@ class MediaService : Service() {
                 NotificationCompat.Action(
                     android.R.drawable.ic_media_next,
                     "Sonraki",
-                    MediaButtonReceiver.buildMediaButtonPendingIntent(this@MediaService, PlaybackStateCompat.ACTION_SKIP_TO_NEXT)
+                    createMediaButtonPendingIntent(PlaybackStateCompat.ACTION_SKIP_TO_NEXT)
                 )
             )
         }
@@ -482,12 +416,20 @@ class MediaService : Service() {
                 notificationManager.notify(NOTIFICATION_ID, notification)
             }
         } catch (e: Exception) {
-            android.util.Log.e("MediaService", "Bildirim gösterme hatası: ${e.message}")
+            println("Bildirim gösterme hatası: ${e.message}")
             notificationManager.notify(NOTIFICATION_ID, notification)
         }
     }
 
     fun getMediaSession(): MediaSessionCompat {
         return mediaSession
+    }
+    
+    private fun createMediaButtonPendingIntent(action: Long): PendingIntent {
+        val intent = Intent(Intent.ACTION_MEDIA_BUTTON)
+        intent.putExtra(Intent.EXTRA_KEY_EVENT, action)
+        return PendingIntent.getBroadcast(
+            this, action.toInt(), intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
     }
 }

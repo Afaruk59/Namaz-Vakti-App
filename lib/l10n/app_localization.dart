@@ -1291,6 +1291,246 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Konumunuzu Bulun'**
   String get locationFeatureTitle;
+
+  /// Besmele text
+  ///
+  /// In tr, this message translates to:
+  /// **'Besmele'**
+  String get besmele;
+
+  /// OK button text for Quran
+  ///
+  /// In tr, this message translates to:
+  /// **'Tamam'**
+  String get quranOk;
+
+  /// Mukabele format for Quran
+  ///
+  /// In tr, this message translates to:
+  /// **'Mukabele'**
+  String get quranFormatMukabele;
+
+  /// Hat 1 format for Quran
+  ///
+  /// In tr, this message translates to:
+  /// **'Hat 1'**
+  String get quranFormatHat1;
+
+  /// Hat 2 format for Quran
+  ///
+  /// In tr, this message translates to:
+  /// **'Hat 2'**
+  String get quranFormatHat2;
+
+  /// Page settings for Quran
+  ///
+  /// In tr, this message translates to:
+  /// **'Sayfa Ayarları'**
+  String get quranPageSettings;
+
+  /// Font type for Quran
+  ///
+  /// In tr, this message translates to:
+  /// **'Yazı Tipi'**
+  String get quranFontType;
+
+  /// Font size for Quran
+  ///
+  /// In tr, this message translates to:
+  /// **'Yazı Boyutu'**
+  String get quranFontSize;
+
+  /// Auto scroll for Quran
+  ///
+  /// In tr, this message translates to:
+  /// **'Otomatik Kaydır'**
+  String get quranAutoScroll;
+
+  /// Reset button for Quran
+  ///
+  /// In tr, this message translates to:
+  /// **'Sıfırla'**
+  String get quranReset;
+
+  /// Close button for Quran
+  ///
+  /// In tr, this message translates to:
+  /// **'Kapat'**
+  String get quranClose;
+
+  /// Prostration for Quran
+  ///
+  /// In tr, this message translates to:
+  /// **'Secde'**
+  String get quranProstration;
+
+  /// Page data error for Quran
+  ///
+  /// In tr, this message translates to:
+  /// **'Sayfa verisi yüklenemedi'**
+  String get quranPageDataError;
+
+  /// No verses found for Quran
+  ///
+  /// In tr, this message translates to:
+  /// **'Ayet bulunamadı'**
+  String get quranNoVersesFound;
+
+  /// Copy button for Quran
+  ///
+  /// In tr, this message translates to:
+  /// **'Kopyala'**
+  String get quranCopy;
+
+  /// Highlight button for Quran
+  ///
+  /// In tr, this message translates to:
+  /// **'Vurgula'**
+  String get quranHighlight;
+
+  /// Remove highlight button for Quran
+  ///
+  /// In tr, this message translates to:
+  /// **'Vurguyu Kaldır'**
+  String get removeHighlight;
+
+  /// Share button for Quran
+  ///
+  /// In tr, this message translates to:
+  /// **'Paylaş'**
+  String get quranShare;
+
+  /// Verse text for Quran
+  ///
+  /// In tr, this message translates to:
+  /// **'Ayet'**
+  String get verse;
+
+  /// Translation text for Quran
+  ///
+  /// In tr, this message translates to:
+  /// **'Meal'**
+  String get quranTranslation;
+
+  /// Page loading text for Quran
+  ///
+  /// In tr, this message translates to:
+  /// **'Sayfa yükleniyor...'**
+  String get quranPageLoading;
+
+  /// Error text for Quran
+  ///
+  /// In tr, this message translates to:
+  /// **'Hata'**
+  String get quranError;
+
+  /// Retry button for Quran
+  ///
+  /// In tr, this message translates to:
+  /// **'Tekrar Dene'**
+  String get quranRetry;
+
+  /// Holy Quran text
+  ///
+  /// In tr, this message translates to:
+  /// **'Kuran-ı Kerim'**
+  String get quranHolyQuran;
+
+  /// Format string for surah and verse
+  ///
+  /// In tr, this message translates to:
+  /// **'{surahName} Suresi {verseNumber}. {verse}'**
+  String surahVerseFormat(String surahName, int verseNumber, String verse);
+
+  /// Page number format
+  ///
+  /// In tr, this message translates to:
+  /// **'Sayfa {pageNum}'**
+  String pageNumber(int pageNum);
+
+  /// Delete bookmark dialog title
+  ///
+  /// In tr, this message translates to:
+  /// **'Yer İşaretini Sil'**
+  String get deleteBookmark;
+
+  /// Delete bookmark confirmation message
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu yer işaretini silmek istediğinizden emin misiniz?'**
+  String get deleteBookmarkConfirmation;
+
+  /// Cancel button text
+  ///
+  /// In tr, this message translates to:
+  /// **'İptal'**
+  String get cancel;
+
+  /// Delete button text
+  ///
+  /// In tr, this message translates to:
+  /// **'Sil'**
+  String get delete;
+
+  /// Bookmarks page title
+  ///
+  /// In tr, this message translates to:
+  /// **'Yer İşaretleri'**
+  String get bookmarksTitle;
+
+  /// No bookmarks yet message
+  ///
+  /// In tr, this message translates to:
+  /// **'Henüz yer işareti eklenmemiş'**
+  String get noBookmarksYet;
+
+  /// Return to books button text
+  ///
+  /// In tr, this message translates to:
+  /// **'Kitaplara Dön'**
+  String get returnToBooks;
+
+  /// Selected text label
+  ///
+  /// In tr, this message translates to:
+  /// **'Seçili Metin'**
+  String get selectedText;
+
+  /// Select highlight color dialog title
+  ///
+  /// In tr, this message translates to:
+  /// **'Vurgu Rengi Seç'**
+  String get selectHighlightColor;
+
+  /// Quran surahs tab title
+  ///
+  /// In tr, this message translates to:
+  /// **'Sureler'**
+  String get quranSurahs;
+
+  /// Quran juz tab title
+  ///
+  /// In tr, this message translates to:
+  /// **'Cüzler'**
+  String get quranJuz;
+
+  /// Quran juz list not found message
+  ///
+  /// In tr, this message translates to:
+  /// **'Cüz listesi bulunamadı'**
+  String get quranJuzListNotFound;
+
+  /// Juz number format
+  ///
+  /// In tr, this message translates to:
+  /// **'{juzNum}. Cüz'**
+  String juzNumber(int juzNum);
+
+  /// Holy Quran text
+  ///
+  /// In tr, this message translates to:
+  /// **'Kuran-ı Kerim'**
+  String get holyQuran;
 }
 
 class _AppLocalizationsDelegate
