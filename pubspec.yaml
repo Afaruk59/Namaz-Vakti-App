@@ -61,11 +61,50 @@ flutter:
   generate: true
   uses-material-design: true
 
+  fonts:
+    - family: AlQuranAli
+      fonts:
+        - asset: assets/fonts/AlQuranAli-L3A83.ttf
+    - family: Arabtype
+      fonts:
+        - asset: assets/fonts/ARABTYPE.TTF
+    - family: Artro
+      fonts:
+        - asset: assets/fonts/ARTRO.TTF
+    - family: Artrbdo
+      fonts:
+        - asset: assets/fonts/ARTRBDO.TTF
+    - family: Hasenat
+      fonts:
+        - asset: assets/fonts/HASENAT.TTF
+    - family: Majalla
+      fonts:
+        - asset: assets/fonts/MAJALLA.TTF
+    - family: Majallab
+      fonts:
+        - asset: assets/fonts/MAJALLAB.TTF
+    - family: ShaikhHamdullah
+      fonts:
+        - asset: assets/fonts/ShaikhHamdullahBasicVolt.ttf
+    - family: Simpo
+      fonts:
+        - asset: assets/fonts/SIMPO.TTF
+    - family: Simpbdo
+      fonts:
+        - asset: assets/fonts/SIMPBDO.TTF
+    - family: Trado
+      fonts:
+        - asset: assets/fonts/TRADO.TTF
+    - family: Tradbdo
+      fonts:
+        - asset: assets/fonts/TRADBDO.TTF
+
   assets:
     - assets/img/
     - assets/cities/
     - assets/svg/
     - assets/book_covers/
+    - assets/fonts/
 
 flutter_native_splash:
   color: "#FFFFFF"
