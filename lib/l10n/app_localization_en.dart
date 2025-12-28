@@ -602,6 +602,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Detailed qibla direction with street and satellite maps.';
 
   @override
+  String get qiblaFeature3 => 'Nearby Mosques';
+
+  @override
+  String get qiblaFeature3Desc =>
+      'View nearby mosques on the map and open them in your map application.';
+
+  @override
   String get zikirFeature => 'Digital Tasbih';
 
   @override
@@ -610,6 +617,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get contentFeatures => 'Content Features';
+
+  @override
+  String get quranFeature => 'Holy Quran';
+
+  @override
+  String get quranFeatureDesc =>
+      'Interactive Quran experience with page-by-page reading, audio recitation, and word tracking.';
 
   @override
   String get booksFeature => 'Islamic Books';

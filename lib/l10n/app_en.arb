@@ -315,6 +315,14 @@
   "@qiblaFeature2Desc": {
     "description": "Qibla map feature description"
   },
+  "qiblaFeature3": "Nearby Mosques",
+  "@qiblaFeature3": {
+    "description": "Nearby mosques feature"
+  },
+  "qiblaFeature3Desc": "View nearby mosques on the map and open them in your map application.",
+  "@qiblaFeature3Desc": {
+    "description": "Nearby mosques feature description"
+  },
   "zikirFeature": "Digital Tasbih",
   "@zikirFeature": {
     "description": "Digital tasbih feature"
@@ -326,6 +334,14 @@
   "contentFeatures": "Content Features",
   "@contentFeatures": {
     "description": "Content features page title"
+  },
+  "quranFeature": "Holy Quran",
+  "@quranFeature": {
+    "description": "Quran feature"
+  },
+  "quranFeatureDesc": "Interactive Quran experience with page-by-page reading, audio recitation, and word tracking.",
+  "@quranFeatureDesc": {
+    "description": "Quran feature description"
   },
   "booksFeature": "Islamic Books",
   "@booksFeature": {

@@ -607,6 +607,13 @@ class AppLocalizationsDe extends AppLocalizations {
       'Detaillierte Qibla-Richtung mit Straßen- und Satellitenkarten.';
 
   @override
+  String get qiblaFeature3 => 'Moscheen in der Nähe';
+
+  @override
+  String get qiblaFeature3Desc =>
+      'Zeigen Sie Moscheen in Ihrer Nähe auf der Karte an und öffnen Sie sie in Ihrer Karten-App.';
+
+  @override
   String get zikirFeature => 'Digitale Tasbih';
 
   @override
@@ -615,6 +622,13 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get contentFeatures => 'Inhaltsfunktionen';
+
+  @override
+  String get quranFeature => 'Heiliger Quran';
+
+  @override
+  String get quranFeatureDesc =>
+      'Interaktive Quran-Erfahrung mit seitenweiser Lektüre, Audio-Rezitation und Wortverfolgung.';
 
   @override
   String get booksFeature => 'Islamische Bücher';

@@ -605,6 +605,13 @@ class AppLocalizationsRu extends AppLocalizations {
       'Подробное направление Киблы с уличными и спутниковыми картами.';
 
   @override
+  String get qiblaFeature3 => 'Ближайшие мечети';
+
+  @override
+  String get qiblaFeature3Desc =>
+      'Просмотрите ближайшие мечети на карте и откройте их в приложении карт.';
+
+  @override
   String get zikirFeature => 'Цифровые четки';
 
   @override
@@ -613,6 +620,13 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get contentFeatures => 'Контентные функции';
+
+  @override
+  String get quranFeature => 'Священный Коран';
+
+  @override
+  String get quranFeatureDesc =>
+      'Интерактивный опыт чтения Корана с постраничным чтением, аудио-рецитацией и отслеживанием слов.';
 
   @override
   String get booksFeature => 'Исламские книги';

@@ -141,6 +141,7 @@ class _StartupState extends State<Startup> {
           currentPage: _currentPage,
           child: SingleChildScrollView(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
                   AppLocalizations.of(context)!.startupWelcome,
@@ -214,6 +215,7 @@ class _StartupState extends State<Startup> {
           child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 _buildFeatureCard(
                   context,
@@ -256,6 +258,7 @@ class _StartupState extends State<Startup> {
           child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 _buildFeatureCard(
                   context,
@@ -268,6 +271,12 @@ class _StartupState extends State<Startup> {
                   Icons.map,
                   AppLocalizations.of(context)!.qiblaFeature2,
                   AppLocalizations.of(context)!.qiblaFeature2Desc,
+                ),
+                _buildFeatureCard(
+                  context,
+                  Icons.mosque,
+                  AppLocalizations.of(context)!.qiblaFeature3,
+                  AppLocalizations.of(context)!.qiblaFeature3Desc,
                 ),
                 _buildFeatureCard(
                   context,
@@ -298,7 +307,14 @@ class _StartupState extends State<Startup> {
           child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                _buildFeatureCard(
+                  context,
+                  Icons.auto_stories,
+                  AppLocalizations.of(context)!.quranFeature,
+                  AppLocalizations.of(context)!.quranFeatureDesc,
+                ),
                 _buildFeatureCard(
                   context,
                   Icons.menu_book_rounded,
@@ -340,6 +356,7 @@ class _StartupState extends State<Startup> {
           child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 _buildFeatureCard(
                   context,

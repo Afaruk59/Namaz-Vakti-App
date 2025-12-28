@@ -605,6 +605,13 @@ class AppLocalizationsTr extends AppLocalizations {
       'Sokak ve uydu haritası ile detaylı kıble yönü.';
 
   @override
+  String get qiblaFeature3 => 'Yakındaki Camiler';
+
+  @override
+  String get qiblaFeature3Desc =>
+      'Harita üzerinde yakınınızdaki camileri görüntüleyin ve harita uygulamanızda açın.';
+
+  @override
   String get zikirFeature => 'Dijital Tesbih';
 
   @override
@@ -613,6 +620,13 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get contentFeatures => 'İçerik Özellikleri';
+
+  @override
+  String get quranFeature => 'Kuran-ı Kerim';
+
+  @override
+  String get quranFeatureDesc =>
+      'Sayfa sayfa Kuran okuma, sesli tilavet ve kelime takibi ile interaktif Kuran deneyimi.';
 
   @override
   String get booksFeature => 'İslami Kitaplar';

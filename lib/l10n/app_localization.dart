@@ -1226,6 +1226,18 @@ abstract class AppLocalizations {
   /// **'Sokak ve uydu haritası ile detaylı kıble yönü.'**
   String get qiblaFeature2Desc;
 
+  /// Nearby mosques feature
+  ///
+  /// In tr, this message translates to:
+  /// **'Yakındaki Camiler'**
+  String get qiblaFeature3;
+
+  /// Nearby mosques feature description
+  ///
+  /// In tr, this message translates to:
+  /// **'Harita üzerinde yakınınızdaki camileri görüntüleyin ve harita uygulamanızda açın.'**
+  String get qiblaFeature3Desc;
+
   /// Digital tasbih feature
   ///
   /// In tr, this message translates to:
@@ -1243,6 +1255,18 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'İçerik Özellikleri'**
   String get contentFeatures;
+
+  /// Quran feature
+  ///
+  /// In tr, this message translates to:
+  /// **'Kuran-ı Kerim'**
+  String get quranFeature;
+
+  /// Quran feature description
+  ///
+  /// In tr, this message translates to:
+  /// **'Sayfa sayfa Kuran okuma, sesli tilavet ve kelime takibi ile interaktif Kuran deneyimi.'**
+  String get quranFeatureDesc;
 
   /// Islamic books feature
   ///

@@ -762,6 +762,14 @@
   "@qiblaFeature2Desc": {
     "description": "Qibla map feature description"
   },
+  "qiblaFeature3": "Yakındaki Camiler",
+  "@qiblaFeature3": {
+    "description": "Nearby mosques feature"
+  },
+  "qiblaFeature3Desc": "Harita üzerinde yakınınızdaki camileri görüntüleyin ve harita uygulamanızda açın.",
+  "@qiblaFeature3Desc": {
+    "description": "Nearby mosques feature description"
+  },
   "zikirFeature": "Dijital Tesbih",
   "@zikirFeature": {
     "description": "Digital tasbih feature"
@@ -773,6 +781,14 @@
   "contentFeatures": "İçerik Özellikleri",
   "@contentFeatures": {
     "description": "Content features page title"
+  },
+  "quranFeature": "Kuran-ı Kerim",
+  "@quranFeature": {
+    "description": "Quran feature"
+  },
+  "quranFeatureDesc": "Sayfa sayfa Kuran okuma, sesli tilavet ve kelime takibi ile interaktif Kuran deneyimi.",
+  "@quranFeatureDesc": {
+    "description": "Quran feature description"
   },
   "booksFeature": "İslami Kitaplar",
   "@booksFeature": {

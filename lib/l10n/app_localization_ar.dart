@@ -598,6 +598,13 @@ class AppLocalizationsAr extends AppLocalizations {
       'اتجاه القبلة التفصيلي مع خرائط الشوارع والأقمار الصناعية.';
 
   @override
+  String get qiblaFeature3 => 'المساجد القريبة';
+
+  @override
+  String get qiblaFeature3Desc =>
+      'عرض المساجد القريبة منك على الخريطة وفتحها في تطبيق الخرائط الخاص بك.';
+
+  @override
   String get zikirFeature => 'السبحة الرقمية';
 
   @override
@@ -605,6 +612,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get contentFeatures => 'ميزات المحتوى';
+
+  @override
+  String get quranFeature => 'القرآن الكريم';
+
+  @override
+  String get quranFeatureDesc =>
+      'تجربة قرآنية تفاعلية مع القراءة صفحة بصفحة والتلاوة الصوتية وتتبع الكلمات.';
 
   @override
   String get booksFeature => 'الكتب الإسلامية';

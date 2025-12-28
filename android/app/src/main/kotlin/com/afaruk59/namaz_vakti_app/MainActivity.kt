@@ -501,7 +501,15 @@ class MainActivity : FlutterActivity() {
             Log.d("MainActivity", "Starting quran media service")
             
             // Önce Book MediaSession'ını deaktive et (eğer varsa)
+            if (bookBound) {
+                Log.d("MainActivity", "Stopping BookMediaService before starting Quran")
+                bookMediaService?.stopAudio()
+                bookMediaService?.deactivateMediaSession()
+            }
+            
+            // Eski MediaService de varsa onu da durdur
             if (bound) {
+                Log.d("MainActivity", "Stopping old MediaService")
                 mediaService?.stopAudio()
             }
             
@@ -652,7 +660,15 @@ class MainActivity : FlutterActivity() {
             
             // Önce Quran MediaSession'ını deaktive et (eğer varsa)
             if (quranBound) {
+                Log.d("MainActivity", "Stopping QuranMediaService before starting Book")
                 quranMediaService?.stopAudio()
+                quranMediaService?.deactivateMediaSession()
+            }
+            
+            // Eski MediaService de varsa onu da durdur
+            if (bound) {
+                Log.d("MainActivity", "Stopping old MediaService")
+                mediaService?.stopAudio()
             }
             
             val intent = Intent(this, BookMediaService::class.java)
